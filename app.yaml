@@ -1,0 +1,47 @@
+application: syncontact
+version: 1
+runtime: python
+api_version: 1
+
+builtins:
+- datastore_admin: on
+- remote_api: on
+
+handlers:
+# Start pages
+- url: /
+  script: StartPage.py    # checks if the user is logged in and redirects
+- url: /login
+  script: StartPage.py    # user not logged in
+- url: /profile
+  script: ViewProfile.py  # user logged in, shows the visiting card
+
+# Edit user details
+- url: /editprofile
+  script: EditProfile.py
+  
+# User settings
+- url: /settings
+  script: UserSettings.py
+- url: /savesettings
+  script: UserSettings.py
+
+# About the makers
+- url: /about
+  script: About.py
+  
+# Static files
+- url: /stylesheets
+  static_dir: stylesheets
+- url: /javascripts
+  static_dir: javascripts
+- url: /(.*\.(gif|png|jpg))
+  static_files: static/\1
+  upload: static/(.*\.(gif|png|jpg))
+- url: /favicon.ico
+  static_files: static/favicon.ico
+  upload: static/favicon.ico
+  
+# Error handling
+- url: /.*
+  script: NotFound.py
