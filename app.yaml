@@ -14,7 +14,7 @@ handlers:
 - url: /login
   script: StartPage.py    # user not logged in
 - url: /profile
-  script: ViewProfile.py  # user logged in, shows the visiting card
+  script: StartPage.py  # user logged in, shows the visiting card
 
 # Edit user details
 - url: /editprofile
