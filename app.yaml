@@ -26,9 +26,9 @@ handlers:
 - url: /savesettings
   script: UserSettings.py
 
-# About the makers
+# Static pages
 - url: /about
-  script: About.py
+  script: StaticPages.py
   
 # Static files
 - url: /stylesheets
