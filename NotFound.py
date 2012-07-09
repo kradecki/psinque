@@ -13,7 +13,7 @@ class PageNotFoundHandler(webapp.RequestHandler):
     
     self.error(404)
     template_values = {'requestName': self.request.uri}
-    path = os.path.join(os.path.dirname(__file__), 'templates/not_found.html')    
+    path = os.path.join(os.path.dirname(__file__), 'templates/notFound.html')
     self.response.out.write(template.render(path, template_values))
     
 application = webapp.WSGIApplication([('/.*', PageNotFoundHandler)], debug=True)
