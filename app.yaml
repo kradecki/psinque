@@ -19,12 +19,22 @@ handlers:
   script: StartPage.py
 - url: /submitprofile
   script: StartPage.py
-  
-# User settings
+
+# Under construction
+- url: /notifications
+  script: UnderConstruction.py
+- url: /groups
+  script: UnderConstruction.py
+- url: /contacts
+  script: UnderConstruction.py
 - url: /settings
-  script: UserSettings.py
-- url: /savesettings
-  script: UserSettings.py
+  script: UnderConstruction.py
+
+# User settings
+# - url: /settings
+#   script: UserSettings.py
+# - url: /savesettings
+#   script: UserSettings.py
 
 # Static pages
 - url: /about
