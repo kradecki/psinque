@@ -1,0 +1,132 @@
+
+* { padding: 0; margin: 0; }
+
+html {
+	height:100%;
+}
+
+body {
+	font-family: "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+	font-size: 13px;
+	height: 100%;
+}
+
+p {
+    padding: 10px;
+}
+
+A:link    {text-decoration: none; color: #2580a2}
+A:visited {text-decoration: none; color: #2580a2}
+A:active  {text-decoration: none; color: #2580a2}
+A:hover   {text-decoration: none; color: #8025a2}
+
+A.toplink:link    {color: #80a225}
+A.toplink:visited {color: #80a225}
+A.toplink:active  {color: #80a225}
+A.toplink:hover   {color: #2580a2}
+
+#upperbar {
+  color: #fff;
+  width: 100%;
+  float: left;
+  height: 32px;
+  background: #333;
+  padding: 0px;
+}
+
+#menu {
+  background: #333;
+  float: left;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+#menu li {
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+#menu a {
+	background: #333 url("/images/seperator.gif") bottom right no-repeat;
+	color: #ccc;
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 8px 12px;
+	text-decoration: none;
+}
+
+#menu a:hover {
+	background: #2580a2 url("/images/hover.gif") bottom center no-repeat;
+	color: #fff;
+	padding-bottom: 8px;
+}
+
+#menu a.active {
+	background: #2580a2 url("/images/hover.gif") bottom center no-repeat;
+	color: #fff;
+	padding-bottom: 8px;
+}
+
+#loginmenu {
+  color: #fff;
+  width: auto;
+  float: right;
+  height: 16px;
+  background: #333;
+  padding: 8px 5px;
+  text-align: right;
+}
+
+#wrapper { 
+	margin: 0 auto;
+	width: 100%;
+	padding: 0px;
+	height:100%;
+}
+
+#content { 
+	margin-top: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	color: #333;
+	background: #FFFFFF;
+	width: 95%;
+	padding-top: 50px;
+	min-height: 95%;
+}
+
+#leftcolumn {
+	float: left;
+	width: 300px;
+	min-height: 95%;
+	padding: 10px;
+	background: #eee;
+}
+
+#leftcolumn td {
+	vertical-align: top;
+}
+
+#rightcolumn {
+	float: left;
+	min-height: 95%;
+	border-left: 2px solid #aaa;
+	padding: 10px;
+}
+
+#rightcolumn td {
+	vertical-align: top;
+}
+
+#footer { 
+	width: 100%;
+	height: 25px;
+	clear: both;
+	color: #333;
+	background: #fff;
+	text-align: center;
+}
