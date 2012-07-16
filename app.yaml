@@ -27,14 +27,12 @@ handlers:
   script: UnderConstruction.py
 - url: /contacts
   script: UnderConstruction.py
-- url: /settings
-  script: UnderConstruction.py
 
 # User settings
-# - url: /settings
-#   script: UserSettings.py
-# - url: /savesettings
-#   script: UserSettings.py
+- url: /settings
+  script: UserSettings.py
+- url: /savesettings
+  script: UserSettings.py
 
 # Static pages
 - url: /about
