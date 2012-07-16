@@ -1,2 +1,3 @@
 google_appengine
 *.py[cod]
+*.py~

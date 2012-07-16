@@ -56,8 +56,8 @@ class UserGroups(db.Model):
   canViewBorthDate = db.BooleanProperty()
   # Every friend can see the names and the gender
   
-#class Relationship(db.Model):
-#  user1 = db.ReferenceProperty(UserProfile)
-#  user2 = db.ReferenceProperty(UserProfile)
-#  status = db.StringProperty(choices = ["pending", "established"])
-#  establishingTime = db.DateTimeProperty()
+class Relationship(db.Model):
+ user1 = db.ReferenceProperty(UserProfile)
+ #user2 = db.ReferenceProperty(UserProfile)
+ status = db.StringProperty(choices = ["pending", "established"])
+ establishingTime = db.DateTimeProperty()
