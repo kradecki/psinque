@@ -17,10 +17,14 @@ class Settings(MasterHandler):
     user = users.get_current_user()
     query = UserSettings.all()
     userSettings = query.filter("user =", user).get()
-
-    template_values = {
-      'preferredLanguage': 'pl',#userSettings.preferredLanguage,
-    }
+    if not userSettings == None:
+      template_values = {
+        'preferredLanguage': userSettings.preferredLanguage,
+      }
+    else:
+      template_values = {
+        'preferredLanguage': 'user not found',
+      }
     MasterHandler.sendTopTemplate(self, activeEntry = "Settings")
     MasterHandler.sendContent(self, 'templates/viewSettings.html', template_values)
     MasterHandler.sendBottomTemplate(self)
