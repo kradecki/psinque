@@ -37,6 +37,7 @@ class ViewProfile(MasterHandler):
       userProfile.put()  # save the new (and empty) profile in the Datastore
       userSettings = UserSettings()
       userSettings.preferredLanguage = availableLanguages[0]  # select the default language
+      userSettings.user = user
       userSettings.put()
 
     template_values = {
