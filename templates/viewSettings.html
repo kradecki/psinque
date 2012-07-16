@@ -1,4 +1,13 @@
 <div id="content">
   <p>Language: <b>{{ preferredLanguage }}</b></p>
-  <a href="/savesettings">Update Setings</a>.
+  <select name="dropdown">
+  {% for language in availableLanguages %}
+    {% ifequal language preferredLanguage %}
+      <option selected value="{{ language }}">{{ language }}</option> 
+    {% else %}
+      <option value="{{ language }}">{{ language }}</option>
+    {% endifequal %}
+  {% endfor %}
+  </select>
+  <p>Update Setings</p>
 </div>
