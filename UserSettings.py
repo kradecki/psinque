@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import os
 import logging
 
@@ -37,6 +37,7 @@ class Settings(MasterHandler):
     userSettings = query.filter("user =", user).get()
     userSettings.preferredLanguage = self.request.get('language')
     userSettings.notifyOnNewsletter = bool(self.request.get('newsletter'))
+    logging.info(u"Wartość =" + unicode(self.request.get('newsletter')))
     userSettings.put()
 
     self.redirect('/settings')  # redirects to Settings
