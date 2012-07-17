@@ -1,7 +1,10 @@
 <div id="content">
+  {% if firstlogin %}
+  <p>This is your first login, so please fill up your profile below:</p>
+  {% endif %}
   <form action="/submitprofile" method="POST">
-        First name: <input type="text" name="firstname" /><br />
-        Last name: <input type="text" name="lastname" />
+        First name: <input type="text" name="firstname" value="{{ firstname }}"/><br />
+        Last name: <input type="text" name="lastname" value="{{ lastname }}" />
         <input type="submit" value="Save" />
   </form>
 </div>
