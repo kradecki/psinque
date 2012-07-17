@@ -113,8 +113,8 @@ A.toplink:hover   {color: #2580a2}
   padding: 0px;
   background: #eee;
   padding: 0px;
-  border-left: 2px solid #aaa;
-  border-right: 2px solid #aaa;
+  border-left: 2px solid #333;
+  border-right: 2px solid #333;
 }
 
 #content {
