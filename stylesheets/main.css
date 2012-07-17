@@ -36,11 +36,14 @@ A.toplink:hover   {color: #2580a2}
 #topheader {
   background: #2580a2;
   color: #aaa;
-  width: 100%;
+  width: 917px;
   float: left;
   height: 61px;
   padding: 0px;
   margin-top: 10px;
+  border-left: 2px solid #333;
+  border-right: 2px solid #333;
+/*   border-top: 2px solid #333; */
 }
 
 #topheader h1 {
@@ -52,11 +55,13 @@ A.toplink:hover   {color: #2580a2}
 
 #upperbar {
   color: #fff;
-  width: 100%;
+  width: 917px;
   float: left;
   height: 32px;
   background: #333;
   padding: 0px;
+  border-left: 2px solid #333;
+  border-right: 2px solid #333;
 }
 
 #menu {
@@ -115,6 +120,7 @@ A.toplink:hover   {color: #2580a2}
   padding: 0px;
   border-left: 2px solid #333;
   border-right: 2px solid #333;
+/*   border-bottom: 2px solid #333; */
 }
 
 #content {
@@ -148,7 +154,7 @@ A.toplink:hover   {color: #2580a2}
 }
 
 #footer { 
-  width: 100%;
+  width: 917px;
   height: 25px;
   clear: both;
   color: #333;
