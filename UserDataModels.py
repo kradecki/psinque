@@ -5,7 +5,11 @@ from google.appengine.ext import blobstore
 #--------------------------------------------------
 # User settings
 
-availableLanguages = ["en", "pl", "dk"]
+availableLanguages = {
+                      'en': 'English',
+                      'pl': 'Polski',
+                      'de': 'Deutsch',
+                     }
 
 class UserSettings(db.Model):
   '''User settings other than those stored in the profile'''
