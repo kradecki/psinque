@@ -10,7 +10,7 @@ body {
   font-size: 13px;
   height: 100%;
   text-align: center;
-  min-width: 760px;
+  min-width: 930px;
 }
 
 p {
@@ -40,7 +40,7 @@ A.toplink:hover   {color: #2580a2}
   float: left;
   height: 61px;
   padding: 0px;
-/*   margin-top: 10px; */
+  margin-top: 10px;
 }
 
 #topheader h1 {
