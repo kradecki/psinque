@@ -36,7 +36,7 @@ class Settings(MasterHandler):
     query = UserSettings.all()
     userSettings = query.filter("user =", user).get()
     userSettings.preferredLanguage = self.request.get('language')
-    #userSettings.notifyOnNewsletter = self.request.get('newsletter')
+    userSettings.notifyOnNewsletter = bool(self.request.get('newsletter'))
     userSettings.put()
 
     self.redirect('/settings')  # redirects to Settings
