@@ -85,8 +85,8 @@ class UserGroups(db.Model):
 #--------------------------------------------------
 # Relationships between users
 
-#class Relationship(db.Model):
- #user1 = db.ReferenceProperty(UserProfile)
- ##user2 = db.ReferenceProperty(UserProfile)
- #status = db.StringProperty(choices = ["pending", "established"])
- #establishingTime = db.DateTimeProperty()
+class Relationship(db.Model):
+ user1 = db.ReferenceProperty(UserProfile, collection_name="outgoingRelationships")
+ user2 = db.ReferenceProperty(UserProfile, collection_name="ingoingRelationships")
+ status = db.StringProperty(choices = ["pending", "established"])
+ establishingTime = db.DateTimeProperty()
