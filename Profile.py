@@ -1,3 +1,15 @@
+
+import os
+import logging
+
+from google.appengine.ext import webapp
+from google.appengine.api import users
+from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext.webapp import template
+
+from MasterHandler import MasterHandler
+from UserDataModels import UserProfile, UserSettings, availableLanguages
+
 class ViewProfile(MasterHandler):
 
   def get(self):
@@ -27,13 +39,18 @@ class EditProfile(MasterHandler):
       userProfile.user = user
       userProfile.put()  # save the new (and empty) profile in the Datastore
       userSettings = UserSettings()
-      userSettings.preferredLanguage = availableLanguages[0]  # select the default language
-      userSettings.notifyOnNewsletter = True
       userSettings.user = user
       userSettings.put()
+      firstLogin = True
+    else:
+      firstLogin = False
 
     MasterHandler.sendTopTemplate(self, activeEntry = "Visiting card")
-    MasterHandler.sendContent(self, 'templates/editProfile.html', None)
+    MasterHandler.sendContent(self, 'templates/editProfile.html', {
+      'firstlogin': firstLogin,
+      'firstname': userProfile.firstname,
+      'lastname': userProfile.lastname,
+      })
     MasterHandler.sendBottomTemplate(self)
 
   def post(self):  # executed when the user hits the 'Save' button, which sends a POST request

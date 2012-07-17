@@ -13,12 +13,14 @@ handlers:
   script: StartPage.py    # checks if the user is logged in and redirects
 - url: /login
   script: StartPage.py    # user not logged in
+
+# User profile viewing and editing
 - url: /profile
-  script: StartPage.py    # user logged in, shows the visiting card
+  script: Profile.py    # user logged in, shows the visiting card
 - url: /editprofile
-  script: StartPage.py
+  script: Profile.py
 - url: /submitprofile
-  script: StartPage.py
+  script: Profile.py
 
 # Under construction
 - url: /notifications
