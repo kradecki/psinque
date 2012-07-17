@@ -1,5 +1,18 @@
 <div id="content">
-  <p>Your first name is: <b>{{ firstname }}</b></p>
-  <p>Your last name is: <b>{{ lastname }}</b></p>
-  Edit profile <a href="/editprofile">here</a>.
+  <div id="leftcolumn">
+    <a href="/uploadphoto">
+    {% if photograph %}
+    <img src="{{ photograph }}" alt="Upload a new photograph" width="120" height="150" />
+    {% else %}
+    <img src="images/no_photo.jpg" alt="Upload a new photograph" width="120" height="150" />
+    {% endif %}
+    </a>
+  </div>
+  <div id="rightcolumn">
+    <h3><b>{{ firstname }} {{ middlename }} {{ lastname }}</b></h3>
+    <a href="/editprofile">Edit profile</a>
+    <p><b>Sex:</b> male</p>
+    <p><b>Address:</b> 2 Sq. Leon Bourgeois, 35000 Rennes (home)</p>
+    <p><b>Address:</b> INRIA Beaulieu Atlantique, 35000 Rennes (work)</p>
+  </div>
 </div>

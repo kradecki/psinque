@@ -28,23 +28,24 @@ A.toplink:active  {color: #80a225}
 A.toplink:hover   {color: #2580a2}
 
 #wrapper {
-  width: 720px;
+  width: 921px;
   margin: 0 auto;
   text-align: left;
 }
 
 #topheader {
-  background: #333 url("/images/topImage.gif") bottom right no-repeat;
-  color: #000;
+  background: #fff url("/images/topImage.gif") bottom right no-repeat;
+  color: #aaa;
   width: 100%;
   float: left;
-  height: 200px;
+  height: 61px;
   padding: 0px;
+  margin-top: 10px;
 }
 
 #topheader h1 {
-  font-family: "Ubuntu", Verdana, Helvetica, sans-serif;
-  font-size: 64px;
+  font-family: Ubuntu, Verdana, Helvetica, sans-serif;
+  font-size: 32px;
   color: #eee;
   padding: 10px;
 }
@@ -68,31 +69,31 @@ A.toplink:hover   {color: #2580a2}
 }
 
 #menu li {
-	float: left;
-	margin: 0;
-	padding: 0;
+  float: left;
+  margin: 0;
+  padding: 0;
 }
 
 #menu a {
-	background: #333 url("/images/seperator.gif") bottom right no-repeat;
-	color: #ccc;
-	display: block;
-	float: left;
-	margin: 0;
-	padding: 8px 12px;
-	text-decoration: none;
+  background: #333 url("/images/seperator.gif") bottom right no-repeat;
+  color: #ccc;
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 8px 12px;
+  text-decoration: none;
 }
 
 #menu a:hover {
-	background: #2580a2 url("/images/hover.gif") bottom center no-repeat;
-	color: #fff;
-	padding-bottom: 8px;
+  background: #2580a2 url("/images/hover.gif") bottom center no-repeat;
+  color: #fff;
+  padding-bottom: 8px;
 }
 
 #menu a.active {
-	background: #2580a2 url("/images/hover.gif") bottom center no-repeat;
-	color: #fff;
-	padding-bottom: 8px;
+  background: #2580a2 url("/images/hover.gif") bottom center no-repeat;
+  color: #fff;
+  padding-bottom: 8px;
 }
 
 #loginmenu {
@@ -125,32 +126,36 @@ A.toplink:hover   {color: #2580a2}
 
 #leftcolumn {
 	float: left;
-	width: 300px;
-	min-height: 95%;
-	padding: 10px;
-	background: #eee;
-}
-
-#leftcolumn td {
-	vertical-align: top;
+	width: 140px;
+/* 	min-height: 95%; */
+/* 	padding: 10px; */
+/* 	background: #aaa; */
+  margin-bottom: 20px;
 }
 
 #rightcolumn {
-	float: left;
-	min-height: 95%;
-	border-left: 2px solid #aaa;
-	padding: 10px;
+  float: left;
+  min-height: 95%;
+  border-left: 2px solid #aaa;
+  padding: 10px;
 }
 
-#rightcolumn td {
-	vertical-align: top;
+#rightcolumn p {
+  padding: 0px;
+  padding-top: 5px;
 }
 
 #footer { 
-	width: 100%;
-	height: 25px;
-	clear: both;
-	color: #333;
-	background: #fff;
-	text-align: center;
+  width: 100%;
+  height: 25px;
+  clear: both;
+  color: #333;
+  text-align: center;
+  background: #fff url("/images/bottomImage.gif") bottom right no-repeat;
+  padding: 0px;
+}
+
+#footer p {
+  padding-top: 5px;
+  color: #fff;
 }

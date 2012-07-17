@@ -1,5 +1,9 @@
 
 from google.appengine.ext import db
+from google.appengine.ext import blobstore
+
+#--------------------------------------------------
+# User settings
 
 availableLanguages = ["en", "pl", "dk"]
 
@@ -8,18 +12,31 @@ class UserSettings(db.Model):
   user = db.UserProperty()
  
   # Settings:
-  preferredLanguage = db.StringProperty(choices = availableLanguages)
-  notifyOnNewsletter = db.BooleanProperty()
+  preferredLanguage = db.StringProperty(choices = availableLanguages,
+                                        default = availableLanguages[0])
+  notifyOnNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
+
+#--------------------------------------------------
+# User profile
+
+genders    = ["male", "female"]
+phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
 
 class UserProfile(db.Model):
   '''User profile'''
   user = db.UserProperty()
 
-  lastname = db.StringProperty()
-  firstname = db.StringProperty()
-  middlename = db.StringProperty()
+  photograph = blobstore.BlobReferenceProperty()
 
-  gender = db.StringProperty(choices = ["male", "female"])
+  firstname = db.StringProperty(required = True,
+                                default = "Jan")
+  middlename = db.StringProperty(required = False)
+  lastname = db.StringProperty(required = True,
+                               default = "Kowalski")
+  pseudonym = db.StringProperty(required = False)
+
+  gender = db.StringProperty(choices = genders,
+                             required = False)
 
   birthDay = db.DateProperty()  
 
@@ -29,6 +46,7 @@ class UserAddress(db.Model):
   user = db.ReferenceProperty(UserProfile)   # or perhaps db.UserProperty()
   address = db.PostalAddressProperty()
   addressType = db.StringProperty(choices = ["home", "work"])
+  location = db.GeoPtProperty()
 
 class UserEmail(db.Model):
   user = db.ReferenceProperty(UserProfile)
@@ -40,14 +58,17 @@ class UserIM(db.Model):
   im = db.IMProperty()
 
 class UserPhoneNumber(db.Model):
-  user = db.ReferenceProperty(UserProfile)
-  phone = db.PhoneNumberProperty()
-  phoneType = db.StringProperty(choices = ["home landline", "private cellphone", "work cellphone", "work landline", "other"])
+  user = db.ReferenceProperty(UserProfile, collection_name="phoneNumbers")
+  phone = db.PhoneNumberProperty(required = True)
+  phoneType = db.StringProperty(choices = phoneTypes)
 
 class UserWebpage(db.Model):
   user = db.ReferenceProperty(UserProfile)
   address = db.StringProperty()
   webpageType = db.StringProperty(choices = ["private homepage", "business homepage", "facebook", "myspace", "other"])
+
+#--------------------------------------------------
+# Groups of users
 
 class UserGroups(db.Model):
   creator = db.ReferenceProperty(UserProfile)
@@ -57,8 +78,11 @@ class UserGroups(db.Model):
   canViewBorthDate = db.BooleanProperty()
   # Every friend can see the names and the gender
   
-class Relationship(db.Model):
- user1 = db.ReferenceProperty(UserProfile)
- #user2 = db.ReferenceProperty(UserProfile)
- status = db.StringProperty(choices = ["pending", "established"])
- establishingTime = db.DateTimeProperty()
+#--------------------------------------------------
+# Relationships between users
+
+#class Relationship(db.Model):
+ #user1 = db.ReferenceProperty(UserProfile)
+ ##user2 = db.ReferenceProperty(UserProfile)
+ #status = db.StringProperty(choices = ["pending", "established"])
+ #establishingTime = db.DateTimeProperty()

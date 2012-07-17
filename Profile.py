@@ -1,11 +1,14 @@
 
 import os
 import logging
+import urllib
 
-from google.appengine.ext import webapp
 from google.appengine.api import users
-from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext import blobstore
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.ext.webapp import template
+from google.appengine.ext.webapp.util import run_wsgi_app
 
 from MasterHandler import MasterHandler
 from UserDataModels import UserProfile, UserSettings, availableLanguages
@@ -23,8 +26,12 @@ class ViewProfile(MasterHandler):
     template_values = {
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
+      'photograph': None
     }
-    MasterHandler.sendTopTemplate(self, activeEntry = "Visiting card")
+    if userProfile.photograph != None:
+      template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
+    
+    MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/viewProfile.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
@@ -45,7 +52,7 @@ class EditProfile(MasterHandler):
     else:
       firstLogin = False
 
-    MasterHandler.sendTopTemplate(self, activeEntry = "Visiting card")
+    MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/editProfile.html', {
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
@@ -63,10 +70,38 @@ class EditProfile(MasterHandler):
 
     self.redirect('/profile')  # redirects to ViewProfile
 
+class UploadPhoto(MasterHandler):
+  def get(self):
+    MasterHandler.sendTopTemplate(self, activeEntry = "My card")
+    MasterHandler.sendContent(self, 'templates/uploadProfilePhoto.html', {
+      'photoUploadLink': blobstore.create_upload_url('/uploadphotopost'),
+      })
+    MasterHandler.sendBottomTemplate(self)
+
+class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+  def post(self):
+    upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
+    blob_info = upload_files[0]
+    user = users.get_current_user()
+    userProfile = UserProfile.all().filter("user =", user).get()
+    userProfile.photograph = blob_info.key()
+    userProfile.put()
+    self.redirect('/profile')  # go back to the profile viewer
+
+class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
+  def get(self, resource):
+    resource = str(urllib.unquote(resource))
+    logging.info("Getting a blob " + resource)
+    blob_info = blobstore.BlobInfo.get(resource)
+    self.send_blob(blob_info)
+
 application = webapp.WSGIApplication([
   ('/profile', ViewProfile),
   ('/editprofile', EditProfile),
-  ('/submitprofile', EditProfile)
+  ('/submitprofile', EditProfile),
+  ('/uploadphoto', UploadPhoto),
+  ('/uploadphotopost', UploadHandler),
+  ('/serveimageblob/([^/]+)?', ServeHandler),
 ], debug=True)
 
 def main():

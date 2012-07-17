@@ -28,7 +28,7 @@ class MasterHandler(webapp.RequestHandler):
       return
 
     menuentries = [
-      MenuEntry("profile", "Visiting card"),
+      MenuEntry("profile", "My card"),
       MenuEntry("notifications", "Notifications"),
       MenuEntry("groups", "Groups"),
       MenuEntry("contacts", "Contacts"),

@@ -21,6 +21,12 @@ handlers:
   script: Profile.py
 - url: /submitprofile
   script: Profile.py
+- url: /uploadphoto
+  script: Profile.py
+- url: /uploadphotopost
+  script: Profile.py
+- url: /serveimageblob/([^/]+)?
+  script: Profile.py
 
 # Under construction
 - url: /notifications
