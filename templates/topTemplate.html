@@ -7,15 +7,20 @@
 </head>
 
 <body>
-<div id="upperbar">
-	<ul id="menu">
-	  {% for menuentry in menuentries %}
-		<li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>
-	  {% endfor %}
-	</ul>
-	<div id="loginmenu">
-		Logged in as {{ username }}
-		<a href="{{ loginurl }}" class="toplink">{{ loginurl_linktext }}</a>
-	</div>
-</div>
 <div id="wrapper">
+  <div id="topheader">
+    <h1>Contact Synchronizer</h1>
+  </div>
+  <div id="upperbar">
+          <ul id="menu">
+            {% for menuentry in menuentries %}
+                  <li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>
+            {% endfor %}
+          </ul>
+          <div id="loginmenu">
+                  {{ username }}
+                  (<a href="{{ loginurl }}" class="toplink">{{ loginurl_linktext }}</a>)
+          </div>
+  </div>
+  <div id="contentwrapper">
+    <div id="content">
