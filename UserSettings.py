@@ -20,25 +20,29 @@ class Settings(MasterHandler):
     if not userSettings == None:
       template_values = {
         'preferredLanguage': userSettings.preferredLanguage,
+        'availableLanguages': availableLanguages,
       }
     else:
       template_values = {
         'preferredLanguage': 'user not found',
+        'availableLanguages': availableLanguages,
       }
     MasterHandler.sendTopTemplate(self, activeEntry = "Settings")
     MasterHandler.sendContent(self, 'templates/viewSettings.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
-class SaveSettings(MasterHandler):
+  def post(self):
+    user = users.get_current_user()
+    query = UserSettings.all()
+    userSettings = query.filter("user =", user).get()
+    userSettings.preferredLanguage = self.request.get('language')
+    #userSettings.notifyOnNewsletter = self.request.get('newsletter')
+    userSettings.put()
 
-  def get(self):
-    MasterHandler.sendTopTemplate(self, activeEntry = "Settings")
-    self.response.out.write('<div id="content">Under construction</div>')
-    MasterHandler.sendBottomTemplate(self)
+    self.redirect('/settings')  # redirects to Settings
 
 application = webapp.WSGIApplication([
-  ('/settings', Settings),
-  ('/savesettings', SaveSettings)
+  ('/settings', Settings)
 ], debug=True)
 
 def main():
