@@ -35,6 +35,11 @@ class Settings(MasterHandler):
     user = users.get_current_user()
     query = UserSettings.all()
     userSettings = query.filter("user =", user).get()
+    userSettings.preferredLanguage = self.request.get('language')
+    #userSettings.notifyOnNewsletter = self.request.get('newsletter')
+    userSettings.put()
+
+    self.redirect('/settings')  # redirects to Settings
 
 application = webapp.WSGIApplication([
   ('/settings', Settings)

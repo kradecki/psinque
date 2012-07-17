@@ -9,6 +9,7 @@ class UserSettings(db.Model):
  
   # Settings:
   preferredLanguage = db.StringProperty(choices = availableLanguages)
+  notifyOnNewsletter = db.BooleanProperty()
 
 class UserProfile(db.Model):
   '''User profile'''

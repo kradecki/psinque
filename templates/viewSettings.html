@@ -1,13 +1,15 @@
 <div id="content">
-  <p>Language: <b>{{ preferredLanguage }}</b></p>
-  <select name="dropdown">
-  {% for language in availableLanguages %}
-    {% ifequal language preferredLanguage %}
-      <option selected value="{{ language }}">{{ language }}</option> 
-    {% else %}
-      <option value="{{ language }}">{{ language }}</option>
-    {% endifequal %}
-  {% endfor %}
-  </select>
-  <p>Update Setings</p>
+  <form action="/settings" method="POST">
+    <p>Language</p>
+    <select name="language">
+    {% for language in availableLanguages %}
+      <option {% ifequal language preferredLanguage %} selected {% endifequal %} value="{{ language }}">{{ language }}</option>
+    {% endfor %}
+    </select>
+    <p>Notifications</p>
+    <ul>
+      <li><input type="checkbox" name="newsletter">Send me a Newsletter</li>
+    </ul>
+    <input type="submit" value="Save" />
+  </form>
 </div>
