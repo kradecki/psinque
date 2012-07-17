@@ -1,15 +1,13 @@
 <div id="content">
   <form action="/settings" method="POST">
-    <p>Language</p>
-    <select name="language">
+    <h3>Language settings:</h3>
+    <p><select name="language">
     {% for language in availableLanguages.items %}
       <option {% ifequal language.0 preferredLanguage %} selected {% endifequal %} value="{{ language.0 }}">{{ language.1 }}</option>
     {% endfor %}
-    </select>
-    <p>Notifications</p>
-    <ul>
-      <li><input type="checkbox" name="newsletter">Send me a Newsletter</li>
-    </ul>
+    </select></p>
+    <h3>Notifications:</h3>
+    <p><input type="checkbox" name="newsletter">Send me a Newsletter</p>
     <input type="submit" value="Save" />
   </form>
 </div>
