@@ -17,7 +17,7 @@ class UserSettings(db.Model):
  
   # Settings:
   preferredLanguage = db.StringProperty(choices = availableLanguages,
-                                        default = availableLanguages[0])
+                                        default = availableLanguages['en'])
   notifyOnNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
 
 #--------------------------------------------------
