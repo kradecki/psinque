@@ -1,10 +1,37 @@
+<script type="text/javascript">
+<!--
+  addressCounter = 1
+  $(document).ready(function(){
+    $('#addAddress').click(function() {
+      addressCounter++;
+      newElement = document.createElement("p");
+      newElement.id = "address" + addressCounter;
+      newElement.innerHTML = '<label>Address ' + addressCounter + ':</label> <input type="text" name="' + addressCounter + '" /><a href="" id="remover' + addressCounter + '">Remove</a>';
+
+      this.parentNode.insertBefore(newElement, this);
+
+      $('#remover' + addressCounter).click(function() {
+        addressCounter--;
+        console.log(addressCounter);
+        $(this).parent().remove(); // remove the parent <p></p>
+        return false;              // represss page refresh
+      });
+      return false;
+    });
+  });
+//-->
+</script>
 <div id="content">
   {% if firstlogin %}
   <p>This is your first login, so please fill up your profile below:</p>
   {% endif %}
-  <form action="/submitprofile" method="POST">
-        First name: <input type="text" name="firstname" value="{{ firstname }}"/><br />
-        Last name: <input type="text" name="lastname" value="{{ lastname }}" />
+  <form action="/submitprofile" method="POST" id="submitForm">
+        <h3>General information</h3>
+        <p><label>First name:</label> <input type="text" name="firstname" value="{{ firstname }}"/></p>
+        <p><label>Last name:</label> <input type="text" name="lastname" value="{{ lastname }}" /></p>
+        <h3>Physical address</h3>
+        <p id="address1"><label>Primary address:</label> <input type="text" name="address1" value="{{ address1 }}" /></p>
+        <p id="addAddress"><a href="">Add address</a></p>
         <input type="submit" value="Save" />
   </form>
 </div>
