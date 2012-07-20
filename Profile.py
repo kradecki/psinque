@@ -48,6 +48,7 @@ class EditProfile(MasterHandler):
       userSettings = UserSettings()
       userSettings.user = user
       userSettings.put()
+      logging.error(availableLanguages.keys())
       firstLogin = True
     else:
       firstLogin = False
