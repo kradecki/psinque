@@ -13,7 +13,10 @@
       $('#remover' + addressCounter).click(function() {
         addressCounter--;
         console.log(addressCounter);
-        $(this).parent().slideUp(); // remove the parent <p></p>
+        addressPar = $(this).parent()
+        addressPar.slideUp('fast', function() {
+          addressPar.remove(); // remove the parent <p></p>
+        });        
         return false;              // represss page refresh
       });
       return false;
