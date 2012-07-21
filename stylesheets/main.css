@@ -132,6 +132,36 @@ A.toplink:hover   {color: #2580a2}
 /*   min-height: 95%; */
 }
 
+/* *** Formatting for the profile entry form *** */
+#content label{
+  float: left;
+  width: 160px;
+  font-weight: bold;
+}
+#content input, textarea{
+  width: 280px;
+  margin-bottom: 5px;
+}
+#content textarea{
+  width: 250px;
+  height: 150px;
+}
+#content .boxes{
+  width: 1em;
+}
+#submitbutton{
+  margin-left: 120px;
+  margin-top: 5px;
+  width: 90px;
+}
+#content br{
+  clear: left;
+}
+#bottonButton {
+  text-align: center;
+}
+/* ******************************************* */
+
 #leftcolumn {
 	float: left;
 	width: 140px;
