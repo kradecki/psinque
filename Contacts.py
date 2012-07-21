@@ -48,16 +48,26 @@ class SearchContacts(MasterHandler):
 
   def post(self):
     user = users.get_current_user()
-    query = UserSettings.all()
+    query = UserProfile.all()
     userProfile = query.filter("user =", user).get()
     contactFirstname = self.request.get('firstname')
-    contactLastname = self.request.get('lasttname')
-    self.redirect('/searchresults')  # redirects to SearchResults
+    contactLastname = self.request.get('lastname')
+    logging.info(query)
+    
+    contactProfile = query.filter("lastname =", contactLastname)
+
+    template_values = {
+      'firstname': contactProfile, # Nie zwraca mi tutaj
+      'lastname':  contactLastname,
+    }
+
+    MasterHandler.sendTopTemplate(self, activeEntry = "Contacts")
+    MasterHandler.sendContent(self, 'templates/searchResults.html', template_values)
+    MasterHandler.sendBottomTemplate(self)
 
 application = webapp.WSGIApplication([
   ('/contacts', ViewContacts),
   ('/searchcontacts', SearchContacts),
-  #('/searchresults', SearchResults),
 ], debug=True)
 
 def main():
