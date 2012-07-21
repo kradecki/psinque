@@ -27,12 +27,11 @@ class ViewProfile(MasterHandler):
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
       'photograph': None,
-      'addresses': userProfile.addresses.fetch(10),
+      'addresses': userProfile.addresses.fetch(10),   #WARNING: will anyone have more addresses than 10?
     }
     if userProfile.photograph != None:
       template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
     
-    logging.info(userProfile.addresses.fetch(10))  #WARNING: will anyone have more addresses than 10?
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/viewProfile.html', template_values)
     MasterHandler.sendBottomTemplate(self)
@@ -55,12 +54,24 @@ class EditProfile(MasterHandler):
     else:
       firstLogin = False
 
+    userAddressesQuery = userProfile.addresses
+    userAddressesQuery.order("-primary")
+    userAddresses = userAddressesQuery.fetch(10)
+    if len(userAddresses) > 0:
+      primaryAddress = userAddresses[0].address
+    else:
+      primaryAddress = ""
+    secondaryAddresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x].address}, range(1, len(userAddresses)))
+    logging.info(secondaryAddresses)
+    
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/editProfile.html', {
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
-      'addresses': userProfile.addresses,
+      'address1': primaryAddress,
+      'secondaryAddresses': secondaryAddresses,
+      'initialAddressCount': len(userAddresses)
       })
     MasterHandler.sendBottomTemplate(self)
 

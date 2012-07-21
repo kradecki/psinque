@@ -1,6 +1,6 @@
 <script type="text/javascript">
 <!--
-  addressCounter = 1
+  addressCounter = {{ initialAddressCount }}
   $(document).ready(function(){
     $('#addAddress').click(function() {
       addressCounter++;
@@ -34,6 +34,12 @@
         <p><label>Last name:</label> <input type="text" name="lastname" value="{{ lastname }}" /></p>
         <h3>Physical address</h3>
         <p id="address1"><label>Primary address:</label> <input type="text" name="address1" value="{{ address1 }}" /></p>
+        {% for address in secondaryAddresses %}
+          <p id="{{address.name}}">
+            <label>Address:</label> <input type="text" name="address{{address.nr}}" value="{{address.value}}" />
+            <a href="" id="remover{{address.nr}}">Remove</a>
+          </p>
+        {% endfor %}
         <p id="addAddress"><a href="">Add address</a></p>
         <input type="submit" value="Save" />
   </form>
