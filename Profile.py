@@ -52,7 +52,6 @@ class EditProfile(MasterHandler):
       userSettings = UserSettings()
       userSettings.user = user
       userSettings.put()
-      logging.error(availableLanguages.keys())
       firstLogin = True
     else:
       firstLogin = False
@@ -65,7 +64,6 @@ class EditProfile(MasterHandler):
     else:
       primaryAddress = ""
     secondaryAddresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x].address}, range(1, len(userAddresses)))
-    logging.info(secondaryAddresses)
     
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/editProfile.html', {

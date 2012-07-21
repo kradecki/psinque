@@ -1,3 +1,4 @@
+<script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
 <script type="text/javascript">
 <!--
   addressCounter = {{ initialAddressCount }}
@@ -22,7 +23,7 @@
       // Create and insert a new address field
       newElement = document.createElement("p");
       newElement.id = "address" + addressCounter;
-      newElement.innerHTML = '<label>Address ' + addressCounter + ':</label> <input type="text" name="address' + addressCounter + '" /><a href="" id="remover' + addressCounter + '">Remove</a>';
+      newElement.innerHTML = '<label>Address ' + addressCounter + ':</label> <input type="text" name="address' + addressCounter + '" class="required" /><a href="" id="remover' + addressCounter + '">Remove</a>';
       this.parentNode.insertBefore(newElement, this);
 
       // Add a handle to remove this address
@@ -34,7 +35,9 @@
     // Add removers to already existing secondary address
     $('.removers').each(function(ii) {
       addRemoverHandle(ii+2);
-    })
+    });
+
+    $("#submitForm").validate();
   });
 //-->
 </script>
@@ -44,17 +47,19 @@
   {% endif %}
   <form action="/submitprofile" method="POST" id="submitForm">
         <h3>General information</h3>
-        <p><label>First name:</label> <input type="text" name="firstname" value="{{ firstname }}"/></p>
-        <p><label>Last name:</label> <input type="text" name="lastname" value="{{ lastname }}" /></p>
-        <h3>Physical address</h3>
-        <p id="address1"><label>Primary address:</label> <input type="text" name="address1" value="{{ address1 }}" /></p>
+        <p><label>First name:</label> <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" /></p>
+        <p><label>Last name:</label> <input type="text" name="lastname" value="{{ lastname }}" class="required" minlength="2" /></p>
+        <h3>Electronic addresses</h3>
+        <p><label>E-mail:</label> <input type="text" name="email" value="{{ email }}" class="required email" /></p>
+        <h3>Physical addresses</h3>
+        <p id="address1"><label>Primary address:</label> <input type="text" name="address1" value="{{ address1 }}" class="required" /></p>
         {% for address in secondaryAddresses %}
           <p id="{{address.name}}">
-            <label>Address {{address.nr}}:</label> <input type="text" name="address{{address.nr}}" value="{{address.value}}" />
+            <label>Address {{address.nr}}:</label> <input type="text" name="address{{address.nr}}" value="{{address.value}}" class="required" />
             <a href="" id="remover{{address.nr}}" class="removers">Remove</a>
           </p>
         {% endfor %}
         <p id="addAddress"><a href="">Add address</a></p>
-        <input type="submit" value="Save" />
+        <input type="submit" value="Save" id="submitButton" />
   </form>
 </div>
