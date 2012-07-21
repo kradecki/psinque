@@ -6,7 +6,7 @@
       addressCounter++;
       newElement = document.createElement("p");
       newElement.id = "address" + addressCounter;
-      newElement.innerHTML = '<label>Address ' + addressCounter + ':</label> <input type="text" name="' + addressCounter + '" /><a href="" id="remover' + addressCounter + '">Remove</a>';
+      newElement.innerHTML = '<label>Address ' + addressCounter + ':</label> <input type="text" name="address' + addressCounter + '" /><a href="" id="remover' + addressCounter + '">Remove</a>';
 
       this.parentNode.insertBefore(newElement, this);
 

@@ -47,9 +47,11 @@ class UserProfile(db.Model):
   # nationality? namesday?
   
 class UserAddress(db.Model):
-  user = db.ReferenceProperty(UserProfile)   # or perhaps db.UserProperty()
+  user = db.ReferenceProperty(UserProfile,       # or perhaps db.UserProperty()
+                              collection_name="addresses")
   address = db.PostalAddressProperty()
   addressType = db.StringProperty(choices = ["home", "work"])
+  primary = db.BooleanProperty()
   location = db.GeoPtProperty()
 
 class UserEmail(db.Model):

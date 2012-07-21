@@ -11,8 +11,8 @@
   <div id="rightcolumn">
     <h3><b>{{ firstname }} {{ middlename }} {{ lastname }}</b></h3>
     <a href="/editprofile">Edit profile</a>
-    <p><b>Sex:</b> male</p>
-    <p><b>Address:</b> 2 Sq. Leon Bourgeois, 35000 Rennes (home)</p>
-    <p><b>Address:</b> INRIA Beaulieu Atlantique, 35000 Rennes (work)</p>
+    {% for address in addresses %}
+    <p>{{ address.address }}{% if address.primary %} (primary) {% endif %}</p>
+    {% endfor %}
   </div>
 </div>

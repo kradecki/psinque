@@ -11,7 +11,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from MasterHandler import MasterHandler
-from UserDataModels import UserProfile, UserSettings, availableLanguages
+from UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress
 
 class ViewProfile(MasterHandler):
 
@@ -26,11 +26,13 @@ class ViewProfile(MasterHandler):
     template_values = {
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
-      'photograph': None
+      'photograph': None,
+      'addresses': userProfile.addresses.fetch(10),
     }
     if userProfile.photograph != None:
       template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
     
+    logging.info(userProfile.addresses.fetch(10))  #WARNING: will anyone have more addresses than 10?
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/viewProfile.html', template_values)
     MasterHandler.sendBottomTemplate(self)
@@ -58,6 +60,7 @@ class EditProfile(MasterHandler):
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
+      'addresses': userProfile.addresses,
       })
     MasterHandler.sendBottomTemplate(self)
 
@@ -65,8 +68,17 @@ class EditProfile(MasterHandler):
     user = users.get_current_user()
     query = UserProfile.all()
     userProfile = query.filter("user =", user).get()
-    userProfile.firstname = self.request.get('firstname')
-    userProfile.lastname = self.request.get('lastname')
+    for argumentName in self.request.arguments():
+      if argumentName == 'firstname':
+        userProfile.firstname = self.request.get(argumentName)
+      elif argumentName == 'lastname':
+        userProfile.lastname = self.request.get(argumentName)
+      elif argumentName.find("address") >= 0:
+        newUserAddress = UserAddress()
+        newUserAddress.user = userProfile
+        newUserAddress.address = self.request.get(argumentName)
+        newUserAddress.primary = (argumentName == "address1")
+        newUserAddress.put()
     userProfile.put()
 
     self.redirect('/profile')  # redirects to ViewProfile
