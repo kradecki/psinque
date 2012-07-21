@@ -140,10 +140,10 @@ A.toplink:hover   {color: #2580a2}
 }
 #content input, textarea{
   width: 280px;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
 }
 #content textarea{
-  width: 250px;
+/*   width: 250px; */
   height: 150px;
 }
 #content .boxes{
@@ -159,6 +159,10 @@ A.toplink:hover   {color: #2580a2}
 }
 #bottonButton {
   text-align: center;
+}
+#content .error {
+  float: none;
+  padding-left: 10px;
 }
 /* ******************************************* */
 
