@@ -28,12 +28,16 @@ handlers:
 - url: /serveimageblob/([^/]+)?
   script: Profile.py
 
+# Contacts
+- url: /contacts
+  script: Contacts.py
+- url: /searchcontacts
+  script: Contacts.py
+
 # Under construction
 - url: /notifications
   script: UnderConstruction.py
 - url: /groups
-  script: UnderConstruction.py
-- url: /contacts
   script: UnderConstruction.py
 
 # User settings
