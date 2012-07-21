@@ -23,11 +23,14 @@ class ViewProfile(MasterHandler):
       self.redirect("/editprofile")  # and redirect to edit the profile
       return
 
+    userAddressesQuery = userProfile.addresses
+    userAddressesQuery.order("-primary")
+
     template_values = {
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
       'photograph': None,
-      'addresses': userProfile.addresses.fetch(10),   #WARNING: will anyone have more addresses than 10?
+      'addresses': userAddressesQuery,
     }
     if userProfile.photograph != None:
       template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
@@ -79,6 +82,12 @@ class EditProfile(MasterHandler):
     user = users.get_current_user()
     query = UserProfile.all()
     userProfile = query.filter("user =", user).get()
+
+    # We start by removing all currently stored address
+    # so that they're not doubled in the datastore
+    for address in userProfile.addresses:
+      address.delete()
+      
     for argumentName in self.request.arguments():
       if argumentName == 'firstname':
         userProfile.firstname = self.request.get(argumentName)
