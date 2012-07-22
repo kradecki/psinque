@@ -68,7 +68,6 @@ class EditProfile(MasterHandler):
       'initialAddressCount': len(userAddresses),
       'addressTypes': addressTypes,    
     }
-    logging.info(addressTypes)
     
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/editProfile.html', template_values)
