@@ -1,4 +1,6 @@
 <div id="content">
-  <p>{{ firstname }}</p>
-  <p>{{ lastname }}</p>
+<h3>Found {{ howManyResults }} results:</h3>
+{% for result in searchResults %}
+  <p>{{ result.firstname }} {{ result.lastname }}</p>
+{% endfor %}
 </div>
