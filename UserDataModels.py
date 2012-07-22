@@ -45,14 +45,16 @@ class UserProfile(db.Model):
   birthDay = db.DateProperty()  
 
   # nationality? namesday?
-  
+
+addressTypes = {'home': 'Home', 'work': 'Work', 'dupa': 'Dupa'}
+
 class UserAddress(db.Model):
   user = db.ReferenceProperty(UserProfile,       # or perhaps db.UserProperty()
                               collection_name="addresses")
   address = db.PostalAddressProperty()
   city = db.StringProperty()
   postalCode = db.StringProperty()
-  addressType = db.StringProperty(choices = ["home", "work"])
+  addressType = db.StringProperty(choices = addressTypes.keys())
   primary = db.BooleanProperty()
   location = db.GeoPtProperty()
 
