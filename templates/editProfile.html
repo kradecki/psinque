@@ -1,45 +1,9 @@
+<script type="text/javascript" src="javascripts/jquery-1.7.2.js"></script>
 <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
+<script type="text/javascript" src="/javascripts/editForm.js"></script>
 <script type="text/javascript">
-<!--
-  addressCounter = {{ initialAddressCount }}
-
-  addRemoverHandle = function(addressNr) {
-    console.log("Adding remover for address " + addressNr)
-    $('#remover' + addressNr).click(function() {
-      addressCounter--;
-      addressParent = $(this).parent()
-      addressParent.slideUp('fast', function() {
-        addressParent.remove(); // remove the parent <p></p>
-      });
-      return false;          // represss page refresh
-    });
-  }
-  
-  $(document).ready(function(){
-    $('#addAddress').click(function() {
-
-      addressCounter++;
-
-      // Create and insert a new address field
-      newElement = document.createElement("p");
-      newElement.id = "address" + addressCounter;
-      newElement.innerHTML = '<label>Address ' + addressCounter + ':</label> <input type="text" name="address' + addressCounter + '" class="required" /><a href="" id="remover' + addressCounter + '">Remove</a>';
-      this.parentNode.insertBefore(newElement, this);
-
-      // Add a handle to remove this address
-      addRemoverHandle(addressCounter);
-
-      return false;   // stop page refresh
-    });
-
-    // Add removers to already existing secondary address
-    $('.removers').each(function(ii) {
-      addRemoverHandle(ii+2);
-    });
-
-    $("#submitForm").validate();
-  });
-//-->
+  var addressCounter = {{ initialAddressCount }};
 </script>
 <div id="content">
   {% if firstlogin %}
@@ -47,17 +11,35 @@
   {% endif %}
   <form action="/submitprofile" method="POST" id="submitForm">
         <h3>General information</h3>
-        <p><label>First name:</label> <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" /></p>
-        <p><label>Last name:</label> <input type="text" name="lastname" value="{{ lastname }}" class="required" minlength="2" /></p>
+        <p>
+          <label>First name:</label>
+          <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" />
+        </p>
+        <p>
+          <label>Last name:</label>
+          <input type="text" name="lastname" value="{{ lastname }}" class="required" minlength="2" />
+        </p>
         <h3>Electronic addresses</h3>
-        <p><label>E-mail:</label> <input type="text" name="email" value="{{ email }}" class="required email" /></p>
+        <p>
+          <label>E-mail:</label>
+          <input type="text" name="email" value="{{ email }}" class="required email" />
+        </p>
         <h3>Physical addresses</h3>
-        <p id="address1"><label>Primary address:</label> <input type="text" name="address1" value="{{ address1 }}" class="required" /></p>
+        <p id="address1">
+          <label>Primary address:</label>
+          <input type="text" name="address1" value="{{ address1 }}" class="required" /><br />
+          <label>Postal code:</label>
+          <input type="text" name="address1_postal" value="{{ address1_postal }}" /><br />
+          <label>City/town/village:</label>
+          <input type="text" name="address1_city" value="{{ address1_city }}" />
+          <a href="" class="findOnAMap">Find on a map</a>
+        </p>
         {% for address in secondaryAddresses %}
-          <p id="{{address.name}}">
-            <label>Address {{address.nr}}:</label> <input type="text" name="address{{address.nr}}" value="{{address.value}}" class="required" />
-            <a href="" id="remover{{address.nr}}" class="removers">Remove</a>
-          </p>
+        <p id="{{address.name}}">
+          <label>Address {{address.nr}}:</label>
+          <input type="text" name="address{{address.nr}}" value="{{address.value}}" class="required" />
+          <a href="" id="remover{{address.nr}}" class="removers">Remove</a>
+        </p>
         {% endfor %}
         <p id="addAddress"><a href="">Add address</a></p>
         <div id="bottonButton"><input type="submit" value="Save" id="submitButton" /></div>

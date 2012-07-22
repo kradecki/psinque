@@ -202,3 +202,11 @@ A.toplink:hover   {color: #2580a2}
   padding-top: 5px;
   color: #fff;
 }
+
+/* Google Maps interface */
+#map_canvas {
+  width: 60%;
+  height: 400px;
+  background: #bababa;
+  margin: 10px;
+}
