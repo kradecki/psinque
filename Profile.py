@@ -11,7 +11,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from MasterHandler import MasterHandler
-from UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress
+from UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes
 
 class ViewProfile(MasterHandler):
 
@@ -59,19 +59,16 @@ class EditProfile(MasterHandler):
     userAddressesQuery = userProfile.addresses
     userAddressesQuery.order("-primary")
     userAddresses = userAddressesQuery.fetch(10)
-    #if len(userAddresses) > 0:
-      #primaryAddress = userAddresses[0].address
-    #else:
-      #primaryAddress = ""
-    #secondaryAddresses = 
 
     template_values = {
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
       'addresses': map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses))),
-      'initialAddressCount': len(userAddresses)
+      'initialAddressCount': len(userAddresses),
+      'addressTypes': addressTypes,    
     }
+    logging.info(addressTypes)
     
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/editProfile.html', template_values)
@@ -92,11 +89,16 @@ class EditProfile(MasterHandler):
         userProfile.firstname = self.request.get(argumentName)
       elif argumentName == 'lastname':
         userProfile.lastname = self.request.get(argumentName)
-      elif argumentName.find("address") >= 0:
+      elif argumentName.find("addressMain") >= 0:
+        addressNumber = argumentName.replace("addressMain", "")
+        logging.info(addressNumber)
         newUserAddress = UserAddress()
         newUserAddress.user = userProfile
         newUserAddress.address = self.request.get(argumentName)
         newUserAddress.primary = (argumentName == "address1")
+        newUserAddress.city = self.request.get("city" + addressNumber)
+        newUserAddress.postalCode = self.request.get("postal" + addressNumber)
+        newUserAddress.addressType = self.request.get("addressType" + addressNumber)
         newUserAddress.put()
     userProfile.put()
 
@@ -110,6 +112,7 @@ class UploadPhoto(MasterHandler):
       })
     MasterHandler.sendBottomTemplate(self)
 
+#TODO: Remove the previous photo of the user or add some photo management feature (e.g. different photos for different groups)
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
   def post(self):
     upload_files = self.get_uploads('file')  # 'file' is file upload field in the form

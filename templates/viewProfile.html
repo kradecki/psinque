@@ -12,7 +12,7 @@
     <h3><b>{{ firstname }} {{ middlename }} {{ lastname }}</b></h3>
     <a href="/editprofile">Edit profile</a>
     {% for address in addresses %}
-    <p>{% if address.primary %}<b>{% endif %}{{ address.address }}{% if address.primary %}</b>{% endif %}</p>
+    <p>{% if address.primary %}<b>{% endif %}{{ address.address }}, {{ address.postalCode }}, {{ address.city }}{% if address.primary %}</b>{% endif %}</p>
     {% endfor %}
   </div>
 </div>
