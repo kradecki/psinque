@@ -17,6 +17,10 @@ class ViewContacts(MasterHandler):
     user = users.get_current_user()
     query = UserProfile.all()
     userProfile = query.filter("user =", user).get()
+    if user == None:  # no user logged in
+      self.redirect("/")
+      return
+      
     template_values = {
       'message': 'You have currently no contacts',
     }
