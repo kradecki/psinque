@@ -24,37 +24,36 @@
           <label>E-mail:</label>
           <input type="text" name="email" value="{{ email }}" class="required email" />
         </p>
-        <h3>Physical addresses</h3>
-        {% for address in addresses %}
-        <p id="address{{ address.nr }}">
-          {% if address.value.primary %}
-            <label>Primary address:</label>
-          {% else %}
+        <span id="addresses">
+          <h3>Physical addresses</h3>
+          {% if initialAddressCount == 0 %}
+          {% endif %}
+          {% for address in addresses %}
+          <p id="address{{ address.nr }}">
             <label>Address {{ address.nr }}:</label>
-          {% endif %}
-          <input type="text" name="addressMain{{ address.nr }}" value="{{ address.value.address }}" class="required" />
-          <select name="addressType{{ address.nr }}">
-          {% for addressType in addressTypes.items %}
-            {% ifequal addressType.0 address.value.addressType %}
-              <option value="{{ addressType.0 }}" selected="selected">{{ addressType.1 }}</option>
-            {% else %}
-              <option value="{{ addressType.0 }}">{{ addressType.1 }}</option>
-            {% endifequal %}
-          {% endfor %}
-          </select>
-          <br />
-          <label>Postal code:</label>
-          <input type="text" name="postal{{ address.nr }}" value="{{ address.value.postalCode }}" /><br />
-          <label>City/town/village:</label>
-          <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" /><br />
-          {% if address.value.primary %}
+            <input type="text" name="addressMain{{ address.nr }}" value="{{ address.value.address }}" class="required" />
+            <select name="addressType{{ address.nr }}">
+            {% for addressType in addressTypes.items %}
+              {% ifequal addressType.0 address.value.addressType %}
+                <option value="{{ addressType.0 }}" selected="selected">{{ addressType.1 }}</option>
+              {% else %}
+                <option value="{{ addressType.0 }}">{{ addressType.1 }}</option>
+              {% endifequal %}
+            {% endfor %}
+            </select>
+            <br />
+            <label>Postal code:</label>
+            <input type="text" name="postal{{ address.nr }}" value="{{ address.value.postalCode }}" /><br />
+            <label>City/town/village:</label>
+            <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" /><br />
             <a href="" class="findOnAMap">Find on a map</a>
-          {% else %}
-            <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
-          {% endif %}
-        </p>
-        {% endfor %}
-        <p id="addAddress"><a href="">Add address</a></p>
-        <div id="bottonButton"><input type="submit" value="Save" id="submitButton" /></div>
+<!--             {% if not address.value.primary %} -->
+              <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
+<!--             {% endif %} -->
+          </p>
+          {% endfor %}
+          <p id="addAddress"><a href="">Add address</a></p>
+          <div id="bottonButton"><input type="submit" value="Save" id="submitButton" /></div>
+        </span>
   </form>
 </div>

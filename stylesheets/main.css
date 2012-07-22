@@ -204,7 +204,7 @@ A.toplink:hover   {color: #2580a2}
 }
 
 /* Google Maps interface */
-#map_canvas {
+.mapCanvas {
   width: 60%;
   height: 400px;
   background: #bababa;

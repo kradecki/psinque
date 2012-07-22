@@ -55,7 +55,6 @@ class UserAddress(db.Model):
   city = db.StringProperty()
   postalCode = db.StringProperty()
   addressType = db.StringProperty(choices = addressTypes.keys())
-  primary = db.BooleanProperty()
   location = db.GeoPtProperty()
 
 class UserEmail(db.Model):

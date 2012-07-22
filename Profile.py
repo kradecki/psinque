@@ -3,6 +3,7 @@ import os
 import logging
 import urllib
 
+from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext import blobstore
 from google.appengine.ext import webapp
@@ -57,14 +58,17 @@ class EditProfile(MasterHandler):
       firstLogin = False
 
     userAddressesQuery = userProfile.addresses
-    userAddressesQuery.order("-primary")
     userAddresses = userAddressesQuery.fetch(10)
 
+    addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
+    if len(addresses) == 0:
+      addresses = [{'nr': 1, 'value': None}]
+    
     template_values = {
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
-      'addresses': map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses))),
+      'addresses': addresses,
       'initialAddressCount': len(userAddresses),
       'addressTypes': addressTypes,    
     }
@@ -94,10 +98,12 @@ class EditProfile(MasterHandler):
         newUserAddress = UserAddress()
         newUserAddress.user = userProfile
         newUserAddress.address = self.request.get(argumentName)
-        newUserAddress.primary = (argumentName == "address1")
         newUserAddress.city = self.request.get("city" + addressNumber)
         newUserAddress.postalCode = self.request.get("postal" + addressNumber)
         newUserAddress.addressType = self.request.get("addressType" + addressNumber)
+        logging.info(self.request.arguments())
+        newUserAddress.location = db.GeoPt(lat = self.request.get("lat" + addressNumber),
+                                           lon = self.request.get("long" + addressNumber))
         newUserAddress.put()
     userProfile.put()
 

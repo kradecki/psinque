@@ -1,49 +1,48 @@
 
 // Global Google Map variables
 var geocoder;
-var map;
-var addressMarker;
-var currentAddressPositon;
+var maps = [];
+var addressMarkers;
+var currentAddressPositons = [];
 
-function initializeGoogleMap() {
-  currentAddressPositon = new google.maps.LatLng(-34.397, 150.644)
+function initializeGoogleMap(mapIdNr) {
+  currentAddressPositon = new google.maps.LatLng(-34.397, 150.644);
   geocoder = new google.maps.Geocoder();
   var mapOptions = {
     center: currentAddressPositon,
     zoom: 12,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
-  map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+  maps[mapIdNr-1] = new google.maps.Map(document.getElementById("map_canvas" + mapIdNr), mapOptions);
 }
 
-function codeAddress(address) {
+function codeAddress(address, mapIdNr) {
   geocoder.geocode( { 'address': address }, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
-      currentAddressPositon = results[0].geometry.location;
-      map.setCenter(currentAddressPositon);
+      currentAddressPositons[mapIdNr-1] = results[0].geometry.location;
+      maps[mapIdNr-1].setCenter(currentAddressPositons[mapIdNr-1]);
       addressMarker = new google.maps.Marker({
-        map: map,
-        position: currentAddressPositon,
+        map: maps[mapIdNr-1],
+        position: currentAddressPositons[mapIdNr-1],
         draggable: true
       });
 
-      updateAddressCoordinates()
+      updateAddressCoordinates(mapIdNr);
 
       addressMarker.position_changed = function() {
-        currentAddressPositon = addressMarker.getPosition();
+        currentAddressPositons[mapIdNr-1] = addressMarker.getPosition();
         updateAddressCoordinates();
       };
-      
     } else {
       alert("Geocode was not successful for the following reason: " + status);
     }
   });
 }
 
-function updateAddressCoordinates() {
+function updateAddressCoordinates(mapIdNr) {
   // Copy the coordinates into appropriate input fields
-  $("#coord1").val(currentAddressPositon.$a);
-  $("#coord2").val(currentAddressPositon.Za);
+  $("#long" + mapIdNr).val(currentAddressPositons[mapIdNr-1].$a);
+  $("#lat" + mapIdNr).val(currentAddressPositons[mapIdNr-1].Za);
 }
 
 function addRemoverHandle(addressNr) {
@@ -87,11 +86,13 @@ $(document).ready(function(){
   $("#submitForm").validate();
 
   $('.findOnAMap').click(function() {
-    $(this).parent().append('<br /><div id="map_canvas"></div><br /><label>Longitude:</label><input type="text" name="coord1" id="coord1" disabled="disabled" /><br /><label>Latitude:</label><input type="text" name="coord2" id="coord2" disabled="disabled" />');
+    mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
+    $(this).parent().append('<br /><div class="mapCanvas" id="map_canvas' + mapIdNr + '"></div><br /><label>Longitude:</label><input type="text" name="long' + mapIdNr + '" id="long' + mapIdNr + '" readonly="readonly" /><br /><label>Latitude:</label><input type="text" name="lat' + mapIdNr + '" id="lat' + mapIdNr + '" readonly="readonly" />');
     $(this).text("");  // hide the label, because removing the map doesn't work for now
-    initializeGoogleMap();
-    fullAddress = $("#address1 > input").map(function() { return $(this).val(); }).get().join(", ")  // join all fields for the query
-    codeAddress(fullAddress);
+    initializeGoogleMap(mapIdNr);
+    fullAddress = $(this).siblings("input").map(function() { return $(this).val(); }).get().join(", ")  // join all fields for the query
+    console.log(fullAddress);  //TODO: The above also joins the empty longitude and latitude fields...
+    codeAddress(fullAddress, mapIdNr);
     return false;
   });
   
