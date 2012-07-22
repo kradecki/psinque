@@ -59,21 +59,22 @@ class EditProfile(MasterHandler):
     userAddressesQuery = userProfile.addresses
     userAddressesQuery.order("-primary")
     userAddresses = userAddressesQuery.fetch(10)
-    if len(userAddresses) > 0:
-      primaryAddress = userAddresses[0].address
-    else:
-      primaryAddress = ""
-    secondaryAddresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x].address}, range(1, len(userAddresses)))
-    
-    MasterHandler.sendTopTemplate(self, activeEntry = "My card")
-    MasterHandler.sendContent(self, 'templates/editProfile.html', {
+    #if len(userAddresses) > 0:
+      #primaryAddress = userAddresses[0].address
+    #else:
+      #primaryAddress = ""
+    #secondaryAddresses = 
+
+    template_values = {
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
-      'address1': primaryAddress,
-      'secondaryAddresses': secondaryAddresses,
+      'addresses': map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses))),
       'initialAddressCount': len(userAddresses)
-      })
+    }
+    
+    MasterHandler.sendTopTemplate(self, activeEntry = "My card")
+    MasterHandler.sendContent(self, 'templates/editProfile.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
   def post(self):  # executed when the user hits the 'Save' button, which sends a POST request

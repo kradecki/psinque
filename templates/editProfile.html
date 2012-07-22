@@ -25,20 +25,23 @@
           <input type="text" name="email" value="{{ email }}" class="required email" />
         </p>
         <h3>Physical addresses</h3>
-        <p id="address1">
-          <label>Primary address:</label>
-          <input type="text" name="address1" value="{{ address1 }}" class="required" /><br />
+        {% for address in addresses %}
+        <p id="{{ address.name }}">
+          {% if address.value.primary %}
+            <label>Primary address:</label>
+          {% else %}
+            <label>Address {{ address.nr }}:</label>
+          {% endif %}
+          <input type="text" name="address{{ address.nr }}" value="{{ address.value.address }}" class="required" /><br />
           <label>Postal code:</label>
-          <input type="text" name="address1_postal" value="{{ address1_postal }}" /><br />
+          <input type="text" name="postal{{ address.nr }}" value="{{ address.value.postalCode }}" /><br />
           <label>City/town/village:</label>
-          <input type="text" name="address1_city" value="{{ address1_city }}" />
-          <a href="" class="findOnAMap">Find on a map</a>
-        </p>
-        {% for address in secondaryAddresses %}
-        <p id="{{address.name}}">
-          <label>Address {{address.nr}}:</label>
-          <input type="text" name="address{{address.nr}}" value="{{address.value}}" class="required" />
-          <a href="" id="remover{{address.nr}}" class="removers">Remove</a>
+          <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" />
+          {% if address.value.primary %}
+            <a href="" class="findOnAMap">Find on a map</a>
+          {% else %}
+            <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
+          {% endif %}
         </p>
         {% endfor %}
         <p id="addAddress"><a href="">Add address</a></p>
