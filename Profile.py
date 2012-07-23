@@ -102,8 +102,12 @@ class EditProfile(MasterHandler):
         newUserAddress.city = self.request.get("city" + addressNumber)
         newUserAddress.postalCode = self.request.get("postal" + addressNumber)
         newUserAddress.addressType = self.request.get("addressType" + addressNumber)
-        newUserAddress.location = db.GeoPt(lat = self.request.get("lat" + addressNumber),
-                                           lon = self.request.get("long" + addressNumber))
+        lat = self.request.get("lat" + addressNumber)
+        lon = self.request.get("long" + addressNumber)
+        if lat != "" and lon != "":
+          newUserAddress.location = db.GeoPt(lat = lat, lon = lon)
+        else:
+          newUserAddress.location = None
         newUserAddress.put()
     userProfile.put()
 
