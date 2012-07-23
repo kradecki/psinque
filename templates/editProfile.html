@@ -34,7 +34,7 @@
           {% endifequal %}
           {% for address in addresses %}
           <p id="address{{ address.nr }}">
-            <label>Address {{ address.nr }}:</label>
+            <label>Address:</label>
             <input type="text" name="addressMain{{ address.nr }}" value="{{ address.value.address }}" class="required" />
             <select name="addressType{{ address.nr }}">
             {% for addressType in addressTypes.items %}

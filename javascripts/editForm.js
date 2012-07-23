@@ -61,9 +61,7 @@ function addNewMap() {
 }
 
 function hideTheMap() {
-  console.log("hide map");
   mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
-  console.log(mapIdNr)
   $("#map_canvas" + mapIdNr).slideUp();
   $(this).hide();
   $(this).next().show();
@@ -71,7 +69,6 @@ function hideTheMap() {
 }
 
 function showTheMap() {
-  console.log("show map")
   mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
   $("#map_canvas" + mapIdNr).slideDown();
   $(this).hide();
@@ -97,16 +94,32 @@ $(document).ready(function() {
     if(addressCounter >= 10)   // a hard limit on the number of addresses
       return false;  //TODO: Hide the "Add address" anchor not to confuse the user
 
-    addressCounter++;
+    // Clone an existing address field group
+    newAddress = $("#address" + (addressCounter++)).clone()
+    newAddress.attr("id", "address" + addressCounter);  // change its id
+    newAddress.find("input").each(function() { $(this).attr("value", "") }); // clear the input values
+    newAddress.find("input").each(function() { $(this).attr("name", $(this).attr("name").match("[^0-9]+") + addressCounter) }); // change the ids' prefix numbers
 
-    // Create and insert a new address field
-    newElement = document.createElement("p");
-    newElement.id = "address" + addressCounter;
-    newElement.innerHTML = '<label>Address ' + addressCounter + ':</label> <input type="text" name="address' + addressCounter + '" class="required" /><a href="" id="remover' + addressCounter + '">Remove</a>';
-    this.parentNode.insertBefore(newElement, this);
+    // Insert it to the page, but hidden for now
+    newAddress.hide();
+    newAddress.insertBefore("#addAddress"); // insert hidden
+
+    // Handle the google map
+    newAddress.find("div").remove();        // remove the google map too
+    newAddress.find(".showMap").hide();
+    newAddress.find(".hideMap").hide();
+    newAddress.find(".addMap").show();
+    newAddress.find(".addMap").click(addNewMap);
+    newAddress.find(".hideMap").click(hideTheMap);
+    newAddress.find(".showMap").click(showTheMap);
 
     // Add a handle to remove this address
+    if(addressCounter == 2)  // we cloned the first address, so we need to add a 'remove' link
+      newAddress.append(' | <a href="" id="remover' + addressCounter + '" class="removers">Remove</a>')
     addRemoverHandle(addressCounter);
+
+    // Show the new address fields
+    newAddress.slideDown();
 
     return false;   // stop page refresh
   });
