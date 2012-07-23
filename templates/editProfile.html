@@ -10,22 +10,26 @@
   <p>This is your first login, so please fill up your profile below:</p>
   {% endif %}
   <form action="/submitprofile" method="POST" id="submitForm">
-        <h3>General information</h3>
-        <p>
-          <label>First name:</label>
-          <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" />
-        </p>
-        <p>
-          <label>Last name:</label>
-          <input type="text" name="lastname" value="{{ lastname }}" class="required" minlength="2" />
-        </p>
-        <h3>Electronic addresses</h3>
-        <p>
-          <label>E-mail:</label>
-          <input type="text" name="email" value="{{ email }}" class="required email" />
-        </p>
-        <span id="addresses">
-          <h3>Physical addresses</h3>
+        <fieldset id="generalInfo">
+          <legend>General information</legend>
+          <p>
+            <label>First name:</label>
+            <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" />
+          </p>
+          <p>
+            <label>Last name:</label>
+            <input type="text" name="lastname" value="{{ lastname }}" class="required" minlength="2" />
+          </p>
+        </fieldset>
+        <fieldset id="electronicAddresses">
+          <legend>Electronic addresses</legend>
+          <p>
+            <label>E-mail:</label>
+            <input type="text" name="email" value="{{ email }}" class="required email" />
+          </p>
+        </fieldset>
+        <fieldset id="addresses">
+          <legend>Physical addresses</legend>
           {% ifequal initialAddressCount 0 %}
           {% endifequal %}
           {% for address in addresses %}
@@ -46,14 +50,24 @@
             <input type="text" name="postal{{ address.nr }}" value="{{ address.value.postalCode }}" /><br />
             <label>City/town/village:</label>
             <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" /><br />
-            <a href="" class="findOnAMap">Find on a map</a>
-<!--             {% if not address.value.primary %} -->
-              <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
-<!--             {% endif %} -->
+
+            <span class="hiddenCoordinates">
+              <label>Longitude:</label>
+              <input type="text" name="long{{ address.nr }}" id="long{{ address.nr }}" value="{{ address.value.location.lon }}" readonly="readonly" /><br />
+              <label>Latitude:</label>
+              <input type="text" name="lat{{ address.nr }}" id="lat{{ address.nr }}" value="{{ address.value.location.lat }}" readonly="readonly" /><br />
+            </span>
+
+            <a href="" class="addMap">Find coordinates</a>
+            <a href="" class="hideMap">Hide the map</a>
+            <a href="" class="showMap">Show the map</a>
+            {% ifnotequal address.nr "1" %}  <!-- You cannot remove the primary address -->
+              | <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
+            {% endifnotequal %}
           </p>
           {% endfor %}
           <p id="addAddress"><a href="">Add address</a></p>
-          <div id="bottonButton"><input type="submit" value="Save" id="submitButton" /></div>
-        </span>
+        </fieldset>
+        <div id="bottonButton"><input type="submit" value="Save" id="submitButton" /></div>
   </form>
 </div>

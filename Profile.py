@@ -62,6 +62,8 @@ class EditProfile(MasterHandler):
     addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
     if len(addresses) == 0:
       addresses = [{'nr': 1, 'value': None}]
+
+    #logging.info(addresses[0]['value'].location)
     
     template_values = {
       'firstlogin': firstLogin,
@@ -100,7 +102,6 @@ class EditProfile(MasterHandler):
         newUserAddress.city = self.request.get("city" + addressNumber)
         newUserAddress.postalCode = self.request.get("postal" + addressNumber)
         newUserAddress.addressType = self.request.get("addressType" + addressNumber)
-        logging.info(self.request.arguments())
         newUserAddress.location = db.GeoPt(lat = self.request.get("lat" + addressNumber),
                                            lon = self.request.get("long" + addressNumber))
         newUserAddress.put()

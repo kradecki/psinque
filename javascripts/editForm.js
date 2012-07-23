@@ -31,7 +31,7 @@ function codeAddress(address, mapIdNr) {
 
       addressMarker.position_changed = function() {
         currentAddressPositons[mapIdNr-1] = addressMarker.getPosition();
-        updateAddressCoordinates();
+        updateAddressCoordinates(mapIdNr);
       };
     } else {
       alert("Geocode was not successful for the following reason: " + status);
@@ -43,6 +43,40 @@ function updateAddressCoordinates(mapIdNr) {
   // Copy the coordinates into appropriate input fields
   $("#long" + mapIdNr).val(currentAddressPositons[mapIdNr-1].$a);
   $("#lat" + mapIdNr).val(currentAddressPositons[mapIdNr-1].Za);
+}
+
+function addNewMap() {
+  mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
+  $(this).parent().append('<br /><div class="mapCanvas" id="map_canvas' + mapIdNr + '"></div>');
+
+  initializeGoogleMap(mapIdNr);
+  fullAddress = $(this).siblings("input").map(function() { return $(this).val(); }).get().join(", ")  // join all fields for the query
+  console.log(fullAddress);  //TODO: The above also joins the empty longitude and latitude fields...
+  codeAddress(fullAddress, mapIdNr);
+
+  $(this).hide();
+  $(this).next().show();
+
+  return false;
+}
+
+function hideTheMap() {
+  console.log("hide map");
+  mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
+  console.log(mapIdNr)
+  $("#map_canvas" + mapIdNr).slideUp();
+  $(this).hide();
+  $(this).next().show();
+  return false;
+}
+
+function showTheMap() {
+  console.log("show map")
+  mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
+  $("#map_canvas" + mapIdNr).slideDown();
+  $(this).hide();
+  $(this).prev().show();
+  return false;
 }
 
 function addRemoverHandle(addressNr) {
@@ -57,7 +91,7 @@ function addRemoverHandle(addressNr) {
 }
 
 // Set all event handlers when the page is ready
-$(document).ready(function(){
+$(document).ready(function() {
   
   $('#addAddress').click(function() {
     if(addressCounter >= 10)   // a hard limit on the number of addresses
@@ -85,15 +119,8 @@ $(document).ready(function(){
   // Turn the form validation on
   $("#submitForm").validate();
 
-  $('.findOnAMap').click(function() {
-    mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
-    $(this).parent().append('<br /><div class="mapCanvas" id="map_canvas' + mapIdNr + '"></div><br /><label>Longitude:</label><input type="text" name="long' + mapIdNr + '" id="long' + mapIdNr + '" readonly="readonly" /><br /><label>Latitude:</label><input type="text" name="lat' + mapIdNr + '" id="lat' + mapIdNr + '" readonly="readonly" />');
-    $(this).text("");  // hide the label, because removing the map doesn't work for now
-    initializeGoogleMap(mapIdNr);
-    fullAddress = $(this).siblings("input").map(function() { return $(this).val(); }).get().join(", ")  // join all fields for the query
-    console.log(fullAddress);  //TODO: The above also joins the empty longitude and latitude fields...
-    codeAddress(fullAddress, mapIdNr);
-    return false;
-  });
-  
+  // Add map handlers
+  $('.addMap').click(addNewMap);
+  $('.hideMap').click(hideTheMap);
+  $('.showMap').click(showTheMap);
 });
