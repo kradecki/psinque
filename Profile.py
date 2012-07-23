@@ -25,7 +25,6 @@ class ViewProfile(MasterHandler):
       return
 
     userAddressesQuery = userProfile.addresses
-    userAddressesQuery.order("-primary")
 
     template_values = {
       'firstname': userProfile.firstname,

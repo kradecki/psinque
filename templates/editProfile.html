@@ -26,8 +26,8 @@
         </p>
         <span id="addresses">
           <h3>Physical addresses</h3>
-          {% if initialAddressCount == 0 %}
-          {% endif %}
+          {% ifequal initialAddressCount 0 %}
+          {% endifequal %}
           {% for address in addresses %}
           <p id="address{{ address.nr }}">
             <label>Address {{ address.nr }}:</label>
