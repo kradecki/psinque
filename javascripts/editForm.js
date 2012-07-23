@@ -97,9 +97,15 @@ $(document).ready(function() {
     // Clone an existing address field group
     newAddress = $("#address" + (addressCounter++)).clone()
     newAddress.attr("id", "address" + addressCounter);  // change its id
-    newAddress.find("input").each(function() { $(this).attr("value", "") }); // clear the input values
-    newAddress.find("input").each(function() { $(this).attr("name", $(this).attr("name").match("[^0-9]+") + addressCounter) }); // change the ids' prefix numbers
-
+    allInputFields = newAddress.find("input");
+    allInputFields.each(function() { $(this).attr("value", "") }); // clear the input values
+    allInputFields.each(function() { $(this).attr("name", $(this).attr("name").match("[^0-9]+") + addressCounter) }); // change the ids' prefix numbers
+    allInputFields.each(function() {
+      currentId = $(this).attr("id");
+      if(typeof(currentId) != 'undefined')
+        $(this).attr("id", currentId.match("[^0-9]+") + addressCounter);
+    });
+    
     // Insert it to the page, but hidden for now
     newAddress.hide();
     newAddress.insertBefore("#addAddress"); // insert hidden
