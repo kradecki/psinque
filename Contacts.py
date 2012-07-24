@@ -65,16 +65,17 @@ class AddContact(webapp.RequestHandler):
 
   def get(self):
 
+    userId = int(self.request.get('id'))
     user = users.get_current_user()
     user1 = UserProfile.all().filter("user =", user).get()
-    user2 = UserProfile.get_by_id(int(self.request.get('id')))
+    user2 = UserProfile.get_by_id(userId)
     status = 'pending'
     relationship = Relationship()
     relationship.user1 = user1
     relationship.user2 = user2
     relationship.status = status
     relationship.put()
-    self.response.out.write(json.dumps({"status": "ok"}))
+    self.response.out.write(json.dumps({"status": "ok", "userId": userId}))
 
 
 application = webapp.WSGIApplication([
