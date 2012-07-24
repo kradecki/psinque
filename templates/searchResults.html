@@ -1,7 +1,10 @@
 <script type="text/javascript" src="javascripts/jquery-1.7.2.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-}
+  $(document).ready(function() {
+    $(".addContact").click(function() {
+      $.ajax("/addcontact?id=" + $("this").attr("id")).done(function() { console.log("done!"); })
+    });
+  })
 </script>
 <div id="content">
   <legend>Search for contacts</legend>
@@ -21,6 +24,6 @@ $(document).ready(function() {
   <h3>{{ header }}</h3>
   <h4>Found {{ howManyResults }} results:</h4>
   {% for result in searchResults %}
-    <p>{{ result.firstname }} {{ result.lastname }}</p>
+    <p>{{ result.firstname }} {{ result.lastname }}<span class="addContact" id="{{ result.key.id }}"\>Add to my contacts</span></p>
   {% endfor %}
 </div>
