@@ -33,6 +33,8 @@ handlers:
   script: Contacts.py
 - url: /searchcontacts
   script: Contacts.py
+- url: /addcontact
+  script: Contacts.py
 
 # Under construction
 - url: /notifications

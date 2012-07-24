@@ -7,8 +7,9 @@ from google.appengine.api import users
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 
-from django.utils import simplejson
-
+from django.utils import simplejson as json
+# w klasie AddContacts, po tym jak relacja w relationships jest zapisana
+# self.response.out.write(json.dumps({"status": "ok"}))
 from MasterHandler import MasterHandler
 
 from UserDataModels import UserProfile, UserSettings, availableLanguages, Relationship
@@ -60,9 +61,25 @@ class SearchContacts(MasterHandler):
     MasterHandler.sendContent(self, 'templates/searchResults.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
+class AddContact(webapp.RequestHandler):
+
+  def get(self):
+
+    user1 = users.get_current_user()
+    user2 = UserProfile.get_by_id(self.request.get('id'))
+    status = 'pending'
+    relationship = Relationship()
+    relationship.user1 = user1
+    relationship.user2 = user2
+    relationship.status = status
+    relationship.put()
+    self.response.out.write(json.dumps({"status": "ok"}))
+
+
 application = webapp.WSGIApplication([
   ('/contacts', ViewContacts),
   ('/searchcontacts', SearchContacts),
+  ('/addcontact', AddContact),
 ], debug=True)
 
 def main():

@@ -2,7 +2,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $(".addContact").click(function() {
-      $.ajax("/addcontact?id=" + $(this).attr("id")).done(function() { console.log("done!"); })
+      $.ajax("/addcontact?id=" + $(this).attr("id")).done(function(data) { console.log("done: " + data); })
     });
   })
 </script>
