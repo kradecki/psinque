@@ -13,11 +13,9 @@
       </p>
     </fieldset>
   </form>
-  <legend>Search Results</legend>
-  <fieldset id="searchResults">
-    <h3>Found {{ howManyResults }} results:</h3>
-    {% for result in searchResults %}
-      <p>{{ result.firstname }} {{ result.lastname }}</p>
-    {% endfor %}
-  </fieldset>
+  <h3>{{ header }}</h3>
+  <h4>Found {{ howManyResults }} results:</h4>
+  {% for result in searchResults %}
+    <p>{{ result.firstname }} {{ result.lastname }}</p>
+  {% endfor %}
 </div>

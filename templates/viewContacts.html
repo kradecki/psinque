@@ -13,8 +13,9 @@
       </p>
     </fieldset>
   </form>
-  <legend>Your contacts</legend>
-  <fieldset id="contacts">
-    <h3>{{ message }}</h3>
-  </fieldset>
+  <h3>{{ header }}</h3>
+  <h4>You have currently {{ howManyContacts }} contacts:</h4>
+  {% for result in userContacts %}
+    <p>{{ result.firstname }} {{ result.lastname }}</p>
+  {% endfor %}
 </div>
