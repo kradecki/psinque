@@ -2,7 +2,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $(".addContact").click(function() {
-      $.ajax("/addcontact?id=" + $("this").attr("id")).done(function() { console.log("done!"); })
+      $.ajax("/addcontact?id=" + $(this).attr("id")).done(function() { console.log("done!"); })
     });
   })
 </script>
@@ -24,6 +24,6 @@
   <h3>{{ header }}</h3>
   <h4>Found {{ howManyResults }} results:</h4>
   {% for result in searchResults %}
-    <p>{{ result.firstname }} {{ result.lastname }}<span class="addContact" id="{{ result.key.id }}"\>Add to my contacts</span></p>
+    <p>{{ result.firstname }} {{ result.lastname }}<span class="addContact" id="{{ result.key.id }}"/>Add to my contacts</span></p>
   {% endfor %}
 </div>
