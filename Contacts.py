@@ -34,27 +34,10 @@ class ViewContacts(MasterHandler):
     MasterHandler.sendContent(self, 'templates/viewContacts.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
-  def post(self):
-    self.redirect('/searchcontacts')  # redirects to SearchContacts
-
 class SearchContacts(MasterHandler):
 
-  def get(self):
-    user = users.get_current_user()
-    query = UserProfile.all()
-    userProfile = query.filter("user =", user).get()
-    template_values = {
-      'message': 'Find your contacts',
-    }
-    MasterHandler.sendTopTemplate(self, activeEntry = "Contacts")
-    MasterHandler.sendContent(self, 'templates/searchContacts.html', template_values)
-    MasterHandler.sendBottomTemplate(self)
-
   def post(self):
-    #user = users.get_current_user()
-    #query = UserProfile.all()
-    #userProfile = query.filter("user =", user).get()
-   
+
     # Implement here search criteria based on supplied information in the form
     # Ideas: First name, Last name, Email, Telephone
     # get() or fetch() ? What is the difference?

@@ -1,6 +1,23 @@
 <div id="content">
-<h3>Found {{ howManyResults }} results:</h3>
-{% for result in searchResults %}
-  <p>{{ result.firstname }} {{ result.lastname }}</p>
-{% endfor %}
+  <legend>Search for contacts</legend>
+  <form action="/searchcontacts" method="POST">
+    <fieldset id="searchContacts">
+      <p>
+        <label>First name:</label>
+        <input type="text" name="firstname" value="" class="required" minlength="2" />
+      </p>
+      <p>
+        <label>Last name:</label>
+        <input type="text" name="lastname" value="" class="required" minlength="2" />
+        <input type="submit" value="Search" />
+      </p>
+    </fieldset>
+  </form>
+  <legend>Search Results</legend>
+  <fieldset id="searchResults">
+    <h3>Found {{ howManyResults }} results:</h3>
+    {% for result in searchResults %}
+      <p>{{ result.firstname }} {{ result.lastname }}</p>
+    {% endfor %}
+  </fieldset>
 </div>

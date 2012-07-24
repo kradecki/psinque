@@ -1,6 +1,20 @@
 <div id="content">
-  <h3>{{ message }}</h3>
-  <form action="/contacts" method="POST">
-    <input type="submit" value="Search for contacts" />
+  <legend>Search for contacts</legend>
+  <form action="/searchcontacts" method="POST">
+    <fieldset id="searchContacts">
+      <p>
+        <label>First name:</label>
+        <input type="text" name="firstname" value="" class="required" minlength="2" />
+      </p>
+      <p>
+        <label>Last name:</label>
+        <input type="text" name="lastname" value="" class="required" minlength="2" />
+        <input type="submit" value="Search" />
+      </p>
+    </fieldset>
   </form>
+  <legend>Your contacts</legend>
+  <fieldset id="contacts">
+    <h3>{{ message }}</h3>
+  </fieldset>
 </div>
