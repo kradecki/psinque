@@ -65,8 +65,9 @@ class AddContact(webapp.RequestHandler):
 
   def get(self):
 
-    user1 = users.get_current_user()
-    user2 = UserProfile.get_by_id(self.request.get('id'))
+    user = users.get_current_user()
+    user1 = UserProfile.all().filter("user =", user).get()
+    user2 = UserProfile.get_by_id(int(self.request.get('id')))
     status = 'pending'
     relationship = Relationship()
     relationship.user1 = user1
