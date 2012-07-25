@@ -16,17 +16,17 @@ handlers:
 
 # User profile viewing and editing
 - url: /profile
-  script: Profile.py    # user logged in, shows the visiting card
+  script: MyCard.py    # user logged in, shows the visiting card
 - url: /editprofile
-  script: Profile.py
+  script: MyCard.py
 - url: /submitprofile
-  script: Profile.py
+  script: MyCard.py
 - url: /uploadphoto
-  script: Profile.py
+  script: MyCard.py
 - url: /uploadphotopost
-  script: Profile.py
+  script: MyCard.py
 - url: /serveimageblob/([^/]+)?
-  script: Profile.py
+  script: MyCard.py
 
 # Contacts
 - url: /contacts

@@ -34,9 +34,9 @@ class ViewProfile(MasterHandler):
     }
     if userProfile.photograph != None:
       template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
-    
+
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
-    MasterHandler.sendContent(self, 'templates/viewProfile.html', template_values)
+    MasterHandler.sendContent(self, 'templates/myCard_viewProfile.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
 class EditProfile(MasterHandler):
@@ -64,18 +64,18 @@ class EditProfile(MasterHandler):
       addresses = [{'nr': 1, 'value': None}]
 
     #logging.info(addresses[0]['value'].location)
-    
+
     template_values = {
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
       'addresses': addresses,
       'initialAddressCount': len(userAddresses),
-      'addressTypes': addressTypes,    
+      'addressTypes': addressTypes,
     }
-    
+
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
-    MasterHandler.sendContent(self, 'templates/editProfile.html', template_values)
+    MasterHandler.sendContent(self, 'templates/myCard_editProfile.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
   def post(self):  # executed when the user hits the 'Save' button, which sends a POST request
@@ -87,7 +87,7 @@ class EditProfile(MasterHandler):
     # so that they're not doubled in the datastore
     for address in userProfile.addresses:
       address.delete()
-      
+
     for argumentName in self.request.arguments():
       if argumentName == 'firstname':
         userProfile.firstname = self.request.get(argumentName)
@@ -116,7 +116,7 @@ class EditProfile(MasterHandler):
 class UploadPhoto(MasterHandler):
   def get(self):
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
-    MasterHandler.sendContent(self, 'templates/uploadProfilePhoto.html', {
+    MasterHandler.sendContent(self, 'templates/myCard_uploadProfilePhoto.html', {
       'photoUploadLink': blobstore.create_upload_url('/uploadphotopost'),
       })
     MasterHandler.sendBottomTemplate(self)
