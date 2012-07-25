@@ -36,7 +36,7 @@ class ViewContacts(MasterHandler):
     }
 
     MasterHandler.sendTopTemplate(self, activeEntry = "Contacts")
-    MasterHandler.sendContent(self, 'templates/viewContacts.html', template_values)
+    MasterHandler.sendContent(self, 'templates/contacts_viewContacts.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
 class SearchContacts(MasterHandler):
@@ -58,7 +58,7 @@ class SearchContacts(MasterHandler):
     }
 
     MasterHandler.sendTopTemplate(self, activeEntry = "Contacts")
-    MasterHandler.sendContent(self, 'templates/searchResults.html', template_values)
+    MasterHandler.sendContent(self, 'templates/contacts_searchContacts.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
 class AddContact(webapp.RequestHandler):
