@@ -28,7 +28,7 @@ class Settings(MasterHandler):
         'availableLanguages': availableLanguages,
       }
     MasterHandler.sendTopTemplate(self, activeEntry = "Settings")
-    MasterHandler.sendContent(self, 'templates/viewSettings.html', template_values)
+    MasterHandler.sendContent(self, 'templates/settings_viewSettings.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
   def post(self):

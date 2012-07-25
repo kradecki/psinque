@@ -44,9 +44,9 @@ handlers:
 
 # User settings
 - url: /settings
-  script: UserSettings.py
+  script: Settings.py
 - url: /savesettings
-  script: UserSettings.py
+  script: Settings.py
 
 # Static pages
 - url: /about
