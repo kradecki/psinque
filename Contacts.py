@@ -27,7 +27,7 @@ class ViewContacts(MasterHandler):
       return
 
     userContacts = userProfile.outgoingRelationships
-      
+          
     template_values = {
       'header': 'Your Contacts:',
       'userContacts': userContacts,
