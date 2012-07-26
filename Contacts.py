@@ -67,21 +67,21 @@ class AddContact(webapp.RequestHandler):
     # Prepare the Datastore row values
     userId = int(self.request.get('id'))
     user = users.get_current_user()
-    user1 = UserProfile.all().filter("user =", user).get()
-    user2 = UserProfile.get_by_id(userId)
+    userFrom = UserProfile.all().filter("user =", user).get()
+    userTo = UserProfile.get_by_id(userId)
     status = 'pending'
     
     # Check if a relationship has not already been created
     query = Relationship.all()
-    existingRelationship = query.filter('user1 =', user1).filter('user2 =', user2).get()
+    existingRelationship = query.filter('userFrom =', userFrom).filter('userTo =', userTo).get()
 
     # Create a new relationship unless:
     #  - user tries to add himself as a contact
     #  - a relationship between both users does not already exist
-    if (user1.key().id() != user2.key().id()) and (not existingRelationship):
+    if (userFrom.key().id() != userTo.key().id()) and (not existingRelationship):
       newRelationship = Relationship()
-      newRelationship.user1 = user1
-      newRelationship.user2 = user2
+      newRelationship.userFrom = userFrom
+      newRelationship.userTo = userTo
       newRelationship.status = status
       newRelationship.put()
       self.response.out.write(json.dumps({"status": "ok", "userId": userId}))
