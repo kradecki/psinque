@@ -41,7 +41,8 @@ class ViewContacts(MasterHandler):
 class SearchContacts(MasterHandler):
 
   def post(self):
-
+    
+    user = users.get_current_user()
     query = UserProfile.all()
 
     # Filter the data based on the supplied search criteria
@@ -50,10 +51,19 @@ class SearchContacts(MasterHandler):
     if self.request.get('lastname'):
       query.filter("lastname =", self.request.get('lastname'))
 
+    # If user finds himself, or a person which can already be found in his
+    # contacts, such an entry should be properly marked in the search results
+    contactList = list()
+
+    for profile in query:
+      if profile.user == user:
+        continue
+      contactList.append(profile)
+
     template_values = {
       'header': 'Search Results:',
-      'searchResults': query,
-      'howManyResults': query.count(),
+      'searchResults': contactList,
+      'howManyResults': len(contactList),
     }
 
     MasterHandler.sendTopTemplate(self, activeEntry = "Contacts")
