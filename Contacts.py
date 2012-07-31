@@ -56,7 +56,13 @@ class SearchContacts(MasterHandler):
     contactList = list()
 
     for profile in query:
+      
       if profile.user == user:
+        continue
+      userFrom = UserProfile.all().filter("user =", user).get()
+      userTo = UserProfile.all().filter("user =", profile.user).get()
+     
+      if Relationship.all().filter('userFrom =', userFrom).filter('userTo =', userTo).get():
         continue
       contactList.append(profile)
 
