@@ -4,7 +4,8 @@
     $(".addContact").click(function() {
       $.ajax("/addcontact?id=" + $(this).attr("id")).done(function(data) {
         $("#" + $.parseJSON(data)["userId"]).text("Added :)");
-      })
+      });
+      return false;  // stop the page refresh
     });
   })
 </script>
@@ -26,6 +27,6 @@
   <h3>{{ header }}</h3>
   <h4>Found {{ howManyResults }} results:</h4>
   {% for result in searchResults %}
-    <p>{{ result.firstname }} {{ result.lastname }}<span class="addContact" id="{{ result.key.id }}"/>Add to my contacts</span></p>
+    <p>{{ result.firstname }} {{ result.lastname }} <a href="" class="addContact" id="{{ result.key.id }}"/>Add to my contacts</a></p>
   {% endfor %}
 </div>
