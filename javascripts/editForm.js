@@ -41,8 +41,8 @@ function codeAddress(address, mapIdNr) {
 
 function updateAddressCoordinates(mapIdNr) {
   // Copy the coordinates into appropriate input fields
-  $("#long" + mapIdNr).val(currentAddressPositons[mapIdNr-1].$a);
-  $("#lat" + mapIdNr).val(currentAddressPositons[mapIdNr-1].Za);
+  $("#long" + mapIdNr).val(currentAddressPositons[mapIdNr-1].Xa);
+  $("#lat" + mapIdNr).val(currentAddressPositons[mapIdNr-1].Ya);
 }
 
 function addNewMap() {
