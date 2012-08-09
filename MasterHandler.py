@@ -23,7 +23,7 @@ class MasterHandler(webapp.RequestHandler):
   '''This is the base class for all handlers.'''
   '''It prepares all data for the top menu bar.'''
     
-  def sendTopTemplate(self, prettify = False, activeEntry = ""):
+  def sendTopTemplate(self, activeEntry = ""):
 
     user = users.get_current_user()
     if not user:  # user not logged in
@@ -32,7 +32,6 @@ class MasterHandler(webapp.RequestHandler):
 
     currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
     notificationCount = Relationship.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
-    logging.info(Relationship.all().filter("userTo =", user).count())
     if notificationCount > 0:
       self.notificationsText = "Notifications (" + str(notificationCount) + ")"
     else:
@@ -50,10 +49,7 @@ class MasterHandler(webapp.RequestHandler):
         if entry.title == activeEntry:
            entry.entryclass = "active"  # mark menu item as active
     
-    if prettify:
-        topTemplatePath = os.path.join(os.path.dirname(__file__), 'templates/topTemplate_Prettify.html')
-    else:
-        topTemplatePath = os.path.join(os.path.dirname(__file__), 'templates/topTemplate.html')
+    topTemplatePath = os.path.join(os.path.dirname(__file__), 'templates/topTemplate.html')
     self.response.out.write(template.render(topTemplatePath,
         dict(self.getUserVariables().items() + {'menuentries': menuentries}.items()
     )))
