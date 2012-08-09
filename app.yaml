@@ -36,9 +36,11 @@ handlers:
 - url: /addcontact
   script: Contacts.py
 
-# Under construction
+# Notifications
 - url: /notifications
-  script: UnderConstruction.py
+  script: Notifications.py
+
+# Under construction
 - url: /groups
   script: UnderConstruction.py
 
