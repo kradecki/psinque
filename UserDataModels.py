@@ -90,7 +90,7 @@ class UserGroups(db.Model):
 # Relationships between users
 
 class Relationship(db.Model):
- userFrom = db.ReferenceProperty(UserProfile, collection_name="outgoingRelationships")
- userTo = db.ReferenceProperty(UserProfile, collection_name="ingoingRelationships")
- status = db.StringProperty(choices = ["pending", "established"])
- establishingTime = db.DateTimeProperty()
+  userFrom = db.ReferenceProperty(UserProfile, collection_name="outgoingRelationships")
+  userTo = db.ReferenceProperty(UserProfile, collection_name="ingoingRelationships")
+  status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
+  establishingTime = db.DateTimeProperty()

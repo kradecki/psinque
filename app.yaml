@@ -39,6 +39,8 @@ handlers:
 # Notifications
 - url: /notifications
   script: Notifications.py
+- url: /changerelationship    # AJAX queries
+  script: Notifications.py
 
 # Under construction
 - url: /groups
