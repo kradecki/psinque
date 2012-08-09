@@ -7,6 +7,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
 from UserDataModels import UserSettings
+from UserDataModels import UserProfile
+from UserDataModels import Relationship
 
 class MenuEntry:
   url = ""
@@ -23,13 +25,22 @@ class MasterHandler(webapp.RequestHandler):
     
   def sendTopTemplate(self, prettify = False, activeEntry = ""):
 
-    if not users.get_current_user():  # user not logged in
+    user = users.get_current_user()
+    if not user:  # user not logged in
       self.redirect("/login")
       return
 
+    currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
+    notificationCount = Relationship.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
+    logging.info(Relationship.all().filter("userTo =", user).count())
+    if notificationCount > 0:
+      self.notificationsText = "Notifications (" + str(notificationCount) + ")"
+    else:
+      self.notificationsText = "Notifications"
+
     menuentries = [
       MenuEntry("profile", "My card"),
-      MenuEntry("notifications", "Notifications"),
+      MenuEntry("notifications", self.notificationsText),
       MenuEntry("groups", "Groups"),
       MenuEntry("contacts", "Contacts"),
       MenuEntry("settings", "Settings")
