@@ -132,6 +132,11 @@ A.toplink:hover   {color: #2580a2}
 /*   min-height: 95%; */
 }
 
+#content li {
+  margin: 5px;
+  margin-left: 15px;
+}
+
 /* *** Formatting for the profile entry form *** */
 #content label{
   float: left;
