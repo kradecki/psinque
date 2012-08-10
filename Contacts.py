@@ -94,6 +94,7 @@ class AddContact(webapp.RequestHandler):
     # Create a new relationship unless:
     #  - user tries to add himself as a contact
     #  - a relationship between both users does not already exist
+    #  10.08.2012: With slideUp implemented, this code could be removed. Check with Stasiu.
     if (userFrom.key().id() != userTo.key().id()) and (not existingRelationship):
       newRelationship = Relationship()
       newRelationship.userFrom = userFrom

@@ -3,7 +3,7 @@
   $(document).ready(function() {
     $(".addContact").click(function() {
       $.ajax("/addcontact?id=" + $(this).attr("id")).done(function(data) {
-        $("#" + $.parseJSON(data)["userId"]).text("Added :)");
+        $("ul > #" + $.parseJSON(data)["userId"]).slideUp();
       });
       return false;  // stop the page refresh
     });
@@ -26,7 +26,9 @@
   </form>
   <h3>{{ header }}</h3>
   <h4>Found {{ howManyResults }} results:</h4>
+  <ul>
   {% for result in searchResults %}
-    <p>{{ result.firstname }} {{ result.lastname }} <a href="" class="addContact" id="{{ result.key.id }}"/>Add to my contacts</a></p>
+    <li id="{{ result.key.id }}">{{ result.firstname }} {{ result.lastname }} <a href="" class="addContact" id="{{ result.key.id }}"/>Add to my contacts</a></li>
   {% endfor %}
+  </ul>
 </div>
