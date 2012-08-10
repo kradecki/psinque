@@ -40,6 +40,10 @@ class ViewContacts(MasterHandler):
 
 class SearchContacts(MasterHandler):
 
+  def get(self):
+    self.redirect("/")
+    return
+
   def post(self):
     
     user = users.get_current_user()
