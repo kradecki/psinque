@@ -1,25 +1,25 @@
 
 import os
 import logging
+import webapp2
+import jinja2
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
+jinja_environment = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-class PageNotFoundHandler(webapp.RequestHandler):
+class PageNotFoundHandler(webapp2.RequestHandler):
   def get(self):
     logging.info("bad request logged")
     logging.info(self.request.uri)
     
     self.error(404)
-    template_values = {'requestName': self.request.uri}
-    path = os.path.join(os.path.dirname(__file__), 'templates/notFound.html')
-    self.response.out.write(template.render(path, template_values))
+    template = jinja_environment.get_template('templates/notFound.html')
+    self.response.out.write(template.render(requestName = self.request.uri))
     
-application = webapp.WSGIApplication([('/.*', PageNotFoundHandler)], debug=True)
+application = webapp2.WSGIApplication([('/.*', PageNotFoundHandler)], debug=True)
 
-def main():
-  run_wsgi_app(application)
+#def main():
+  #run_wsgi_app(application)
 
-if __name__ == '__main__':
-  main()
+#if __name__ == '__main__':
+  #main()

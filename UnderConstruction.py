@@ -1,11 +1,7 @@
 
 import os
 import logging
-
-from google.appengine.ext import webapp
-from google.appengine.api import users
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
+import webapp2
 
 from MasterHandler import MasterHandler
 
@@ -15,12 +11,12 @@ class Groups(MasterHandler):
     self.response.out.write('<div id="content">Under construction</div>')
     MasterHandler.sendBottomTemplate(self)
 
-application = webapp.WSGIApplication([
-  ('/groups', Groups),
-], debug=True)
+application = webapp2.WSGIApplication([
+              ('/groups', Groups),
+              ], debug=True)
 
-def main():
-  run_wsgi_app(application)
+#def main():
+  #webapp2.run_wsgi_app(application)
 
-if __name__ == '__main__':
-  main()
+#if __name__ == '__main__':
+  #main()

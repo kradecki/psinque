@@ -1,11 +1,9 @@
 
 import os
 import logging
+import webapp2
 
-from google.appengine.ext import webapp
 from google.appengine.api import users
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
 
 from django.utils import simplejson as json
 
@@ -41,13 +39,13 @@ class ChangeRelationship(webapp.RequestHandler):
       relationship.put()
       self.response.out.write(json.dumps({"status": "ok"}))
 
-application = webapp.WSGIApplication([
+application = webapp2.WSGIApplication([
   ('/notifications', Notifications),
   ('/changerelationship', ChangeRelationship),
 ], debug=True)
 
-def main():
-  run_wsgi_app(application)
+#def main():
+  #run_wsgi_app(application)
 
-if __name__ == '__main__':
-  main()
+#if __name__ == '__main__':
+  #main()

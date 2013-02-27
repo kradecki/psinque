@@ -1,12 +1,15 @@
 
 import os
 
-from google.appengine.ext import webapp
-from google.appengine.api import users
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
+import webapp2
+import jinja2
 
-class StartPage(webapp.RequestHandler):
+from google.appengine.api import users
+
+jinja_environment = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
+class StartPage(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
     if not user:    # user not logged in
@@ -14,19 +17,19 @@ class StartPage(webapp.RequestHandler):
     else:
         self.redirect('/profile')
 
-class Login(webapp.RequestHandler):
+class Login(webapp2.RequestHandler):
   def get(self):
-    self.response.out.write(template.render(os.path.join(os.path.dirname(__file__), "templates/login.html"),
-                                            {'loginurl': users.create_login_url("/profile")}
-                                           ))
+    self.response.out.write(jinja_environment.get_template("templates/login.html").render(
+        loginurl = users.create_login_url("/profile")
+    ))
 
-application = webapp.WSGIApplication([
+application = webapp2.WSGIApplication([
   ('/', StartPage),
   ('/login', Login),
 ], debug=True)
 
-def main():
-  run_wsgi_app(application)
+#def main():
+  #run_wsgi_app(application)
 
-if __name__ == '__main__':
-  main()
+#if __name__ == '__main__':
+  #main()

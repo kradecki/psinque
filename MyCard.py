@@ -2,14 +2,12 @@
 import os
 import logging
 import urllib
+import webapp2
 
 from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext import blobstore
-from google.appengine.ext import webapp
 from google.appengine.ext.webapp import blobstore_handlers
-from google.appengine.ext.webapp import template
-from google.appengine.ext.webapp.util import run_wsgi_app
 
 from MasterHandler import MasterHandler
 from users.UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes
@@ -139,7 +137,7 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
     blob_info = blobstore.BlobInfo.get(resource)
     self.send_blob(blob_info)
 
-application = webapp.WSGIApplication([
+application = webapp2.WSGIApplication([
   ('/profile', ViewProfile),
   ('/editprofile', EditProfile),
   ('/submitprofile', EditProfile),
@@ -148,8 +146,8 @@ application = webapp.WSGIApplication([
   ('/serveimageblob/([^/]+)?', ServeHandler),
 ], debug=True)
 
-def main():
-  run_wsgi_app(application)
+#def main():
+  #run_wsgi_app(application)
 
-if __name__ == '__main__':
-  main()
+#if __name__ == '__main__':
+  #main()

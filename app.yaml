@@ -1,12 +1,16 @@
 application: psinque
 version: 1
-runtime: python
+runtime: python27
 api_version: 1
+threadsafe: true
 
 builtins:
-- datastore_admin: on
-- remote_api: on
+- remote_api: off
 
+libraries:
+- name: jinja2
+  version: latest
+  
 handlers:
 # Start pages
 - url: /

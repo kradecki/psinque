@@ -11,7 +11,7 @@ from wsgidav.dav_provider import DAVProvider, _DAVResource
 
 from users.UserManagement import generateVCard, friendList, groupList, CardDAVUser
 
-carddavRoot = u"/carddav"
+carddavRoot = "/carddav"
 
 class CardDAVResource(_DAVResource):
 
@@ -49,7 +49,7 @@ class CardDAVResource(_DAVResource):
     
     def getMemberNames(self):
         assert self.isCollection
-        if self.path == "/carddav":
+        if self.path == carddavRoot:
             memberNames = groupList(self.user)
         memberNames = friendList(self.user, self.groupName)
         return [ os.path.basename(self.path) + "/" + memberName for memberName in memberNames ]

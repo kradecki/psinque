@@ -1,14 +1,17 @@
 
 import os
+
+import jinja2
 import logging
 
 from google.appengine.api import users
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
 
 from users.UserDataModels import UserSettings
 from users.UserDataModels import UserProfile
 from users.UserDataModels import Relationship
+
+jinja_environment = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 class MenuEntry:
   url = ""
@@ -20,8 +23,10 @@ class MenuEntry:
     self.entryclass = entryclass
 
 class MasterHandler(webapp.RequestHandler):
-  '''This is the base class for all handlers.'''
-  '''It prepares all data for the top menu bar.'''
+  '''
+  This is the base class for all handlers.
+  It prepares all data for the top menu bar.
+  '''
     
   def sendTopTemplate(self, activeEntry = ""):
 
@@ -49,14 +54,14 @@ class MasterHandler(webapp.RequestHandler):
         if entry.title == activeEntry:
            entry.entryclass = "active"  # mark menu item as active
     
-    topTemplatePath = os.path.join(os.path.dirname(__file__), 'templates/topTemplate.html')
-    self.response.out.write(template.render(topTemplatePath,
-        dict(self.getUserVariables().items() + {'menuentries': menuentries}.items()
+    template = jinja_environment.get_template('templates/topTemplate.html')
+    self.response.out.write(template.render(
+      dict(self.getUserVariables().items() + {'menuentries': menuentries}.items()
     )))
 
   def sendBottomTemplate(self):
-    bottomTemplatePath = os.path.join(os.path.dirname(__file__), 'templates/bottomTemplate.html')
-    self.response.out.write(template.render(bottomTemplatePath, None))
+    template = jinja_environment.get_template('templates/bottomTemplate.html')
+    self.response.out.write(template.render())
 
   def getUserVariables(self):
     user = users.get_current_user()
@@ -81,8 +86,8 @@ class MasterHandler(webapp.RequestHandler):
       logging.error("Changed language to " + settings.LANGUAGE_CODE)
 
   def sendContent(self, templateName, templateVariables = None):
-    path = os.path.join(os.path.dirname(__file__), templateName)
-    self.response.out.write(template.render(path, templateVariables))
+    template = jinja_environment.get_template(templateName)
+    self.response.out.write(template.render(templateVariables))
 
   def render(self, activeEntry, templateName, templateVariables = None):
     self.sendTopTemplate(activeEntry = activeEntry)
@@ -90,7 +95,9 @@ class MasterHandler(webapp.RequestHandler):
     self.sendBottomTemplate()
 
 class StaticMasterHandler(MasterHandler):
-  '''A simple class for handling static pages'''
+  '''
+  A simple class for handling static pages.
+  '''
   templateName = ""
   activeEntry  = ""
   
@@ -101,6 +108,6 @@ class StaticMasterHandler(MasterHandler):
     
   def get(self):
     self.sendTopTemplate(activeEntry = self.activeEntry)
-    path = os.path.join(os.path.dirname(__file__), self.templateName)
-    self.response.out.write(template.render(path, None))
+    template = jinja_environment.get_template(self.templateName)
+    self.response.out.write(template.render(None))
     self.sendBottomTemplate()

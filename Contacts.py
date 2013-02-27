@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
+import webapp2
 
-from google.appengine.ext import webapp
 from google.appengine.api import users
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
 
 from django.utils import simplejson as json
 
@@ -80,7 +78,7 @@ class SearchContacts(MasterHandler):
     MasterHandler.sendContent(self, 'templates/contacts_searchContacts.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
-class AddContact(webapp.RequestHandler):
+class AddContact(webapp2.RequestHandler):
 
   def get(self):
 
@@ -108,14 +106,14 @@ class AddContact(webapp.RequestHandler):
       self.response.out.write(json.dumps({"status": "ok", "userId": userId}))
 
 
-application = webapp.WSGIApplication([
+application = webapp2.WSGIApplication([
   ('/contacts', ViewContacts),
   ('/searchcontacts', SearchContacts),
   ('/addcontact', AddContact),
 ], debug=True)
 
-def main():
-  run_wsgi_app(application)
+#def main():
+  #run_wsgi_app(application)
 
-if __name__ == '__main__':
-  main()
+#if __name__ == '__main__':
+  #main()

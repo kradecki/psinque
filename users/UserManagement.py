@@ -8,7 +8,7 @@
 
 from UserDataModels import UserSettings, CardDAVPassword
 
-def groupList():
+def groupList(user):
     """Returns the list of all groups created by the logged in user.
 
     :returns: list -- the list of groups
@@ -16,11 +16,15 @@ def groupList():
     """
     return ["public"]  # for now only all users are in the public group
 
-def friendList(group):
-    return ["0123456789"]  # to test CardDAV
+def friendList(user, group):
+    if group == "public":
+        return ["0123456789"]  # to test CardDAV
+    else:
+        return []
 
 def generateVCard(userID):
-    return u"""
+    if userID == "0123456789":
+        return u"""
 BEGIN:VCARD
 VERSION:2.1
 N:Gump;Forrest
@@ -38,6 +42,8 @@ EMAIL;PREF;INTERNET:forrestgump@example.com
 REV:20080424T195243Z
 END:VCARD
 """
+    else:
+        return ""
 
 #TODO: Query by key is faster
 def getUserSettings(user):
