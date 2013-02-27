@@ -10,7 +10,7 @@ from google.appengine.ext.webapp import template
 from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler
-from UserDataModels import UserProfile, Relationship
+from users.UserDataModels import UserProfile, Relationship
 
 class Notifications(MasterHandler):
   

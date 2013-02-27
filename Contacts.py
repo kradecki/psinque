@@ -11,7 +11,7 @@ from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler
 
-from UserDataModels import UserProfile, UserSettings, availableLanguages, Relationship
+from users.UserDataModels import UserProfile, UserSettings, availableLanguages, Relationship
 
 class ViewContacts(MasterHandler):
   

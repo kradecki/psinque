@@ -9,7 +9,7 @@ from google.appengine.ext.webapp import template
 
 from MasterHandler import MasterHandler
 
-from UserDataModels import UserProfile, UserSettings, availableLanguages
+from users.UserDataModels import UserProfile, UserSettings, availableLanguages
 
 class Settings(MasterHandler):
 

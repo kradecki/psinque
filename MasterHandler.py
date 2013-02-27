@@ -6,9 +6,9 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
-from UserDataModels import UserSettings
-from UserDataModels import UserProfile
-from UserDataModels import Relationship
+from users.UserDataModels import UserSettings
+from users.UserDataModels import UserProfile
+from users.UserDataModels import Relationship
 
 class MenuEntry:
   url = ""

@@ -12,7 +12,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from MasterHandler import MasterHandler
-from UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes
+from users.UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes
 
 class ViewProfile(MasterHandler):
 
