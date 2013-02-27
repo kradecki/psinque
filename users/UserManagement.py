@@ -6,6 +6,8 @@
    :synopsis: Back-end for all user data management.
 """
 
+import logging
+
 from UserDataModels import UserSettings, CardDAVPassword
 
 def groupList(user):

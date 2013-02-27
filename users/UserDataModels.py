@@ -20,7 +20,7 @@ class UserSettings(db.Model):
                                         default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
   notifyOnNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
   
-  cardDAVenabled = db.BooleanProperty(default = False)
+  cardDAVenabled = db.BooleanProperty(default = True)  #TODO: Disable this after testing
 
 #--------------------------------------------------
 # User profile

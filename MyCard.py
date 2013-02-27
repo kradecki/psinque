@@ -10,7 +10,7 @@ from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
 from MasterHandler import MasterHandler
-from users.UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes
+from users.UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes, CardDAVPassword
 
 class ViewProfile(MasterHandler):
 
@@ -50,6 +50,12 @@ class EditProfile(MasterHandler):
       userSettings = UserSettings()
       userSettings.user = user
       userSettings.put()
+      cardDAVPassword = CardDAVPassword()
+      cardDAVPassword.user = user
+      cardDAVPassword.generatedUsername = "dupa"
+      cardDAVPassword.generatedPassword = "dupa"
+      cardDAVPassword.put()
+      logging.debug("added dupa")
       firstLogin = True
     else:
       firstLogin = False

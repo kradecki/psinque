@@ -3,10 +3,10 @@
 import logging
 
 from wsgidav.wsgidav_app import WsgiDAVApp, DEFAULT_CONFIG
+
 from carddav.Provider import CardDAVProvider
 from carddav.DomainController import PsinqueDomainController
 
-logging.debug("real_main")
 provider = CardDAVProvider()
 domainController = PsinqueDomainController()
 

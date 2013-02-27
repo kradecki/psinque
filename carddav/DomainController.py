@@ -1,7 +1,8 @@
 
 import os.path
+import logging
 
-from users.UserManagement import hasGeneratedPassword, passwordForUser
+from users import UserManagement
 
 class PsinqueDomainController(object):
     
@@ -26,14 +27,14 @@ class PsinqueDomainController(object):
         
         Used for digest authentication.
         """
-        logging.debug("isRealmUser(%r, %r, %r)"
+        logging.error("isRealmUser(%r, %r, %r)"
                       % (realmname, username, "***"))
         if realmname != "carddav":
             return False
         if self.userPassword is None:  # user has not generated password
             return False
         if self.userPassword == u"":   # we haven't checked the user yet
-            self.userPassword = passwordForUser(username)
+            self.userPassword = UserManagement.cardDAVPassword(username)
             if self.userPassword is None:
                 return False
         return True
@@ -43,13 +44,14 @@ class PsinqueDomainController(object):
         
         Used for digest authentication.
         """
-        logging.debug("getRealmUserPassword(%r, %r, %r)"
+        logging.error("getRealmUserPassword(%r, %r, %r)"
                       % (realmname, username, "***"))
+        logging.error("password is " + self.userPassword)
         if self.userPassword is None:  # user has not generated password
             return None
         if self.userPassword == u"":   # we haven't checked the user yet
-            self.userPassword = passwordForUser(username)
-        return passwordForUser(username)
+            self.userPassword = UserManagement.cardDAVPassword(username)
+        return self.userPassword
     
     def authDomainUser(self, realmname, username, password, environ):
         """Returns True if this username/password pair is valid for the realm, 
