@@ -2,8 +2,8 @@
   <form action="/settings" method="POST">
     <h3>Language settings:</h3>
     <p><select name="language">
-    {% for language in availableLanguages.items %}
-      <option {% ifequal language.0 preferredLanguage %} selected {% endifequal %} value="{{ language.0 }}">{{ language.1 }}</option>
+    {% for languageCode, languageName in availableLanguages.iteritems() %}
+      <option {% if languageCode == preferredLanguage %} selected {% endif %} value="{{ languageCode }}">{{ languageName }}</option>
     {% endfor %}
     </select></p>
     <h3>Notifications:</h3>

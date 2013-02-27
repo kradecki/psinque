@@ -106,7 +106,7 @@ class AddContact(webapp2.RequestHandler):
       self.response.out.write(json.dumps({"status": "ok", "userId": userId}))
 
 
-application = webapp2.WSGIApplication([
+app = webapp2.WSGIApplication([
   ('/contacts', ViewContacts),
   ('/searchcontacts', SearchContacts),
   ('/addcontact', AddContact),

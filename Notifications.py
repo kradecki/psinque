@@ -26,7 +26,7 @@ class Notifications(MasterHandler):
     MasterHandler.sendContent(self, 'templates/notifications_view.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
-class ChangeRelationship(webapp.RequestHandler):
+class ChangeRelationship(webapp2.RequestHandler):
 
   def get(self):
 
@@ -39,7 +39,7 @@ class ChangeRelationship(webapp.RequestHandler):
       relationship.put()
       self.response.out.write(json.dumps({"status": "ok"}))
 
-application = webapp2.WSGIApplication([
+app = webapp2.WSGIApplication([
   ('/notifications', Notifications),
   ('/changerelationship', ChangeRelationship),
 ], debug=True)

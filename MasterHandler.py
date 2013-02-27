@@ -3,6 +3,7 @@ import os
 
 import jinja2
 import logging
+import webapp2
 
 from google.appengine.api import users
 
@@ -22,7 +23,7 @@ class MenuEntry:
     self.title = title
     self.entryclass = entryclass
 
-class MasterHandler(webapp.RequestHandler):
+class MasterHandler(webapp2.RequestHandler):
   '''
   This is the base class for all handlers.
   It prepares all data for the top menu bar.

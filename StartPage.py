@@ -22,7 +22,7 @@ class Login(webapp2.RequestHandler):
         loginurl = users.create_login_url("/profile")
     ))
 
-application = webapp2.WSGIApplication([
+app = webapp2.WSGIApplication([
   ('/', StartPage),
   ('/login', Login),
 ], debug=True)

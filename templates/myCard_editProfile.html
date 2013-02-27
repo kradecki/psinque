@@ -30,19 +30,17 @@
         </fieldset>
         <fieldset id="addresses">
           <legend>Physical addresses</legend>
-          {% ifequal initialAddressCount 0 %}
-          {% endifequal %}
           {% for address in addresses %}
           <p id="address{{ address.nr }}">
             <label>Address:</label>
             <input type="text" name="addressMain{{ address.nr }}" value="{{ address.value.address }}" class="required" />
             <select name="addressType{{ address.nr }}">
-            {% for addressType in addressTypes.items %}
-              {% ifequal addressType.0 address.value.addressType %}
-                <option value="{{ addressType.0 }}" selected="selected">{{ addressType.1 }}</option>
+            {% for addressTypeCode, addressTypeName in addressTypes.iteritems() %}
+              {% if addressTypeCode == address.value.addressType %}
+                <option value="{{ addressTypeCode }}" selected="selected">{{ addressTypeName }}</option>
               {% else %}
-                <option value="{{ addressType.0 }}">{{ addressType.1 }}</option>
-              {% endifequal %}
+                <option value="{{ addressTypeCode }}">{{ addressTypeName }}</option>
+              {% endif %}
             {% endfor %}
             </select>
             <br />
@@ -51,19 +49,21 @@
             <label>City/town/village:</label>
             <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" /><br />
 
+            {% if address.value.location %}
             <span class="hiddenCoordinates">
               <label>Longitude:</label>
               <input type="text" name="long{{ address.nr }}" id="long{{ address.nr }}" value="{{ address.value.location.lon }}" readonly="readonly" /><br />
               <label>Latitude:</label>
               <input type="text" name="lat{{ address.nr }}" id="lat{{ address.nr }}" value="{{ address.value.location.lat }}" readonly="readonly" /><br />
             </span>
+            {% endif %}
 
             <a href="" class="addMap">Find coordinates</a>
             <a href="" class="hideMap">Hide the map</a>
             <a href="" class="showMap">Show the map</a>
-            {% ifnotequal address.nr "1" %}  <!-- You cannot remove the primary address -->
+            {% if address.nr != 1 %}  <!-- You cannot remove the primary address -->
               | <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
-            {% endifnotequal %}
+            {% endif %}
           </p>
           {% endfor %}
           <p id="addAddress"><a href="">Add address</a></p>

@@ -137,7 +137,7 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
     blob_info = blobstore.BlobInfo.get(resource)
     self.send_blob(blob_info)
 
-application = webapp2.WSGIApplication([
+app = webapp2.WSGIApplication([
   ('/profile', ViewProfile),
   ('/editprofile', EditProfile),
   ('/submitprofile', EditProfile),

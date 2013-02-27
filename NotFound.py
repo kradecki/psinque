@@ -16,4 +16,4 @@ class PageNotFoundHandler(webapp2.RequestHandler):
     template = jinja_environment.get_template('templates/notFound.html')
     self.response.out.write(template.render(requestName = self.request.uri))
     
-application = webapp2.WSGIApplication([('/.*', PageNotFoundHandler)], debug=True)
+app = webapp2.WSGIApplication([('/.*', PageNotFoundHandler)], debug=True)

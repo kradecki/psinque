@@ -11,6 +11,6 @@ class Groups(MasterHandler):
     self.response.out.write('<div id="content">Under construction</div>')
     MasterHandler.sendBottomTemplate(self)
 
-application = webapp2.WSGIApplication([
+app = webapp2.WSGIApplication([
               ('/groups', Groups),
               ], debug=True)
