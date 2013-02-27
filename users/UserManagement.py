@@ -1,16 +1,27 @@
 # -*- coding: utf-8 -*-
 
+"""
+.. moduleauthor:: Stanisław Raczyński <sutashu@gmail.com>
+.. module:: users
+   :synopsis: Back-end for all user data management.
+"""
+
 def groupList():
-  pass
+    """Returns the list of all groups created by the logged in user.
+
+    :returns: list -- the list of groups
+
+    """
+    pass
 
 def friendList(group):
-  pass
+    pass
 
 def userByID(userID):
-  pass
+    pass
 
 def vCard(user):
-  return u"""
+    return u"""
 BEGIN:VCARD
 VERSION:2.1
 N:Gump;Forrest
