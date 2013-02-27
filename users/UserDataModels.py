@@ -19,6 +19,8 @@ class UserSettings(db.Model):
   preferredLanguage = db.StringProperty(choices = availableLanguages.keys(),
                                         default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
   notifyOnNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
+  
+  cardDAVenabled = db.BooleanProperty(default = False)
 
 #--------------------------------------------------
 # User profile
@@ -83,7 +85,7 @@ class UserGroups(db.Model):
   groupName = db.StringProperty()
   canViewHomeData = db.BooleanProperty()
   canViewWorkData = db.BooleanProperty()
-  canViewBorthDate = db.BooleanProperty()
+  canViewBothData = db.BooleanProperty()
   # Every friend can see the names and the gender
   
 #--------------------------------------------------
@@ -94,3 +96,11 @@ class Relationship(db.Model):
   userTo = db.ReferenceProperty(UserProfile, collection_name="ingoingRelationships")
   status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
   establishingTime = db.DateTimeProperty()
+
+#--------------------------------------------------
+# CardDAV passwords
+
+class CardDAVPassword(db.Model):
+    user = db.UserProperty()
+    generatedUsername = db.StringProperty()
+    generatedPassword = db.StringProperty()

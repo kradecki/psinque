@@ -6,21 +6,20 @@
    :synopsis: Back-end for all user data management.
 """
 
+from UserDataModels import UserSettings, CardDAVPassword
+
 def groupList():
     """Returns the list of all groups created by the logged in user.
 
     :returns: list -- the list of groups
 
     """
-    pass
+    return ["public"]  # for now only all users are in the public group
 
 def friendList(group):
-    pass
+    return ["0123456789"]  # to test CardDAV
 
-def userByID(userID):
-    pass
-
-def vCard(user):
+def generateVCard(userID):
     return u"""
 BEGIN:VCARD
 VERSION:2.1
@@ -39,3 +38,23 @@ EMAIL;PREF;INTERNET:forrestgump@example.com
 REV:20080424T195243Z
 END:VCARD
 """
+
+#TODO: Query by key is faster
+def getUserSettings(user):
+    return UserSettings.all().filter("user =", user).get()
+
+#TODO: Set up generated password indexes
+def cardDAVPassword(username):
+    password = CardDAVPassword.all().filter("generatedUsername =", username).get()
+    if not password:  # no user profile registered yet
+        return None
+    if not getUserSettings(password.user).cardDAVenabled: # this can happen if the user's disabled CardDAV, but somehow the passwords is still here
+        password.delete()
+        return False
+    return password.generatedPassword
+
+def cardDAVUser(username):
+    password = CardDAVPassword.all().filter("generatedUsername =", username).get()
+    if not password:
+        return None
+    return password.user

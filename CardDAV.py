@@ -4,7 +4,7 @@ import logging
 
 from wsgidav.wsgidav_app import WsgiDAVApp, DEFAULT_CONFIG
 from carddav.Provider import CardDAVProvider
-from carddav.DomainController PsinqueDomainController
+from carddav.DomainController import PsinqueDomainController
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 def real_main():
