@@ -43,9 +43,3 @@ application = webapp2.WSGIApplication([
   ('/notifications', Notifications),
   ('/changerelationship', ChangeRelationship),
 ], debug=True)
-
-#def main():
-  #run_wsgi_app(application)
-
-#if __name__ == '__main__':
-  #main()

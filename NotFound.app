@@ -17,9 +17,3 @@ class PageNotFoundHandler(webapp2.RequestHandler):
     self.response.out.write(template.render(requestName = self.request.uri))
     
 application = webapp2.WSGIApplication([('/.*', PageNotFoundHandler)], debug=True)
-
-#def main():
-  #run_wsgi_app(application)
-
-#if __name__ == '__main__':
-  #main()

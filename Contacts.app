@@ -111,9 +111,3 @@ application = webapp2.WSGIApplication([
   ('/searchcontacts', SearchContacts),
   ('/addcontact', AddContact),
 ], debug=True)
-
-#def main():
-  #run_wsgi_app(application)
-
-#if __name__ == '__main__':
-  #main()

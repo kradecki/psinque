@@ -14,9 +14,3 @@ class Groups(MasterHandler):
 application = webapp2.WSGIApplication([
               ('/groups', Groups),
               ], debug=True)
-
-#def main():
-  #webapp2.run_wsgi_app(application)
-
-#if __name__ == '__main__':
-  #main()

@@ -145,9 +145,3 @@ application = webapp2.WSGIApplication([
   ('/uploadphotopost', UploadHandler),
   ('/serveimageblob/([^/]+)?', ServeHandler),
 ], debug=True)
-
-#def main():
-  #run_wsgi_app(application)
-
-#if __name__ == '__main__':
-  #main()

@@ -43,9 +43,3 @@ class Settings(MasterHandler):
 application = webapp2.WSGIApplication([
   ('/settings', Settings)
 ], debug=True)
-
-#def main():
-  #run_wsgi_app(application)
-
-#if __name__ == '__main__':
-  #main()
