@@ -14,52 +14,52 @@ libraries:
 handlers:
 # Start pages
 - url: /
-  script: StartPage.py    # checks if the user is logged in and redirects
+  script: StartPage.app    # checks if the user is logged in and redirects
   secure: optional
 - url: /login
-  script: StartPage.py    # user not logged in
+  script: StartPage.app    # user not logged in
 
 # User profile viewing and editing
 - url: /profile
-  script: MyCard.py    # user logged in, shows the visiting card
+  script: MyCard.app    # user logged in, shows the visiting card
 - url: /editprofile
-  script: MyCard.py
+  script: MyCard.app
 - url: /submitprofile
-  script: MyCard.py
+  script: MyCard.app
 - url: /uploadphoto
-  script: MyCard.py
+  script: MyCard.app
 - url: /uploadphotopost
-  script: MyCard.py
+  script: MyCard.app
 - url: /serveimageblob/([^/]+)?
-  script: MyCard.py
+  script: MyCard.app
 
 # Contacts
 - url: /contacts
-  script: Contacts.py
+  script: Contacts.app
 - url: /searchcontacts
-  script: Contacts.py
+  script: Contacts.app
 - url: /addcontact
-  script: Contacts.py
+  script: Contacts.app
 
 # Notifications
 - url: /notifications
-  script: Notifications.py
+  script: Notifications.app
 - url: /changerelationship    # AJAX queries
-  script: Notifications.py
+  script: Notifications.app
 
 # Under construction
 - url: /groups
-  script: UnderConstruction.py
+  script: UnderConstruction.app
 
 # User settings
 - url: /settings
-  script: Settings.py
+  script: Settings.app
 - url: /savesettings
-  script: Settings.py
+  script: Settings.app
 
 # Static pages
 - url: /about
-  script: StaticPages.py
+  script: StaticPages.app
   
 # Static files
 - url: /stylesheets
@@ -76,8 +76,8 @@ handlers:
 # CardDAV
 - url: /carddav/*
   secure: always
-  script: CardDAV.py
+  script: CardDAV.app
 
 # Error handling
 - url: /.*
-  script: NotFound.py
+  script: NotFound.app
