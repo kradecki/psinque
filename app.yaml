@@ -11,6 +11,7 @@ handlers:
 # Start pages
 - url: /
   script: StartPage.py    # checks if the user is logged in and redirects
+  secure: optional
 - url: /login
   script: StartPage.py    # user not logged in
 
@@ -67,7 +68,12 @@ handlers:
 - url: /favicon.ico
   static_files: static/favicon.ico
   upload: static/favicon.ico
-  
+
+# CardDAV
+- url: /carddav/*
+  secure: always
+  script: CardDAV.py
+
 # Error handling
 - url: /.*
   script: NotFound.py
