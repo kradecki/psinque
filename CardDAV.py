@@ -17,17 +17,13 @@ config.update({
     "enable_loggers": [],
     "propsmanager": False,                    
     "locksmanager": False,
-
-    # Use Basic Authentication and don't fall back to Digest Authentication,
-    # because our domain controller doesn't have no access to the user's 
-    # passwords.
     "acceptbasic": False,      
     "acceptdigest": True,
     "defaultdigest": True,    
     "domaincontroller": domainController,
     "dir_browser": {
         "enable": False,
-        },
+       },
     })
 
 app = WsgiDAVApp(config)

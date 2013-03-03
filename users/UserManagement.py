@@ -16,11 +16,11 @@ def groupList(user):
     :returns: list -- the list of groups
 
     """
-    return ["public"]  # for now only all users are in the public group
+    return ["public", "0123456789.vcf"]  # for now only all users are in the public group
 
 def friendList(user, group):
     if group == "public":
-        return ["0123456789"]  # to test CardDAV
+        return ["0123456790.vcf"]  # to test CardDAV
     else:
         return []
 

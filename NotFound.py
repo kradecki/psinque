@@ -9,8 +9,8 @@ jinja_environment = jinja2.Environment(
 
 class PageNotFoundHandler(webapp2.RequestHandler):
   def get(self):
-    logging.info("bad request logged")
-    logging.info(self.request.uri)
+    logging.error("bad request logged")
+    logging.error(self.request.uri)
     
     self.error(404)
     template = jinja_environment.get_template('templates/notFound.html')

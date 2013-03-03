@@ -27,7 +27,7 @@ class PsinqueDomainController(object):
         
         Used for digest authentication.
         """
-        logging.error("isRealmUser(%r, %r, %r)"
+        logging.debug("isRealmUser(%r, %r, %r)"
                       % (realmname, username, "***"))
         if realmname != "carddav":
             return False
@@ -44,9 +44,9 @@ class PsinqueDomainController(object):
         
         Used for digest authentication.
         """
-        logging.error("getRealmUserPassword(%r, %r, %r)"
+        logging.debug("getRealmUserPassword(%r, %r, %r)"
                       % (realmname, username, "***"))
-        logging.error("password is " + self.userPassword)
+        logging.debug("password is " + self.userPassword)
         if self.userPassword is None:  # user has not generated password
             return None
         if self.userPassword == u"":   # we haven't checked the user yet
