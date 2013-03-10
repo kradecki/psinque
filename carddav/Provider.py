@@ -9,25 +9,32 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-from wsgidav import util
+from wsgidav.dav_error import DAVError, HTTP_NOT_FOUND
 from wsgidav.dav_provider import DAVProvider, _DAVResource
+from wsgidav import util
+
 from lxml import etree
-import md5
 from datetime import datetime
+import md5
 
 from users import UserManagement
-
-carddavRoot = "/"
 
 class CardDAVResource(_DAVResource):
 
     def __init__(self, path, environ):
-        logging.info("CardDAVResource(" + path + ")")
         path = os.path.normpath(path)
         path = replace(path, "//", "/")
-        if path == "/":
-            isCollection = True
-            self.name = "Public"
+        assert path=="" or path.startswith("/")
+        logging.info("CardDAVResource(" + path + ")")
+
+        self.provider = environ["wsgidav.provider"]
+        self.path = path
+        self.environ = environ
+        self.user = UserManagement.cardDAVUser(environ["wsgidav.username"])
+
+        if (path == "/") or (path == ""):
+            self.isCollection = True
+            self.name = "Psinque"
             logging.info("- resourcetype: collection")
         else:
             self.groupName = os.path.dirname(path)
@@ -36,22 +43,18 @@ class CardDAVResource(_DAVResource):
             logging.info("- fileName: " + fileName)
             if fileName.endswith(".vcf"):
                 fileName = os.path.splitext(fileName)
-                isCollection = False
+                self.isCollection = False
                 logging.info("- resourcetype: non-collection")
                 if fileName[1] != u".vcf":
                     raise ValueError("Unsupported extension: %r" % fileName[1])
                 self.friendID = fileName[0]           
-                #self.name = "Forest Gump"
+                self.name = "Forest Gump"
                 self.vCard = None  # we're lazy at generating the vCard
             else:
-                isCollection = True
+                self.isCollection = True
                 logging.info("- resourcetype: collection")
-                fileName = self.groupName
-                self.groupName = ""
-                #self.name = self.groupName
-        
-        self.user = UserManagement.cardDAVUser(environ["wsgidav.username"])
-        super(CardDAVResource, self).__init__(path, isCollection, environ)
+                self.groupName = fileName
+                self.name = fileName
     
     def generateVCard(self):
         if not self.isCollection and self.vCard is None:
@@ -84,7 +87,7 @@ class CardDAVResource(_DAVResource):
     def getMemberNames(self):
         logging.info("getMemberNames(" + self.path +")")
         assert self.isCollection
-        if self.path == carddavRoot:
+        if self.path == "/":
             memberNames = UserManagement.groupList(self.user)
         else:
             memberNames = UserManagement.friendList(self.user, self.groupName)
@@ -146,6 +149,16 @@ class CardDAVResource(_DAVResource):
              hrefEL = etree.SubElement(propertyEL, "{DAV:}href")
              hrefEL.text = "/carddav/"
              return propertyEL
+        if propname == "{DAV:}resourcetype":
+            if self.isCollection:
+                resourcetypeEL = etree.Element(propname)
+                etree.SubElement(resourcetypeEL, "{DAV:}collection")
+                if self.path == "/":
+                    etree.SubElement(resourcetypeEL, "{DAV:}principal")
+                else:
+                    etree.SubElement(resourcetypeEL, "{urn:ietf:params:xml:ns:carddav:}addressbook")
+                return resourcetypeEL            
+            return ""   
         return super(CardDAVResource, self).getPropertyValue(propname)
 
 class CardDAVProvider(DAVProvider):
@@ -158,5 +171,47 @@ class CardDAVProvider(DAVProvider):
         except:
             logging.exception("getResourceInst(%r) failed" % path)
             res = None
-        logging.info("getResourceInst(%r): %s" % (path, res))
+        return res
+
+
+class WellKnownResource(_DAVResource):
+
+    def __init__(self, path, environ):
+        path = os.path.normpath(path)
+        path = replace(path, "//", "/")
+        logging.info("WellKnownResource(" + path + ")")
+        if path != "/carddav":
+            raise DAVError(HTTP_NOT_FOUND)
+        super(WellKnownResource, self).__init__(path, False, environ)
+       
+    def getPropertyNames(self, isAllProp):
+        logging.info("getPropertyNames(" + isAllProp + ")")
+        propNameList = super(WellKnownResource, self).getPropertyNames(self, isAllProp)
+        propNameList.append("{DAV:}current-user-principal")
+        propNameList.append("{DAV:}principal-URL")
+        propNameList.append("{urn:ietf:params:xml:ns:carddav}addressbook-home-set")
+        return propNameList
+
+    def getPropertyValue(self, propname):
+        logging.info("getPropertyValue(" + propname + ")")
+        if (propname == "{urn:ietf:params:xml:ns:carddav}addressbook-home-set" or
+           propname == "{DAV:}current-user-principal" or
+           propname == "{DAV:}principal-URL"):
+             propertyEL = etree.Element(propname)
+             hrefEL = etree.SubElement(propertyEL, "{DAV:}href")
+             hrefEL.text = "/carddav/"
+             return propertyEL
+        return super(WellKnownResource, self).getPropertyValue(propname)
+
+
+class WellKnownProvider(DAVProvider):
+    
+    def getResourceInst(self, path, environ):
+        logging.info("getResourceInst(" +path+ ")")
+        self._count_getResourceInst += 1
+        try:
+            res = WellKnownResource(path, environ)
+        except:
+            logging.exception("getResourceInst(%r) failed" % path)
+            res = None
         return res
