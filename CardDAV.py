@@ -16,7 +16,7 @@ logging.info("Starting CardDAVProvider")
 
 config = DEFAULT_CONFIG.copy()
 config.update({
-    "provider_mapping": {"/carddav/": provider,         # RFC 6352
+    "provider_mapping": {"/carddav/": provider,        # RFC 6352
                          "/.well-known/": wellknowns,   # RFC 5785
                         },
     "verbose": 1,

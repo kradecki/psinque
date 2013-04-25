@@ -27,8 +27,6 @@ class PsinqueDomainController(object):
         
         Used for digest authentication.
         """
-        logging.info("isRealmUser(%r, %r, %r)"
-                      % (realmname, username, "***"))
         if realmname != "carddav":
             return False
         if self.userPassword is None:  # user has not generated password
@@ -44,9 +42,6 @@ class PsinqueDomainController(object):
         
         Used for digest authentication.
         """
-        logging.info("getRealmUserPassword(%r, %r, %r)"
-                      % (realmname, username, "***"))
-        logging.info("password is " + self.userPassword)
         if self.userPassword is None:  # user has not generated password
             return None
         if self.userPassword == u"":   # we haven't checked the user yet
@@ -59,5 +54,13 @@ class PsinqueDomainController(object):
 
         Used for basic authentication.
         """
-        return False  # we never allow basic authentication
-    
+        if realmname != "carddav":
+            return False
+        if self.userPassword is None:  # user has not generated password
+            return False
+        if self.userPassword == u"":   # we haven't checked the user yet
+            self.userPassword = UserManagement.cardDAVPassword(username)
+            if self.userPassword is None:
+                return False
+        return self.userPassword == password
+
