@@ -1,6 +1,5 @@
-google_appengine
 *.py[cod]
 *.py~
 *.kate-swp
 jquery
-wsgidav
+google_appengine
