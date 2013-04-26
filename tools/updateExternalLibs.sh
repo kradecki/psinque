@@ -26,4 +26,4 @@ function updateWsgiDAV {
 
 checkTools
 updateJQuery
-updateWsgiDAV
+# updateWsgiDAV
