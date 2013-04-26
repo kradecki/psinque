@@ -15,6 +15,7 @@ from wsgidav import util
 
 from lxml import etree
 from datetime import datetime
+import urllib
 import md5
 
 from users import UserManagement
@@ -25,7 +26,6 @@ class CardDAVResource(_DAVResource):
         path = os.path.normpath(path)
         path = replace(path, "//", "/")
         assert path=="" or path.startswith("/")
-        #logging.info("CardDAVResource(" + path + ")")
 
         self.provider = environ["wsgidav.provider"]
         self.path = path
@@ -38,15 +38,12 @@ class CardDAVResource(_DAVResource):
         else:
             self.groupName = os.path.dirname(path)
             fileName = os.path.basename(path)
-            #logging.info("groupName = " + self.groupName)
-            #logging.info("fileName = " + fileName)
             if self.groupName == "/":
                 self.groupName = fileName
                 fileName = ""
             if fileName != "":
                 fileName = os.path.splitext(fileName)
                 self.isCollection = False
-                #logging.info("- resourcetype: non-collection")
                 if fileName[1] != u".vcf":
                     raise ValueError("Unsupported extension: %r" % fileName[1])
                 self.friendID = fileName[0]           
@@ -54,23 +51,26 @@ class CardDAVResource(_DAVResource):
                 self.vCard = None  # we're lazy at generating the vCard
             else:
                 self.isCollection = True
-                #logging.info("- resourcetype: collection")
                 self.name = self.groupName
+
+    #def getHref(self):
+        #safe = "/" + "!*'()," + "$-_|."
+        #return urllib.quote(self.getPreferredPath(), safe=safe)
     
     def generateVCard(self):
         if not self.isCollection and self.vCard is None:
+            logging.info("Generating vcard...")
             self.vCard = UserManagement.generateVCard(self.user, self.friendID)
-            self.vcard_mtime = str(datetime.date(datetime.now())) + "-" + str(datetime.time(datetime.now()))
+            self.vCardMtime = str(datetime.date(datetime.now())) + "-" + str(datetime.time(datetime.now()))
+            self.vCardMD5 = md5.new(self.vCard).hexdigest()
     
     def getContentLength(self):
-        #logging.info("getContentLength()")
         if self.isCollection:
             return None
         self.generateVCard()
         return len(self.vCard)
     
     def getContentType(self):
-        #logging.info("getContentType()")
         if self.isCollection:
             return "httpd/unix-directory"  #TODO: Check MIME for WebDAV folders
         return "text/vcard"
@@ -79,21 +79,21 @@ class CardDAVResource(_DAVResource):
         '''
         ETags are essential for caching.
         '''
-        #logging.info("getEtag()")
         if self.isCollection:
-            return '"' + md5.new(self.path).hexdigest() +'"'
-        self.generateVCard()
-        return md5.new(self.path).hexdigest() + '-' + str(self.vcard_mtime)
+            etag = '"' + md5.new(self.path).hexdigest() +'"'
+        else:
+            self.generateVCard()
+            etag = md5.new(self.path).hexdigest() + '-' + str(self.vCardMD5)
+        #logging.info("Path = " + self.path)
+        #logging.info("Etag = " + etag)
+        return etag
     
     def getMemberNames(self):
-        #logging.info("getMemberNames(" + self.path +")")
         assert self.isCollection
         if self.path == "/":
             memberNames = UserManagement.groupList(self.user)
         else:
             memberNames = UserManagement.friendList(self.user, self.groupName)
-        #logging.info(memberNames)
-        #return [ os.path.basename(self.path) + "/" + memberName for memberName in memberNames ]
         return memberNames
     
     def getContent(self):
@@ -116,7 +116,6 @@ class CardDAVResource(_DAVResource):
         """
         Return child resource with a given name (None, if not found).
         """
-        #logging.info("getMember(" +name+ ")")
         assert self.isCollection
         return self.provider.getResourceInst(util.joinUri(self.path, name), 
                                              self.environ)
@@ -125,7 +124,6 @@ class CardDAVResource(_DAVResource):
         """
         Returns a list of direct members (_DAVResource or derived objects).
         """
-        #logging.info("getMemberList()")
         if not self.isCollection:
             raise NotImplementedError()
         memberList = [] 
@@ -135,8 +133,6 @@ class CardDAVResource(_DAVResource):
         return memberList
     
     def getPropertyNames(self, isAllProp):
-        
-        #logging.info("getPropertyNames(" + isAllProp + ")")
         
         # The basic WebDAV properties:
         propNameList = super(CardDAVResource, self).getPropertyNames(self, isAllProp)
@@ -154,8 +150,6 @@ class CardDAVResource(_DAVResource):
 
 
     def getPropertyValue(self, propname):
-        
-        #logging.info(self.path + ":getPropertyValue(" + propname + ")")
         
         if (propname == "{urn:ietf:params:xml:ns:carddav}addressbook-home-set" or
            propname == "{DAV:}current-user-principal" or
@@ -185,8 +179,9 @@ class CardDAVResource(_DAVResource):
         if propname == "{DAV:}current-user-privilege-set":
             propertyEL = etree.Element(propname)
             hrefEL = etree.SubElement(propertyEL, "{DAV:}privilege")
-            for privilege in ["{DAV:}all", "{DAV:}read", "{DAV:}write", "{DAV:}write-properties", "{DAV:}write-content"]:
-                etree.SubElement(hrefEL, privilege)
+            etree.SubElement(hrefEL, "{DAV:}read")
+            #for privilege in ["{DAV:}all", "{DAV:}read", "{DAV:}write", "{DAV:}write-properties", "{DAV:}write-content"]:
+                #etree.SubElement(hrefEL, privilege)
             return propertyEL
          
         if propname == "{DAV:}resourcetype":
@@ -215,7 +210,6 @@ class CardDAVResource(_DAVResource):
 class CardDAVProvider(DAVProvider):
     
     def getResourceInst(self, path, environ):
-        #logging.info("getResourceInst(" +path+ ")")
         self._count_getResourceInst += 1
         try:
             res = CardDAVResource(path, environ)
@@ -230,13 +224,11 @@ class WellKnownResource(_DAVResource):
     def __init__(self, path, environ):
         path = os.path.normpath(path)
         path = replace(path, "//", "/")
-        #logging.info("WellKnownResource(" + path + ")")
         if path != "/carddav":
             raise DAVError(HTTP_NOT_FOUND)
         super(WellKnownResource, self).__init__(path, False, environ)
        
     def getPropertyNames(self, isAllProp):
-        #logging.info("getPropertyNames(" + isAllProp + ")")
         propNameList = super(WellKnownResource, self).getPropertyNames(self, isAllProp)
         propNameList.append("{DAV:}current-user-principal")
         propNameList.append("{DAV:}principal-URL")
@@ -244,7 +236,6 @@ class WellKnownResource(_DAVResource):
         return propNameList
 
     def getPropertyValue(self, propname):
-        #logging.info("getPropertyValue(" + propname + ")")
         if (propname == "{urn:ietf:params:xml:ns:carddav}addressbook-home-set" or
            propname == "{DAV:}current-user-principal" or
            propname == "{DAV:}principal-URL"):
@@ -258,7 +249,6 @@ class WellKnownResource(_DAVResource):
 class WellKnownProvider(DAVProvider):
     
     def getResourceInst(self, path, environ):
-        #logging.info("getResourceInst(" +path+ ")")
         self._count_getResourceInst += 1
         try:
             res = WellKnownResource(path, environ)

@@ -8,6 +8,7 @@ See `Developers info`_ for more information about the WsgiDAV architecture.
 
 .. _`Developers info`: http://docs.wsgidav.googlecode.com/hg/html/develop.html  
 """
+from string import replace
 from urlparse import urlparse
 from wsgidav.dav_error import HTTP_OK, HTTP_LENGTH_REQUIRED
 from wsgidav import xml_tools
@@ -253,7 +254,12 @@ class RequestServer(object):
                     for propNode in childNode:
                         propNameList.append(propNode.tag)
                 elif childNode.tag == "{DAV:}href":
-                    resList.append(self._davProvider.getResourceInst(childNode.text, environ))
+                    requestedHref = childNode.text
+                    # Quick'n'dirty BUGFIX: WsgiDav removes the name of the root folder for a provider for
+                    # the path in the request header, so we need to do the same for the request body,
+                    # otherwise some methods of the Provider class will return wrong values:
+                    requestedHref = replace(requestedHref, "/carddav/", "/")
+                    resList.append(self._davProvider.getResourceInst(requestedHref, environ))
                 else:
                     self._fail(HTTP_BAD_REQUEST, "Unknown tag in the REPORT request.")
         else:
