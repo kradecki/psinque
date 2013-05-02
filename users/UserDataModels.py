@@ -32,8 +32,6 @@ class UserProfile(db.Model):
   '''User profile'''
   user = db.UserProperty()
 
-  photograph = blobstore.BlobReferenceProperty()
-
   firstname = db.StringProperty(required = True,
                                 default = "Jan")
   middlename = db.StringProperty(required = False)
@@ -49,6 +47,11 @@ class UserProfile(db.Model):
   # nationality? namesday?
 
 addressTypes = {'home': 'Home', 'work': 'Work'}
+
+class UserPhoto(db.Model):
+  user = db.ReferenceProperty(UserProfile,
+                              collection_name="photos")
+  photograph = blobstore.BlobReferenceProperty()
 
 class UserAddress(db.Model):
   user = db.ReferenceProperty(UserProfile,
@@ -81,15 +84,21 @@ class UserWebpage(db.Model):
 #--------------------------------------------------
 # Groups of users
 
-class UserGroups(db.Model):
-  creator = db.ReferenceProperty(UserProfile)
+class UserGroup(db.Model):
+  creator = db.ReferenceProperty(UserProfile, collection_name = "groups")
   groupName = db.StringProperty()
-  canViewHomeData = db.BooleanProperty()
-  canViewWorkData = db.BooleanProperty()
-  canViewBothData = db.BooleanProperty()
+  canViewName = db.BooleanProperty()
+  canViewPsuedonym = db.BooleanProperty()
+  canViewBirthday = db.BooleanProperty()
+  canViewGender = db.BooleanProperty()
   vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
                       # because it might be longer than 500 characters
-  
+
+class UserGroupEmailPermission(db.Model):
+  userGroup = db.ReferenceProperty(UserGroup)
+  emailAddress = db.ReferenceProperty(UserEmail)
+  canView = db.BooleanProperty()
+
 #--------------------------------------------------
 # Relationships between users
 
@@ -98,7 +107,7 @@ class Relationship(db.Model):
   userTo = db.ReferenceProperty(UserProfile, collection_name = "ingoingRelationships")
   status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
   establishingTime = db.DateTimeProperty()
-  group = db.ReferenceProperty(UserGroups, collection_name = "relationships")
+  group = db.ReferenceProperty(UserGroup, collection_name = "relationships")
 
 #--------------------------------------------------
 # CardDAV passwords

@@ -53,7 +53,7 @@ handlers:
 
 # Under construction
 - url: /groups
-  script: UnderConstruction.app
+  script: Groups.app
 
 # User settings
 - url: /settings

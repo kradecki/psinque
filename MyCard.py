@@ -11,6 +11,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 
 from MasterHandler import MasterHandler
 from users.UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes, CardDAVPassword
+from users.UserDataModels import UserGroup
 
 class ViewProfile(MasterHandler):
 
@@ -30,8 +31,8 @@ class ViewProfile(MasterHandler):
       'photograph': None,
       'addresses': userAddressesQuery,
     }
-    if userProfile.photograph != None:
-      template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
+    #if userProfile.photograph != None:
+      #template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
 
     MasterHandler.sendTopTemplate(self, activeEntry = "My card")
     MasterHandler.sendContent(self, 'templates/myCard_viewProfile.html', template_values)
@@ -55,7 +56,14 @@ class EditProfile(MasterHandler):
       cardDAVPassword.generatedUsername = "dupa"
       cardDAVPassword.generatedPassword = "dupa"
       cardDAVPassword.put()
-      logging.debug("added dupa")
+      publicGroup = UserGroup()
+      publicGroup.creator = userProfile
+      publicGroup.groupName = "Public"
+      publicGroup.canViewName = True
+      publicGroup.canViewPsuedonym = False
+      publicGroup.canViewBirthday = False
+      publicGroup.canViewGender = False
+      publicGroup.put()
       firstLogin = True
     else:
       firstLogin = False

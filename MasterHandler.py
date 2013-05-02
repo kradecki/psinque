@@ -28,15 +28,15 @@ class MasterHandler(webapp2.RequestHandler):
   This is the base class for all handlers.
   It prepares all data for the top menu bar.
   '''
-    
-  def sendTopTemplate(self, activeEntry = ""):
-
-    user = users.get_current_user()
-    if not user:  # user not logged in
+  
+  def safeGuard(self):
+    self.user = users.get_current_user()
+    if not self.user:  # user not logged in
       self.redirect("/login")
       return
-
-    currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
+    
+  def sendTopTemplate(self, activeEntry = ""):
+    currentUserProfile = UserProfile.all().filter("user =", self.user).fetch(1, keys_only=True)[0]
     notificationCount = Relationship.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
     if notificationCount > 0:
       self.notificationsText = "Notifications (" + str(notificationCount) + ")"
@@ -65,10 +65,9 @@ class MasterHandler(webapp2.RequestHandler):
     self.response.out.write(template.render())
 
   def getUserVariables(self):
-    user = users.get_current_user()
-    if user:
+    if self.user:
         return {
-          'username': user.nickname(),
+          'username': self.user.nickname(),
           'loginurl': users.create_logout_url(self.request.uri),       
           'loginurl_linktext': "Logout",
           'settings': True
@@ -77,9 +76,8 @@ class MasterHandler(webapp2.RequestHandler):
         raise Exception("User not logged in.")   # this should never happen, because sendTopTemplate() redirects to /login earlier
 
   def getLanguage(self):
-    user = users.get_current_user()
     query = UserSettings.all()
-    userProfile = query.filter("user =", user).get()
+    userProfile = query.filter("user =", self.user).get()
     if not userProfile:  # no user profile registered yet
       self.LANGUAGE_CODE = "en"
     else:
@@ -108,7 +106,8 @@ class StaticMasterHandler(MasterHandler):
     super(StaticMasterHandler, self).__init__()
     
   def get(self):
-    self.sendTopTemplate(activeEntry = self.activeEntry)
+    MasterHandler.safeGuard()
+    MasterHandler.sendTopTemplate(activeEntry = self.activeEntry)
     template = jinja_environment.get_template(self.templateName)
     self.response.out.write(template.render(None))
-    self.sendBottomTemplate()
+    MasterHandler.sendBottomTemplate()
