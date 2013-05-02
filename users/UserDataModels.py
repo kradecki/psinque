@@ -45,10 +45,11 @@ class UserProfile(db.Model):
                              required = False)
 
   birthDay = db.DateProperty()  
-
+  
   # nationality? namesday?
 
 addressTypes = {'home': 'Home', 'work': 'Work'}
+
 class UserAddress(db.Model):
   user = db.ReferenceProperty(UserProfile,
                               collection_name="addresses")
@@ -86,16 +87,18 @@ class UserGroups(db.Model):
   canViewHomeData = db.BooleanProperty()
   canViewWorkData = db.BooleanProperty()
   canViewBothData = db.BooleanProperty()
-  # Every friend can see the names and the gender
+  vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
+                      # because it might be longer than 500 characters
   
 #--------------------------------------------------
 # Relationships between users
 
 class Relationship(db.Model):
-  userFrom = db.ReferenceProperty(UserProfile, collection_name="outgoingRelationships")
-  userTo = db.ReferenceProperty(UserProfile, collection_name="ingoingRelationships")
+  userFrom = db.ReferenceProperty(UserProfile, collection_name = "outgoingRelationships")
+  userTo = db.ReferenceProperty(UserProfile, collection_name = "ingoingRelationships")
   status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
   establishingTime = db.DateTimeProperty()
+  group = db.ReferenceProperty(UserGroups, collection_name = "relationships")
 
 #--------------------------------------------------
 # CardDAV passwords
