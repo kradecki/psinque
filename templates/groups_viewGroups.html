@@ -1,0 +1,24 @@
+<div id="content">
+  {% for group in groups %}
+    <p>groupName = {{ group.groupName }}</p>
+  {% endfor %}  
+<!--  <form action="/updategroup" method="POST">
+    <fieldset id="searchContacts">
+      <legend>Public</legend>
+      <p>
+        <input type="checkbox" name="newsletter">Name
+        <input type="checkbox" name="newsletter">Psuedonym
+        <input type="checkbox" name="newsletter">Gender
+        <input type="checkbox" name="newsletter">Birthday
+      </p>
+      <p>
+        <label>Photo:</label>
+        <select name="photo">
+          {% for photo in photos %}
+            <option {% if photo == preferredPhoto %} selected {% endif %} value="{{ photo }}">{{ photo }}</option>
+          {% endfor %}
+        </select>
+      </p>
+    </fieldset>
+  </form>-->
+</div>

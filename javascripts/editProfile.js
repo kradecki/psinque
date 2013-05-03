@@ -3,7 +3,7 @@
 var geocoder;
 var maps = [];
 var addressMarkers;
-var currentAddressPositons = [];
+var currentAddressPositions = [];
 
 function initializeGoogleMap(mapIdNr) {
   currentAddressPositon = new google.maps.LatLng(-34.397, 150.644);
@@ -19,18 +19,18 @@ function initializeGoogleMap(mapIdNr) {
 function codeAddress(address, mapIdNr) {
   geocoder.geocode( { 'address': address }, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
-      currentAddressPositons[mapIdNr-1] = results[0].geometry.location;
-      maps[mapIdNr-1].setCenter(currentAddressPositons[mapIdNr-1]);
+      currentAddressPositions[mapIdNr-1] = results[0].geometry.location;
+      maps[mapIdNr-1].setCenter(currentAddressPositions[mapIdNr-1]);
       addressMarker = new google.maps.Marker({
         map: maps[mapIdNr-1],
-        position: currentAddressPositons[mapIdNr-1],
+        position: currentAddressPositions[mapIdNr-1],
         draggable: true
       });
 
       updateAddressCoordinates(mapIdNr);
 
       addressMarker.position_changed = function() {
-        currentAddressPositons[mapIdNr-1] = addressMarker.getPosition();
+        currentAddressPositions[mapIdNr-1] = addressMarker.getPosition();
         updateAddressCoordinates(mapIdNr);
       };
     } else {
@@ -41,8 +41,8 @@ function codeAddress(address, mapIdNr) {
 
 function updateAddressCoordinates(mapIdNr) {
   // Copy the coordinates into appropriate input fields
-  $("#long" + mapIdNr).val(currentAddressPositons[mapIdNr-1].Xa);
-  $("#lat" + mapIdNr).val(currentAddressPositons[mapIdNr-1].Ya);
+  $("#long" + mapIdNr).val(currentAddressPositions[mapIdNr-1].Xa);
+  $("#lat" + mapIdNr).val(currentAddressPositions[mapIdNr-1].Ya);
 }
 
 function addNewMap() {
@@ -87,27 +87,53 @@ function addRemoverHandle(addressNr) {
   });
 }
 
-// Set all event handlers when the page is ready
-$(document).ready(function() {
+function cloneElement(name, currentNr, newNr) {
+  newElement = $("#" + name + currentNr).clone();  // clone an existing address field group
+  newElement.attr("id", name + newNr);  // change its id
   
-  $('#addAddress').click(function() {
-    if(addressCounter >= 10)   // a hard limit on the number of addresses
-      return false;  //TODO: Hide the "Add address" anchor not to confuse the user
-
-    // Clone an existing address field group
-    newAddress = $("#address" + (addressCounter++)).clone()
-    newAddress.attr("id", "address" + addressCounter);  // change its id
-    allInputFields = newAddress.find("input");
-    allInputFields.each(function() { $(this).attr("value", "") }); // clear the input values
-    allInputFields.each(function() { $(this).attr("name", $(this).attr("name").match("[^0-9]+") + addressCounter) }); // change the ids' prefix numbers
-    allInputFields.each(function() {
+  // Clean all the input values:
+  allInputFields = newElement.find("input,select");
+  allInputFields.each(function() { $(this).attr("value", "") }); // clear the input values
+  allInputFields.each(function() { $(this).attr("name", $(this).attr("name").match("[^0-9]+") + newNr) }); // change the ids' prefix numbers
+  allInputFields.each(function() {
       currentId = $(this).attr("id");
       if(typeof(currentId) != 'undefined')
-        $(this).attr("id", currentId.match("[^0-9]+") + addressCounter);
-    });
+      $(this).attr("id", currentId.match("[^0-9]+") + newNr);
+  });
+  
+  newElement.hide();
+  
+  return newElement;
+}
+
+function removeParent(whose) {
+  addressParent = whose.parent();
+  addressParent.slideUp('fast', function() {
+    addressParent.remove(); // remove the parent
+  });
+}
+
+// Set all event handlers when the page is ready
+$(document).ready(function() {
     
-    // Insert it to the page, but hidden for now
-    newAddress.hide();
+  $('#addEmail').click(function() {
+    newEmail = cloneElement("email", 1, ++emailCounter);
+    newEmail.insertBefore("#addEmail"); // insert hidden
+    newElement.find('label').html("Additional:"); // change the label text
+    newElement.find('a').html("Remove");
+    newElement.find('a').click(function() {
+      removeParent($(this));
+      return false;
+    });
+    newEmail.slideDown();  // show
+    return false;   // stop page refresh
+  });
+  
+  $('#addAddress').click(function() {
+//     if(addressCounter >= 10)   // a hard limit on the number of addresses
+      return false;  //TODO: Hide the "Add address" anchor not to confuse the user
+
+    newAddress = cloneElement("address", addressCounter++, addressCounter+1);
     newAddress.insertBefore("#addAddress"); // insert hidden
 
     // Handle the google map
@@ -131,8 +157,14 @@ $(document).ready(function() {
   });
 
   // Add removers to already existing secondary address
-  $('.removers').each(function(ii) {
-    addRemoverHandle(ii+2);
+//   $('.removers').each(function(ii) {
+//     addRemoverHandle(ii+2);
+//   });
+  $('.removers').each(function() {
+    $(this).click(function() {
+      removeParent($(this));
+      return false;          // represss page refresh
+    });
   });
 
   // Turn the form validation on

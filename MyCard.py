@@ -10,8 +10,11 @@ from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
 from MasterHandler import MasterHandler
-from users.UserDataModels import UserProfile, UserSettings, availableLanguages, UserAddress, addressTypes, CardDAVPassword
-from users.UserDataModels import UserGroup
+from users.UserDataModels import UserProfile, UserSettings, UserAddress, UserEmail
+from users.UserDataModels import UserGroup, CardDAVPassword
+
+# Available data type choices:
+from users.UserDataModels import availableLanguages, addressTypes, emailTypes
 
 class ViewProfile(MasterHandler):
 
@@ -69,20 +72,23 @@ class EditProfile(MasterHandler):
       firstLogin = False
 
     userAddressesQuery = userProfile.addresses
-    userAddresses = userAddressesQuery.fetch(10)
-
+    userAddresses = userAddressesQuery.fetch(100)
     addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
     if len(addresses) == 0:
       addresses = [{'nr': 1, 'value': None}]
 
-    #logging.info(addresses[0]['value'].location)
+    userEmails = userProfile.emails.fetch(100)
+    if len(userEmails) == 0:
+      userEmails = [{'address': '', 'primary': True, 'emailType': 'private'}]
 
     template_values = {
       'firstlogin': firstLogin,
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
+      'emails': userEmails,
       'addresses': addresses,
-      'initialAddressCount': len(userAddresses),
+      'initialAddressCount': len(addresses),
+      'emailTypes': emailTypes,
       'addressTypes': addressTypes,
     }
 
@@ -95,25 +101,27 @@ class EditProfile(MasterHandler):
     query = UserProfile.all()
     userProfile = query.filter("user =", user).get()
 
-    # We start by removing all currently stored address
+    # We start by removing all currently stored addresses
     # so that they're not doubled in the datastore
     for address in userProfile.addresses:
       address.delete()
+    for email in userProfile.emails: # same for emails
+      email.delete()
 
     for argumentName in self.request.arguments():
+      logging.info(argumentName)
       if argumentName == 'firstname':
         userProfile.firstname = self.request.get(argumentName)
       elif argumentName == 'lastname':
         userProfile.lastname = self.request.get(argumentName)
-      elif argumentName.find("addressMain") >= 0:
-        addressNumber = argumentName.replace("addressMain", "")
-        logging.info(addressNumber)
+      elif argumentName.startswith("address") and (self.request.get(argumentName) != ''):
+        addressNumber = argumentName.replace("address", "")
         newUserAddress = UserAddress()
         newUserAddress.user = userProfile
         newUserAddress.address = self.request.get(argumentName)
         newUserAddress.city = self.request.get("city" + addressNumber)
         newUserAddress.postalCode = self.request.get("postal" + addressNumber)
-        newUserAddress.addressType = self.request.get("addressType" + addressNumber)
+        newUserAddress.addressType = self.request.get("typeofAddress" + addressNumber)
         lat = self.request.get("lat" + addressNumber)
         lon = self.request.get("long" + addressNumber)
         if lat != "" and lon != "":
@@ -121,6 +129,14 @@ class EditProfile(MasterHandler):
         else:
           newUserAddress.location = None
         newUserAddress.put()
+      elif argumentName.startswith("email") and (self.request.get(argumentName) != ''):
+        emailNumber = argumentName.replace("email", "")
+        newEmail = UserEmail()
+        newEmail.user = userProfile
+        newEmail.email = self.request.get(argumentName)
+        newEmail.emailType = self.request.get("typeofEmail" + emailNumber)
+        newEmail.primary = (emailNumber == '1')
+        newEmail.put()
     userProfile.put()
 
     self.redirect('/profile')  # redirects to ViewProfile

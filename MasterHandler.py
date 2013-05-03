@@ -30,13 +30,18 @@ class MasterHandler(webapp2.RequestHandler):
   '''
   
   def safeGuard(self):
-    self.user = users.get_current_user()
-    if not self.user:  # user not logged in
+    '''
+    Checks if a user is logged in and if not, redirects
+    to the login page.
+    '''
+    user = users.get_current_user()
+    if not user:  # user not logged in
       self.redirect("/login")
       return
     
   def sendTopTemplate(self, activeEntry = ""):
-    currentUserProfile = UserProfile.all().filter("user =", self.user).fetch(1, keys_only=True)[0]
+    user = users.get_current_user()
+    currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
     notificationCount = Relationship.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
     if notificationCount > 0:
       self.notificationsText = "Notifications (" + str(notificationCount) + ")"
@@ -65,9 +70,10 @@ class MasterHandler(webapp2.RequestHandler):
     self.response.out.write(template.render())
 
   def getUserVariables(self):
-    if self.user:
+    user = users.get_current_user()
+    if user:
         return {
-          'username': self.user.nickname(),
+          'username': user.nickname(),
           'loginurl': users.create_logout_url(self.request.uri),       
           'loginurl_linktext': "Logout",
           'settings': True

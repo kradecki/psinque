@@ -1,8 +1,9 @@
 <script type="text/javascript" src="javascripts/jquery.js"></script>
 <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
-<script type="text/javascript" src="/javascripts/editForm.js"></script>
+<script type="text/javascript" src="/javascripts/editProfile.js"></script>
 <script type="text/javascript">
+  var emailCounter = {{ emails|length }};
   var addressCounter = {{ initialAddressCount }};
 </script>
 <div id="content">
@@ -13,28 +14,55 @@
         <fieldset id="generalInfo">
           <legend>General information</legend>
           <p>
-            <label>First name:</label>
+            <label>First name*:</label>
             <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" />
           </p>
           <p>
-            <label>Last name:</label>
+            <label>Middle name:</label>
+            <input type="text" name="middlename" value="{{ middlename }}" minlength="2" />
+          </p>
+          <p>
+            <label>Family name*:</label>
             <input type="text" name="lastname" value="{{ lastname }}" class="required" minlength="2" />
+          </p>
+          <p>
+            <label>Pseudonym:</label>
+            <input type="text" name="pseudonym" value="{{ pseudonym }}" minlength="2" />
+          </p>
+          <p>
+            <label>Gender</label><br/>
+            <input type="radio" name="sex" value="male">Male<br/>
+            <input type="radio" name="sex" value="female">Female<br/>
+            <input type="radio" name="sex" value="none">I won't tell
+          </p>
+          <p>
+            <label>Birthday</label>
+            <input type="date" name="birthday">
           </p>
         </fieldset>
         <fieldset id="electronicAddresses">
-          <legend>Electronic addresses</legend>
-          <p>
-            <label>E-mail:</label>
-            <input type="text" name="email" value="{{ email }}" class="required email" />
+          <legend>E-mail addresses</legend>
+          {% for email in emails|sort(reverse=True,attribute='primary') %}
+          <p id="email{{ loop.index }}">
+            <label>{% if email.primary %}Primary*:{% else %}Additional:{% endif %}</label>
+            <input type="text" name="email{{ loop.index }}" value="{{ email.email }}" class="{% if not email.primary %}required {% endif %}email" />
+            <select name="typeofEmail{{ loop.index}}">
+            {% for emailTypeCode, emailTypeName in emailTypes.items() %}
+              <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
+            {% endfor %}
+            </select>
+            <a href="" class="removers">{% if not email.primary %}Remove{% endif %}</a>
           </p>
+          {% endfor %}
+          <p id="addEmail"><a href="">Add e-mail</a></p>
         </fieldset>
         <fieldset id="addresses">
           <legend>Physical addresses</legend>
           {% for address in addresses %}
           <p id="address{{ address.nr }}">
             <label>Address:</label>
-            <input type="text" name="addressMain{{ address.nr }}" value="{{ address.value.address }}" class="required" />
-            <select name="addressType{{ address.nr }}">
+            <input type="text" name="address{{ address.nr }}" value="{{ address.value.address }}" class="required" />
+            <select name="typeofAddress{{ address.nr }}">
             {% for addressTypeCode, addressTypeName in addressTypes.iteritems() %}
               {% if addressTypeCode == address.value.addressType %}
                 <option value="{{ addressTypeCode }}" selected="selected">{{ addressTypeName }}</option>

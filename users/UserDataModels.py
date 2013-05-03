@@ -27,6 +27,8 @@ class UserSettings(db.Model):
 
 genders    = ["male", "female"]
 phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
+addressTypes = {'home': 'Home', 'work': 'Work'}
+emailTypes   = {'private': 'Private', 'work': 'Work'}
 
 class UserProfile(db.Model):
   '''User profile'''
@@ -46,16 +48,12 @@ class UserProfile(db.Model):
   
   # nationality? namesday?
 
-addressTypes = {'home': 'Home', 'work': 'Work'}
-
 class UserPhoto(db.Model):
-  user = db.ReferenceProperty(UserProfile,
-                              collection_name="photos")
+  user = db.ReferenceProperty(UserProfile, collection_name = "photos")
   photograph = blobstore.BlobReferenceProperty()
 
 class UserAddress(db.Model):
-  user = db.ReferenceProperty(UserProfile,
-                              collection_name="addresses")
+  user = db.ReferenceProperty(UserProfile, collection_name = "addresses")
   address = db.PostalAddressProperty()
   city = db.StringProperty()
   postalCode = db.StringProperty()
@@ -63,16 +61,17 @@ class UserAddress(db.Model):
   location = db.GeoPtProperty()
 
 class UserEmail(db.Model):
-  user = db.ReferenceProperty(UserProfile)
+  user = db.ReferenceProperty(UserProfile, collection_name = "emails")
   email = db.EmailProperty()
-  emailType = db.StringProperty(choices = ["home", "work"])
+  emailType = db.StringProperty(choices = emailTypes.keys())
+  primary = db.BooleanProperty()
 
 class UserIM(db.Model):
   user = db.ReferenceProperty(UserProfile)
   im = db.IMProperty()
 
 class UserPhoneNumber(db.Model):
-  user = db.ReferenceProperty(UserProfile, collection_name="phoneNumbers")
+  user = db.ReferenceProperty(UserProfile, collection_name = "phoneNumbers")
   phone = db.PhoneNumberProperty(required = True)
   phoneType = db.StringProperty(choices = phoneTypes)
 
@@ -95,7 +94,7 @@ class UserGroup(db.Model):
                       # because it might be longer than 500 characters
 
 class UserGroupEmailPermission(db.Model):
-  userGroup = db.ReferenceProperty(UserGroup)
+  userGroup = db.ReferenceProperty(UserGroup, collection_name = "emails")
   emailAddress = db.ReferenceProperty(UserEmail)
   canView = db.BooleanProperty()
 
