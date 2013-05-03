@@ -11,8 +11,21 @@
   <div id="rightcolumn">
     <h3><b>{{ firstname }} {{ middlename }} {{ lastname }}</b></h3>
     <a href="/editprofile">Edit profile</a>
+    <h4>Addresses:</h4>
     {% for address in addresses %}
-    <p>{% if address.primary %}<b>{% endif %}{{ address.address }}, {{ address.postalCode }}, {{ address.city }}{% if address.primary %}</b>{% endif %}</p>
+    <p>
+      {% if address.primary %}<b>{% endif %}
+      {{ address.address }}<br/>{{ address.postalCode }}<br/>{{ address.city }}
+      {% if address.primary %}</b>{% endif %}
+    </p>
+    {% endfor %}
+    <h4>E-mails:</h4>
+    {% for email in emails|sort(reverse=True,attribute='primary') %}
+    <p>
+      {% if email.primary %}<b>{% endif %}
+      {{ email.email }} ({{ email.emailType }})
+      {% if email.primary %}</b>{% endif %}
+    </p>
     {% endfor %}
   </div>
 </div>

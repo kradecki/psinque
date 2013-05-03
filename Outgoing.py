@@ -10,7 +10,7 @@ from django.utils import simplejson as json
 from MasterHandler import MasterHandler
 from users.UserDataModels import UserProfile, Relationship
 
-class Notifications(MasterHandler):
+class Outgoing(MasterHandler):
   
   def get(self):
     
@@ -22,7 +22,7 @@ class Notifications(MasterHandler):
       'notificationCount': notifications.count()
     }
 
-    MasterHandler.sendTopTemplate(self, activeEntry = "Notifications")
+    MasterHandler.sendTopTemplate(self, activeEntry = "Outgoing")
     MasterHandler.sendContent(self, 'templates/notifications_view.html', template_values)
     MasterHandler.sendBottomTemplate(self)
 
@@ -40,6 +40,6 @@ class ChangeRelationship(webapp2.RequestHandler):
       self.response.out.write(json.dumps({"status": "ok"}))
 
 app = webapp2.WSGIApplication([
-  ('/notifications', Notifications),
+  ('/outgoing', Outgoing),
   ('/changerelationship', ChangeRelationship),
 ], debug=True)

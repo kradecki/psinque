@@ -76,17 +76,6 @@ function showTheMap() {
   return false;
 }
 
-function addRemoverHandle(addressNr) {
-  $('#remover' + addressNr).click(function() {
-    addressCounter--;
-    addressParent = $(this).parent()
-    addressParent.slideUp('fast', function() {
-      addressParent.remove(); // remove the parent <p></p>
-    });
-    return false;          // represss page refresh
-  });
-}
-
 function cloneElement(name, currentNr, newNr) {
   newElement = $("#" + name + currentNr).clone();  // clone an existing address field group
   newElement.attr("id", name + newNr);  // change its id
@@ -130,9 +119,6 @@ $(document).ready(function() {
   });
   
   $('#addAddress').click(function() {
-//     if(addressCounter >= 10)   // a hard limit on the number of addresses
-      return false;  //TODO: Hide the "Add address" anchor not to confuse the user
-
     newAddress = cloneElement("address", addressCounter++, addressCounter+1);
     newAddress.insertBefore("#addAddress"); // insert hidden
 
@@ -148,7 +134,10 @@ $(document).ready(function() {
     // Add a handle to remove this address
     if(addressCounter == 2)  // we cloned the first address, so we need to add a 'remove' link
       newAddress.append(' | <a href="" id="remover' + addressCounter + '" class="removers">Remove</a>')
-    addRemoverHandle(addressCounter);
+    newAddress.find('#remover' + addressCounter).click(function() {
+      removeParent($(this));
+      return false;
+    });
 
     // Show the new address fields
     newAddress.slideDown();
@@ -156,10 +145,7 @@ $(document).ready(function() {
     return false;   // stop page refresh
   });
 
-  // Add removers to already existing secondary address
-//   $('.removers').each(function(ii) {
-//     addRemoverHandle(ii+2);
-//   });
+  // Add removers to already existing fields
   $('.removers').each(function() {
     $(this).click(function() {
       removeParent($(this));

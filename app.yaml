@@ -44,12 +44,12 @@ handlers:
   script: Contacts.app
 - url: /addcontact
   script: Contacts.app
-
-# Notifications
-- url: /notifications
-  script: Notifications.app
+- url: /incoming
+  script: Incoming.app
+- url: /outgoing
+  script: Outgoing.app
 - url: /changerelationship    # AJAX queries
-  script: Notifications.app
+  script: Outgoing.app
 
 # Under construction
 - url: /groups

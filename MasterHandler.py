@@ -44,15 +44,15 @@ class MasterHandler(webapp2.RequestHandler):
     currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
     notificationCount = Relationship.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
     if notificationCount > 0:
-      self.notificationsText = "Notifications (" + str(notificationCount) + ")"
+      self.outgoingText = "Outgoing (" + str(notificationCount) + ")"
     else:
-      self.notificationsText = "Notifications"
+      self.outgoingText = "Outgoing"
 
     menuentries = [
       MenuEntry("profile", "My card"),
-      MenuEntry("notifications", self.notificationsText),
       MenuEntry("groups", "Groups"),
-      MenuEntry("contacts", "Contacts"),
+      MenuEntry("incoming", "Incoming"),
+      MenuEntry("outgoing", self.outgoingText),
       MenuEntry("settings", "Settings")
     ]
     if activeEntry != "":

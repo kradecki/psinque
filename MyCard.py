@@ -26,13 +26,12 @@ class ViewProfile(MasterHandler):
       self.redirect("/editprofile")  # and redirect to edit the profile
       return
 
-    userAddressesQuery = userProfile.addresses
-
     template_values = {
       'firstname': userProfile.firstname,
       'lastname': userProfile.lastname,
       'photograph': None,
-      'addresses': userAddressesQuery,
+      'emails': userProfile.emails,
+      'addresses': userProfile.addresses,
     }
     #if userProfile.photograph != None:
       #template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
@@ -114,6 +113,10 @@ class EditProfile(MasterHandler):
         userProfile.firstname = self.request.get(argumentName)
       elif argumentName == 'lastname':
         userProfile.lastname = self.request.get(argumentName)
+      elif argumentName == 'middlename':
+        userProfile.middlename = self.request.get(argumentName)
+      elif argumentName == 'pseudonym':
+        userProfile.pseudonym = self.request.get(argumentName)
       elif argumentName.startswith("address") and (self.request.get(argumentName) != ''):
         addressNumber = argumentName.replace("address", "")
         newUserAddress = UserAddress()
