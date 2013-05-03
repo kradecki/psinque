@@ -49,20 +49,20 @@ class EditProfile(MasterHandler):
 
     def get(self):   # form for editing details
 
-        MasterHandler.safeGuard()
-        userProfile = UserProfile.all().filter("user =", MasterHandler.user).get()
+        MasterHandler.safeGuard(self)
+        userProfile = UserProfile.all().filter("user =", self.user).get()
         
         firstLogin = (not userProfile)        
         if firstLogin:  # no user profile registered yet, so create a new one
         
-            userProfile = UserProfile(user = user)
+            userProfile = UserProfile(user = self.user)
             userProfile.put()  # save the new (and empty) profile in the Datastore
             
-            userSettings = UserSettings(parent = userProfile, user = user)
+            userSettings = UserSettings(parent = userProfile, user = self.user)
             userSettings.put()
             
             cardDAVPassword = CardDAVPassword(parent = userSettings,
-                                              user = user,
+                                              user = self.user,
                                               generatedUsername = 'dupa',
                                               generatedPassword = 'dupa')
             cardDAVPassword.put()
@@ -102,8 +102,8 @@ class EditProfile(MasterHandler):
     #TODO:Add transactions to profile updates
     def post(self):  # executed when the user hits the 'Save' button, which sends a POST request
     
-        MasterHandler.safeGuard()
-        userProfile = UserProfile.all().filter("user =", MasterHandler.user).fetch(1)[0]
+        MasterHandler.safeGuard(self)
+        userProfile = UserProfile.all().filter("user =", self.user).fetch(1)[0]
         
         # We start by removing all currently stored data
         # that is kept in separate entities,

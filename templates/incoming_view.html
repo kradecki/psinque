@@ -1,22 +1,33 @@
 <script type="text/javascript" src="javascripts/jquery.js"></script>
 <script type="text/javascript" src="/javascripts/incoming_view.js"></script>
 <div id="content">
-  <legend>Add contacts</legend>
-  <p>
-    <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" /><br/>
-    <a href="" id="search">Search by email</a>
-  </p>
-  <p>
-    <a href="">Search from Google contacts.</a>
-  </p>
-  <legend>Current contact sources</legend>
-  Page: <a href="">1</a>
+  You have {% if count == 1000 %}1000+{% else %}{{ count }}{% endif %} incoming psinques.
   <table>
+    <th>#</th>
+    <th>Name</th>
+    <th>Status</th>
+    <th>Established</th>
   {% for contact in contacts %}
     <tr>
-    <td>contact.name</td>
-    <td>contact.type</td>
+    <td>{{ contact.nr }}</td>
+    <td>{{ contact.name }}</td>
+    <td>{{ contact.status }}</td>
+    <td>{{ contact.date }}</td>
     </tr>
   {% endfor %}
   </table>
+  {% if previousCursor %}
+  <a href="/incoming?start={{ previousCursor }}&offset={{ offset-10 }}">Previous page</a>
+  {% endif %}
+  {% if isThereMore %}
+  <a href="/incoming?start={{ cursor }}&offset={{ offset+10 }}">Next page</a>
+  {% endif %}
+  <h3>Add psinque by email:</h3>
+  <p>
+    <input type="text" id="email" /><br/>
+    <a href="" id="search">Search</a>
+  </p>
+<!--  <p>
+    <a href="">Search from Google contacts.</a>
+  </p>-->
 </div>

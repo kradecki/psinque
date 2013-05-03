@@ -8,7 +8,7 @@
 
 import logging
 
-from UserDataModels import UserSettings, CardDAVPassword
+from UserDataModels import UserSettings, UserGroup, CardDAVPassword
 
 def groupList(user):
     """Returns the list of all groups created by the logged in user.
@@ -66,9 +66,15 @@ def getName(user):
 
 def getPublicGroup(user):
     publicGroup = UserGroup.all(keys_only = True)
-    publicGroup.ancestor(user)
+    publicGroup.ancestor(user.key())
     publicGroup.filter("groupName =", "Public")
     return publicGroup.get()
+
+def getDisplayNameFromPsinque(psinque):
+    if psinque.group.canViewName:
+        return getName(psinque.fromUser)
+    else:
+        return getPrimaryEmail(psinque.fromUser)
 
 
 def getDisplayName(user, toUser):
@@ -83,6 +89,7 @@ def getDisplayName(user, toUser):
 
 def getUserSettings(user):
     return UserSettings.all().filter("user =", user).get()
+
 
 #TODO: Set up generated password indexes
 def cardDAVPassword(username):
