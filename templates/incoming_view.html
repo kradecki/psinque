@@ -1,0 +1,21 @@
+<div id="content">
+  <legend>Add contacts</legend>
+  <p>
+    Search by email:
+    <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" />
+    <a href="">Search</a>
+  </p>
+  <p>
+    <a href="">Search from Google contacts.</a>
+  </p>
+  <legend>Current contact sources</legend>
+  Page: <a href="">1</a>
+  <table>
+  {% for contact in contacts %}
+    <tr>
+    <td>contact.name</td>
+    <td>contact.type</td>
+    </tr>
+  {% endfor %}
+  </table>
+</div>

@@ -34,8 +34,8 @@ class MasterHandler(webapp2.RequestHandler):
     Checks if a user is logged in and if not, redirects
     to the login page.
     '''
-    user = users.get_current_user()
-    if not user:  # user not logged in
+    self.user = users.get_current_user()
+    if not self.user:  # user not logged in
       self.redirect("/login")
       return
     

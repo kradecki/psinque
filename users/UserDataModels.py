@@ -94,7 +94,7 @@ class UserGroup(db.Model):
                       # because it might be longer than 500 characters
 
 class UserGroupEmailPermission(db.Model):
-  userGroup = db.ReferenceProperty(UserGroup, collection_name = "emails")
+  userGroup = db.ReferenceProperty(UserGroup, collection_name = "emailPermissions")
   emailAddress = db.ReferenceProperty(UserEmail)
   canView = db.BooleanProperty()
 
@@ -103,7 +103,7 @@ class UserGroupEmailPermission(db.Model):
 
 class Relationship(db.Model):
   userFrom = db.ReferenceProperty(UserProfile, collection_name = "outgoingRelationships")
-  userTo = db.ReferenceProperty(UserProfile, collection_name = "ingoingRelationships")
+  userTo = db.ReferenceProperty(UserProfile, collection_name = "incomingRelationships")
   status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
   establishingTime = db.DateTimeProperty()
   group = db.ReferenceProperty(UserGroup, collection_name = "relationships")

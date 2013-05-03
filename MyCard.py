@@ -99,6 +99,7 @@ class EditProfile(MasterHandler):
         MasterHandler.sendBottomTemplate(self)
 
 
+    #TODO:Add transactions to profile updates
     def post(self):  # executed when the user hits the 'Save' button, which sends a POST request
     
         MasterHandler.safeGuard()
