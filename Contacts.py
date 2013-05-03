@@ -24,7 +24,7 @@ class ViewContacts(MasterHandler):
       self.redirect("/")
       return
 
-    userContacts = userProfile.outgoingRelationships
+    userContacts = userProfile.outgoing
           
     template_values = {
       'header': 'Your Contacts:',
@@ -64,7 +64,7 @@ class SearchContacts(MasterHandler):
       userFrom = UserProfile.all().filter("user =", user).get()
       userTo = UserProfile.all().filter("user =", profile.user).get()
      
-      if Relationship.all().filter('userFrom =', userFrom).filter('userTo =', userTo).get():
+      if Psinque.all().filter('userFrom =', userFrom).filter('userTo =', userTo).get():
         continue
       contactList.append(profile)
 
@@ -85,24 +85,24 @@ class AddContact(webapp2.RequestHandler):
     # Prepare the Datastore row values
     userId = int(self.request.get('id'))
     user = users.get_current_user()
-    userFrom = UserProfile.all().filter("user =", user).get()
-    userTo = UserProfile.get_by_id(userId)
+    fromUser = UserProfile.all().filter("user =", user).get()
+    toUser = UserProfile.get_by_id(userId)
     status = 'pending'
     
-    # Check if a relationship has not already been created
-    query = Relationship.all()
-    existingRelationship = query.filter('userFrom =', userFrom).filter('userTo =', userTo).get()
+    # Check if a psinque has not already been created
+    query = Psinque.all()
+    existingPsinque = query.filter('fromUser =', fromUser).filter('toUser =', toUser).get()
 
-    # Create a new relationship unless:
+    # Create a new psinque unless:
     #  - user tries to add himself as a contact
-    #  - a relationship between both users does not already exist
+    #  - a psinque between both users does not already exist
     #  10.08.2012: With slideUp implemented, this code could be removed. Check with Stasiu.
-    if (userFrom.key().id() != userTo.key().id()) and (not existingRelationship):
-      newRelationship = Relationship()
-      newRelationship.userFrom = userFrom
-      newRelationship.userTo = userTo
-      newRelationship.status = status
-      newRelationship.put()
+    if (fromUser.key().id() != toUser.key().id()) and (not existingPsinque):
+      newPsinque = Psinque()
+      newPsinque.fromUser = fromUser
+      newPsinque.toUser = toUser
+      newPsinque.status = status
+      newPsinque.put()
       self.response.out.write(json.dumps({"status": "ok", "userId": userId}))
 
 

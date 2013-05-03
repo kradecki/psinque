@@ -99,14 +99,14 @@ class UserGroupEmailPermission(db.Model):
   canView = db.BooleanProperty()
 
 #--------------------------------------------------
-# Relationships between users
+# Psinquing between users
 
-class Relationship(db.Model):
-  userFrom = db.ReferenceProperty(UserProfile, collection_name = "outgoingRelationships")
-  userTo = db.ReferenceProperty(UserProfile, collection_name = "incomingRelationships")
+class Psinque(db.Model):
+  fromUser = db.ReferenceProperty(UserProfile, collection_name = "outgoing")
+  toUser   = db.ReferenceProperty(UserProfile, collection_name = "incoming")
   status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
-  establishingTime = db.DateTimeProperty()
-  group = db.ReferenceProperty(UserGroup, collection_name = "relationships")
+  establishingTime = db.DateTimeProperty(auto_now = True)
+  group = db.ReferenceProperty(UserGroup, collection_name = "psinques")
 
 #--------------------------------------------------
 # CardDAV passwords

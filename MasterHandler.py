@@ -9,7 +9,7 @@ from google.appengine.api import users
 
 from users.UserDataModels import UserSettings
 from users.UserDataModels import UserProfile
-from users.UserDataModels import Relationship
+from users.UserDataModels import Psinque
 
 jinja_environment = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -42,7 +42,7 @@ class MasterHandler(webapp2.RequestHandler):
   def sendTopTemplate(self, activeEntry = ""):
     user = users.get_current_user()
     currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
-    notificationCount = Relationship.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
+    notificationCount = Psinque.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
     if notificationCount > 0:
       self.outgoingText = "Outgoing (" + str(notificationCount) + ")"
     else:

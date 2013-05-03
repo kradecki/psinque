@@ -7,6 +7,10 @@ threadsafe: true
 builtins:
 - remote_api: off
 
+# Later, to receive emails, we will need to add:
+# inbound_services:
+# - mail
+
 libraries:
 - name: jinja2
   version: latest
@@ -44,12 +48,18 @@ handlers:
   script: Contacts.app
 - url: /addcontact
   script: Contacts.app
-- url: /incoming
-  script: Incoming.app
 - url: /outgoing
   script: Outgoing.app
 - url: /changerelationship    # AJAX queries
   script: Outgoing.app
+
+# Incoming
+- url: /incoming
+  script: Incoming.app
+- url: /searchemail
+  script: Incoming.app
+- url: /addincoming
+  script: Incoming.app
 
 # Under construction
 - url: /groups

@@ -75,12 +75,12 @@ class EditProfile(MasterHandler):
                                     canViewGender = False)
             publicGroup.put()
         
-        userAddresses = userProfile.addresses.setAncestor(userProfile).fetch(100)
+        userAddresses = userProfile.addresses.ancestor(userProfile).fetch(100)
         addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
         if len(addresses) == 0:
             addresses = [{'nr': 1, 'value': None}]
             
-        userEmails = userProfile.emails.setAncestor(userProfile).fetch(100)
+        userEmails = userProfile.emails.ancestor(userProfile).fetch(100)
         if len(userEmails) == 0:
             userEmails = [{'address': '', 'primary': True, 'emailType': 'private'}]
                 

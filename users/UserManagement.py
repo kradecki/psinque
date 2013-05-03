@@ -55,7 +55,32 @@ REV:20080424T195243Z
 END:VCARD"""
     return ""
 
-#TODO: Query by key is faster
+
+def getPrimaryEmail(user):
+    return user.emails.ancestor(user).filter("primary =", True).get()
+
+
+def getName(user):
+    return user.firstname + " " + user.lastname
+
+
+def getPublicGroup(user):
+    publicGroup = UserGroup.all(keys_only = True)
+    publicGroup.ancestor(user)
+    publicGroup.filter("groupName =", "Public")
+    return publicGroup.get()
+
+
+def getDisplayName(user, toUser):
+    
+    if not getPublicGroup(fromUser).canViewName: # Perhaps the name is visible to everyone?  
+        psinque = Psinque.all().filter("toUser =", toUser).filter("fromUser =", user).get()
+        primaryEmail = getPrimaryEmail(user)
+        if (len(psinque) == 0) or (psinque.status != "Established") or (not psinque.group.canViewName):
+            return primaryEmail    # email address is always visible
+    return getName(user)
+    
+
 def getUserSettings(user):
     return UserSettings.all().filter("user =", user).get()
 
