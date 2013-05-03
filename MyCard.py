@@ -49,8 +49,8 @@ class EditProfile(MasterHandler):
 
     def get(self):   # form for editing details
 
-        user = users.get_current_user()
-        userProfile = UserProfile.all().filter("user =", user).get()
+        MasterHandler.safeGuard()
+        userProfile = UserProfile.all().filter("user =", MasterHandler.user).get()
         
         firstLogin = (not userProfile)        
         if firstLogin:  # no user profile registered yet, so create a new one
@@ -61,14 +61,18 @@ class EditProfile(MasterHandler):
             userSettings = UserSettings(parent = userProfile, user = user)
             userSettings.put()
             
-            cardDAVPassword = CardDAVPassword(parent = userSettings, user = user,
-                                              generatedUsername = 'dupa', generatedPassword = 'dupa')
+            cardDAVPassword = CardDAVPassword(parent = userSettings,
+                                              user = user,
+                                              generatedUsername = 'dupa',
+                                              generatedPassword = 'dupa')
             cardDAVPassword.put()
             
             publicGroup = UserGroup(parent = userProfile, creator = userProfile,
                                     groupName = 'Public',
-                                    canViewName = True, canViewPsuedonym = False,
-                                    canViewBirthday = False, canViewGender = False)
+                                    canViewName = True,
+                                    canViewPsuedonym = False,
+                                    canViewBirthday = False,
+                                    canViewGender = False)
             publicGroup.put()
         
         userAddresses = userProfile.addresses.setAncestor(userProfile).fetch(100)
@@ -97,27 +101,33 @@ class EditProfile(MasterHandler):
 
     def post(self):  # executed when the user hits the 'Save' button, which sends a POST request
     
-        user = users.get_current_user()
-        query = UserProfile.all()
-        userProfile = query.filter("user =", user).get()
+        MasterHandler.safeGuard()
+        userProfile = UserProfile.all().filter("user =", MasterHandler.user).fetch(1)[0]
         
-        # We start by removing all currently stored addresses
-        # so that they're not doubled in the datastore
+        # We start by removing all currently stored data
+        # that is kept in separate entities,
+        # so that they're not doubled in the datastore.
+        # This is because it's impossible to tell which
+        # of the new entities correspond to the old ones.
         for address in userProfile.addresses:
             address.delete()
         for email in userProfile.emails: # same for emails
             email.delete()
             
         for argumentName in self.request.arguments():
-            logging.info(argumentName)
+            
             if argumentName == 'firstname':
                 userProfile.firstname = self.request.get(argumentName)
+                
             elif argumentName == 'lastname':
                 userProfile.lastname = self.request.get(argumentName)
+                
             elif argumentName == 'middlename':
                 userProfile.middlename = self.request.get(argumentName)
+                
             elif argumentName == 'pseudonym':
                 userProfile.pseudonym = self.request.get(argumentName)
+                
             elif argumentName.startswith("address") and (self.request.get(argumentName) != ''):
                 addressNumber = argumentName.replace("address", "")
                 newUserAddress = UserAddress(parent = userProfile, user = userProfile,
@@ -132,6 +142,7 @@ class EditProfile(MasterHandler):
                 else:
                     newUserAddress.location = None
                 newUserAddress.put()
+                
             elif argumentName.startswith("email") and (self.request.get(argumentName) != ''):
                 emailNumber = argumentName.replace("email", "")
                 newEmail = UserEmail(parent = userProfile,
@@ -187,4 +198,3 @@ app = webapp2.WSGIApplication([
     ('/uploadphotopost', UploadHandler),
     ('/serveimageblob/([^/]+)?', ServeHandler),
 ], debug=True)
-    
