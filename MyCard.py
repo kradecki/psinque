@@ -52,27 +52,31 @@ class EditProfile(MasterHandler):
         user = users.get_current_user()
         userProfile = UserProfile.all().filter("user =", user).get()
         
-        firstLogin = (not userProfile)
+        firstLogin = (not userProfile)        
         if firstLogin:  # no user profile registered yet, so create a new one
+        
             userProfile = UserProfile(user = user)
             userProfile.put()  # save the new (and empty) profile in the Datastore
-            userSettings = UserSettings(user = user)
+            
+            userSettings = UserSettings(parent = userProfile, user = user)
             userSettings.put()
-            cardDAVPassword = CardDAVPassword(user = user,
-            generatedUsername = 'dupa', generatedPassword = 'dupa')
+            
+            cardDAVPassword = CardDAVPassword(parent = userSettings, user = user,
+                                              generatedUsername = 'dupa', generatedPassword = 'dupa')
             cardDAVPassword.put()
-            publicGroup = UserGroup(creator = userProfile, groupName = 'Public',
-            canViewName = True, canViewPsuedonym = False,
-            canViewBirthday = False, canViewGender = False)
+            
+            publicGroup = UserGroup(parent = userProfile, creator = userProfile,
+                                    groupName = 'Public',
+                                    canViewName = True, canViewPsuedonym = False,
+                                    canViewBirthday = False, canViewGender = False)
             publicGroup.put()
         
-        userAddressesQuery = userProfile.addresses
-        userAddresses = userAddressesQuery.fetch(100)
+        userAddresses = userProfile.addresses.setAncestor(userProfile).fetch(100)
         addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
         if len(addresses) == 0:
             addresses = [{'nr': 1, 'value': None}]
             
-        userEmails = userProfile.emails.fetch(100)
+        userEmails = userProfile.emails.setAncestor(userProfile).fetch(100)
         if len(userEmails) == 0:
             userEmails = [{'address': '', 'primary': True, 'emailType': 'private'}]
                 
@@ -82,7 +86,6 @@ class EditProfile(MasterHandler):
             'lastname': userProfile.lastname,
             'emails': userEmails,
             'addresses': addresses,
-            'initialAddressCount': len(addresses),
             'emailTypes': emailTypes,
             'addressTypes': addressTypes,
             }
@@ -117,26 +120,25 @@ class EditProfile(MasterHandler):
                 userProfile.pseudonym = self.request.get(argumentName)
             elif argumentName.startswith("address") and (self.request.get(argumentName) != ''):
                 addressNumber = argumentName.replace("address", "")
-                newUserAddress = UserAddress()
-                newUserAddress.user = userProfile
-                newUserAddress.address = self.request.get(argumentName)
-                newUserAddress.city = self.request.get("city" + addressNumber)
-                newUserAddress.postalCode = self.request.get("postal" + addressNumber)
-                newUserAddress.addressType = self.request.get("typeofAddress" + addressNumber)
+                newUserAddress = UserAddress(parent = userProfile, user = userProfile,
+                                             address = self.request.get(argumentName),
+                                             city = self.request.get("city" + addressNumber),
+                                             postalCode = self.request.get("postal" + addressNumber),
+                                             addressType = self.request.get("typeofAddress" + addressNumber))
                 lat = self.request.get("lat" + addressNumber)
                 lon = self.request.get("long" + addressNumber)
                 if lat != "" and lon != "":
                     newUserAddress.location = db.GeoPt(lat = lat, lon = lon)
                 else:
                     newUserAddress.location = None
-                    newUserAddress.put()
+                newUserAddress.put()
             elif argumentName.startswith("email") and (self.request.get(argumentName) != ''):
                 emailNumber = argumentName.replace("email", "")
-                newEmail = UserEmail()
-                newEmail.user = userProfile
-                newEmail.email = self.request.get(argumentName)
-                newEmail.emailType = self.request.get("typeofEmail" + emailNumber)
-                newEmail.primary = (emailNumber == '1')
+                newEmail = UserEmail(parent = userProfile,
+                                     user = userProfile,
+                                     email = self.request.get(argumentName),
+                                     emailType = self.request.get("typeofEmail" + emailNumber),
+                                     primary = (emailNumber == '1'))
                 newEmail.put()
         
         userProfile.put()  # update the user profile
