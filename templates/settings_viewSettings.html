@@ -14,19 +14,19 @@
     <fieldset id="notifications">
       <legend>Notifications</legend>
       <p>
-        <input type="checkbox" name="newsletter">Send me a Newsletter
+        <input type="checkbox" name="newsletter" {% if notifyNewsletter %}checked="checked"{% endif %}">Send me a Newsletter
       </p>
       <p>
-        <input type="checkbox" name="emailnotifications">Send me a email notifications
+        <input type="checkbox" name="emailnotifications" {% if notifyEmails %}checked="checked"{% endif %}">Send me a email notifications
       </p>
     </fieldset>
     <fieldset id="synchronization">
       <legend>Contact synchronization</legend>
       <p>
-        <input type="checkbox" name="sync.google">Psinque with my Google account
+        <input type="checkbox" name="syncgoogle" {% if syncWithGoogle %}checked="checked"{% endif %}">Psinque with my Google account
       </p>
       <p>
-        <input type="checkbox" name="sync.carddav">Allow CardDAV psinquing
+        <input type="checkbox" name="synccarddav" {% if cardDAVenabled %}checked="checked"{% endif %}">Allow CardDAV psinquing
         <br />
         <a href="" class="generateCardDAV">Generate CardDAV login data</a>
       </p>

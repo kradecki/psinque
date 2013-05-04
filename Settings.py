@@ -18,6 +18,10 @@ class Settings(MasterHandler):
         template_values = {
           'preferredLanguage': userSettings.preferredLanguage,
           'availableLanguages': availableLanguages,
+          'notifyNewsletter': userSettings.notifyNewsletter,
+          'notifyEmails': userSettings.notifyEmails,
+          'cardDAVenabled': userSettings.cardDAVenabled,
+          'syncWithGoogle': userSettings.syncWithGoogle,
         }
         MasterHandler.sendTopTemplate(self, activeEntry = "Settings")
         MasterHandler.sendContent(self, 'templates/settings_viewSettings.html', template_values)
@@ -28,8 +32,10 @@ class Settings(MasterHandler):
   def post(self):
     userSettings = getUserSettings(users.get_current_user())
     userSettings.preferredLanguage = self.request.get('language')
-    userSettings.notifyOnNewsletter = bool(self.request.get('newsletter'))
-    logging.info(u"Wartość =" + unicode(self.request.get('newsletter')))
+    userSettings.notifyNewsletter = bool(self.request.get('newsletter'))
+    userSettings.notifyEmails = bool(self.request.get('emailnotifications'))
+    userSettings.cardDAVenabled = bool(self.request.get('synccarddav'))
+    userSettings.syncWithGoogle = bool(self.request.get('syncgoogle'))
     userSettings.put()
 
     self.redirect('/settings')  # redirects to Settings

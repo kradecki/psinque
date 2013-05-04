@@ -18,9 +18,11 @@ class UserSettings(db.Model):
   # Settings:
   preferredLanguage = db.StringProperty(choices = availableLanguages.keys(),
                                         default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
-  notifyOnNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
+  notifyNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
+  notifyEmails = db.BooleanProperty(default = True)
   
-  cardDAVenabled = db.BooleanProperty(default = True)  #TODO: Disable this after testing
+  cardDAVenabled = db.BooleanProperty(default = False)
+  syncWithGoogle = db.BooleanProperty(default = False)
 
 #--------------------------------------------------
 # User profile

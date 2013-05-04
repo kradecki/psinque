@@ -1,5 +1,3 @@
 *.py[cod]
 *.py~
 *.kate-swp
-jquery
-google_appengine

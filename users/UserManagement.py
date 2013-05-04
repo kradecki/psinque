@@ -8,6 +8,8 @@
 
 import logging
 
+import vobject
+
 from UserDataModels import UserSettings, UserGroup, CardDAVPassword
 
 def groupList(user):
