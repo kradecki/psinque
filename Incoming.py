@@ -38,8 +38,9 @@ class Incoming(MasterHandler):
             contacts.append({'nr': offset + len(contacts) + 1,
                              'name': getDisplayNameFromPsinque(psinque),
                              'date': psinque.establishingTime,
-                             'status': psinque.status})
-            
+                             'status': psinque.status,
+                             'key': psinque.key(),
+                           })
         template_values = {
             'offset': offset,
             'isThereMore': (offset + len(contacts) < count),
@@ -54,9 +55,18 @@ class Incoming(MasterHandler):
 
 #-----------------------------------------------------------------------------
 
-class SearchEmail(MasterHandler):
+class IncomingAJAX(MasterHandler):
+    '''
+    Hangles AJAX requests regarding incoming psinques.
+    '''
 
-    def get(self):
+    def get(self, methodName):
+        
+        ajaxMethod = getattr(self, methodName)
+        ajaxMethod()
+
+
+    def searchemail(self):
 
         MasterHandler.safeGuard(self)
         email = self.request.get('email')
@@ -72,11 +82,8 @@ class SearchEmail(MasterHandler):
         else:
             self.response.out.write(json.dumps({"status": -1}))   # user not found
 
-#-----------------------------------------------------------------------------
 
-class AddIncoming(MasterHandler):
-    
-    def get(self):
+    def addincoming(self):
         
         MasterHandler.safeGuard(self)   
         toUser = UserProfile.all().filter("user =", self.user).get()
@@ -105,7 +112,6 @@ class AddIncoming(MasterHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    ('/incoming', Incoming),
-    ('/searchemail', SearchEmail),
-    ('/addincoming', AddIncoming),
+    (r'/incoming', Incoming),
+    (r'/incoming/(\w+)', IncomingAJAX),
 ], debug=True)

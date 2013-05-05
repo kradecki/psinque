@@ -7,12 +7,14 @@
     <th>Name</th>
     <th>Status</th>
     <th>Established</th>
+    <th></th>
   {% for contact in contacts %}
     <tr>
     <td>{{ contact.nr }}</td>
     <td>{{ contact.name }}</td>
     <td>{{ contact.status }}</td>
     <td>{{ contact.date }}</td>
+    <td><a href="/incoming/removepsinque?key={{ contact.key }}">Remove</a></td>
     </tr>
   {% endfor %}
   </table>
