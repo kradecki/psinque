@@ -59,7 +59,7 @@ END:VCARD"""
 
 
 def getPrimaryEmail(user):
-    return user.emails.ancestor(user).filter("primary =", True).get()
+    return user.emails.ancestor(user.key()).filter("primary =", True).get().email
 
 
 def getName(user):
@@ -73,7 +73,8 @@ def getPublicGroup(user):
     return publicGroup.get()
 
 def getDisplayNameFromPsinque(psinque):
-    if psinque.group.canViewName:
+    group = psinque.group
+    if group and group.canViewName:
         return getName(psinque.fromUser)
     else:
         return getPrimaryEmail(psinque.fromUser)

@@ -1,44 +1,56 @@
 
+displayMessage = function(msg) {
+    newElement = $('<span id="searchResult"> ' + msg + '</span>');
+    newElement.hide();
+    newElement.insertAfter('#search');
+    newElement.fadeIn();
+}
+
 $(document).ready(function() {
     
     $("#search").click(function() {
         
         // Remove any previous search results
-        if($('#addProfile').length > 0)
-            $("#addProfile").remove();
+        if($('#searchResult').length > 0)
+            $("#searchResult").remove();
         
         $.ajax("/searchemail?email=" + $("#email").val()).done(function(data) {
 
+            console.log(data);
             jsonResults = $.parseJSON(data)
-            if(jsonResults["status"] == 1) {
+            statusCode = jsonResults["status"];
+            if(statusCode == 0) {
                 
                 userKey = jsonResults["fromUser"];
-                console.log(userKey);
-                newElement = $('<span id="addProfile"> Add profile: <a href="/addincoming?type=public&from=' + userKey + '">public</a> | <a href="" id="addPrivate">private (requires authorization)</a></span>');
+                displayMessage('Add psinque: <a href="/addincoming?type=public&from=' + userKey + '">public</a> | <a href="" id="addPrivate">private (requires authorization)</a>');
 
-                newElement.find("#addPrivate").click(function() {
+                $("#addPrivate").click(function() {
                     
-                    $.ajax("/addincoming?type=private&from=" + userKey).done(function(data) {
-                        if($.parseJSON(data)["status"] == 1) {
-                            $("#addProfile").remove();
-                        }
-                        
-                    });
+                    $.ajax("/addincoming?type=private&from=" + userKey)
+                        .done(function(data) {
+                            $("#searchResult").remove();
+                            addStatusCode = $.parseJSON(data)["status"];
+                            if(addStatusCode == 0) {
+                                displayMessage('Psinque request sent');
+                            } else {
+                                displayMessage('Unknown error (' + addStatusCode + ')');
+                            }
+                        })
+                        .error(function(data) {
+                            $("#searchResult").remove();
+                            displayMessage('Server error')
+                        });
                     
                     return false;
-                });
-                
-                newElement.hide();
-                newElement.insertAfter('#search');
-                newElement.fadeIn();
-                
-            } else {
-
-                newElement = $('<span id="addProfile"> User not found.</span>')
-                newElement.hide();
-                newElement.insertAfter('#search');
-                newElement.fadeIn();
-                
+                });   
+            }
+            
+            else if(statusCode == 1) {
+                displayMessage('Psinque already exists.');
+            }
+            
+            else {
+                displayMessage('User not found.');                
             }
         });
         

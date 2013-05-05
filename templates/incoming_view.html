@@ -16,11 +16,11 @@
     </tr>
   {% endfor %}
   </table>
-  {% if previousCursor %}
-  <a href="/incoming?start={{ previousCursor }}&offset={{ offset-10 }}">Previous page</a>
+  {% if offset > 0 %}
+  <a href="javascript: history.go(-1)">Previous page</a>
   {% endif %}
   {% if isThereMore %}
-  <a href="/incoming?start={{ cursor }}&offset={{ offset+10 }}">Next page</a>
+  <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
   {% endif %}
   <h3>Add psinque by email:</h3>
   <p>

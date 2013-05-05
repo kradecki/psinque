@@ -24,13 +24,15 @@ class Incoming(MasterHandler):
         offset = self.request.get('offset')
         if not offset:
             offset = 0
-        previousCursor = self.request.get('cursor')
+        else:
+            offset = int(offset)
+        currentCursor = self.request.get('cursor')
         
         psinqueQuery = Psinque.all(keys_only = True).ancestor(userProfile).order("establishingTime")
         count = psinqueQuery.count(1000)
         contacts = []
-        if previousCursor:
-            psinqueQuery.cursor(previousCursor)  # start from the previous position
+        if currentCursor:
+            psinqueQuery.with_cursor(currentCursor)  # start from the previous position
         for psinqueKey in psinqueQuery.run(limit=10):
             psinque = Psinque.get(psinqueKey)
             contacts.append({'nr': offset + len(contacts) + 1,
@@ -42,8 +44,7 @@ class Incoming(MasterHandler):
             'offset': offset,
             'isThereMore': (offset + len(contacts) < count),
             'count': count,
-            'cursor': psinqueQuery.cursor(),
-            'previousCursor': previousCursor,
+            'nextCursor': psinqueQuery.cursor(),
             'contacts': contacts,
         }
                 
@@ -53,17 +54,23 @@ class Incoming(MasterHandler):
 
 #-----------------------------------------------------------------------------
 
-class SearchEmail(webapp2.RequestHandler):
+class SearchEmail(MasterHandler):
 
     def get(self):
 
+        MasterHandler.safeGuard(self)
         email = self.request.get('email')
         userEmail = UserEmail.all(keys_only = True).filter("email =", email).get()
         if userEmail:
             userID = userEmail.parent().id()
-            self.response.out.write(json.dumps({"status": 1, "fromUser": userID}))
+            userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
+            psinque = Psinque.all(keys_only = True).ancestor(userProfile).filter("fromUser =", userEmail.parent()).get()
+            if psinque:
+                self.response.out.write(json.dumps({"status": 1})) # psinque already exists
+            else:
+                self.response.out.write(json.dumps({"status": 0, "fromUser": userID}))
         else:
-            self.response.out.write(json.dumps({"status": 0}))
+            self.response.out.write(json.dumps({"status": -1}))   # user not found
 
 #-----------------------------------------------------------------------------
 
@@ -90,10 +97,10 @@ class AddIncoming(MasterHandler):
                                  status = "pending")
             newPsinque.put()
             notifyPendingPsinque(newPsinque)
-            self.response.out.write(json.dumps({"status": 1}))
+            self.response.out.write(json.dumps({"status": 0}))
             
         else:
-            self.response.out.write(json.dumps({"status": 0}))
+            self.response.out.write(json.dumps({"status": 1}))
         
 #-----------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
 
 from google.appengine.api import mail
 
-from users.UserManagement import getPrimaryEmail, getDisplayName
+from users.UserManagement import getPrimaryEmail, getDisplayNameFromPsinque
 
 def notifyPendingPsinque(psinque):
     message = mail.EmailMessage(sender="Psinque notifications <noreply@psinque.appspotmail.com>",
@@ -16,6 +16,6 @@ Another user, %s, has requested access to your private contact
 details. Please click the following link to make a decision 
 
 The Psinque Team
-""" % (fromUser.firstname + " " + fromUser.lastname, getDisplayName(psinque))
+""" % (fromUser.firstname + " " + fromUser.lastname, getDisplayNameFromPsinque(psinque))
 
     message.send()
