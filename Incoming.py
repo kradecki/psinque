@@ -62,13 +62,13 @@ class IncomingAJAX(MasterHandler):
 
     def get(self, methodName):
         
+        MasterHandler.safeGuard(self)
         ajaxMethod = getattr(self, methodName)
         ajaxMethod()
 
 
     def searchemail(self):
 
-        MasterHandler.safeGuard(self)
         email = self.request.get('email')
         userEmail = UserEmail.all(keys_only = True).filter("email =", email).get()
         if userEmail:
@@ -85,7 +85,6 @@ class IncomingAJAX(MasterHandler):
 
     def addincoming(self):
         
-        MasterHandler.safeGuard(self)   
         toUser = UserProfile.all().filter("user =", self.user).get()
         fromUser = UserProfile.get_by_id(int(self.request.get('from')))  # get user by key
         
@@ -108,6 +107,13 @@ class IncomingAJAX(MasterHandler):
             
         else:
             self.response.out.write(json.dumps({"status": 1}))
+
+
+    def removepsinque(self):
+        
+        psinque = Psinque.get(self.request.get('key'))
+        psinque.delete()
+        self.redirect("/incoming")
         
 #-----------------------------------------------------------------------------
 

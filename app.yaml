@@ -56,9 +56,7 @@ handlers:
 # Incoming
 - url: /incoming
   script: Incoming.app
-- url: /searchemail
-  script: Incoming.app
-- url: /addincoming
+- url: /incoming/([^/]+)
   script: Incoming.app
 
 # Under construction

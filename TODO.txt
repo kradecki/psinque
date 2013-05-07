@@ -1,0 +1,27 @@
++ Include VObject
++ Save all settings
++ Fix multiple pages and cursors with incoming psinques
++ Finish adding incoming private psinques
++ Fix sending emails from the dev serwer
++ Test sending email from the prod server
++ Don't add incoming public psinques if they already exist
++ Removing incoming psinques
+
+- Page refresh after adding private psinques
+- Generating CardDAV login(= primary email) + password
+- Generate real CardDAV data
+- Change the CardDAV group name to "Psinque"
+- Respect "Send me email notifications" setting
+- Generate link to accept private psinque requests
+- Handle private psinque requests
+- Display outgoing psinques
+- Add methods to modify outgoing psinques (change private group, reject, ban)
+- Display groups
+- Editing group permissions
+- Adding groups
+- Saving group permissions
+- Add apple-touch-icon-precomposed.png
+- Add data model validators
+- Filename cleanup
+- Sortowanie psinque'ów
+- Szukanie psinque'ów po nazwisku/mejlu

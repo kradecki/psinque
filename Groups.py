@@ -5,7 +5,7 @@ import webapp2
 from google.appengine.api import users
 
 from MasterHandler import MasterHandler
-from users.UserDataModels import UserProfile, Relationship
+from users.UserDataModels import UserProfile, Psinque
 
 class ViewGroups(MasterHandler):
   
