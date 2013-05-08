@@ -87,11 +87,11 @@ class UserWebpage(db.Model):
 
 class UserGroup(db.Model):
   creator = db.ReferenceProperty(UserProfile, collection_name = "groups")
-  groupName = db.StringProperty()
-  canViewName = db.BooleanProperty()
-  canViewPsuedonym = db.BooleanProperty()
-  canViewBirthday = db.BooleanProperty()
-  canViewGender = db.BooleanProperty()
+  name = db.StringProperty()
+  canViewName = db.BooleanProperty(default = True)
+  canViewPsuedonym = db.BooleanProperty(default = False)
+  canViewBirthday = db.BooleanProperty(default = False)
+  canViewGender = db.BooleanProperty(default = False)
   vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
                       # because it might be longer than 500 characters
 

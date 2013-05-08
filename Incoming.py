@@ -5,8 +5,6 @@ import webapp2
 
 from django.utils import simplejson as json
 
-from google.appengine.api import users
-
 from MasterHandler import MasterHandler
 from users.UserDataModels import UserProfile, Psinque, UserEmail
 from users.UserManagement import getPublicGroup, getDisplayNameFromPsinque
@@ -14,57 +12,54 @@ from users.Email import notifyPendingPsinque
 
 #-----------------------------------------------------------------------------
 
-class Incoming(MasterHandler):
+class IncomingView(MasterHandler):
     
     def get(self):
         
-        MasterHandler.safeGuard(self)   
-        userProfile = UserProfile.all().filter("user =", self.user).get()
-        
-        offset = self.request.get('offset')
-        if not offset:
-            offset = 0
-        else:
-            offset = int(offset)
-        currentCursor = self.request.get('cursor')
-        
-        psinqueQuery = Psinque.all(keys_only = True).ancestor(userProfile).order("establishingTime")
-        count = psinqueQuery.count(1000)
-        contacts = []
-        if currentCursor:
-            psinqueQuery.with_cursor(currentCursor)  # start from the previous position
-        for psinqueKey in psinqueQuery.run(limit=10):
-            psinque = Psinque.get(psinqueKey)
-            contacts.append({'nr': offset + len(contacts) + 1,
-                             'name': getDisplayNameFromPsinque(psinque),
-                             'date': psinque.establishingTime,
-                             'status': psinque.status,
-                             'key': psinque.key(),
-                           })
-        template_values = {
-            'offset': offset,
-            'isThereMore': (offset + len(contacts) < count),
-            'count': count,
-            'nextCursor': psinqueQuery.cursor(),
-            'contacts': contacts,
-        }
-                
-        MasterHandler.sendTopTemplate(self, activeEntry = "Incoming")
-        MasterHandler.sendContent(self, 'templates/incoming_view.html', template_values)
-        MasterHandler.sendBottomTemplate(self)
+        if MasterHandler.safeGuard(self) and MasterHandler.getUserProfile(self):
+            
+            offset = self.request.get('offset')
+            if not offset:
+                offset = 0
+            else:
+                offset = int(offset)
+            currentCursor = self.request.get('cursor')
+            
+            psinqueQuery = Psinque.all(keys_only = True).ancestor(self.userProfile).order("establishingTime")
+            count = psinqueQuery.count(1000)
+            contacts = []
+            if currentCursor:
+                psinqueQuery.with_cursor(currentCursor)  # start from the previous position
+            for psinqueKey in psinqueQuery.run(limit=10):
+                psinque = Psinque.get(psinqueKey)
+                contacts.append({'nr': offset + len(contacts) + 1,
+                                'name': getDisplayNameFromPsinque(psinque),
+                                'date': psinque.establishingTime,
+                                'status': psinque.status,
+                                'key': psinque.key(),
+                            })
+            template_values = {
+                'offset': offset,
+                'isThereMore': (offset + len(contacts) < count),
+                'count': count,
+                'nextCursor': psinqueQuery.cursor(),
+                'contacts': contacts,
+            }
+                    
+            MasterHandler.sendTopTemplate(self, activeEntry = "Incoming")
+            MasterHandler.sendContent(self, 'templates/incoming_view.html', template_values)
+            MasterHandler.sendBottomTemplate(self)
 
 #-----------------------------------------------------------------------------
 
-class IncomingAJAX(MasterHandler):
-    '''
-    Hangles AJAX requests regarding incoming psinques.
-    '''
+class IncomingAction(MasterHandler):
 
-    def get(self, methodName):
+    def get(self, actionName):
         
-        MasterHandler.safeGuard(self)
-        ajaxMethod = getattr(self, methodName)
-        ajaxMethod()
+        if MasterHandler.safeGuard(self):   # perform action only if user is logged in
+            
+            actionFunction = getattr(self, actionName)
+            actionFunction()
 
 
     def searchemail(self):
@@ -73,40 +68,41 @@ class IncomingAJAX(MasterHandler):
         userEmail = UserEmail.all(keys_only = True).filter("email =", email).get()
         if userEmail:
             userID = userEmail.parent().id()
-            userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
-            psinque = Psinque.all(keys_only = True).ancestor(userProfile).filter("fromUser =", userEmail.parent()).get()
-            if psinque:
-                self.response.out.write(json.dumps({"status": 1})) # psinque already exists
-            else:
-                self.response.out.write(json.dumps({"status": 0, "fromUser": userID}))
+            if MasterHandler.getUserProfile(self):            
+                psinque = Psinque.all(keys_only = True).ancestor(self.userProfile).filter("fromUser =", userEmail.parent()).get()
+                if psinque:
+                    self.response.out.write(json.dumps({"status": 1})) # psinque already exists
+                else:
+                    self.response.out.write(json.dumps({"status": 0, "fromUser": userID}))
         else:
             self.response.out.write(json.dumps({"status": -1}))   # user not found
 
 
     def addincoming(self):
         
-        toUser = UserProfile.all().filter("user =", self.user).get()
-        fromUser = UserProfile.get_by_id(int(self.request.get('from')))  # get user by key
-        
-        incomingType = self.request.get('type')
-        if incomingType == "public":
-            newPsinque = Psinque(parent = toUser, toUser = toUser, 
-                                 fromUser = fromUser,
-                                 status = "established",
-                                 group = getPublicGroup(fromUser))
-            newPsinque.put()
-            self.redirect('/incoming')
+        if MasterHandler.getUserProfile(self):
             
-        elif incomingType == "private":
-            newPsinque = Psinque(parent = toUser, toUser = toUser, 
-                                 fromUser = fromUser,
-                                 status = "pending")
-            newPsinque.put()
-            notifyPendingPsinque(newPsinque)
-            self.response.out.write(json.dumps({"status": 0}))
+            fromUser = UserProfile.get_by_id(int(self.request.get('from')))  # get user by key
             
-        else:
-            self.response.out.write(json.dumps({"status": 1}))
+            incomingType = self.request.get('type')
+            if incomingType == "public":
+                newPsinque = Psinque(parent = self.userProfile, toUser = self.userProfile,
+                                    fromUser = fromUser,
+                                    status = "established",
+                                    group = getPublicGroup(fromUser))
+                newPsinque.put()
+                self.redirect('/incoming')
+                
+            elif incomingType == "private":
+                newPsinque = Psinque(parent = self.userProfile, toUser = self.userProfile,
+                                    fromUser = fromUser,
+                                    status = "pending")
+                newPsinque.put()
+                notifyPendingPsinque(newPsinque)
+                self.response.out.write(json.dumps({"status": 0}))
+                
+            else:
+                self.response.out.write(json.dumps({"status": 1}))
 
 
     def removepsinque(self):
@@ -118,6 +114,6 @@ class IncomingAJAX(MasterHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    (r'/incoming', Incoming),
-    (r'/incoming/(\w+)', IncomingAJAX),
+    (r'/incoming', IncomingView),
+    (r'/incoming/(\w+)', IncomingAction),
 ], debug=True)

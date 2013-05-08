@@ -30,14 +30,23 @@ class MasterHandler(webapp2.RequestHandler):
   '''
   
   def safeGuard(self):
-    '''
-    Checks if a user is logged in and if not, redirects
-    to the login page.
-    '''
-    self.user = users.get_current_user()
-    if not self.user:  # user not logged in
-      self.redirect("/login")
-      return
+      '''
+      Checks if a user is logged in and if not, redirects
+      to the login page.
+      '''
+      self.user = users.get_current_user()
+      if not self.user:  # user not logged in
+          self.redirect("/login")
+          return False
+      return True
+  
+  def getUserProfile(self):
+      self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
+      if self.userProfile is None:
+          self.redirect("/login")
+          return False
+      self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
+      return True
     
   def sendTopTemplate(self, activeEntry = ""):
     user = users.get_current_user()

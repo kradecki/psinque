@@ -1,24 +1,34 @@
+<script type="text/javascript" src="javascripts/jquery.js"></script>
+<script type="text/javascript" src="javascripts/groups_view.js"></script>
 <div id="content">
   {% for group in groups %}
-    <p>groupName = {{ group.groupName }}</p>
-  {% endfor %}  
-<!--  <form action="/updategroup" method="POST">
+  <form>
     <fieldset id="searchContacts">
-      <legend>Public</legend>
-      <p>
-        <input type="checkbox" name="newsletter">Name
-        <input type="checkbox" name="newsletter">Psuedonym
-        <input type="checkbox" name="newsletter">Gender
-        <input type="checkbox" name="newsletter">Birthday
-      </p>
-      <p>
-        <label>Photo:</label>
-        <select name="photo">
-          {% for photo in photos %}
-            <option {% if photo == preferredPhoto %} selected {% endif %} value="{{ photo }}">{{ photo }}</option>
-          {% endfor %}
-        </select>
-      </p>
+    <legend>{{ group.name }}</legend>
+    <p id="{{ group.key() }}">
+      <input type="checkbox" class="general" name="canViewName" {% if group.canViewName %}checked="checked"{% endif %}>Can view name</br>
+      <input type="checkbox" class="general" name="canViewPsuedonym" {% if group.canViewPsuedonym %}checked="checked"{% endif %}>Can view pseudonym</br>
+      <input type="checkbox" class="general" name="canViewBirthday" {% if group.canViewBirthday %}checked="checked"{% endif %}>Can view birthday</br>
+      <input type="checkbox" class="general" name="canViewGender" {% if group.canViewGender %}checked="checked"{% endif %}>Can view gender</br>
+      <input type="button" class="updateButtons" value="Update">
+      {% if group.name != "Public" -%}
+        <input type="button" class="removeButtons" value="Remove">
+      {%- endif %}
+    </p>
     </fieldset>
-  </form>-->
+  </form>
+  {% endfor %}  
+  <form>
+    <fieldset id="searchContacts">
+    <legend>New group</legend>
+    <p>
+      <input type="checkbox" class="general" name="canViewName" checked="checked">Can view name</br>
+      <input type="checkbox" class="general" name="canViewPsuedonym">Can view pseudonym</br>
+      <input type="checkbox" class="general" name="canViewBirthday">Can view birthday</br>
+      <input type="checkbox" class="general" name="canViewGender">Can view gender</br>
+      <label>Group name:</label><input type="text" id="groupName">
+      <input type="button" value="Create" id="createButton">
+    </p>
+    </fieldset>
+  </form>
 </div>

@@ -68,11 +68,7 @@ class EditProfile(MasterHandler):
             cardDAVPassword.put()
             
             publicGroup = UserGroup(parent = userProfile, creator = userProfile,
-                                    groupName = 'Public',
-                                    canViewName = True,
-                                    canViewPsuedonym = False,
-                                    canViewBirthday = False,
-                                    canViewGender = False)
+                                    name = 'Public')
             publicGroup.put()
         
         userAddresses = userProfile.addresses.ancestor(userProfile).fetch(100)

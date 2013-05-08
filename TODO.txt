@@ -25,3 +25,6 @@
 - Filename cleanup
 - Sortowanie psinque'ów
 - Szukanie psinque'ów po nazwisku/mejlu
+
+Nice-to-have features:
+- Incoming contact groups

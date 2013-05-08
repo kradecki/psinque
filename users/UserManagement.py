@@ -69,8 +69,9 @@ def getName(user):
 def getPublicGroup(user):
     publicGroup = UserGroup.all(keys_only = True)
     publicGroup.ancestor(user.key())
-    publicGroup.filter("groupName =", "Public")
+    publicGroup.filter("name =", "Public")
     return publicGroup.get()
+
 
 def getDisplayNameFromPsinque(psinque):
     group = psinque.group

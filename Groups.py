@@ -2,53 +2,121 @@
 import logging
 import webapp2
 
-from google.appengine.api import users
+from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler
-from users.UserDataModels import UserProfile, Psinque
+from users.UserDataModels import UserGroup
 
-class ViewGroups(MasterHandler):
+#-----------------------------------------------------------------------------
+
+class GroupsView(MasterHandler):
   
   def get(self):
 
-    MasterHandler.safeGuard(self)
+    if MasterHandler.safeGuard(self) and MasterHandler.getUserProfile(self):
     
-    userProfile = UserProfile.all().filter("user =", users.get_current_user()).get()
-    userGroups = userProfile.groups
-    
-    MasterHandler.sendTopTemplate(self, activeEntry = "Groups")
-    MasterHandler.sendContent(self, 'templates/groups_viewGroups.html', {
-      'groups': userGroups,
-    })
-    MasterHandler.sendBottomTemplate(self)
+        userGroups = self.userProfile.groups
+        
+        MasterHandler.sendTopTemplate(self, activeEntry = "Groups")
+        MasterHandler.sendContent(self, 'templates/groups_viewGroups.html', {
+            'groups': userGroups,
+        })
+        MasterHandler.sendBottomTemplate(self)
 
-#class AddGroup(webapp2.RequestHandler):
+#-----------------------------------------------------------------------------
 
-  #def get(self):
+class GroupsAction(MasterHandler):
 
-    ## Prepare the Datastore row values
-    #userId = int(self.request.get('id'))
-    #user = users.get_current_user()
-    #userFrom = UserProfile.all().filter("user =", user).get()
-    #userTo = UserProfile.get_by_id(userId)
-    #status = 'pending'
-    
-    ## Check if a relationship has not already been created
-    #query = Relationship.all()
-    #existingRelationship = query.filter('userFrom =', userFrom).filter('userTo =', userTo).get()
+    def get(self, actionName):
+        
+        if MasterHandler.safeGuard(self):
+            actionFunction = getattr(self, actionName)
+            actionFunction()
 
-    ## Create a new relationship unless:
-    ##  - user tries to add himself as a contact
-    ##  - a relationship between both users does not already exist
-    ##  10.08.2012: With slideUp implemented, this code could be removed. Check with Stasiu.
-    #if (userFrom.key().id() != userTo.key().id()) and (not existingRelationship):
-      #newRelationship = Relationship()
-      #newRelationship.userFrom = userFrom
-      #newRelationship.userTo = userTo
-      #newRelationship.status = status
-      #newRelationship.put()
-      #self.response.out.write(json.dumps({"status": "ok", "userId": userId}))
+    def sendJsonOK(self):
+        self.response.out.write(json.dumps({"status": 0}))
+
+    def sendJsonError(self, msg):
+        self.response.out.write(json.dumps({"status": 1,
+                                            "message": msg}))
+
+    def removegroup(self):
+        
+        group = UserGroup.get(self.request.get('key'))
+        if group.name == "Public":  # cannot remove the Public group
+            self.sendJsonError("Cannot remove the public group")
+        else:
+            group.delete()
+            self.sendJsonOK()
+            
+    def addgroup(self):
+        
+        groupName = self.request.get('name')
+        if groupName == "":
+            self.sendJsonError("Empty group name.")
+        elif MasterHandler.getUserProfile(self):
+            newGroup = UserGroup(parent = self.userProfile,
+                                    creator = self.userProfile,
+                                    name = groupName)
+            newGroup.put()
+            self.response.out.write(json.dumps({"status": 0,
+                                                "key": str(newGroup.key())}))
+        
+    def setpermission(self):
+
+        groupKey = self.request.get("key")
+        permissionType  = self.request.get("type")
+        permissionName  = self.request.get("name")
+        permissionValue = self.request.get("value")
+        
+        if (groupKey == "") or (permissionType == "") or (permissionName == "") or (permissionValue == ""):
+            self.sendJsonError("All parameters are required.")
+            return
+        
+        if permissionValue == "on":
+            permissionValue = True
+        elif permissionValue == "off":
+            permissionValue = False
+        else:
+            self.sendJsonError("Unknown value.")
+            return
+        
+        if MasterHandler.getUserProfile(self):
+            
+            userGroup = UserGroup.get(groupKey)
+            
+            if userGroup is None:
+                self.sendJsonError("User group not found.")
+                return
+            
+            if permissionType == "general":
+                
+                if permissionName == "canViewName":
+                    userGroup.canViewName = permissionValue
+                    self.sendJsonOK()
+                elif permissionName == "canViewPsuedonym":
+                    userGroup.canViewPsuedonym = permissionValue
+                    self.sendJsonOK()
+                elif permissionName == "canViewBirthday":
+                    userGroup.canViewBirthday = permissionValue
+                    self.sendJsonOK()
+                elif permissionName == "canViewGender":
+                    userGroup.canViewGender = permissionValue
+                    self.sendJsonOK()
+                else:
+                    self.sendJsonError("Unknown permission name.")
+                    return
+                userGroup.put()
+                
+            elif permissionType == "mail":
+                logging.info("Unimplemented.")
+            
+            else:
+                self.sendJsonError("Unknown permission type.")
+        
+#-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-  ('/groups', ViewGroups),
+    (r'/groups', GroupsView),
+    (r'/groups/(\w+)', GroupsAction),
 ], debug=True)

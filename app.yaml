@@ -59,8 +59,10 @@ handlers:
 - url: /incoming/([^/]+)
   script: Incoming.app
 
-# Under construction
+# Groups
 - url: /groups
+  script: Groups.app
+- url: /groups/([^/]+)
   script: Groups.app
 
 # User settings
