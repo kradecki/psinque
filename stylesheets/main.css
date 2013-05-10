@@ -182,6 +182,10 @@ A.toplink:hover   {color: #2580a2}
   color: #fff;
   font-size: 14px;
 }
+
+.spinner {
+    display: none;
+}
 /* ******************************************* */
 
 #leftcolumn {

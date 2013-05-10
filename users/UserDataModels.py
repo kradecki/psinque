@@ -41,7 +41,7 @@ class UserProfile(db.Model):
   middlename = db.StringProperty(required = False)
   lastname = db.StringProperty(required = True,
                                default = "Kowalski")
-  pseudonym = db.StringProperty(required = False)
+  #pseudonym = db.StringProperty(required = False)
 
   gender = db.StringProperty(choices = genders,
                              required = False)
@@ -89,7 +89,7 @@ class UserGroup(db.Model):
   creator = db.ReferenceProperty(UserProfile, collection_name = "groups")
   name = db.StringProperty()
   canViewName = db.BooleanProperty(default = True)
-  canViewPsuedonym = db.BooleanProperty(default = False)
+  #canViewPsuedonym = db.BooleanProperty(default = False)
   canViewBirthday = db.BooleanProperty(default = False)
   canViewGender = db.BooleanProperty(default = False)
   vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty

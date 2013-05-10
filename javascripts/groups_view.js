@@ -75,6 +75,7 @@ $(document).ready(function() {
     });
     
     $("#createButton").click(function() {
+        $(this).parent().find(".spinner").show();
         addAndUpdateGroup($(this).parent());
     });
     

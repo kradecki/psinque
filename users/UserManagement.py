@@ -20,11 +20,13 @@ def groupList(user):
     """
     return ["public"]  # for now only all users are in the public group
 
+
 def friendList(user, group):
     if group == "public":
         return ["0123456789.vcf", "0123456790.vcf"]  # to test CardDAV
     else:
         return []
+
 
 def generateVCard(user, friendID):
     if friendID == "0123456789":
