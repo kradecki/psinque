@@ -21,27 +21,16 @@ from users.UserDataModels import availableLanguages, addressTypes, emailTypes
 class ViewProfile(MasterHandler):
     
     def get(self):
-        
-        user = users.get_current_user()
-        query = UserProfile.all()
-        userProfile = query.filter("user =", user).get()
-        if not userProfile:  # no user profile registered yet, so ask user to create his profile
-            self.redirect("/editprofile")  # and redirect to edit the profile
-            return
-    
-        template_values = {
-            'firstname': userProfile.firstname,
-            'lastname': userProfile.lastname,
-            'photograph': None,
-            'emails': userProfile.emails,
-            'addresses': userProfile.addresses,
-            }
-        #if userProfile.photograph != None:
-            #template_values['photograph'] = '/serveimageblob/%s' % userProfile.photograph.key()
+
+        if MasterHandler.getUserProfile(self):
+            #if userProfile.photograph != None:
+            #template_values['photograph'] = '/serveimageblob/%s' % serProfile.photograph.key()
                 
-        MasterHandler.sendTopTemplate(self, activeEntry = "My card")
-        MasterHandler.sendContent(self, 'templates/myCard_viewProfile.html', template_values)
-        MasterHandler.sendBottomTemplate(self)
+            MasterHandler.sendTopTemplate(self, activeEntry = "My card")
+            MasterHandler.sendContent(self, 'templates/myCard_viewProfile.html', {
+                'userProfile': self.userProfile,
+            })
+            MasterHandler.sendBottomTemplate(self)
             
 #-----------------------------------------------------------------------------
 
@@ -49,10 +38,12 @@ class EditProfile(MasterHandler):
 
     def get(self):   # form for editing details
 
-        MasterHandler.safeGuard(self)
+        if not MasterHandler.safeGuard(self):
+	    return
+	
         userProfile = UserProfile.all().filter("user =", self.user).get()
-        
-        firstLogin = (not userProfile)        
+        firstLogin = (not userProfile)
+
         if firstLogin:  # no user profile registered yet, so create a new one
         
             userProfile = UserProfile(user = self.user)

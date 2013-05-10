@@ -102,6 +102,34 @@ function removeParent(whose) {
   });
 }
 
+function decreaseElementCount() {
+    window.elementCount--;
+    if(window.elementCount == 0) {  // all fields are updated
+        document.location.reload(true);   // refresh the list of groups
+    }
+}
+
+function updateEmail(parent) {
+    emailAddress = parent.find("#address").val();
+    typeofEmail = parent.find("#typeofEmail").val();
+    emailKey = parent.attr("id");
+    if(emailKey) {
+        $.ajax("/profile/updateemail?key=" + emailKey + "&address=" + emailAddress + "&type=" + typeofEmail)
+            .done(function(data) {
+                decreaseElementCount();
+            })
+            .error(function(data) {
+            })
+    } else {
+        $.ajax("/profile/addemail?address=" + emailAddress + "&type=" + typeofEmail)
+            .done(function(data) {
+                decreaseElementCount();
+            })
+            .error(function(data) {
+            })
+    }
+}
+
 // Set all event handlers when the page is ready
 $(document).ready(function() {
     
@@ -153,6 +181,18 @@ $(document).ready(function() {
     });
   });
 
+  $("#submitButton").click(function() {
+      window.elementCount = 0;
+      $(".emailAddress").each(function() {  // first count the objects
+          window.elementCount++;
+      }
+      $(".emailAddress").each(function() {  // then run the AJAX querries
+          if($(this).attr("class") == "emailAddress") {
+              updateEmail($(this));
+          }
+      });
+  });
+  
   // Turn the form validation on
   $("#submitForm").validate();
 

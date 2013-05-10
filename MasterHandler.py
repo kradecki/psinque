@@ -41,12 +41,15 @@ class MasterHandler(webapp2.RequestHandler):
       return True
   
   def getUserProfile(self):
-      self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
-      if self.userProfile is None:
-          self.redirect("/login")
+      if self.safeGuard():
+          self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
+          if not userProfile:
+              self.redirect("/editprofile")
+              return False
+          self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
+          return True
+      else:
           return False
-      self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
-      return True
     
   def sendTopTemplate(self, activeEntry = ""):
     user = users.get_current_user()

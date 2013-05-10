@@ -43,10 +43,10 @@
         <fieldset id="electronicAddresses">
           <legend>E-mail addresses</legend>
           {% for email in emails|sort(reverse=True,attribute='primary') %}
-          <p id="email{{ loop.index }}">
+          <p id="email.key()" class="emailAddress">
             <label>{% if email.primary %}Primary*:{% else %}Additional:{% endif %}</label>
-            <input type="text" name="email{{ loop.index }}" value="{{ email.email }}" class="{% if not email.primary %}required {% endif %}email" />
-            <select name="typeofEmail{{ loop.index}}">
+            <input type="text" name="address" value="{{ email.email }}" class="{% if not email.primary %}required {% endif %}email" />
+            <select name="typeofEmail">
             {% for emailTypeCode, emailTypeName in emailTypes.items() %}
               <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
             {% endfor %}

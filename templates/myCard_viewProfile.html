@@ -9,10 +9,10 @@
     </a>
   </div>
   <div id="rightcolumn">
-    <h3><b>{{ firstname }} {{ middlename }} {{ lastname }}</b></h3>
+    <h3><b>{{ userProfile.firstname }} {{ userProfile.middlename }} {{ userProfile.lastname }}</b></h3>
     <a href="/editprofile">Edit profile</a>
     <h4>Addresses:</h4>
-    {% for address in addresses %}
+    {% for address in userProfile.addresses %}
     <p>
       {% if address.primary %}<b>{% endif %}
       {{ address.address }}<br/>{{ address.postalCode }}<br/>{{ address.city }}
@@ -20,7 +20,7 @@
     </p>
     {% endfor %}
     <h4>E-mails:</h4>
-    {% for email in emails|sort(reverse=True,attribute='primary') %}
+    {% for email in userProfile.emails|sort(reverse=True,attribute='primary') %}
     <p>
       {% if email.primary %}<b>{% endif %}
       {{ email.email }} ({{ email.emailType }})
