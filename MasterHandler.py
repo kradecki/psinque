@@ -7,6 +7,8 @@ import webapp2
 
 from google.appengine.api import users
 
+from django.utils import simplejson as json
+
 from users.UserDataModels import UserSettings
 from users.UserDataModels import UserProfile
 from users.UserDataModels import Psinque
@@ -25,8 +27,7 @@ class MenuEntry:
 
 class MasterHandler(webapp2.RequestHandler):
   '''
-  This is the base class for all handlers.
-  It prepares all data for the top menu bar.
+  This is the base class for all Psinque handlers.
   '''
   
   def safeGuard(self):
@@ -43,14 +44,29 @@ class MasterHandler(webapp2.RequestHandler):
   def getUserProfile(self):
       if self.safeGuard():
           self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
-          if not userProfile:
-              self.redirect("/editprofile")
+          if not self.userProfile:
+              self.redirect("/mycard/edit")
               return False
           self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
           return True
       else:
           return False
+
+  def checkGetParameter(self, parameterName):
+      setattr(self, parameterName, self.request.get(parameterName))
+      if getattr(self, parameterName) == "":
+          self.sendJsonError("Parameter " + parameterName + " should not be empty.")
+          return False
+      return True
     
+  def sendJsonOK(self, additionalValues = {}):
+      self.response.out.write(json.dumps(dict({"status": 0}.items() +
+                                              additionalValues.items())))
+
+  def sendJsonError(self, msg):
+      self.response.out.write(json.dumps({"status": 1,
+                                          "message": msg}))
+
   def sendTopTemplate(self, activeEntry = ""):
     user = users.get_current_user()
     currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
@@ -61,11 +77,11 @@ class MasterHandler(webapp2.RequestHandler):
       self.outgoingText = "Outgoing"
 
     menuentries = [
-      MenuEntry("profile", "My card"),
-      MenuEntry("groups", "Groups"),
-      MenuEntry("incoming", "Incoming"),
-      MenuEntry("outgoing", self.outgoingText),
-      MenuEntry("settings", "Settings")
+      MenuEntry("mycard/view", "My card"),
+      MenuEntry("groups/view", "Groups"),
+      MenuEntry("incoming/view", "Incoming"),
+      MenuEntry("outgoing/view", self.outgoingText),
+      MenuEntry("settings/view", "Settings")
     ]
     if activeEntry != "":
       for entry in menuentries:

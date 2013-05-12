@@ -12,11 +12,19 @@ from users.Email import notifyPendingPsinque
 
 #-----------------------------------------------------------------------------
 
-class IncomingView(MasterHandler):
-    
-    def get(self):
+class IncomingHandler(MasterHandler):
+
+    def get(self, actionName):
         
-        if MasterHandler.safeGuard(self) and MasterHandler.getUserProfile(self):
+        if MasterHandler.safeGuard(self):   # perform action only if user is logged in
+            
+            actionFunction = getattr(self, actionName)
+            actionFunction()
+
+
+    def view(self):
+        
+        if MasterHandler.getUserProfile(self):
             
             offset = self.request.get('offset')
             if not offset:
@@ -33,11 +41,11 @@ class IncomingView(MasterHandler):
             for psinqueKey in psinqueQuery.run(limit=10):
                 psinque = Psinque.get(psinqueKey)
                 contacts.append({'nr': offset + len(contacts) + 1,
-                                'name': getDisplayNameFromPsinque(psinque),
-                                'date': psinque.establishingTime,
-                                'status': psinque.status,
-                                'key': psinque.key(),
-                            })
+                                 'name': getDisplayNameFromPsinque(psinque),
+                                 'date': psinque.establishingTime,
+                                 'status': psinque.status,
+                                 'key': psinque.key(),
+                                })
             template_values = {
                 'offset': offset,
                 'isThereMore': (offset + len(contacts) < count),
@@ -49,18 +57,6 @@ class IncomingView(MasterHandler):
             MasterHandler.sendTopTemplate(self, activeEntry = "Incoming")
             MasterHandler.sendContent(self, 'templates/incoming_view.html', template_values)
             MasterHandler.sendBottomTemplate(self)
-
-#-----------------------------------------------------------------------------
-
-class IncomingAction(MasterHandler):
-
-    def get(self, actionName):
-        
-        if MasterHandler.safeGuard(self):   # perform action only if user is logged in
-            
-            actionFunction = getattr(self, actionName)
-            actionFunction()
-
 
     def searchemail(self):
 
@@ -114,6 +110,5 @@ class IncomingAction(MasterHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    (r'/incoming', IncomingView),
-    (r'/incoming/(\w+)', IncomingAction),
+    (r'/incoming/(\w+)', IncomingHandler),
 ], debug=True)

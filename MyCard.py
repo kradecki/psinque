@@ -12,35 +12,35 @@ from google.appengine.ext.webapp import blobstore_handlers
 from MasterHandler import MasterHandler
 from users.UserDataModels import UserProfile, UserSettings, UserAddress, UserEmail
 from users.UserDataModels import UserGroup, CardDAVPassword
+from users.UserDataModels import PermissionEmail
 
 # Available data type choices:
 from users.UserDataModels import availableLanguages, addressTypes, emailTypes
 
 #-----------------------------------------------------------------------------
 
-class ViewProfile(MasterHandler):
-    
-    def get(self):
+class ProfileHandler(MasterHandler):
 
-        if MasterHandler.getUserProfile(self):
+    def get(self, actionName):
+        
+        if self.safeGuard():
+            actionFunction = getattr(self, actionName)
+            actionFunction()
+
+    def view(self):
+
+        if self.getUserProfile():
             #if userProfile.photograph != None:
             #template_values['photograph'] = '/serveimageblob/%s' % serProfile.photograph.key()
-                
-            MasterHandler.sendTopTemplate(self, activeEntry = "My card")
-            MasterHandler.sendContent(self, 'templates/myCard_viewProfile.html', {
+            
+            self.sendTopTemplate(activeEntry = "My card")
+            self.sendContent('templates/myCard_view.html', {
                 'userProfile': self.userProfile,
             })
-            MasterHandler.sendBottomTemplate(self)
-            
-#-----------------------------------------------------------------------------
+            self.sendBottomTemplate()
 
-class EditProfile(MasterHandler):
+    def edit(self):   # form for editing details
 
-    def get(self):   # form for editing details
-
-        if not MasterHandler.safeGuard(self):
-	    return
-	
         userProfile = UserProfile.all().filter("user =", self.user).get()
         firstLogin = (not userProfile)
 
@@ -58,92 +58,110 @@ class EditProfile(MasterHandler):
                                               generatedPassword = 'dupa')
             cardDAVPassword.put()
             
-            publicGroup = UserGroup(parent = userProfile, creator = userProfile,
+            publicGroup = UserGroup(parent = userProfile,
+                                    creator = userProfile,
                                     name = 'Public')
             publicGroup.put()
+
+            userEmail = UserEmail(parent = userProfile,
+                                  user = userProfile,
+                                  email = "primary@nonexistant.com",
+                                  emailType = 'private',
+                                  primary = True)
+            userEmail.put()
+            
+            permissionEmail = PermissionEmail(parent = publicGroup,
+                                              userGroup = publicGroup,
+                                              emailAddress = userEmail)
+            permissionEmail.put()
         
         userAddresses = userProfile.addresses.ancestor(userProfile).fetch(100)
         addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
         if len(addresses) == 0:
             addresses = [{'nr': 1, 'value': None}]
             
-        userEmails = userProfile.emails.ancestor(userProfile).fetch(100)
-        if len(userEmails) == 0:
-            userEmails = [{'address': '', 'primary': True, 'emailType': 'private'}]
-                
+        userEmails = userProfile.emails.ancestor(userProfile).order("-primary")
+        
         template_values = {
             'firstlogin': firstLogin,
-            'firstname': userProfile.firstname,
-            'lastname': userProfile.lastname,
-            'emails': userEmails,
-            'addresses': addresses,
+            'userProfile': userProfile,
+            'userEmails': userEmails,
             'emailTypes': emailTypes,
+            'addresses': addresses,
             'addressTypes': addressTypes,
             }
             
-        MasterHandler.sendTopTemplate(self, activeEntry = "My card")
-        MasterHandler.sendContent(self, 'templates/myCard_editProfile.html', template_values)
-        MasterHandler.sendBottomTemplate(self)
-
-
-    #TODO:Add transactions to profile updates
-    def post(self):  # executed when the user hits the 'Save' button, which sends a POST request
+        self.sendTopTemplate(activeEntry = "My card")
+        self.sendContent('templates/myCard_edit.html', template_values)
+        self.sendBottomTemplate()
     
-        MasterHandler.safeGuard(self)
-        userProfile = UserProfile.all().filter("user =", self.user).fetch(1)[0]
+    def updategeneral(self):
         
-        # We start by removing all currently stored data
-        # that is kept in separate entities,
-        # so that they're not doubled in the datastore.
-        # This is because it's impossible to tell which
-        # of the new entities correspond to the old ones.
-        for address in userProfile.addresses:
-            address.delete()
-        for email in userProfile.emails: # same for emails
-            email.delete()
+        if self.getUserProfile():
             
-        for argumentName in self.request.arguments():
-            
-            if argumentName == 'firstname':
-                userProfile.firstname = self.request.get(argumentName)
-                
-            elif argumentName == 'lastname':
-                userProfile.lastname = self.request.get(argumentName)
-                
-            elif argumentName == 'middlename':
-                userProfile.middlename = self.request.get(argumentName)
-                
-            elif argumentName == 'pseudonym':
-                userProfile.pseudonym = self.request.get(argumentName)
-                
-            elif argumentName.startswith("address") and (self.request.get(argumentName) != ''):
-                addressNumber = argumentName.replace("address", "")
-                newUserAddress = UserAddress(parent = userProfile, user = userProfile,
-                                             address = self.request.get(argumentName),
-                                             city = self.request.get("city" + addressNumber),
-                                             postalCode = self.request.get("postal" + addressNumber),
-                                             addressType = self.request.get("typeofAddress" + addressNumber))
-                lat = self.request.get("lat" + addressNumber)
-                lon = self.request.get("long" + addressNumber)
-                if lat != "" and lon != "":
-                    newUserAddress.location = db.GeoPt(lat = lat, lon = lon)
-                else:
-                    newUserAddress.location = None
-                newUserAddress.put()
-                
-            elif argumentName.startswith("email") and (self.request.get(argumentName) != ''):
-                emailNumber = argumentName.replace("email", "")
-                newEmail = UserEmail(parent = userProfile,
-                                     user = userProfile,
-                                     email = self.request.get(argumentName),
-                                     emailType = self.request.get("typeofEmail" + emailNumber),
-                                     primary = (emailNumber == '1'))
-                newEmail.put()
-        
-        userProfile.put()  # update the user profile
-                
-        self.redirect('/profile')  # redirects to ViewProfile
+            if ((not self.checkGetParameter('firstname')) or
+                (not self.checkGetParameter('lastname'))):
+                #(not self.checkGetParameter('birthday'))):
+                   return
 
+            self.userProfile.firstName = self.firstname
+            self.userProfile.middleName = self.request.get("middlename")
+            self.userProfile.lastName = self.lastname
+            #self.userProfile.birthDay = self.birthday
+            self.userProfile.put()
+            
+            self.sendJsonOK()
+    
+    def addemail(self):
+        
+        if self.getUserProfile():
+            
+            if ((not self.checkGetParameter('email')) or
+                (not self.checkGetParameter('emailType'))):
+                   return
+            
+            userEmail = UserEmail(parent = self.userProfile,
+                                  user = self.userProfile,
+                                  email = self.email,
+                                  emailType = self.emailType)
+            userEmail.put()
+            
+            # Add permissions for this email in every outgoing group
+            for userGroup in self.userProfile.groups:
+                permissionEmail = PermissionEmail(userGroup = userGroup,
+                                                  emailAddress = userEmail)
+                permissionEmail.put()
+                
+            self.sendJsonOK({'key': str(userEmail.key())})
+
+    def updateemail(self):
+        
+        if self.getUserProfile():
+            
+            if ((not self.checkGetParameter('emailKey')) or
+                (not self.checkGetParameter('email')) or
+                (not self.checkGetParameter('emailType'))):
+                   return
+            
+            userEmail = UserEmail.get(self.emailKey)
+            userEmail.email = self.email
+            userEmail.emailType = self.emailType
+            userEmail.put()
+            
+            self.sendJsonOK()
+
+    def removeemail(self):
+        
+            if not self.checkGetParameter('emailKey'):
+                return
+               
+            userEmail = UserEmail.get(self.emailKey)
+            for permissionEmail in userEmail.permissionEmails:
+                permissionEmail.delete()
+            userEmail.delete()
+
+            self.sendJsonOK()
+            
 #-----------------------------------------------------------------------------
                                                 
 class UploadPhoto(MasterHandler):
@@ -165,7 +183,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         userProfile = UserProfile.all().filter("user =", user).get()
         userProfile.photograph = blob_info.key()
         userProfile.put()
-        self.redirect('/profile')  # go back to the profile viewer
+        self.redirect('/mycard/view')  # go back to the profile viewer
 
 #-----------------------------------------------------------------------------
 
@@ -179,9 +197,7 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    ('/profile', ViewProfile),
-    ('/editprofile', EditProfile),
-    ('/submitprofile', EditProfile),
+    (r'/mycard/(\w+)', ProfileHandler),
     ('/uploadphoto', UploadPhoto),
     ('/uploadphotopost', UploadHandler),
     ('/serveimageblob/([^/]+)?', ServeHandler),

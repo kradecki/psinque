@@ -1,7 +1,7 @@
-<script type="text/javascript" src="javascripts/jquery.js"></script>
+<script type="text/javascript" src="/javascripts/jquery.js"></script>
 <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
-<script type="text/javascript" src="/javascripts/myCard_editProfile.js"></script>
+<script type="text/javascript" src="/javascripts/myCard_edit.js"></script>
 <script type="text/javascript">
   var emailCounter = {{ emails|length }};
   var addressCounter = {{ addresses|length }};
@@ -10,53 +10,59 @@
   {% if firstlogin %}
   <p>This is your first login, so please fill up your profile below:</p>
   {% endif %}
-  <form action="/submitprofile" method="POST" id="submitForm">
+  <form>
         <fieldset id="generalInfo">
           <legend>General information</legend>
           <p>
             <label>First name*:</label>
-            <input type="text" name="firstname" value="{{ firstname }}" class="required" minlength="2" />
+            <input type="text" id="firstname" value="{{ userProfile.firstName }}" class="required" minlength="2" />
+            <span class="donemark"><img src="/images/donemark.png" /></span>
           </p>
           <p>
             <label>Middle name:</label>
-            <input type="text" name="middlename" value="{{ middlename }}" minlength="2" />
+            <input type="text" id="middlename" value="{% if userProfile.middleName %}{{ userProfile.middleName }}{% endif %}" minlength="2" />
+            <span class="donemark"><img src="/images/donemark.png" /></span>
           </p>
           <p>
             <label>Family name*:</label>
-            <input type="text" name="lastname" value="{{ lastname }}" class="required" minlength="2" />
+            <input type="text" id="lastname" value="{{ userProfile.lastName }}" class="required" minlength="2" />
+            <span class="donemark"><img src="/images/donemark.png" /></span>
           </p>
 <!--          <p>
             <label>Pseudonym:</label>
             <input type="text" name="pseudonym" value="{{ pseudonym }}" minlength="2" />
           </p>-->
-          <p>
+<!--          <p>
             <label>Gender</label><br/>
             <input type="radio" name="sex" value="male">Male<br/>
             <input type="radio" name="sex" value="female">Female<br/>
             <input type="radio" name="sex" value="none">I won't tell
-          </p>
-          <p>
+          </p>-->
+<!--          <p>
             <label>Birthday</label>
-            <input type="date" name="birthday">
-          </p>
+            <input type="date" id="birthday">
+            <span class="donemark"><img src="/images/donemark.png" /></span>
+          </p>-->
         </fieldset>
         <fieldset id="electronicAddresses">
           <legend>E-mail addresses</legend>
-          {% for email in emails|sort(reverse=True,attribute='primary') %}
-          <p id="email.key()" class="emailAddress">
+          {% for email in userEmails %}
+          <p class="emailAddress">
             <label>{% if email.primary %}Primary*:{% else %}Additional:{% endif %}</label>
-            <input type="text" name="address" value="{{ email.email }}" class="{% if not email.primary %}required {% endif %}email" />
-            <select name="typeofEmail">
+            <input type="hidden" id="emailKey" value="{{ email.key() }}"/>
+            <input type="text" id="emailAddress" value="{% if email.email != "primary@nonexistant.com" %}{{ email.email }}{% endif %}" class="{% if not email.primary %}required {% endif %}email" />
+            <select id="typeofEmail">
             {% for emailTypeCode, emailTypeName in emailTypes.items() %}
               <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
             {% endfor %}
             </select>
-            <a href="" class="removers">{% if not email.primary %}Remove{% endif %}</a>
-          </p>
+            <a href="" class="emailRemovers">{% if not email.primary %}Remove{% endif %}</a>
+            <span class="donemark"><img src="/images/donemark.png" /></span>
+            </p>
           {% endfor %}
           <p id="addEmail"><a href="">Add e-mail</a></p>
         </fieldset>
-        <fieldset id="addresses">
+<!--        <fieldset id="addresses">
           <legend>Physical addresses</legend>
           {% for address in addresses %}
           <p id="address{{ address.nr }}">
@@ -95,7 +101,8 @@
           </p>
           {% endfor %}
           <p id="addAddress"><a href="">Add address</a></p>
-        </fieldset>
-        <div id="bottonButton"><input type="submit" value="Save" id="submitButton" /></div>
+        </fieldset>-->
+        <div id="bottonButton"><input type="button" id="submitButton" value="Submit"/></div>
+        <span class="spinner"><img src="/images/psinque.gif" /></span>
   </form>
 </div>

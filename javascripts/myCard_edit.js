@@ -76,19 +76,12 @@ function showTheMap() {
   return false;
 }
 
-function cloneElement(name, currentNr, newNr) {
-  newElement = $("#" + name + currentNr).clone();  // clone an existing address field group
-  newElement.attr("id", name + newNr);  // change its id
+function cloneElement(oldElement) {
+  newElement = oldElement.clone();  // clone an existing address field group
   
   // Clean all the input values:
   allInputFields = newElement.find("input,select");
   allInputFields.each(function() { $(this).attr("value", "") }); // clear the input values
-  allInputFields.each(function() { $(this).attr("name", $(this).attr("name").match("[^0-9]+") + newNr) }); // change the ids' prefix numbers
-  allInputFields.each(function() {
-      currentId = $(this).attr("id");
-      if(typeof(currentId) != 'undefined')
-      $(this).attr("id", currentId.match("[^0-9]+") + newNr);
-  });
   
   newElement.hide();
   
@@ -105,28 +98,76 @@ function removeParent(whose) {
 function decreaseElementCount() {
     window.elementCount--;
     if(window.elementCount == 0) {  // all fields are updated
-        document.location.reload(true);   // refresh the list of groups
+//         document.location.reload(true);   // refresh the list of groups
+        window.location = "/mycard/view"
     }
 }
 
-function updateEmail(parent) {
-    emailAddress = parent.find("#address").val();
-    typeofEmail = parent.find("#typeofEmail").val();
-    emailKey = parent.attr("id");
-    if(emailKey) {
-        $.ajax("/profile/updateemail?key=" + emailKey + "&address=" + emailAddress + "&type=" + typeofEmail)
-            .done(function(data) {
+function updateGeneralInfo(parent) {
+    firstName = $("#firstname").val();
+    middleName = $("#middlename").val();
+    lastName = $("#lastname").val();
+//     birthday = $("#birthday").val();
+    $.ajax("/mycard/updategeneral?firstname=" + firstName +
+                                "&middlename=" + middleName +
+                                "&lastname=" + lastName)
+//                                 "&birthday=" + birthday)
+        .done(function(data) {
+            parsedJSON = $.parseJSON(data);
+            if(parsedJSON["status"] == 0) {
                 decreaseElementCount();
+                parent.find(".donemark").show();
+            } else {
+                alert("Error while updating general information: " + parsedJSON["message"]);
+            }
+        })
+        .error(function(data) {
+            alert("Error while updating general information.");
+        })
+}
+
+function updateEmail(parent) {
+    emailAddress = parent.find("#emailAddress").val();
+    typeofEmail = parent.find("#typeofEmail").val();
+    emailKey = parent.find("#emailKey").val();
+    if(emailKey) {
+        ajaxMethod = "updateemail?emailKey=" + emailKey + "&";
+    } else {
+        ajaxMethod = "addemail?";
+    }
+    $.ajax("/mycard/" + ajaxMethod + "email=" + emailAddress + "&emailType=" + typeofEmail)
+        .done(function(data) {
+            parsedJSON = $.parseJSON(data);
+            if(parsedJSON["status"] == 0) {
+                decreaseElementCount();
+                parent.find("#emailKey").val(parsedJSON["key"]);
+                parent.find(".donemark").show();
+            } else {
+                alert("Error while updating email: " + parsedJSON["message"]);
+            }
+        })
+        .error(function(data) {
+            alert("Error while updating email.");
+        })
+}
+
+function removeEmail(whose) {
+    emailKey = whose.parent().find("#emailKey").val();
+    if(emailKey) {
+        $.ajax("/mycard/removeemail?emailKey=" + emailKey)
+            .done(function(data) {
+                parsedJSON = $.parseJSON(data);
+                if(parsedJSON["status"] == 0) {
+                    removeParent(whose);
+                } else {
+                    alert("Error while removing email: " + parsedJSON["message"]);
+                }
             })
             .error(function(data) {
+                alert("Error while removing email.");
             })
     } else {
-        $.ajax("/profile/addemail?address=" + emailAddress + "&type=" + typeofEmail)
-            .done(function(data) {
-                decreaseElementCount();
-            })
-            .error(function(data) {
-            })
+        removeParent(whose);
     }
 }
 
@@ -134,12 +175,12 @@ function updateEmail(parent) {
 $(document).ready(function() {
     
   $('#addEmail').click(function() {
-    newEmail = cloneElement("email", 1, ++emailCounter);
+    newEmail = cloneElement($("#electronicAddresses > p:first"));
     newEmail.insertBefore("#addEmail"); // insert hidden
     newElement.find('label').html("Additional:"); // change the label text
     newElement.find('a').html("Remove");
     newElement.find('a').click(function() {
-      removeParent($(this));
+      removeEmail($(this));
       return false;
     });
     newEmail.slideDown();  // show
@@ -180,12 +221,21 @@ $(document).ready(function() {
       return false;          // represss page refresh
     });
   });
+  
+  $('.emailRemovers').each(function() {
+    $(this).click(function() {
+      removeEmail($(this));
+      return false;          // represss page refresh
+    });
+  });
 
   $("#submitButton").click(function() {
-      window.elementCount = 0;
+      console.log("Starting form submission.");
+      window.elementCount = 1;
+      updateGeneralInfo($("#generalInfo"));
       $(".emailAddress").each(function() {  // first count the objects
           window.elementCount++;
-      }
+      });
       $(".emailAddress").each(function() {  // then run the AJAX querries
           if($(this).attr("class") == "emailAddress") {
               updateEmail($(this));

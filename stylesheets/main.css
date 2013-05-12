@@ -186,6 +186,11 @@ A.toplink:hover   {color: #2580a2}
 .spinner {
     display: none;
 }
+
+.donemark {
+    display: none;
+}
+
 /* ******************************************* */
 
 #leftcolumn {

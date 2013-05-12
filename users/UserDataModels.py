@@ -36,10 +36,10 @@ class UserProfile(db.Model):
   '''User profile'''
   user = db.UserProperty()
 
-  firstname = db.StringProperty(required = True,
+  firstName = db.StringProperty(required = True,
                                 default = "Jan")
-  middlename = db.StringProperty(required = False)
-  lastname = db.StringProperty(required = True,
+  middleName = db.StringProperty(required = False)
+  lastName = db.StringProperty(required = True,
                                default = "Kowalski")
   #pseudonym = db.StringProperty(required = False)
 
@@ -95,10 +95,10 @@ class UserGroup(db.Model):
   vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
                       # because it might be longer than 500 characters
 
-class UserGroupEmailPermission(db.Model):
-  userGroup = db.ReferenceProperty(UserGroup, collection_name = "emailPermissions")
-  emailAddress = db.ReferenceProperty(UserEmail)
-  canView = db.BooleanProperty()
+class PermissionEmail(db.Model):
+  userGroup = db.ReferenceProperty(UserGroup, collection_name = "permissionEmails")
+  emailAddress = db.ReferenceProperty(UserEmail, collection_name = "permissionEmails")
+  canView = db.BooleanProperty(default = False)
 
 #--------------------------------------------------
 # Psinquing between users

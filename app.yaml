@@ -28,11 +28,7 @@ handlers:
   script: StartPage.app    # user not logged in
 
 # User profile viewing and editing
-- url: /profile
-  script: MyCard.app    # user logged in, shows the visiting card
-- url: /editprofile
-  script: MyCard.app
-- url: /submitprofile
+- url: /mycard/([^/]+)
   script: MyCard.app
 - url: /uploadphoto
   script: MyCard.app
@@ -54,14 +50,10 @@ handlers:
   script: Outgoing.app
 
 # Incoming
-- url: /incoming
-  script: Incoming.app
 - url: /incoming/([^/]+)
   script: Incoming.app
 
 # Groups
-- url: /groups
-  script: Groups.app
 - url: /groups/([^/]+)
   script: Groups.app
 
@@ -76,10 +68,10 @@ handlers:
   script: StaticPages.app
   
 # Static files
-- url: /stylesheets
-  static_dir: stylesheets
 - url: /javascripts
   static_dir: javascripts
+- url: /stylesheets
+  static_dir: stylesheets
 - url: /(.*\.(gif|png|jpg))
   static_files: static/\1
   upload: static/(.*\.(gif|png|jpg))

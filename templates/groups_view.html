@@ -1,0 +1,31 @@
+<script type="text/javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript" src="/javascripts/groups_view.js"></script>
+<div id="content">
+  {% for group in groups %}
+  <form>
+    <fieldset id="searchContacts">
+    <legend>{{ group.name }}</legend>
+    <p id="{{ group.key() }}">
+      <input type="checkbox" class="general" name="canViewName" {% if group.canViewName %}checked="checked"{% endif %}>First, middle and last name</br>
+<!--      <input type="checkbox" class="general" name="canViewPsuedonym" {% if group.canViewPsuedonym %}checked="checked"{% endif %}>Pseudonym</br>-->
+      <input type="checkbox" class="general" name="canViewBirthday" {% if group.canViewBirthday %}checked="checked"{% endif %}>Birthday</br>
+      <input type="checkbox" class="general" name="canViewGender" {% if group.canViewGender %}checked="checked"{% endif %}>Gender</br>
+      {% for permissionEmail in group.permissionEmails %}
+      <input type="checkbox" class="email" name="{{ permissionEmail.key() }}" {% if permissionEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permissionEmail.emailAddress.email }}</br>      
+      {% endfor %}
+      <input type="button" class="updateButtons" value="Update">
+      {% if group.name != "Public" -%}
+      <input type="button" class="removeButtons" value="Remove">
+      {%- endif %}
+    </p>
+    </fieldset>
+  </form>
+  {% endfor %}  
+    <form>
+      <label>Add new group:</label><input type="text" id="groupName">
+      <input type="button" value="Create" id="createButton">
+      <span class="spinner"><img src="/images/psinque.gif" /></span>
+    </p>
+    </fieldset>
+  </form>
+</div>

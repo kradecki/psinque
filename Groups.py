@@ -2,30 +2,12 @@
 import logging
 import webapp2
 
-from django.utils import simplejson as json
-
 from MasterHandler import MasterHandler
 from users.UserDataModels import UserGroup
 
 #-----------------------------------------------------------------------------
 
-class GroupsView(MasterHandler):
-  
-  def get(self):
-
-    if MasterHandler.safeGuard(self) and MasterHandler.getUserProfile(self):
-    
-        userGroups = self.userProfile.groups
-        
-        MasterHandler.sendTopTemplate(self, activeEntry = "Groups")
-        MasterHandler.sendContent(self, 'templates/groups_viewGroups.html', {
-            'groups': userGroups,
-        })
-        MasterHandler.sendBottomTemplate(self)
-
-#-----------------------------------------------------------------------------
-
-class GroupsAction(MasterHandler):
+class GroupsHandler(MasterHandler):
 
     def get(self, actionName):
         
@@ -33,12 +15,17 @@ class GroupsAction(MasterHandler):
             actionFunction = getattr(self, actionName)
             actionFunction()
 
-    def sendJsonOK(self):
-        self.response.out.write(json.dumps({"status": 0}))
-
-    def sendJsonError(self, msg):
-        self.response.out.write(json.dumps({"status": 1,
-                                            "message": msg}))
+    def view(self):
+        
+        if MasterHandler.safeGuard(self) and MasterHandler.getUserProfile(self):
+        
+            userGroups = self.userProfile.groups
+            
+            MasterHandler.sendTopTemplate(self, activeEntry = "Groups")
+            MasterHandler.sendContent(self, 'templates/groups_view.html', {
+                'groups': userGroups,
+            })
+            MasterHandler.sendBottomTemplate(self)
 
     def removegroup(self):
         
@@ -64,14 +51,11 @@ class GroupsAction(MasterHandler):
         
     def setpermission(self):
 
-        groupKey = self.request.get("key")
-        permissionType  = self.request.get("type")
-        permissionName  = self.request.get("name")
-        permissionValue = self.request.get("value")
-        
-        if (groupKey == "") or (permissionType == "") or (permissionName == "") or (permissionValue == ""):
-            self.sendJsonError("All parameters are required.")
-            return
+        if ((not self.checkGetParameter('key')) or
+            (not self.checkGetParameter('type')) or
+            (not self.checkGetParameter('name')) or
+            (not self.checkGetParameter('value'))):
+                return
         
         if permissionValue == "on":
             permissionValue = True
@@ -117,6 +101,5 @@ class GroupsAction(MasterHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    (r'/groups', GroupsView),
-    (r'/groups/(\w+)', GroupsAction),
+    (r'/groups/(\w+)', GroupsHandler),
 ], debug=True)
