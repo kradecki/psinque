@@ -37,25 +37,15 @@ handlers:
 - url: /serveimageblob/([^/]+)?
   script: MyCard.app
 
-# Contacts
-- url: /contacts
-  script: Contacts.app
-- url: /searchcontacts
-  script: Contacts.app
-- url: /addcontact
-  script: Contacts.app
-- url: /outgoing
-  script: Outgoing.app
-- url: /changerelationship    # AJAX queries
-  script: Outgoing.app
-
-# Incoming
-- url: /incoming/([^/]+)
-  script: Incoming.app
-
 # Groups
 - url: /groups/([^/]+)
   script: Groups.app
+
+# Psinques
+- url: /incoming/([^/]+)
+  script: Incoming.app
+- url: /outgoing/([^/]+)
+  script: Outgoing.app
 
 # User settings
 - url: /settings
