@@ -25,6 +25,12 @@ class MenuEntry:
     self.title = title
     self.entryclass = entryclass
 
+class AjaxError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 class MasterHandler(webapp2.RequestHandler):
   '''
   This is the base class for all Psinque handlers.
@@ -53,11 +59,10 @@ class MasterHandler(webapp2.RequestHandler):
           return False
 
   def checkGetParameter(self, parameterName):
-      setattr(self, parameterName, self.request.get(parameterName))
-      if getattr(self, parameterName) == "":
-          self.sendJsonError("Parameter " + parameterName + " should not be empty.")
-          return False
-      return True
+      val = self.request.get(parameterName)
+      if val == "":
+          raise AjaxError("Parameter " + parameterName + " should not be empty.")
+      return val
     
   def sendJsonOK(self, additionalValues = {}):
       self.response.out.write(json.dumps(dict({"status": 0}.items() +

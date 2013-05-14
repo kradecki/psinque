@@ -2,8 +2,8 @@
 import logging
 import webapp2
 
-from MasterHandler import MasterHandler
-from users.UserDataModels import UserGroup
+from MasterHandler import MasterHandler, AjaxError
+from users.UserDataModels import UserGroup, PermissionEmail
 
 #-----------------------------------------------------------------------------
 
@@ -12,12 +12,17 @@ class GroupsHandler(MasterHandler):
     def get(self, actionName):
         
         if MasterHandler.safeGuard(self):
+            
             actionFunction = getattr(self, actionName)
-            actionFunction()
+            
+            try:
+                actionFunction()
+            except AjaxError as e:
+                self.sendJsonError(e.value)
 
     def view(self):
         
-        if MasterHandler.safeGuard(self) and MasterHandler.getUserProfile(self):
+        if MasterHandler.getUserProfile(self):
         
             userGroups = self.userProfile.groups
             
@@ -29,75 +34,81 @@ class GroupsHandler(MasterHandler):
 
     def removegroup(self):
         
-        group = UserGroup.get(self.request.get('key'))
-        if group.name == "Public":  # cannot remove the Public group
-            self.sendJsonError("Cannot remove the public group")
-        else:
-            group.delete()
-            self.sendJsonOK()
+        groupKey = self.checkGetParameter('key')
+        userGroup = UserGroup.get(groupKey)
+        
+        if userGroup is None:
+            raise AjaxError("Group not found")
+        
+        if userGroup.name == "Public":  # cannot remove the Public group
+            raise AjaxError("Cannot remove the public group")
+
+        for permissionEmail in userGroup.permissionEmails:
+            permissionEmail.delete()
+        userGroup.delete()
+
+        self.sendJsonOK()
             
     def addgroup(self):
         
-        groupName = self.request.get('name')
-        if groupName == "":
-            self.sendJsonError("Empty group name.")
-        elif MasterHandler.getUserProfile(self):
+        groupName = self.checkGetParameter('name')
+
+        if MasterHandler.getUserProfile(self):
             newGroup = UserGroup(parent = self.userProfile,
-                                    creator = self.userProfile,
-                                    name = groupName)
+                                 creator = self.userProfile,
+                                 name = groupName)
             newGroup.put()
-            self.response.out.write(json.dumps({"status": 0,
-                                                "key": str(newGroup.key())}))
-        
+            for email in self.userProfile.emails:
+                permissionEmail = PermissionEmail(parent = newGroup,
+                                                  userGroup = newGroup,
+                                                  emailAddress = email)
+                permissionEmail.put()
+            self.sendJsonOK({"key": str(newGroup.key())});       
+    
+    def htmlBoolToPython(self, val):
+        try:
+            val = {"true": True, "false": False}[val]
+            return val
+        except KeyError:
+            raise AjaxError("Unknown permission value: " + val);
+    
     def setpermission(self):
 
-        if ((not self.checkGetParameter('key')) or
-            (not self.checkGetParameter('type')) or
-            (not self.checkGetParameter('name')) or
-            (not self.checkGetParameter('value'))):
-                return
-        
-        if permissionValue == "on":
-            permissionValue = True
-        elif permissionValue == "off":
-            permissionValue = False
-        else:
-            self.sendJsonError("Unknown value.")
-            return
-        
-        if MasterHandler.getUserProfile(self):
+        pkey = self.checkGetParameter('pkey')
+        ptype = self.checkGetParameter('ptype')
+
+        if ptype == "general":
+
+            canViewName = self.htmlBoolToPython(self.checkGetParameter('canViewName'))
+            canViewBirthday = self.htmlBoolToPython(self.checkGetParameter('canViewBirthday'))
+            canViewGender = self.htmlBoolToPython(self.checkGetParameter('canViewGender'))
             
-            userGroup = UserGroup.get(groupKey)
+            userGroup = UserGroup.get(pkey)
             
             if userGroup is None:
-                self.sendJsonError("User group not found.")
-                return
+                raise AjaxError("User group not found.")
             
-            if permissionType == "general":
-                
-                if permissionName == "canViewName":
-                    userGroup.canViewName = permissionValue
-                    self.sendJsonOK()
-                elif permissionName == "canViewPsuedonym":
-                    userGroup.canViewPsuedonym = permissionValue
-                    self.sendJsonOK()
-                elif permissionName == "canViewBirthday":
-                    userGroup.canViewBirthday = permissionValue
-                    self.sendJsonOK()
-                elif permissionName == "canViewGender":
-                    userGroup.canViewGender = permissionValue
-                    self.sendJsonOK()
-                else:
-                    self.sendJsonError("Unknown permission name.")
-                    return
-                userGroup.put()
-                
-            elif permissionType == "mail":
-                logging.info("Unimplemented.")
+            userGroup.canViewName = canViewName
+            userGroup.canViewBirthday = canViewBirthday
+            userGroup.canViewGender = canViewGender
+            userGroup.put()
             
-            else:
-                self.sendJsonError("Unknown permission type.")
+        elif ptype == "email":
+
+            canView = self.htmlBoolToPython(self.checkGetParameter('canView'))
+            
+            permissionEmail = PermissionEmail.get(pkey)
+            if permissionEmail is None:
+                raise AjaxError("Email permission not found.")
+            
+            permissionEmail.canView = canView
+            permissionEmail.put()
         
+        else:
+            raise AjaxError("Unknown permission type.")
+        
+        self.sendJsonOK()
+
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([

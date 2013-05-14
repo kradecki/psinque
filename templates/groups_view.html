@@ -5,23 +5,26 @@
   <form>
     <fieldset id="searchContacts">
     <legend>{{ group.name }}</legend>
-    <p id="{{ group.key() }}">
-      <input type="checkbox" class="general" name="canViewName" {% if group.canViewName %}checked="checked"{% endif %}>First, middle and last name</br>
-<!--      <input type="checkbox" class="general" name="canViewPsuedonym" {% if group.canViewPsuedonym %}checked="checked"{% endif %}>Pseudonym</br>-->
-      <input type="checkbox" class="general" name="canViewBirthday" {% if group.canViewBirthday %}checked="checked"{% endif %}>Birthday</br>
-      <input type="checkbox" class="general" name="canViewGender" {% if group.canViewGender %}checked="checked"{% endif %}>Gender</br>
+    <p>
+      <input type="hidden" class="keys" value="{{ group.key() }}"></input>
+      <input type="checkbox" class="general" id="canViewName" {% if group.canViewName %}checked="checked"{% endif %}>First, middle and last name</input></br>
+<!--      <input type="checkbox" class="general" name="canViewPsuedonym" {% if group.canViewPsuedonym %}checked="checked"{% endif %}>Pseudonym</input>-->
+      <input type="checkbox" class="general" id="canViewBirthday" {% if group.canViewBirthday %}checked="checked"{% endif %}>Birthday</input></br>
+      <input type="checkbox" class="general" id="canViewGender" {% if group.canViewGender %}checked="checked"{% endif %}>Gender</input></br>
       {% for permissionEmail in group.permissionEmails %}
-      <input type="checkbox" class="email" name="{{ permissionEmail.key() }}" {% if permissionEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permissionEmail.emailAddress.email }}</br>      
+      <input type="checkbox" class="email" name="{{ permissionEmail.key() }}" {% if permissionEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permissionEmail.emailAddress.email }}</input></br>
       {% endfor %}
       <input type="button" class="updateButtons" value="Update">
       {% if group.name != "Public" -%}
       <input type="button" class="removeButtons" value="Remove">
       {%- endif %}
+      <span class="donemark"><img src="/images/donemark.png" /></span>
+      <span class="spinner"><img src="/images/psinque.gif" /></span>
     </p>
     </fieldset>
   </form>
   {% endfor %}  
-    <form>
+    <form id="addGroupForm">
       <label>Add new group:</label><input type="text" id="groupName">
       <input type="button" value="Create" id="createButton">
       <span class="spinner"><img src="/images/psinque.gif" /></span>

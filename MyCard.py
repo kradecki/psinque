@@ -9,7 +9,7 @@ from google.appengine.api import users
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-from MasterHandler import MasterHandler
+from MasterHandler import MasterHandler, AjaxError
 from users.UserDataModels import UserProfile, UserSettings, UserAddress, UserEmail
 from users.UserDataModels import UserGroup, CardDAVPassword
 from users.UserDataModels import PermissionEmail
@@ -23,9 +23,14 @@ class ProfileHandler(MasterHandler):
 
     def get(self, actionName):
         
-        if self.safeGuard():
+        if MasterHandler.safeGuard(self):
+            
             actionFunction = getattr(self, actionName)
-            actionFunction()
+            
+            try:
+                actionFunction()
+            except AjaxError as e:
+                self.sendJsonError(e.value)
 
     def view(self):
 
@@ -99,15 +104,12 @@ class ProfileHandler(MasterHandler):
         
         if self.getUserProfile():
             
-            if ((not self.checkGetParameter('firstname')) or
-                (not self.checkGetParameter('lastname'))):
-                #(not self.checkGetParameter('birthday'))):
-                   return
+            firstname = self.checkGetParameter('firstname')
+            lastname = self.checkGetParameter('lastname')
 
-            self.userProfile.firstName = self.firstname
+            self.userProfile.firstName = firstname
             self.userProfile.middleName = self.request.get("middlename")
-            self.userProfile.lastName = self.lastname
-            #self.userProfile.birthDay = self.birthday
+            self.userProfile.lastName = lastname
             self.userProfile.put()
             
             self.sendJsonOK()
@@ -116,14 +118,13 @@ class ProfileHandler(MasterHandler):
         
         if self.getUserProfile():
             
-            if ((not self.checkGetParameter('email')) or
-                (not self.checkGetParameter('emailType'))):
-                   return
+            email = self.checkGetParameter('email')
+            emailType = self.checkGetParameter('emailType')
             
             userEmail = UserEmail(parent = self.userProfile,
                                   user = self.userProfile,
-                                  email = self.email,
-                                  emailType = self.emailType)
+                                  email = email,
+                                  emailType = emailType)
             userEmail.put()
             
             # Add permissions for this email in every outgoing group
@@ -138,24 +139,25 @@ class ProfileHandler(MasterHandler):
         
         if self.getUserProfile():
             
-            if ((not self.checkGetParameter('emailKey')) or
-                (not self.checkGetParameter('email')) or
-                (not self.checkGetParameter('emailType'))):
-                   return
+            emailKey = self.checkGetParameter('emailKey')
+            email = self.checkGetParameter('email')
+            emailType = self.checkGetParameter('emailType')
             
-            userEmail = UserEmail.get(self.emailKey)
-            userEmail.email = self.email
-            userEmail.emailType = self.emailType
+            userEmail = UserEmail.get(emailKey)
+            userEmail.email = email
+            userEmail.emailType = emailType
             userEmail.put()
             
             self.sendJsonOK()
 
     def removeemail(self):
         
-            if not self.checkGetParameter('emailKey'):
-                return
+            emailKey = self.checkGetParameter('emailKey')
                
             userEmail = UserEmail.get(self.emailKey)
+            if userEmail is None:
+                raise AjaxError("User email not found.")
+            
             for permissionEmail in userEmail.permissionEmails:
                 permissionEmail.delete()
             userEmail.delete()
