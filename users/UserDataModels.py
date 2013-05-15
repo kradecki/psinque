@@ -96,19 +96,31 @@ class UserGroup(db.Model):
                       # because it might be longer than 500 characters
 
 class PermissionEmail(db.Model):
-  userGroup = db.ReferenceProperty(UserGroup, collection_name = "permissionEmails")
-  emailAddress = db.ReferenceProperty(UserEmail, collection_name = "permissionEmails")
-  canView = db.BooleanProperty(default = False)
-
+    userGroup = db.ReferenceProperty(UserGroup,
+                                     collection_name = "permissionEmails")
+    emailAddress = db.ReferenceProperty(UserEmail,
+                                        collection_name = "permissionEmails")
+    canView = db.BooleanProperty(default = False)
+    
 #--------------------------------------------------
 # Psinquing between users
 
 class Psinque(db.Model):
-  fromUser = db.ReferenceProperty(UserProfile, collection_name = "outgoing")
-  toUser   = db.ReferenceProperty(UserProfile, collection_name = "incoming")
-  status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
-  establishingTime = db.DateTimeProperty(auto_now = True)
-  group = db.ReferenceProperty(UserGroup, collection_name = "psinques")
+    fromUser = db.ReferenceProperty(UserProfile,
+                                    collection_name = "outgoing")
+    toUser   = db.ReferenceProperty(UserProfile,
+                                    collection_name = "incoming")
+    status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
+    establishingTime = db.DateTimeProperty(auto_now = True)
+  
+class PsinqueGroup(db.Model):
+    psinque = db.ReferenceProperty(Psinque,
+                                   collection_name = "groups")
+    group = db.ReferenceProperty(UserGroup,
+                                 collection_name = "psinques")
+
+#class PendingDecision(db.Model):
+  #psinque = db.ReferenceProperty(Psinque)
 
 #--------------------------------------------------
 # CardDAV passwords

@@ -1,21 +1,35 @@
+<script type="text/javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="/javascripts/psinque.js"></script>
+<script type="text/javascript" src="/javascripts/outgoing_view.js"></script>
 <div id="content">
-  <legend>Search for contacts</legend>
-  <form action="/searchcontacts" method="POST">
-    <fieldset id="searchContacts">
-      <p>
-        <label>First name:</label>
-        <input type="text" name="firstname" value="" class="required" minlength="2" />
-      </p>
-      <p>
-        <label>Last name:</label>
-        <input type="text" name="lastname" value="" class="required" minlength="2" />
-        <input type="submit" value="Search" />
-      </p>
-    </fieldset>
-  </form>
-  <h3>{{ header }}</h3>
-  <h4>You have currently {{ howManyContacts }} contacts:</h4>
-  {% for result in userContacts %}
-    <p>{{ result.userTo.firstname }} {{ result.userTo.lastname }}</p>
+  <span id="pendings">
+  {% if pendings|length %}
+  <h1>Pending</h1>
+  The following people want to access your private profile data:
+  <table><tbody>
+    <th>#</th>
+    <th>Name</th>
+    <th></th>
+  {% for pending in pendings %}
+    <tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ pending.name }}</td>
+    <td>
+      <input type="hidden" value="{{ pending.key }}" class="keys" />
+      <input type="button" value="Reject" class="rejectButtons" />
+      or select groups
+      <select class="groupSelectors" multiple="multiple">
+        {% for group in groups %}
+        <option value="{{ group.name }}">{{ group.name }}</option>
+        {% endfor %}
+      </select>
+      and <input type="button" value="Accept" class="acceptButtons" />
+    </td>
+    </tr>
   {% endfor %}
+  </tbody></table>  
+  {% endif %}
+  </span>
+<!--   <h1>Active</h1> -->
 </div>

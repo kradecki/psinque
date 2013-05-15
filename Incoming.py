@@ -7,7 +7,7 @@ from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler, AjaxError
 from users.UserDataModels import UserProfile, Psinque, UserEmail
-from users.UserManagement import getPublicGroup, getDisplayNameFromPsinque
+from users.UserManagement import getPublicGroup, getIncomingDisplayNameFromPsinque
 from users.Email import notifyPendingPsinque
 
 #-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ class IncomingHandler(MasterHandler):
             for psinqueKey in psinqueQuery.run(limit=10):
                 psinque = Psinque.get(psinqueKey)
                 contacts.append({'nr': offset + len(contacts) + 1,
-                                 'name': getDisplayNameFromPsinque(psinque),
+                                 'name': getIncomingDisplayNameFromPsinque(psinque),
                                  'date': psinque.establishingTime,
                                  'status': psinque.status,
                                  'key': psinque.key(),

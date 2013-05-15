@@ -1,7 +1,13 @@
 
 from google.appengine.api import mail
 
-from users.UserManagement import getPrimaryEmail, getDisplayNameFromPsinque
+from users.UserManagement import getPrimaryEmail, getOutgoingDisplayNameFromPsinque
+
+def createAcceptUrl(psinque):
+    return "http://psinque.appspot.com/outgoing/acceptpsinque?key=" + str(psinque.key())
+
+def createRejectUrl(psinque):
+    return "http://psinque.appspot.com/outgoing/rejectpsinque?key=" + str(psinque.key())
 
 def notifyPendingPsinque(psinque):
     message = mail.EmailMessage(sender="Psinque notifications <noreply@psinque.appspotmail.com>",
@@ -13,9 +19,16 @@ def notifyPendingPsinque(psinque):
 Dear %s:
 
 Another user, %s, has requested access to your private contact
-details. Please click the following link to make a decision 
+details.
+
+Please click <a href="%s">this link</a> to reject this psinque.
+
+Please click <a href="%s">this link</a> to accept this psinque.
 
 The Psinque Team
-""" % (fromUser.firstname + " " + fromUser.lastname, getDisplayNameFromPsinque(psinque))
+""" % (fromUser.firstName + " " + fromUser.lastName,
+       getOutgoingDisplayNameFromPsinque(psinque),
+       createRejectUrl(psinque),
+       createAcceptUrl(psinque))
 
     message.send()

@@ -46,6 +46,8 @@ handlers:
   script: Incoming.app
 - url: /outgoing/([^/]+)
   script: Outgoing.app
+- url: /decisions/([^/]+)
+  script: Outgoing.app
 
 # User settings
 - url: /settings

@@ -144,7 +144,8 @@ A.toplink:hover   {color: #2580a2}
   font-weight: bold;
 }
 #content input, textarea{
-  width: 280px;
+/*   width: 280px; */
+  min-width: 100px;
   margin-bottom: 0px;
 }
 #content textarea{
@@ -189,6 +190,10 @@ A.toplink:hover   {color: #2580a2}
 
 .donemark {
     display: none;
+}
+
+.groupSelectors {
+    width: 300px;
 }
 
 /* ******************************************* */

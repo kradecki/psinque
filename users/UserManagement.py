@@ -65,7 +65,7 @@ def getPrimaryEmail(user):
 
 
 def getName(user):
-    return user.firstname + " " + user.lastname
+    return user.firstName + " " + user.lastName
 
 
 def getPublicGroup(user):
@@ -75,12 +75,24 @@ def getPublicGroup(user):
     return publicGroup.get()
 
 
-def getDisplayNameFromPsinque(psinque):
-    group = psinque.group
-    if group and group.canViewName:
+def getIncomingDisplayNameFromPsinque(psinque):
+    publicGroupKey = getPublicGroup(psinque.fromUser)
+    if UserGroup.get(publicGroupKey).canViewName:
         return getName(psinque.fromUser)
-    else:
-        return getPrimaryEmail(psinque.fromUser)
+    for group in psinque.groups:
+        if group and group.canViewName:
+            return getName(psinque.fromUser)
+    return getPrimaryEmail(psinque.fromUser)
+
+
+def getOutgoingDisplayNameFromPsinque(psinque):
+    publicGroupKey = getPublicGroup(psinque.toUser)
+    if UserGroup.get(publicGroupKey).canViewName:
+        return getName(psinque.toUser)
+    for group in psinque.groups:
+        if group and group.canViewName:
+            return getName(psinque.toUser)
+    return getPrimaryEmail(psinque.toUser)
 
 
 def getDisplayName(user, toUser):

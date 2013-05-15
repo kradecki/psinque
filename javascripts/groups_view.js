@@ -1,21 +1,4 @@
 
-executeAJAX = function(query, done) {
-    $.ajax(query)
-        .done(function(data) {
-            parsedJSON = $.parseJSON(data);
-            if(parsedJSON["status"] != 0) {
-                alert("Error while performing operation: " + parsedJSON["message"]);
-            } else {
-                done();
-            }
-            $(".spinner").hide();
-        })
-        .error(function(data) {
-            alert("Uknown error occured while performing operation.");
-            $(".spinner").hide();
-        });
-}
-
 updateGroup = function(permissions) {
 
     groupKey = permissions.find(".keys").val()
@@ -72,13 +55,11 @@ addGroup = function(permissions) {
                 newGroup.insertBefore($("#addGroupForm"));
                 newGroup.find(".keys").val(parsedJSON["key"]);
                 newGroup.find("legend").html(groupName);
-                newGroup.find("input").each(function() {
-                    if($(this).attr("type") != "button") {
-                        if($(this).attr("id") != "canViewName") {
-                            $(this).prop('checked', false);
-                        } else {
-                            $(this).prop('checked', true);
-                        }
+                newGroup.find("input[type=checkbox]").each(function() {
+                    if($(this).attr("id") != "canViewName") {
+                        $(this).prop('checked', false);
+                    } else {
+                        $(this).prop('checked', true);
                     }
                 });
                 
@@ -113,7 +94,14 @@ removeGroup = function(removedGroup) {
 }
 
 $(document).ready(function() {
-    
+
+    // Use jQueryUI style for buttons
+    $("input[type=button]")
+        .button()
+        .click(function(event) {
+            event.preventDefault();
+        });
+
     $(".updateButtons").click(function() {
         updateGroup($(this).parent());
     });
