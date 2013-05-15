@@ -230,7 +230,7 @@ $(document).ready(function() {
   });
 
   $("#submitButton").click(function() {
-      console.log("Starting form submission.");
+      $(this).parent().find(".spinner").show();
       window.elementCount = 1;
       updateGeneralInfo($("#generalInfo"));
       $(".emailAddress").each(function() {  // first count the objects
