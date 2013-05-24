@@ -21,29 +21,6 @@ from users.UserDataModels import availableLanguages, addressTypes, emailTypes
 
 class ProfileHandler(MasterHandler):
 
-    def get(self, actionName):
-        
-        if MasterHandler.safeGuard(self):
-            
-            actionFunction = getattr(self, actionName)
-            
-            try:
-                actionFunction()
-            except AjaxError as e:
-                self.sendJsonError(e.value)
-
-    def view(self):
-
-        if self.getUserProfile():
-            #if userProfile.photograph != None:
-            #template_values['photograph'] = '/serveimageblob/%s' % serProfile.photograph.key()
-            
-            self.sendTopTemplate(activeEntry = "My card")
-            self.sendContent('templates/myCard_view.html', {
-                'userProfile': self.userProfile,
-            })
-            self.sendBottomTemplate()
-
     def edit(self):   # form for editing details
 
         userProfile = UserProfile.all().filter("user =", self.user).get()

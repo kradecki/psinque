@@ -42,12 +42,12 @@ handlers:
   script: Groups.app
 
 # Psinques
-- url: /incoming/([^/]+)
-  script: Incoming.app
-- url: /outgoing/([^/]+)
-  script: Outgoing.app
+- url: /psinques/([^/]+)
+  script: Psinques.app
+# - url: /outgoing/([^/]+)
+#   script: Outgoing.app
 - url: /decisions/([^/]+)
-  script: Outgoing.app
+  script: Psinques.app
 
 # User settings
 - url: /settings

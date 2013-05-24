@@ -99,7 +99,7 @@ function decreaseElementCount() {
     window.elementCount--;
     if(window.elementCount == 0) {  // all fields are updated
 //         document.location.reload(true);   // refresh the list of groups
-        window.location = "/mycard/view"
+//         window.location = "/mycard/view"
     }
 }
 

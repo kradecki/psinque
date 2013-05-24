@@ -14,12 +14,12 @@ class StartPage(webapp2.RequestHandler):
     if not user:    # user not logged in
         self.redirect("/login")
     else:
-        self.redirect('/mycard/view')
+        self.redirect('/mycard/edit')
 
 class Login(webapp2.RequestHandler):
   def get(self):
     self.response.out.write(jinja_environment.get_template("templates/login.html").render(
-        loginurl = users.create_login_url("/mycard/view")
+        loginurl = users.create_login_url("/mycard/edit")
     ))
 
 app = webapp2.WSGIApplication([

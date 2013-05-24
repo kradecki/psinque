@@ -3,33 +3,5 @@
 <script type="text/javascript" src="/javascripts/psinque.js"></script>
 <script type="text/javascript" src="/javascripts/outgoing_view.js"></script>
 <div id="content">
-  <span id="pendings">
-  {% if pendings|length %}
-  <h1>Pending</h1>
-  The following people want to access your private profile data:
-  <table><tbody>
-    <th>#</th>
-    <th>Name</th>
-    <th></th>
-  {% for pending in pendings %}
-    <tr>
-    <td>{{ loop.index }}</td>
-    <td>{{ pending.name }}</td>
-    <td>
-      <input type="hidden" value="{{ pending.key }}" class="keys" />
-      <input type="button" value="Reject" class="rejectButtons" />
-      or select groups
-      <select class="groupSelectors" multiple="multiple">
-        {% for group in groups %}
-        <option value="{{ group.name }}">{{ group.name }}</option>
-        {% endfor %}
-      </select>
-      and <input type="button" value="Accept" class="acceptButtons" />
-    </td>
-    </tr>
-  {% endfor %}
-  </tbody></table>  
-  {% endif %}
-  </span>
 <!--   <h1>Active</h1> -->
 </div>

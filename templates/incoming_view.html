@@ -1,8 +1,48 @@
 <script type="text/javascript" src="/javascripts/jquery.js"></script>
 <script type="text/javascript" src="/javascripts/incoming_view.js"></script>
 <div id="content">
-  You have {% if count == 1000 %}1000+{% else %}{{ count }}{% endif %} incoming psinques.
-  <table>
+  <h1>Add new psinque</h1>
+  <p>
+    <label>By email:</label>
+    <input type="text" id="email" />
+    <a href="" id="search">Search</a></br>
+    <label>By telephone number:</label>
+    <input type="text" id="email" /><br/>
+  </p>
+<!--  <p>
+    <a href="">Search from Google contacts.</a>
+  </p>-->
+  <span id="pendings">
+  {% if pendings|length %}
+  <h1>Pending</h1>
+  The following people want to access your private profile data:
+  <table><tbody>
+    <th>#</th>
+    <th>Name</th>
+    <th></th>
+  {% for pending in pendings %}
+    <tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ pending.name }}</td>
+    <td>
+      <input type="hidden" value="{{ pending.key }}" class="keys" />
+      <input type="button" value="Reject" class="rejectButtons" />
+      or select groups
+      <select class="groupSelectors" multiple="multiple">
+        {% for group in groups %}
+        <option value="{{ group.name }}">{{ group.name }}</option>
+        {% endfor %}
+      </select>
+      and <input type="button" value="Accept" class="acceptButtons" />
+    </td>
+    </tr>
+  {% endfor %}
+  </tbody></table>  
+  {% endif %}
+  </span>
+  <h1>Active psinques</h1>
+  You have {% if count == 1000 %}1000+{% else %}{{ count }}{% endif %} psinques.
+  <table class="contacttables">
     <th>#</th>
     <th>Name</th>
     <th>Status</th>
@@ -24,12 +64,4 @@
   {% if isThereMore %}
   <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
   {% endif %}
-  <h3>Add psinque by email:</h3>
-  <p>
-    <input type="text" id="email" /><br/>
-    <a href="" id="search">Search</a>
-  </p>
-<!--  <p>
-    <a href="">Search from Google contacts.</a>
-  </p>-->
 </div>
