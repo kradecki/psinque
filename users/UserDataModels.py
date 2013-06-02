@@ -85,7 +85,7 @@ class UserWebpage(db.Model):
 #--------------------------------------------------
 # Groups of users
 
-class UserGroup(db.Model):
+class Group(db.Model):
   creator = db.ReferenceProperty(UserProfile, collection_name = "groups")
   name = db.StringProperty()
   canViewName = db.BooleanProperty(default = True)
@@ -113,14 +113,19 @@ class Psinque(db.Model):
     status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
     establishingTime = db.DateTimeProperty(auto_now = True)
   
-class PsinqueGroup(db.Model):
-    psinque = db.ReferenceProperty(Psinque,
-                                   collection_name = "groups")
-    group = db.ReferenceProperty(UserGroup,
-                                 collection_name = "psinques")
+class Contact(db.Model):
+    displayName = db.StringProperty()
+    establishingTime = db.DateTimeProperty(auto_now = True)
+    incoming = db.ReferenceProperty(Psinque)
+    outgoing = db.ReferenceProperty(Psinque)
+    incomingType = db.IntegerProperty()  # 0 = none; 1 = public; 2 = private; 3 = pending authorization
+    outgoingType = db.IntegerProperty()  # 0 = none; 2 = private; 3 = pending  (public are invisible)
 
-#class PendingDecision(db.Model):
-  #psinque = db.ReferenceProperty(Psinque)
+class ContactGroup(db.Model):
+    contact = db.ReferenceProperty(Contact,
+                                   collection_name = "contactGroups")
+    group = db.ReferenceProperty(UserGroup,
+                                 collection_name = "contactGroups")
 
 #--------------------------------------------------
 # CardDAV passwords

@@ -46,8 +46,8 @@ handlers:
   script: Psinques.app
 # - url: /outgoing/([^/]+)
 #   script: Outgoing.app
-- url: /decisions/([^/]+)
-  script: Psinques.app
+# - url: /decisions/([^/]+)
+#   script: Psinques.app
 
 # User settings
 - url: /settings

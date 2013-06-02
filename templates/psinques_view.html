@@ -1,7 +1,7 @@
 <script type="text/javascript" src="/javascripts/jquery.js"></script>
 <script type="text/javascript" src="/javascripts/incoming_view.js"></script>
 <div id="content">
-  <h1>Add new psinque</h1>
+  <legend>Add new psinque</legend>
   <p>
     <label>By email:</label>
     <input type="text" id="email" />
@@ -14,7 +14,7 @@
   </p>-->
   <span id="pendings">
   {% if pendings|length %}
-  <h1>Pending</h1>
+  <legend>Pending</legend>
   The following people want to access your private profile data:
   <table><tbody>
     <th>#</th>
@@ -40,7 +40,7 @@
   </tbody></table>  
   {% endif %}
   </span>
-  <h1>Active psinques</h1>
+  <legend>Active psinques</legend>
   You have {% if count == 1000 %}1000+{% else %}{{ count }}{% endif %} psinques.
   <table class="contacttables">
     <th>#</th>

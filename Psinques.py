@@ -6,28 +6,17 @@ import webapp2
 from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler, AjaxError
-from users.UserDataModels import UserProfile, Psinque, UserEmail
+from users.UserDataModels import UserProfile, Psinque, UserEmail, UserGroup
 from users.UserManagement import getPublicGroup, getIncomingDisplayNameFromPsinque
 from users.Email import notifyPendingPsinque
 
 #-----------------------------------------------------------------------------
 
-class IncomingHandler(MasterHandler):
-
-    def get(self, actionName):
-        
-        if MasterHandler.safeGuard(self):
-            
-            actionFunction = getattr(self, actionName)
-            
-            try:
-                actionFunction()
-            except AjaxError as e:
-                self.sendJsonError(e.value)
+class PsinquesHandler(MasterHandler):
 
     def view(self):
         
-        if MasterHandler.getUserProfile(self):
+        if self.getUserProfile():
             
             offset = self.request.get('offset')
             if not offset:
@@ -37,23 +26,23 @@ class IncomingHandler(MasterHandler):
             currentCursor = self.request.get('cursor')
             
             pendingPsinques = Psinque.all().filter("fromUser =", self.userProfile).filter("status =", "pending")
-
             pendingList = []
             for pending in pendingPsinques:
                 pendingList.append({'name': getOutgoingDisplayNameFromPsinque(pending),
                                     'key': str(pending.key())})
 
-            psinqueQuery = Psinque.all(keys_only = True).ancestor(self.userProfile).order("establishingTime")
+            psinqueQuery = UserPsinque.all(keys_only = True).ancestor(self.userProfile).order("establishingTime")
             count = psinqueQuery.count(1000)
             contacts = []
             if currentCursor:
                 psinqueQuery.with_cursor(currentCursor)  # start from the previous position
             for psinqueKey in psinqueQuery.run(limit=10):
-                psinque = Psinque.get(psinqueKey)
+                psinque = UserPsinque.get(psinqueKey)
                 contacts.append({'nr': offset + len(contacts) + 1,
-                                 'name': getIncomingDisplayNameFromPsinque(psinque),
+                                 'name': psinque.displayName,
                                  'date': psinque.establishingTime,
-                                 'status': psinque.status,
+                                 'incomingType': psinque.incomingType,
+                                 'outgoingType': psinque.outgoingType,
                                  'key': psinque.key(),
                                 })
             template_values = {
@@ -66,8 +55,8 @@ class IncomingHandler(MasterHandler):
                 'groups': UserGroup.all().ancestor(self.userProfile),
             }
                     
-            MasterHandler.sendTopTemplate(self, activeEntry = "Incoming")
-            MasterHandler.sendContent(self, 'templates/incoming_view.html', template_values)
+            MasterHandler.sendTopTemplate(self, activeEntry = "Psinques")
+            MasterHandler.sendContent(self, 'templates/psinques_view.html', template_values)
             MasterHandler.sendBottomTemplate(self)
 
     def searchemail(self):
@@ -99,7 +88,7 @@ class IncomingHandler(MasterHandler):
                                     status = "established",
                                     group = getPublicGroup(fromUser))
                 newPsinque.put()
-                self.redirect('/incoming')
+                self.redirect('/psniques')
                 
             elif incomingType == "private":
                 newPsinque = Psinque(parent = self.userProfile, toUser = self.userProfile,
@@ -112,30 +101,91 @@ class IncomingHandler(MasterHandler):
             else:
                 self.response.out.write(json.dumps({"status": 1}))
 
+   
+    def _removeIfEmptyContact(self, contact):
+        if (contact.incoming is None) and (contact.outgoing is None):
+            for contactGroup in contact.contactGroups:
+                contactGroup.delete()
+            contact.delete()
 
-    def removepsinque(self):
+    def _getContact(self):
+
+        if not MasterHandler.getUserProfile(self):
+            self.sendJsonError("User not logged in")
+            return None
+
+        # Find contact on this end
+        contact = Contact.get(self.checkGetParameter('key'))
+        if contact is None:
+            self.sendJsonError("Contact not found")
+            return None
+            
+        if contact.parent() != self.userProfile:
+            self.sendJsonError("You cannot modify contacts that do not belong to you")
+            return None
         
-        psinque = Psinque.get(self.checkGetParameter('key'))
-        if not psinque is None:
+        return contact
+
+
+    def removeincoming(self):
+        
+        contact = self._getContact()
+        if is contact None:
+            return
+        
+        # Contact on the other end of this psinque
+        psinque = contact.incoming
+        friendsContact = Contact.all(keys_only = True).
+                                     filter("outgoing =", psinque.key()).
+                                     get()
+        
+        # Remove psinque from my contact
+        contact.incoming = None
+        self._removeIfEmptyContact(contact)
+
+        # Remove psinque from my friend's contact
+        friendsContact.outgoing = None
+        self._removeIfEmptyContact(friendsContact)
+
+        # Remove psinque
+        psinque.delete()
+        
+        self.sendJsonOK()
+
+    def removeoutgoing(self):
+        
+        contact = self._getContact()
+        if is contact None:
+            return
+        
+        # Contact on the other end of this psinque
+        psinque = contact.incoming
+        
+        # Remove psinque from my contact
+        contact.outgoing = None
+        self._removeIfEmptyContact(contact)
+        
+        # Downgrade psinque to public
+        psinque.
+        
+        self.sendJsonOK()
+
+    def removecontact(self):
+        
+        contact = Contact.get(self.checkGetParameter('key'))
+        if not contact is None:
+            psinque = contact.incoming
             psinque.delete()
-        self.redirect("/incoming")
-        
-#-----------------------------------------------------------------------------
+            psinque = contact.outgoing
+            psinque.delete()
+            contact.delete()
+        self.sendJsonOK()
+                       
 
-class OutgoingDecisions(MasterHandler):
-    
-    def get(self, actionName):
+    def upgradeincoming(self):
         
-        actionFunction = getattr(self, actionName)
-        try:
-            actionFunction()
-        except AjaxError as e:
-            self.sendJsonError(e.value)
-        except BadKeyError:
-            self.sendJsonError("Entity not found.")
-                
 
-    def view(self):
+    def viewdecision(self):
         
         self.sendTopTemplate(self, activeEntry = "Outgoing")
         decisionKey = self.response.get('key')
@@ -152,10 +202,11 @@ class OutgoingDecisions(MasterHandler):
 
 
     def getPsinqueByKey(self):
+        
         psinqueKey = self.checkGetParameter('key')
         psinque = Psinque.get(psinqueKey)
         if psinque is None:
-            raise AjaxError("Pending decision not found.")
+            raise AjaxError("Psinque not found.")
         return psinque
     
     
@@ -178,14 +229,16 @@ class OutgoingDecisions(MasterHandler):
         self.sendJsonOK()
 
     
-    def accept(self):
+    def acceptrequest(self):
+        
         psinque = self.getPsinqueByKey()
         psinque.status = "established"
         psinque.put()
         self.sendJsonOK()
     
     
-    def reject(self):
+    def rejectrequest(self):
+        
         psinque = self.getPsinqueByKey()
         psinque.status = "rejected"
         psinque.put()
@@ -194,6 +247,6 @@ class OutgoingDecisions(MasterHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    (r'/incoming/(\w+)', IncomingHandler),
-    (r'/decisions/(\w+)', OutgoingDecisions),
+    (r'/psinques/(\w+)', PsinquesHandler),
+    #(r'/decisions/(\w+)', OutgoingDecisions),
 ], debug=True)
