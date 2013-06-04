@@ -6,13 +6,82 @@ import webapp2
 from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler, AjaxError
-from users.UserDataModels import UserProfile, Psinque, UserEmail, UserGroup
-from users.UserManagement import getPublicGroup, getIncomingDisplayNameFromPsinque
-from users.Email import notifyPendingPsinque
+#from users.UserDataModels import UserProfile, UserEmail, UserGroup
+#from users.UserManagement import getPublicGroup, getIncomingDisplayNameFromPsinque
+from Notifications import notifyPendingPsinque
 
 #-----------------------------------------------------------------------------
+# Data models
+
+class Psinque(db.Model):
+    fromUser = db.ReferenceProperty(UserProfile,
+                                    collection_name = "outgoing")
+    toUser   = db.ReferenceProperty(UserProfile,
+                                    collection_name = "incoming")
+    status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
+    establishingTime = db.DateTimeProperty(auto_now = True)
+  
+class Contact(db.Model):
+    displayName = db.StringProperty()
+    establishingTime = db.DateTimeProperty(auto_now = True)
+    incoming = db.ReferenceProperty(Psinque)
+    outgoing = db.ReferenceProperty(Psinque)
+    incomingType = db.IntegerProperty()  # 0 = none; 1 = public; 2 = private; 3 = pending authorization
+    outgoingType = db.IntegerProperty()  # 0 = none; 2 = private; 3 = pending  (public are invisible)
+
+class ContactGroup(db.Model):
+    contact = db.ReferenceProperty(Contact,
+                                   collection_name = "contactGroups")
+    group = db.ReferenceProperty(UserGroup,
+                                 collection_name = "contactGroups")
+
+class Group(db.Model):
+    name = db.StringProperty()
+
+#-----------------------------------------------------------------------------
+# Request handler
 
 class PsinquesHandler(MasterHandler):
+
+    def getPrimaryEmail(user):
+        return user.emails.ancestor(user.key()).filter("primary =", True).get().email
+
+
+    def getPublicGroup(user):
+        publicGroup = UserGroup.all(keys_only = True)
+        publicGroup.ancestor(user.key())
+        publicGroup.filter("name =", "Public")
+        return publicGroup.get()
+
+
+    def getIncomingDisplayNameFromPsinque(psinque):
+        publicGroupKey = getPublicGroup(psinque.fromUser)
+        if UserGroup.get(publicGroupKey).canViewName:
+            return getName(psinque.fromUser)
+        for group in psinque.groups:
+            if group and group.canViewName:
+                return getName(psinque.fromUser)
+        return getPrimaryEmail(psinque.fromUser)
+
+
+    def getOutgoingDisplayNameFromPsinque(psinque):
+        publicGroupKey = getPublicGroup(psinque.toUser)
+        if UserGroup.get(publicGroupKey).canViewName:
+            return getName(psinque.toUser)
+        for group in psinque.groups:
+            if group and group.canViewName:
+                return getName(psinque.toUser)
+        return getPrimaryEmail(psinque.toUser)
+
+
+    def getDisplayName(user, toUser):
+        
+        if not getPublicGroup(fromUser).canViewName: # Perhaps the name is visible to everyone?  
+            psinque = Psinque.all().filter("toUser =", toUser).filter("fromUser =", user).get()
+            primaryEmail = getPrimaryEmail(user)
+            if (len(psinque) == 0) or (psinque.status != "Established") or (not psinque.group.canViewName):
+                return primaryEmail    # email address is always visible
+        return getName(user)
 
     def view(self):
         

@@ -37,17 +37,13 @@ handlers:
 - url: /serveimageblob/([^/]+)?
   script: MyCard.app
 
-# Groups
-- url: /groups/([^/]+)
-  script: Groups.app
+# Permits
+- url: /permits/([^/]+)
+  script: Permits.app
 
 # Psinques
 - url: /psinques/([^/]+)
   script: Psinques.app
-# - url: /outgoing/([^/]+)
-#   script: Outgoing.app
-# - url: /decisions/([^/]+)
-#   script: Psinques.app
 
 # User settings
 - url: /settings

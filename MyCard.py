@@ -10,12 +10,68 @@ from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
 from MasterHandler import MasterHandler, AjaxError
-from users.UserDataModels import UserProfile, UserSettings, UserAddress, UserEmail
-from users.UserDataModels import UserGroup, CardDAVPassword
-from users.UserDataModels import PermissionEmail
+from CardDAV import CardDAVPassword
 
-# Available data type choices:
-from users.UserDataModels import availableLanguages, addressTypes, emailTypes
+#-----------------------------------------------------------------------------
+
+genders    = ["male", "female"]
+phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
+addressTypes = {'home': 'Home', 'work': 'Work'}
+emailTypes   = {'private': 'Private', 'work': 'Work'}
+
+class UserProfile(db.Model):
+  '''User profile'''
+  user = db.UserProperty()
+
+  firstName = db.StringProperty(required = True,
+                                default = "Jan")
+  middleName = db.StringProperty(required = False)
+  lastName = db.StringProperty(required = True,
+                               default = "Kowalski")
+  #pseudonym = db.StringProperty(required = False)
+
+  gender = db.StringProperty(choices = genders,
+                             required = False)
+
+  birthDay = db.DateProperty()  
+  
+  # nationality? namesday?
+
+  @property
+  def getName(self):
+      return return UserProfile.firstName + " " + UserProfile.lastName
+
+#class UserPhoto(db.Model):
+  #user = db.ReferenceProperty(UserProfile, collection_name = "photos")
+  #photograph = blobstore.BlobReferenceProperty()
+
+class UserAddress(db.Model):
+  #user = db.ReferenceProperty(UserProfile, collection_name = "addresses")
+  address = db.PostalAddressProperty()
+  city = db.StringProperty()
+  postalCode = db.StringProperty()
+  addressType = db.StringProperty(choices = addressTypes.keys())
+  location = db.GeoPtProperty()
+
+class UserEmail(db.Model):
+  #user = db.ReferenceProperty(UserProfile, collection_name = "emails")
+  email = db.EmailProperty()
+  emailType = db.StringProperty(choices = emailTypes.keys())
+  primary = db.BooleanProperty()
+
+class UserIM(db.Model):
+  #user = db.ReferenceProperty(UserProfile)
+  im = db.IMProperty()
+
+class UserPhoneNumber(db.Model):
+  #user = db.ReferenceProperty(UserProfile, collection_name = "phoneNumbers")
+  phone = db.PhoneNumberProperty(required = True)
+  phoneType = db.StringProperty(choices = phoneTypes)
+
+class UserWebpage(db.Model):
+  #user = db.ReferenceProperty(UserProfile)
+  address = db.StringProperty()
+  webpageType = db.StringProperty(choices = ["private homepage", "business homepage", "facebook", "myspace", "other"])
 
 #-----------------------------------------------------------------------------
 

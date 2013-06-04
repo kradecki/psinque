@@ -7,7 +7,27 @@ from users.UserDataModels import UserGroup, PermissionEmail
 
 #-----------------------------------------------------------------------------
 
-class GroupsHandler(MasterHandler):
+class Permit(db.Model):
+  creator = db.ReferenceProperty(UserProfile, collection_name = "groups")
+  name = db.StringProperty()
+  canViewName = db.BooleanProperty(default = True)
+  #canViewPsuedonym = db.BooleanProperty(default = False)
+  canViewBirthday = db.BooleanProperty(default = False)
+  canViewGender = db.BooleanProperty(default = False)
+  vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
+                      # because it might be longer than 500 characters
+  etag = db.StringProperty()   # etag of the vcard
+
+class PermissionEmail(db.Model):
+    userGroup = db.ReferenceProperty(UserGroup,
+                                     collection_name = "permissionEmails")
+    emailAddress = db.ReferenceProperty(UserEmail,
+                                        collection_name = "permissionEmails")
+    canView = db.BooleanProperty(default = False)
+    
+#-----------------------------------------------------------------------------
+
+class PermitsHandler(MasterHandler):
 
     def get(self, actionName):
         
@@ -112,5 +132,5 @@ class GroupsHandler(MasterHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    (r'/groups/(\w+)', GroupsHandler),
+    (r'/permits/(\w+)', PermitsHandler),
 ], debug=True)
