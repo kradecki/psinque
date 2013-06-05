@@ -9,14 +9,20 @@ def createAcceptUrl(psinque):
 def createRejectUrl(psinque):
     return "http://psinque.appspot.com/outgoing/rejectpsinque?key=" + str(psinque.key())
 
-def notifyPendingPsinque(psinque):
+def sendNotification(psinque, subject, body):
     message = mail.EmailMessage(sender="Psinque notifications <noreply@psinque.appspotmail.com>",
-                                subject="You have a new pending psinque request")
+                                subject=subject)
     fromUser = psinque.fromUser
     message.to = getPrimaryEmail(fromUser)
+    message.body = body
+    message.send()
+
+
+def notifyPendingPsinque(psinque):
     
-    message.body=u"""
-Dear %s:
+    sendNotification(psinque, 
+                     "You have a new pending psinque request",
+                     u"""Dear %s:
 
 Another user, %s, has requested access to your private contact
 details.
@@ -29,12 +35,62 @@ The Psinque Team
 """ % (fromUser.firstName + " " + fromUser.lastName,
        getOutgoingDisplayNameFromPsinque(psinque),
        createRejectUrl(psinque),
-       createAcceptUrl(psinque))
+       createAcceptUrl(psinque)))
 
-    message.send()
     
 def notifyStoppedUsingPrivateData(psinque):
     pass
 
 def notifyDowngradedPsinque(psinque):
     pass
+
+def notifyStoppedUsingPrivateData(psinque):
+    
+    sendNotification(psinque, 
+                     "%s has stopped using your private data" % psinque.fromUser.fullName,
+                     u"""Dear %s:
+
+Another user, %s, has stopped using your private data.
+
+The Psinque Team
+""" % (psinque.fromUser.fullName,
+       getOutgoingDisplayNameFromPsinque(psinque)))
+
+    
+def notifyDowngradedPsinque(psinque):
+    
+    sendNotification(psinque, 
+                     "Your access to private data has been revoked",
+                     u"""Dear %s:
+
+Another user, %s, has revoked your access to his/her private data.
+
+The Psinque Team
+""" % (psinque.fromUser.fullName,
+       getOutgoingDisplayNameFromPsinque(psinque)))
+    
+    
+def notifyAcceptedRequest(psinque):
+
+    sendNotification(psinque, 
+                     "Your request for sharing private contact data has been accepted",
+                     u"""Dear %s:
+
+Another user, %s, has accepted your request for sharing private contact data.
+
+The Psinque Team
+""" % (psinque.fromUser.fullName,
+       getOutgoingDisplayNameFromPsinque(psinque)))
+    
+    
+def notifyRejectedRequest(psinque):
+    
+    sendNotification(psinque, 
+                     "Your request for sharing private contact data has been rejected",
+                     u"""Dear %s:
+
+Another user, %s, has rejected your request for sharing private contact data.
+
+The Psinque Team
+""" % (psinque.fromUser.fullName,
+       getOutgoingDisplayNameFromPsinque(psinque)))

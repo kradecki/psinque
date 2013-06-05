@@ -53,11 +53,7 @@ Data models:
   Parent: UserProfile (destination of the Psinque)
   Fields:
   - incoming
-  - incomingPrivate
-  - incomingPending
   - outgoing
-  - outgoingPrivate
-  - creationPending
   - displayName:
     Description: >
       Cached name for this Contact. It can be either a name of the other
@@ -262,11 +258,15 @@ Pages:
 
   - view:
     Description: Displays the lists of Contacts and Psinques.
-    Parameters: null
+    Parameters:
+    - offset
+    - cursor
     
   - viewdecision:
     Description: >
-      Display the state of a decision (for a pending Psinque)
+      Display the state of a decision (for a pending Psinque).
+      This is a page displayed after the user clicks a link
+      received in an email.
     Parameters:
     - key:
       Description: Datastore key of the pending Psinque.
@@ -311,7 +311,7 @@ Pages:
     Description: Assigns a Contact a new Permit.
     Parameters:
     - contact: datastore key of the Contact.
-    - group: datastore key of the Permit.
+    - permit: datastore key of the Permit.
     Action flow:
     - Change 'permit' of the Contact.
 
@@ -379,6 +379,20 @@ Pages:
     Action flow:
     - "Create a new Psinque with this Contact as parent, but don't assign it to the Contact's 'incoming' field until the decision is made."
     - If enabled, notify the user 'fromUser'.
+
+- Settings:
+
+  Views:
+
+  - view:
+    Description: Displays the lists of Contacts and Psinques.
+    Parameters:
+    - offset
+    - cursor
+    
+  Actions:
+  
+  - generatecarddav
 
 ##############################################################################
 

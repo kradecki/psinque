@@ -106,16 +106,27 @@ class ProfileHandler(MasterHandler):
             userSettings = UserSettings(parent = userProfile, user = self.user)
             userSettings.put()
             
-            cardDAVPassword = CardDAVPassword(parent = userSettings,
-                                              user = self.user,
-                                              generatedUsername = 'dupa',
-                                              generatedPassword = 'dupa')
-            cardDAVPassword.put()
+            #cardDAVPassword = CardDAVPassword(parent = userSettings,
+                                              #user = self.user,
+                                              #generatedUsername = 'dupa',
+                                              #generatedPassword = 'dupa')
+            #cardDAVPassword.put()
+
+            # Default groups and permits
+            defaultGroup = Group(parent = userProfile,
+                                 name = 'Default')
+            defaultGroup.put()
             
-            publicGroup = UserGroup(parent = userProfile,
-                                    creator = userProfile,
-                                    name = 'Public')
-            publicGroup.put()
+            defaultPermit = Permit(parent = userProfile,
+                                   name = "Default")
+            defaultPermit.generateVCard()
+            defaultPermit.put()
+
+            publicPermit = Permit(parent = userProfile,
+                                  name = "Public",
+                                  public = True)
+            publicPermit.generateVCard()
+            publicPermit.put()
 
             userEmail = UserEmail(parent = userProfile,
                                   user = userProfile,

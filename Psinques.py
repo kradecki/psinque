@@ -19,7 +19,7 @@ class Psinque(db.Model):
     toUser   = db.ReferenceProperty(UserProfile,
                                     collection_name = "incoming")
     
-    status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
+    status = db.StringProperty(choices = ["pending", "established", "banned"])
     private = db.BooleanProperty()
 
     creationTime = db.DateTimeProperty(auto_now = True)
@@ -180,7 +180,28 @@ class PsinquesHandler(MasterHandler):
                        ancestor(psinque.fromUser).
                        filter("friend =", psinque.toUser).
                        get()
-                             
+
+
+    def _getPublicPermit(self):
+        return Permit.all().
+                      ancestor(self.userProfile).
+                      filter("name =", "Public").
+                      get()
+                      
+        
+    def _getDefaultPrivatePermit(self):
+        return Permit.all().
+                      ancestor(self.userProfile).
+                      filter("name =", "Default").
+                      get()
+    
+    
+    def _getDefaultGroup(self):
+        return Group.all().
+                     ancestor(self.userProfile).
+                     filter("name =", "Default").
+                     get()
+    
     
     #****************************
     # Views
@@ -189,7 +210,7 @@ class PsinquesHandler(MasterHandler):
     def view(self):
         
         if self.getUserProfile():
-            
+                        
             offset = self.request.get('offset')
             if not offset:
                 offset = 0
@@ -231,20 +252,20 @@ class PsinquesHandler(MasterHandler):
             self.sendBottomTemplate()
 
 
-    def viewdecision(self):
+    #def viewdecision(self):
         
-        self.sendTopTemplate(self, activeEntry = "Outgoing")
-        decisionKey = self.response.get('key')
-        decision = PendingDecision.get(decisionKey)
-        if decision is None:
-            self.sendContent(self, 'templates/outgoing_error.html', {
-                'message': "Pending decision not found. Are you sure you have not resolved it already?",
-            })
-        else:
-            self.sendContent(self, 'templates/outgoing_decision.html', {
-                'decision': decision,
-            })
-        self.sendBottomTemplate(self)
+        #self.sendTopTemplate(self, activeEntry = "Outgoing")
+        #decisionKey = self.response.get('key')
+        #decision = PendingDecision.get(decisionKey)
+        #if decision is None:
+            #self.sendContent(self, 'templates/outgoing_error.html', {
+                #'message': "Pending decision not found. Are you sure you have not resolved it already?",
+            #})
+        #else:
+            #self.sendContent(self, 'templates/outgoing_decision.html', {
+                #'decision': decision,
+            #})
+        #self.sendBottomTemplate(self)
 
     
     #****************************
@@ -277,8 +298,11 @@ class PsinquesHandler(MasterHandler):
     def requestprivate(self):
         
         contact = self._getContact()       
+        if contact.incoming.private:
+            raise AjaxError("You already have access to private data")
+            
         newPsinque = Psinque(parent = contact,
-                             private = False,
+                             private = True,
                              toUser = self.userProfile,
                              fromUser = contact.parent(),
                              status = "pending")
@@ -311,20 +335,17 @@ class PsinquesHandler(MasterHandler):
 
     def changepermit(self):
 
-        psinque = self._getPsinqueByKey()
-        userProfile = psinque.fromUser
-        groupName = self.checkGetParameter('group')
-        group = UserGroup.all(keys_only = True).filter("name =", groupName).get()
-        if group is None:
-            raise AjaxError("Group " + groupName + " does not exist.")
+        contact = Contact.get(self.checkGetParameter('contact'))
+        if not contact:
+            raise AjaxError("Contact does not exist")
+
+        permit  = Permit.get(self.checkGetParameter('permit'))
+        if not permit:
+            raise AjaxError("Permit does not exist")
         
         # First we check if this psinque is not already asigned to that group
-        psinqueGroup = PsinqueGroup.all(keys_only = True).ancestor(psinque).filter("group =", group).get()
-        if psinqueGroup is None:
-            psinqueGroup = PsinqueGroup(parent = psinque,
-                                        psinque = psinque,
-                                        group = group)
-            psinqueGroup.put()
+        contact.permit = permit
+        contact.put()
             
         self.sendJsonOK()
 
@@ -348,7 +369,8 @@ class PsinquesHandler(MasterHandler):
         if not contactIn:
             contactIn = Contact(parent = psinque.toUser,
                                 incoming = psinque,
-                                permit = self._getPrivatePermit)
+                                permit = self._getDefaultPrivatePermit(),
+                                group = self._getDefaultGroup())
         else:
             existingPsinque = contactIn.incoming
             if existingPsinque:
@@ -359,13 +381,9 @@ class PsinquesHandler(MasterHandler):
                     existingPsinque.delete()
                     
         contactIn.incoming = psinque
-        contactIn.incomingPending = False
-        contactIn.incomingPrivate = True
         contactIn.put()
         
         contactOut.outgoing = psinque
-        contactOut.outgoingPending = False
-        contactOut.outgoingPrivate = True
         contactOut.put()
         
         psinque.status = "established"
