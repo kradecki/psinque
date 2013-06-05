@@ -52,45 +52,67 @@ class Group(db.Model):
 
 class PsinquesHandler(MasterHandler):
 
-    def getPrimaryEmail(user):
+    def _getPrimaryEmail(user):
         return user.emails.ancestor(user.key()).filter("primary =", True).get().email
 
 
-    def getPublicGroup(user):
+    def _getPublicGroup(user):
         publicGroup = UserGroup.all(keys_only = True)
         publicGroup.ancestor(user.key())
         publicGroup.filter("name =", "Public")
         return publicGroup.get()
 
 
-    def getIncomingDisplayNameFromPsinque(psinque):
-        publicGroupKey = getPublicGroup(psinque.fromUser)
-        if UserGroup.get(publicGroupKey).canViewName:
-            return getName(psinque.fromUser)
-        for group in psinque.groups:
-            if group and group.canViewName:
-                return getName(psinque.fromUser)
-        return getPrimaryEmail(psinque.fromUser)
+    #def _getIncomingDisplayNameFromPsinque(psinque):
+        #publicGroupKey = _getPublicGroup(psinque.fromUser)
+        #if UserGroup.get(publicGroupKey).canViewName:
+            #return getName(psinque.fromUser)
+        #for group in psinque.groups:
+            #if group and group.canViewName:
+                #return getName(psinque.fromUser)
+        #return _getPrimaryEmail(psinque.fromUser)
 
 
-    def getOutgoingDisplayNameFromPsinque(psinque):
-        publicGroupKey = getPublicGroup(psinque.toUser)
+    def _getOutgoingDisplayNameFromPsinque(psinque):
+        publicGroupKey = _getPublicGroup(psinque.toUser)
         if UserGroup.get(publicGroupKey).canViewName:
             return getName(psinque.toUser)
         for group in psinque.groups:
             if group and group.canViewName:
                 return getName(psinque.toUser)
-        return getPrimaryEmail(psinque.toUser)
+        return _getPrimaryEmail(psinque.toUser)
 
 
-    def getDisplayName(user, toUser):
+    #def _getDisplayName(user, toUser):
         
-        if not getPublicGroup(fromUser).canViewName: # Perhaps the name is visible to everyone?  
-            psinque = Psinque.all().filter("toUser =", toUser).filter("fromUser =", user).get()
-            primaryEmail = getPrimaryEmail(user)
-            if (len(psinque) == 0) or (psinque.status != "Established") or (not psinque.group.canViewName):
-                return primaryEmail    # email address is always visible
-        return getName(user)
+        #if not _getPublicGroup(fromUser).canViewName: # Perhaps the name is visible to everyone?  
+            #psinque = Psinque.all().filter("toUser =", toUser).filter("fromUser =", user).get()
+            #primaryEmail = _getPrimaryEmail(user)
+            #if (len(psinque) == 0) or (psinque.status != "Established") or (not psinque.group.canViewName):
+                #return primaryEmail    # email address is always visible
+        #return getName(user)
+
+    def _removeIfEmptyContact(self, contact):
+        if (contact.incoming is None) and (contact.outgoing is None):
+            for contactGroup in contact.contactGroups:
+                contactGroup.delete()
+            contact.delete()
+
+    def _getContact(self):
+
+        if not self.getUserProfile():
+            raise AjaxError("User not logged in")
+
+        # Find contact on this end
+        contact = Contact.get(self.checkGetParameter('key'))
+        if contact is None:
+            raise AjaxError("Contact not found")
+            
+        if contact.parent() != self.userProfile:
+            raise AjaxError("You cannot modify contacts that do not belong to you")
+        
+        return contact
+
 
     def view(self):
         
@@ -106,7 +128,7 @@ class PsinquesHandler(MasterHandler):
             pendingPsinques = Psinque.all().filter("fromUser =", self.userProfile).filter("status =", "pending")
             pendingList = []
             for pending in pendingPsinques:
-                pendingList.append({'name': getOutgoingDisplayNameFromPsinque(pending),
+                pendingList.append({'name': _getOutgoingDisplayNameFromPsinque(pending),
                                     'key': str(pending.key())})
 
             psinqueQuery = UserPsinque.all(keys_only = True).ancestor(self.userProfile).order("establishingTime")
@@ -123,7 +145,9 @@ class PsinquesHandler(MasterHandler):
                                  'outgoingType': psinque.outgoingType,
                                  'key': psinque.key(),
                                 })
-            template_values = {
+                    
+            self.sendTopTemplate( activeEntry = "Psinques")
+            self.sendContent('templates/psinques_view.html', {
                 'offset': offset,
                 'isThereMore': (offset + len(contacts) < count),
                 'count': count,
@@ -131,78 +155,45 @@ class PsinquesHandler(MasterHandler):
                 'contacts': contacts,
                 'pendings': pendingList,
                 'groups': UserGroup.all().ancestor(self.userProfile),
-            }
-                    
-            MasterHandler.sendTopTemplate(self, activeEntry = "Psinques")
-            MasterHandler.sendContent(self, 'templates/psinques_view.html', template_values)
-            MasterHandler.sendBottomTemplate(self)
+            })
+            self.sendBottomTemplate()
 
     def searchemail(self):
 
+        # Search for the owner of the email address
         email = self.request.get('email')
         userEmail = UserEmail.all(keys_only = True).filter("email =", email).get()
-        if userEmail:
-            userID = userEmail.parent().id()
-            if MasterHandler.getUserProfile(self):            
-                psinque = Psinque.all(keys_only = True).ancestor(self.userProfile).filter("fromUser =", userEmail.parent()).get()
-                if psinque:
-                    self.response.out.write(json.dumps({"status": 1})) # psinque already exists
-                else:
-                    self.response.out.write(json.dumps({"status": 0, "fromUser": userID}))
-        else:
-            self.response.out.write(json.dumps({"status": -1}))   # user not found
 
-
-    def addincoming(self):
+        if not userEmail:
+            raise AjaxError("User not found")
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
         
-        if MasterHandler.getUserProfile(self):
-            
-            fromUser = UserProfile.get_by_id(int(self.request.get('from')))  # get user by key
-            
-            incomingType = self.request.get('type')
-            if incomingType == "public":
-                newPsinque = Psinque(parent = self.userProfile, toUser = self.userProfile,
-                                    fromUser = fromUser,
-                                    status = "established",
-                                    group = getPublicGroup(fromUser))
-                newPsinque.put()
-                self.redirect('/psniques')
-                
-            elif incomingType == "private":
-                newPsinque = Psinque(parent = self.userProfile, toUser = self.userProfile,
-                                    fromUser = fromUser,
-                                    status = "pending")
-                newPsinque.put()
-                notifyPendingPsinque(newPsinque)
-                self.response.out.write(json.dumps({"status": 0}))
-                
-            else:
-                self.response.out.write(json.dumps({"status": 1}))
-
-   
-    def _removeIfEmptyContact(self, contact):
-        if (contact.incoming is None) and (contact.outgoing is None):
-            for contactGroup in contact.contactGroups:
-                contactGroup.delete()
-            contact.delete()
-
-    def _getContact(self):
-
-        if not MasterHandler.getUserProfile(self):
-            self.sendJsonError("User not logged in")
-            return None
-
-        # Find contact on this end
-        contact = Contact.get(self.checkGetParameter('key'))
-        if contact is None:
-            self.sendJsonError("Contact not found")
-            return None
-            
-        if contact.parent() != self.userProfile:
-            self.sendJsonError("You cannot modify contacts that do not belong to you")
-            return None
+        # Check if there already is a Psinque from that user
+        userProfile = userEmail.parent()
+        psinque = Psinque.all(keys_only = True).ancestor(self.userProfile).filter("fromUser =", userProfile).get()
+        if psinque:
+            raise AjaxError("Psinque already exists")
         
-        return contact
+        self.sendJsonOK({
+            "key": userProfile.key(),
+            "publicEnabled": userProfile
+        })
+
+
+    def requestprivate(self):
+        
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
+            
+        contact = Contact.get(self.request.get('key'))
+        
+        newPsinque = Psinque(parent = contact,
+                             private = False,
+                             toUser = self.userProfile,
+                             fromUser = contact.parent(),
+                             status = "pending")
+        newPsinque.put()
 
 
     def removeincoming(self):

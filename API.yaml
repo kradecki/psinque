@@ -274,7 +274,7 @@ Pages:
     - publicEnabled
     Action flow:
     - Search for the owner of the email address.
-    - Check if a Psinque already exists.
+    - Check if a Psinque from that user to the current user already exists.
     - Check if the user has the public profile enabled.
   
   - acceptrequest:
@@ -364,7 +364,6 @@ Pages:
     - key:
       Description: datastore key of the Contact.
     Action flow:
-    - Get the incoming Psinque and read the 'fromUser' field.
     - "Create a new Psinque with this Contact as parent, but don't assign it to the Contact's 'incoming' field until the decision is made."
     - If enabled, notify the user 'fromUser'.
 
