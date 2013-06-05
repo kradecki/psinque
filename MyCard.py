@@ -11,8 +11,10 @@ from google.appengine.ext.webapp import blobstore_handlers
 
 from MasterHandler import MasterHandler, AjaxError
 from CardDAV import CardDAVPassword
+from vobject import vcard
 
 #-----------------------------------------------------------------------------
+# Data models
 
 genders    = ["male", "female"]
 phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
@@ -20,26 +22,39 @@ addressTypes = {'home': 'Home', 'work': 'Work'}
 emailTypes   = {'private': 'Private', 'work': 'Work'}
 
 class UserProfile(db.Model):
-  '''User profile'''
-  user = db.UserProperty()
 
-  firstName = db.StringProperty(required = True,
-                                default = "Jan")
-  middleName = db.StringProperty(required = False)
-  lastName = db.StringProperty(required = True,
-                               default = "Kowalski")
-  #pseudonym = db.StringProperty(required = False)
+    user = db.UserProperty()
 
-  gender = db.StringProperty(choices = genders,
-                             required = False)
+    givenNames = db.ListProperty(required = True)
+    lastName = db.StringProperty(required = True)
+    pseudonyms = db.ListProperty(required = False)
+    companyName = db.StringProperty(required = False)
 
-  birthDay = db.DateProperty()  
-  
-  # nationality? namesday?
+    gender = db.StringProperty(choices = genders,
+                                required = False)
 
-  @property
-  def getName(self):
-      return return UserProfile.firstName + " " + UserProfile.lastName
+    birthDay = db.DateProperty()  
+
+    # nationality? namesday?
+
+    @property
+    def vcardName(self):
+        vcard.Name(family = UserProfile.lastName,
+                   given = UserProfile.givenNames[0])
+
+    @property
+    def fullName(self):
+        if not middleName is None:
+            return UserProfile.firstName + " " +
+                   UserProfile.middleName + " " +
+                   UserProfile.lastName
+        else:
+            return UserProfile.firstName + " " +
+                   UserProfile.lastName
+     
+    @property
+    def emails(self):
+        return UserEmail.all().ancestor(UserProfile)
 
 #class UserPhoto(db.Model):
   #user = db.ReferenceProperty(UserProfile, collection_name = "photos")
@@ -74,6 +89,7 @@ class UserWebpage(db.Model):
   webpageType = db.StringProperty(choices = ["private homepage", "business homepage", "facebook", "myspace", "other"])
 
 #-----------------------------------------------------------------------------
+# Request handler
 
 class ProfileHandler(MasterHandler):
 
@@ -196,6 +212,33 @@ class ProfileHandler(MasterHandler):
             userEmail.delete()
 
             self.sendJsonOK()
+            
+    def addim(self):
+        self.sendJsonError("Unimplemented")
+            
+    def updateim(self):
+        self.sendJsonError("Unimplemented")
+            
+    def removeim(self):
+        self.sendJsonError("Unimplemented")
+
+    def addwww(self):
+        self.sendJsonError("Unimplemented")
+            
+    def updatewww(self):
+        self.sendJsonError("Unimplemented")
+            
+    def removewww(self):
+        self.sendJsonError("Unimplemented")
+
+    def addphone(self):
+        self.sendJsonError("Unimplemented")
+            
+    def updatephone(self):
+        self.sendJsonError("Unimplemented")
+            
+    def removephone(self):
+        self.sendJsonError("Unimplemented")
             
 #-----------------------------------------------------------------------------
                                                 

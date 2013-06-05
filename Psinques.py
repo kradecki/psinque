@@ -6,37 +6,46 @@ import webapp2
 from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler, AjaxError
-#from users.UserDataModels import UserProfile, UserEmail, UserGroup
-#from users.UserManagement import getPublicGroup, getIncomingDisplayNameFromPsinque
 from Notifications import notifyPendingPsinque
+from Permits import Permit
 
 #-----------------------------------------------------------------------------
 # Data models
 
 class Psinque(db.Model):
+    
     fromUser = db.ReferenceProperty(UserProfile,
                                     collection_name = "outgoing")
     toUser   = db.ReferenceProperty(UserProfile,
                                     collection_name = "incoming")
+    
     status = db.StringProperty(choices = ["pending", "established", "rejected", "banned"])
-    establishingTime = db.DateTimeProperty(auto_now = True)
+    private = db.BooleanProperty()
+
+    creationTime = db.DateTimeProperty(auto_now = True)
   
 class Contact(db.Model):
-    displayName = db.StringProperty()
-    establishingTime = db.DateTimeProperty(auto_now = True)
-    incoming = db.ReferenceProperty(Psinque)
-    outgoing = db.ReferenceProperty(Psinque)
-    incomingType = db.IntegerProperty()  # 0 = none; 1 = public; 2 = private; 3 = pending authorization
-    outgoingType = db.IntegerProperty()  # 0 = none; 2 = private; 3 = pending  (public are invisible)
 
-class ContactGroup(db.Model):
-    contact = db.ReferenceProperty(Contact,
-                                   collection_name = "contactGroups")
-    group = db.ReferenceProperty(UserGroup,
-                                 collection_name = "contactGroups")
+    incoming = db.ReferenceProperty(Psinque)
+    incomingPrivate = db.BooleanProperty()
+    incomingPending = db.BooleanProperty()
+
+    outgoing = db.ReferenceProperty(Psinque)
+    outgoingPrivate = db.BooleanProperty()
+    outgoingPending = db.BooleanProperty()
+
+    friend = db.ReferenceProperty(UserProfile)
+    
+    group = db.ReferenceProperty(Group)
+    permit = db.ReferenceProperty(Permit)
+
+    displayName = db.StringProperty()
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 class Group(db.Model):
+    
     name = db.StringProperty()
+    sync = db.BooleanProperty(default = True)
 
 #-----------------------------------------------------------------------------
 # Request handler

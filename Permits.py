@@ -3,105 +3,147 @@ import logging
 import webapp2
 
 from MasterHandler import MasterHandler, AjaxError
-from users.UserDataModels import UserGroup, PermissionEmail
+
+from vobject import vCard
 
 #-----------------------------------------------------------------------------
+# Data models
 
 class Permit(db.Model):
-  creator = db.ReferenceProperty(UserProfile, collection_name = "groups")
-  name = db.StringProperty()
-  canViewName = db.BooleanProperty(default = True)
-  #canViewPsuedonym = db.BooleanProperty(default = False)
-  canViewBirthday = db.BooleanProperty(default = False)
-  canViewGender = db.BooleanProperty(default = False)
-  vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
-                      # because it might be longer than 500 characters
-  etag = db.StringProperty()   # etag of the vcard
+    
+    name = db.StringProperty()
+    public = db.BooleanProperty(default = False)
 
-class PermissionEmail(db.Model):
-    userGroup = db.ReferenceProperty(UserGroup,
-                                     collection_name = "permissionEmails")
-    emailAddress = db.ReferenceProperty(UserEmail,
-                                        collection_name = "permissionEmails")
+    canViewName = db.BooleanProperty(default = True)
+    canViewBirthday = db.BooleanProperty(default = False)
+    canViewGender = db.BooleanProperty(default = False)
+
+    vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
+                        # because it might be longer than 500 characters
+    vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
+    
+    def generateVCard(self):
+        
+        userProfile = Permit.parent()
+        newVCard = vCard()
+        newVCard.add('n')
+        newVCard.n.value = userProfile.name
+        newVCard.add('fn')
+        newVCard.fn.value = userProfile.fullName
+        if userProfile.companyName:
+            newVCard.add('org')
+            newVCard.org.value = userProfile.companyName
+        for email in userProfile.emails:
+            newVCard.add('email')
+            newVCard.email.value = email.email
+            newVCard.email.type_param = email.emailType  #TODO: convert to vCard type names?
+        
+        Permit.vcard = newVCard.serialize()
+        Permit.vcardMD5 = md5.new(Permit.vcard).hexdigest()
+
+class PermitEmail(db.Model):
+
+    userEmail = db.ReferenceProperty(UserEmail,
+                                     collection_name = "permitEmails")
     canView = db.BooleanProperty(default = False)
     
 #-----------------------------------------------------------------------------
+# Request handler
 
 class PermitsHandler(MasterHandler):
 
-    def get(self, actionName):
-        
-        if MasterHandler.safeGuard(self):
-            
-            actionFunction = getattr(self, actionName)
-            
-            try:
-                actionFunction()
-            except AjaxError as e:
-                self.sendJsonError(e.value)
+    def _getPermitByName(self, permitName):
+        return Permit.all().ancestor(self.userProfile).filter("name =", "Default").get()
 
-    def view(self):
-        
-        if MasterHandler.getUserProfile(self):
-        
-            userGroups = self.userProfile.groups
-            
-            MasterHandler.sendTopTemplate(self, activeEntry = "Groups")
-            MasterHandler.sendContent(self, 'templates/groups_view.html', {
-                'groups': userGroups,
-            })
-            MasterHandler.sendBottomTemplate(self)
-
-    def removegroup(self):
-        
-        groupKey = self.checkGetParameter('key')
-        userGroup = UserGroup.get(groupKey)
-        
-        if userGroup is None:
-            raise AjaxError("Group not found")
-        
-        if userGroup.name == "Public":  # cannot remove the Public group
-            raise AjaxError("Cannot remove the public group")
-
-        for permissionEmail in userGroup.permissionEmails:
-            permissionEmail.delete()
-        userGroup.delete()
-
-        self.sendJsonOK()
-            
-    def addgroup(self):
-        
-        groupName = self.checkGetParameter('name')
-
-        if MasterHandler.getUserProfile(self):
-            newGroup = UserGroup(parent = self.userProfile,
-                                 creator = self.userProfile,
-                                 name = groupName)
-            newGroup.put()
-            for email in self.userProfile.emails:
-                permissionEmail = PermissionEmail(parent = newGroup,
-                                                  userGroup = newGroup,
-                                                  emailAddress = email)
-                permissionEmail.put()
-            self.sendJsonOK({"key": str(newGroup.key())});       
-    
-    def htmlBoolToPython(self, val):
+    def _htmlBoolToPython(self, name):
         try:
+            val = self.checkGetParameter(name)
             val = {"true": True, "false": False}[val]
             return val
         except KeyError:
             raise AjaxError("Unknown permission value: " + val);
     
-    def setpermission(self):
+    def view(self):
+        
+        if self.getUserProfile():
+        
+            permits = Permit.all().ancestor(self.userProfile)
+            
+            self.sendTopTemplate(activeEntry = "Groups")
+            self.sendContent('templates/permits_view.html', {
+                'groups': permits,
+            })
+            self.sendBottomTemplate()
 
-        pkey = self.checkGetParameter('pkey')
-        ptype = self.checkGetParameter('ptype')
+    def removepermit(self):
+        
+        permit = Permit.get(self.checkGetParameter('key'))
+        
+        # Check for errors
+        if permit is None:
+            raise AjaxError("Group not found")
+        if permit.name == "Public":  # cannot remove the public group
+            raise AjaxError("Cannot remove the public group")
+        if permit.name == "Default":  # cannot remove the default group
+            raise AjaxError("Cannot remove the default private group")
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
+
+        # Get all contacts that use this permit and assign them the default permit
+        contacts = Contact.all().ancestor(self.userProfile).filter("permit =", permit)
+        defaultPermit = self._getPermitByName("Default")
+        for contact in contacts:
+            contact.permit = defaultPermit
+
+        # Remove all children
+        permitEmails = PermitEmails.all(keys_only = True).ancestor(permit)
+        for permitEmail in permitEmails:
+            permitEmail.delete()
+        permit.delete()  # and the permit itself
+
+        self.sendJsonOK()
+            
+    def addpermit(self):
+        
+        permitName = self.checkGetParameter('name')
+        
+        # Error checking
+        if permitName == "Public":
+            raise AjaxError("Cannot create another public group")
+        if permitName == "Default":
+            raise AjaxError("Cannot create another default private group")
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
+
+        # Check if the permit already exists
+        permit = self._getPermitByName(permitName)
+        if not permit is None:
+            raise AjaxError("Group with that name already exists")
+
+        # Create a new Permit
+        newPermit = Permit(parent = self.userProfile,
+                           name = permitName)
+        newPermit.put()
+        for email in self.userProfile.emails:
+            permitEmail = PermitEmail(parent = newPermit,
+                                      userEmail = email)
+            permitEmail.put()
+        
+        # Generate the Permit's vCard and eTag:
+        newPermit.generateVCard()
+        
+        self.sendJsonOK({"key": str(newPermit.key())});       
+    
+    def setpermit(self):
+
+        pkey = self.checkGetParameter('key')
+        ptype = self.checkGetParameter('type')
 
         if ptype == "general":
 
-            canViewName = self.htmlBoolToPython(self.checkGetParameter('canViewName'))
-            canViewBirthday = self.htmlBoolToPython(self.checkGetParameter('canViewBirthday'))
-            canViewGender = self.htmlBoolToPython(self.checkGetParameter('canViewGender'))
+            canViewName = self._htmlBoolToPython('canViewName')
+            canViewBirthday = self._htmlBoolToPython('canViewBirthday')
+            canViewGender = self._htmlBoolToPython('canViewGender')
             
             userGroup = UserGroup.get(pkey)
             
@@ -115,7 +157,7 @@ class PermitsHandler(MasterHandler):
             
         elif ptype == "email":
 
-            canView = self.htmlBoolToPython(self.checkGetParameter('canView'))
+            canView = self._htmlBoolToPython('canView')
             
             permissionEmail = PermissionEmail.get(pkey)
             if permissionEmail is None:
@@ -126,6 +168,9 @@ class PermitsHandler(MasterHandler):
         
         else:
             raise AjaxError("Unknown permission type.")
+        
+        # Re-generate the Permit's vCard and eTag:
+        newPermit.generateVCard()
         
         self.sendJsonOK()
 
