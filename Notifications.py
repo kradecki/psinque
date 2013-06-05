@@ -32,3 +32,9 @@ The Psinque Team
        createAcceptUrl(psinque))
 
     message.send()
+    
+def notifyStoppedUsingPrivateData(psinque):
+    pass
+
+def notifyDowngradedPsinque(psinque):
+    pass

@@ -46,7 +46,7 @@ Data models:
   - toUser
   - creationTime
   - status:
-    Description: "'pending', 'established', 'rejected' or 'banned'"
+    Description: "'pending', 'established' or 'banned'"
 
 - Contact:
   Description: A contact consisting of an incoming and an outgoing psinque.
@@ -260,7 +260,16 @@ Pages:
 
   Views:
 
-  - view: Displays the lists of Contacts and Psinques.
+  - view:
+    Description: Displays the lists of Contacts and Psinques.
+    Parameters: null
+    
+  - viewdecision:
+    Description: >
+      Display the state of a decision (for a pending Psinque)
+    Parameters:
+    - key:
+      Description: Datastore key of the pending Psinque.
   
   Actions:
 
@@ -284,11 +293,12 @@ Pages:
     Returns:
     - key: datastore key to the newly created Contact.
     Action flow:
-    - Search for receiving Contact as contactIn.
-    - Search for sending Contact as contactOut.
-    - If contactIn does not exist, create a new one, assign the new Contact to the default private Permit.
+    - Search for existing Contacts on both sides of the Psinque:
+        - Find Contact owned by Psinque.fromUser and sourcing from Psinque.toUser (contactOut).
+        - Find Contact owned by Psinque.toUser and sourcing from Psinque.fromUser (contactIn).
+    - If contactIn does not exist, create a new Contact, assign the new Contact to the default private Permit.
+    - "If contactIn.incoming points to an existing Psinque, raise error if it's a private Psinque and replace it with the accepted Psinque otherwise; remove the old Psinque"
     - Add new Psinque as 'outgoing' in that Contact.
-    - If Contact with this Psinque as 'incoming' does not exist,
     - Set the status of the Psinque to "established".
   
   - rejectrequest:
@@ -318,7 +328,9 @@ Pages:
     Parameters:
     - key: datastore key of the Contact.
     Action flow:
-    - Obtain and save the incoming Psinque key.
+    - Get the Contact.
+    - Obtain the incoming Psinque from Contact.incoming.
+    - Obtain the Contact on the other end of it.
     - Clear the 'incoming' field for this Contact.
     - If 'outgoing' is empty, remove this Contact.
     - If the Psinque was private:
@@ -335,7 +347,8 @@ Pages:
     Parameters:
     - key: datastore key of the Contact.
     Action flow:
-    - Obtain and save the outgoing Psnique key.
+    - Get the Contact.
+    - Obtain the outgoing Psinque from Contact.outgoing.
     - Clear the 'outgoing' field for this Contact.
     - If 'incoming' is also empty, remove this Contact.
     - Downgrade the Psinque to 'public'.

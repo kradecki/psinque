@@ -52,6 +52,10 @@ class Group(db.Model):
 
 class PsinquesHandler(MasterHandler):
 
+    #****************************
+    # Private methods
+    # 
+    
     def _getPrimaryEmail(user):
         return user.emails.ancestor(user.key()).filter("primary =", True).get().email
 
@@ -92,11 +96,6 @@ class PsinquesHandler(MasterHandler):
                 #return primaryEmail    # email address is always visible
         #return getName(user)
 
-    def _removeIfEmptyContact(self, contact):
-        if (contact.incoming is None) and (contact.outgoing is None):
-            for contactGroup in contact.contactGroups:
-                contactGroup.delete()
-            contact.delete()
 
     def _getContact(self):
 
@@ -112,8 +111,81 @@ class PsinquesHandler(MasterHandler):
             raise AjaxError("You cannot modify contacts that do not belong to you")
         
         return contact
+    
+    
+    def _getContactForOutgoing(self, psinque):
+        return Contact.all(keys_only = True).
+                       ancestor(self.userProfile).
+                       filter("outgoing =", psinque.key()).
+                       get()
+
+    #TODO: Think of a way to use an ancestor query
+    def _getContactForIncoming(self, psinque):
+        return Contact.all(keys_only = True).
+                       filter("incoming =", psinque).
+                       get()
+                       
+
+    def _clearIncoming(self, contact):
+        contact.incoming = None
+        if contact.outgoing is None:
+            contact.delete()
 
 
+    def _clearOutgoing(self, contact):
+        contact.outgoing = None
+        if contact.incoming is None:
+            contact.delete()
+
+
+    def _removeIncoming(self, contact)
+
+        psinque = contact.incoming
+        friendsContact = self._getContactForOutgoing(psinque)
+        self._clearIncoming(contact)
+        self._clearOutgoing(friendsContact)
+        psinque.delete()
+        Notifications.notifyStoppedUsingPrivateData(psinque)
+
+
+    def _removeOutgoing(self, contact)
+
+        psinque = contact.outgoing        
+        self._clearOutgoing(contact)
+        psinque.private = False  # downgrade psinque to public
+        Notifications.notifyDowngradedPsinque(psinque)
+
+
+    def _getPsinqueByKey(self):
+        
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
+        
+        psinqueKey = self.checkGetParameter('key')
+        psinque = Psinque.get(psinqueKey)
+        if psinque is None:
+            raise AjaxError("Psinque not found.")
+        return psinque
+
+
+    def _getContactIn(self):
+        return Contact.all().
+                       ancestor(psinque.toUser).
+                       filter("friend =", psinque.fromUser).
+                       get()
+
+
+    def _getContactOut(self):
+        return Contact.all().
+                       ancestor(psinque.fromUser).
+                       filter("friend =", psinque.toUser).
+                       get()
+                             
+    
+    #****************************
+    # Views
+    # 
+    
     def view(self):
         
         if self.getUserProfile():
@@ -158,6 +230,27 @@ class PsinquesHandler(MasterHandler):
             })
             self.sendBottomTemplate()
 
+
+    def viewdecision(self):
+        
+        self.sendTopTemplate(self, activeEntry = "Outgoing")
+        decisionKey = self.response.get('key')
+        decision = PendingDecision.get(decisionKey)
+        if decision is None:
+            self.sendContent(self, 'templates/outgoing_error.html', {
+                'message': "Pending decision not found. Are you sure you have not resolved it already?",
+            })
+        else:
+            self.sendContent(self, 'templates/outgoing_decision.html', {
+                'decision': decision,
+            })
+        self.sendBottomTemplate(self)
+
+    
+    #****************************
+    # AJAX methods
+    # 
+    
     def searchemail(self):
 
         # Search for the owner of the email address
@@ -183,105 +276,42 @@ class PsinquesHandler(MasterHandler):
 
     def requestprivate(self):
         
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-            
-        contact = Contact.get(self.request.get('key'))
-        
+        contact = self._getContact()       
         newPsinque = Psinque(parent = contact,
                              private = False,
                              toUser = self.userProfile,
                              fromUser = contact.parent(),
                              status = "pending")
         newPsinque.put()
+        Notifications.notifyPendingPsinque(newPsinque)
+        self.sendJsonOK()
 
 
     def removeincoming(self):
         
         contact = self._getContact()
-        if is contact None:
-            return
-        
-        # Contact on the other end of this psinque
-        psinque = contact.incoming
-        friendsContact = Contact.all(keys_only = True).
-                                     filter("outgoing =", psinque.key()).
-                                     get()
-        
-        # Remove psinque from my contact
-        contact.incoming = None
-        self._removeIfEmptyContact(contact)
-
-        # Remove psinque from my friend's contact
-        friendsContact.outgoing = None
-        self._removeIfEmptyContact(friendsContact)
-
-        # Remove psinque
-        psinque.delete()
-        
+        self._removeIncoming(contact)        
         self.sendJsonOK()
+
 
     def removeoutgoing(self):
         
-        contact = self._getContact()
-        if is contact None:
-            return
-        
-        # Contact on the other end of this psinque
-        psinque = contact.incoming
-        
-        # Remove psinque from my contact
-        contact.outgoing = None
-        self._removeIfEmptyContact(contact)
-        
-        # Downgrade psinque to public
-        psinque.
-        
+        contact = self._getContact()       
+        self._removeOutgoing(contact)
         self.sendJsonOK()
+
 
     def removecontact(self):
         
-        contact = Contact.get(self.checkGetParameter('key'))
-        if not contact is None:
-            psinque = contact.incoming
-            psinque.delete()
-            psinque = contact.outgoing
-            psinque.delete()
-            contact.delete()
+        contact = self._getContact()
+        self._removeIncoming(contact)
+        self._removeOutgoing(contact)
         self.sendJsonOK()
                        
 
-    def upgradeincoming(self):
-        
+    def changepermit(self):
 
-    def viewdecision(self):
-        
-        self.sendTopTemplate(self, activeEntry = "Outgoing")
-        decisionKey = self.response.get('key')
-        decision = PendingDecision.get(decisionKey)
-        if decision is None:
-            self.sendContent(self, 'templates/outgoing_error.html', {
-                'message': "Pending decision not found. Are you sure you have not resolved it already?",
-            })
-        else:
-            self.sendContent(self, 'templates/outgoing_decision.html', {
-                'decision': decision,
-            })
-        self.sendBottomTemplate(self)
-
-
-    def getPsinqueByKey(self):
-        
-        psinqueKey = self.checkGetParameter('key')
-        psinque = Psinque.get(psinqueKey)
-        if psinque is None:
-            raise AjaxError("Psinque not found.")
-        return psinque
-    
-    
-    def addtogroup(self):
-
-        psinque = self.getPsinqueByKey()
+        psinque = self._getPsinqueByKey()
         userProfile = psinque.fromUser
         groupName = self.checkGetParameter('group')
         group = UserGroup.all(keys_only = True).filter("name =", groupName).get()
@@ -295,24 +325,71 @@ class PsinquesHandler(MasterHandler):
                                         psinque = psinque,
                                         group = group)
             psinqueGroup.put()
+            
         self.sendJsonOK()
+
+
+    def changegroup(self):
+        
+        raise AjaxError("Unimplemented")
 
     
     def acceptrequest(self):
         
-        psinque = self.getPsinqueByKey()
+        psinque = self._getPsinqueByKey()
+        #TODO: check for userProfile
+        
+        contactIn = self._getContactIn(psinque)
+        contactOut = self._getContactOut(psinque)
+        
+        if contactOut.outgoing:
+            raise AjaxError("There already is a psinque from this user")
+        
+        if not contactIn:
+            contactIn = Contact(parent = psinque.toUser,
+                                incoming = psinque,
+                                permit = self._getPrivatePermit)
+        else:
+            existingPsinque = contactIn.incoming
+            if existingPsinque:
+                if existingPsinque.private:
+                    psinque.delete()
+                    raise AjaxError("There already is a private psinque from this user")
+                else:
+                    existingPsinque.delete()
+                    
+        contactIn.incoming = psinque
+        contactIn.incomingPending = False
+        contactIn.incomingPrivate = True
+        contactIn.put()
+        
+        contactOut.outgoing = psinque
+        contactOut.outgoingPending = False
+        contactOut.outgoingPrivate = True
+        contactOut.put()
+        
         psinque.status = "established"
         psinque.put()
+        
+        Notifications.notifyAcceptedRequest(psinque)
+        
         self.sendJsonOK()
     
     
     def rejectrequest(self):
         
-        psinque = self.getPsinqueByKey()
-        psinque.status = "rejected"
-        psinque.put()
+        psinque = self._getPsinqueByKey()       
+        psinque.delete()
+
+        Notifications.notifyRejectedRequest(psinque)
+        
         self.sendJsonOK()
 
+
+    def banrequest(self):
+        
+        raise AjaxError("Unimplemented")
+        
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
