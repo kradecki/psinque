@@ -1,0 +1,387 @@
+##############################################################################
+
+Data models:
+
+- UserProfile:
+  Fields:
+  - user
+  - firstName
+  - middleName
+  - lastName
+  - gender:
+    Type: String ['male', 'female', 'undisclosed']
+  - pseudonyms:
+    Type: List of Strings
+  - birthDay
+
+- UserSettings:
+  Parent: UserProfile
+  Fields:
+  - disablePublicProfiles:
+    Type: Boolean
+  - preferredLanguage:
+    Type: String
+  - notifyNewsletter:
+    Type: Boolean
+  - notifyEmails:
+    Type: Boolean
+  - cardDAVenabled:
+    Type: Boolean
+  - syncWithGoogle:
+    Type: Boolean
+
+- Psinque:
+  Description: >
+    Unilateral contact data synchronization channel. The parent is always the
+    Contact of the receiving user (the data beneficient). Such a contact will
+    always exists (in contrast to the contact data source, which will not have
+    a Contact created if the Psinque is public).
+  Parent: Contact
+  Fields:
+  - private:
+    Description: >
+      Determines whether this Psinque feeds on private or public data.
+    Type: Boolean
+  - fromUser
+  - toUser
+  - creationTime
+  - status:
+    Description: "'pending', 'established', 'rejected' or 'banned'"
+
+- Contact:
+  Description: A contact consisting of an incoming and an outgoing psinque.
+  Parent: UserProfile (destination of the Psinque)
+  Fields:
+  - incoming
+  - incomingPrivate
+  - incomingPending
+  - outgoing
+  - outgoingPrivate
+  - creationPending
+  - displayName:
+    Description: >
+      Cached name for this Contact. It can be either a name of the other
+      person, if it is shared with the current user, or, if not, an email
+      address, if that is shared. If nothing of the above is shared, it
+      is '(undisclosed)'.
+  - friend:
+    Description: UserProfile of the friend, who is represented by this Contact.
+    Type: Reference to UserProfile
+  - group:
+    Description: Group to which the contact belongs.
+    Type: Reference to Group
+  - permit:
+    Description: Permit to which the contact belongs.
+    Type: Reference to Permit
+
+- Permit:
+  Description: > 
+    "A set of permissions to view user's data. There is exactly one default
+    private Permit, exactly one public Permit and an unlimited number of private
+    groups. The public Permit has an option that disables it. No Contacts can
+    be added to the public Permit, but when the outgoing Psinques are removed,
+    they are added there automatically."
+  Parent: UserProfile
+  Fields:
+  - name
+  - canViewName
+  - canViewBirthday
+  - canViewGender
+  - public:
+    Type: Boolean
+  - vCard:
+    Description: >
+      Cached vCard that is being updated every time there is a change
+      to the permissions for a particular set of groups.
+  - Etag:
+    Description: Etag calculated for the vCard.
+
+- Group:
+  Description: A group of Contacts (or, in fact, incoming Psinques).
+  Parent: UserProfile
+  Fields:
+  - name
+  - sync:
+    Type: Boolean
+    Description: If False, this group will not sync to the phone/gmail/facebook.
+    
+- UserEmail:
+  Parent: UserProfile
+  Fields:
+  - email
+  - emailType
+  - primary:
+    Type: Boolean
+    Description: >
+      True if this is the primary email address. The primary email is used
+      for notifications.
+    
+- PermitEmail:
+  Parent: Permit
+  Fields:
+  - userEmail
+  - canView:
+    Type: Boolean
+
+- UserIM:
+  Parent: UserProfile
+    
+- PermitIM
+  Parent: Permit
+  Fields:
+  - imAddress
+  - canView:
+    Type: Boolean
+
+- UserAddress:
+  Parent: UserProfile
+    
+- PermitAddress
+  Parent: Permit
+  Fields:
+  - physicalAddress
+  - canView:
+    Type: Boolean
+
+- UserWWW:
+  Parent: UserProfile
+    
+- PermitWWW
+  Parent: Permit
+  Fields:
+  - internetAddress
+  - canView:
+    Type: Boolean
+
+- UserPhone:
+  Parent: UserProfile
+    
+- PermitPhone
+  Parent: Permit
+  Fields:
+  - phoneNumber
+  - canView:
+    Type: Boolean
+
+- CardDAVPassword
+  Description: >
+    A pair of username/password for accessing the CardDAV server.
+  Parent: UserProfile
+  Fields:
+  - generatedUsername
+  - generatedPassword
+    
+##############################################################################
+
+Pages:
+
+#-----------------------------------------------------------------------------
+
+- My card:
+
+  Views:   # return HTML
+  - edit: Displays the contact details edit form.
+  
+  Actions: # return JSON, used for AJAX and as API for external apps
+  - updategeneral: Updates the singular contact details (names, birthday, gender)
+  - addemail:
+    Description: Adds a new email entry.
+    Parameters:
+    - email
+    - emailType
+    Action flow:
+    - Create a new UserEmail with UserProfile as a parent.
+    - Set 'email' and 'emailType'.
+  - addim
+  - addwww
+  - addphone
+  - updateemail
+  - updateim
+  - updatewww
+  - updatephone
+  - removeemail
+  - removeim
+  - removewww
+  - removephone
+
+#-----------------------------------------------------------------------------
+
+- Permits:
+
+  Views:
+  - view: Displays the list of existing Permits.
+  
+  Actions:
+
+  - removepermit:
+    Parameters:
+    - key
+    Returns: null
+    Action flow:
+    - Find all Contacts that use this Permit and change their 'permit' to 'Default'.
+    - Remove all Permission* children.
+    - Remove the Permit.
+  
+  - addpermit:
+    Parameters:
+    - name
+    Returns:
+    - key:
+      Description: Datastore key of the new permit.
+    Action flow:
+    - Creates a new Permit entity, with all Permission* children.
+    - "Generate the Permit's vCard and etag."
+
+  - setpermit:
+    Description: >
+      The permissions need to be set separately for each element of the
+      user profile, because of their unbounded number.
+    Action flow:
+    - Get and modify the Permit/Permission entity.
+    - "Update the Permit's vCard and etag."
+    Parameters:
+    - key:
+      Description: Datastore key of the Permit* entity.
+    - type:
+      Description: >
+        "One of the following: 'general', 'email'"
+    - canViewName:
+      Description: In case of type = general.
+    - canViewBirthday:
+      Description: In case of type = general.
+    - canViewGender:
+      Description: In case of type = general.
+    - canView:
+      Description: In case of type != general.
+
+#-----------------------------------------------------------------------------
+
+- Psinques:
+
+  Views:
+
+  - view: Displays the lists of Contacts and Psinques.
+  
+  Actions:
+
+  - searchemail:
+    Description: >
+      Searches for a user with a particular email address registered in the system.
+    Parameters:
+    - email
+    Returns:
+    - key
+    - publicEnabled
+    Action flow:
+    - Search for the owner of the email address.
+    - Check if a Psinque already exists.
+    - Check if the user has the public profile enabled.
+  
+  - acceptrequest:
+    Description: Accepts a request to share private data.
+    Parameters:
+    - key: datastore key of the pending Psinque.
+    Returns:
+    - key: datastore key to the newly created Contact.
+    Action flow:
+    - Search for receiving Contact as contactIn.
+    - Search for sending Contact as contactOut.
+    - If contactIn does not exist, create a new one, assign the new Contact to the default private Permit.
+    - Add new Psinque as 'outgoing' in that Contact.
+    - If Contact with this Psinque as 'incoming' does not exist,
+    - Set the status of the Psinque to "established".
+  
+  - rejectrequest:
+    Description: See 'acceptrequest'.
+
+  - banrequest:
+    Description: See 'acceptrequest'.
+  
+  - changepermit:
+    Description: Assigns a Contact a new Permit.
+    Parameters:
+    - contact: datastore key of the Contact.
+    - group: datastore key of the Permit.
+    Action flow:
+    - Change 'permit' of the Contact.
+
+  - changegroup:
+    Description: Assigns a Contact a new Group.
+    Parameters:
+    - contact: datastore key of the Contact.
+    - group: datastore key of the Group.
+    Action flow:
+    - Change 'group' of the Contact.
+
+  - removeincoming:
+    Description: Removes the incoming Psinque for a given Contact.
+    Parameters:
+    - key: datastore key of the Contact.
+    Action flow:
+    - Obtain and save the incoming Psinque key.
+    - Clear the 'incoming' field for this Contact.
+    - If 'outgoing' is empty, remove this Contact.
+    - If the Psinque was private:
+      - Obtain the friend's Contact that has this Psinque as 'outgoing'.
+      - Clear the 'outgoing' field for friend's Contact.
+      - If 'incoming' in friend's Contact is empty, remove friend's Contact.
+      - If enabled, notify the friend about this fact.
+
+  - removeoutgoing:
+    Description: >
+      "Removes the outgoing Psinque for a given Contact. If the current user
+      has a public group, the Psinque is downgraded to public. If there's
+      no public group."
+    Parameters:
+    - key: datastore key of the Contact.
+    Action flow:
+    - Obtain and save the outgoing Psnique key.
+    - Clear the 'outgoing' field for this Contact.
+    - If 'incoming' is also empty, remove this Contact.
+    - Downgrade the Psinque to 'public'.
+    - If enabled, notify the friend.
+
+  - removecontact:
+    Description: >
+      Removes both the incoming and the outgoing Psinque and
+      then the Contact.
+    Parameters:
+    - key: datastore key of the Contact.
+    Action flow:
+    - Find friend's Contact.
+    - Remove incoming Psinque.
+    - Remove Contact.
+    - Clear the 'outgoing' field in friend's Contact.
+    - Set the outgoing Psinque's 'private' field to False.
+    - If enabled, notify friend that he's been downgraded to public.
+  
+  - requestprivate:
+    Description: >
+      Sends a request to a person from a Contact list to share his/her
+      private profile. There already must exist a Contact with a public
+      incoming Psinque.
+    Parameters:
+    - key:
+      Description: datastore key of the Contact.
+    Action flow:
+    - Get the incoming Psinque and read the 'fromUser' field.
+    - "Create a new Psinque with this Contact as parent, but don't assign it to the Contact's 'incoming' field until the decision is made."
+    - If enabled, notify the user 'fromUser'.
+
+##############################################################################
+
+Notifications:
+- When someone stops using my private data.
+- When someone asks me for accessing my private data.
+- When someone adds me to his private group. (?)
+- When my request for private data is accepted/rejected/banned.
+- When someone revokes the permission to access his/her private data.
+
+##############################################################################
+# 
+# CardDAV queries: >
+#   We start by getting all Psinques
+#     SELECT * from Psinque WHERE toUser = <user> AND status = established
+#   Then, for every Psinque we can
+#     psinque.parent().group.vcard
+#     psinque.parent().group.etag
