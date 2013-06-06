@@ -28,7 +28,7 @@ class CardDAVResource(_DAVResource):
         self.provider = environ["wsgidav.provider"]
         self.path = path
         self.environ = environ
-        self.user = UserManagement.cardDAVUser(environ["wsgidav.username"])
+        self.userProfile = CardDAV.getUserProfile(environ["wsgidav.username"])
 
         if (path == "/") or (path == ""):  # this is the main folder
             self.isCollection = True
@@ -58,7 +58,7 @@ class CardDAVResource(_DAVResource):
     def generateVCard(self):
         if not self.isCollection and self.vCard is None:
             logging.info("Generating vcard...")
-            vCard = CardDAV.getVCard(self.user, self.friendID)
+            vCard = CardDAV.getVCard(self.userProfile, self.friendID)
             self.vCard = vCard[0]
             self.vCardMtime = vCard[1]
             self.vCardMD5 = vCard[2]
@@ -88,9 +88,9 @@ class CardDAVResource(_DAVResource):
     def getMemberNames(self):
         assert self.isCollection
         if self.path == "/":
-            memberNames = UserManagement.groupList(self.user)
+            memberNames = UserManagement.groupList(self.userProfile)
         else:
-            memberNames = UserManagement.friendList(self.user, self.groupName)
+            memberNames = UserManagement.friendList(self.userProfile, self.groupName)
         return memberNames
     
     def getContent(self):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import os
 import logging
@@ -9,46 +10,9 @@ from MasterHandler import MasterHandler, AjaxError
 from Notifications import notifyPendingPsinque
 from Permits import Permit
 
-#-----------------------------------------------------------------------------
-# Data models
-
-class Psinque(db.Model):
-    
-    fromUser = db.ReferenceProperty(UserProfile,
-                                    collection_name = "outgoing")
-    #toUser   = db.ReferenceProperty(UserProfile,
-                                    #collection_name = "incoming")
-    
-    status = db.StringProperty(choices = ["pending", "established", "banned"])
-    private = db.BooleanProperty(default = False)
-
-    creationTime = db.DateTimeProperty(auto_now = True)
-  
-class Contact(db.Model):
-
-    incoming = db.ReferenceProperty(Psinque)
-    incomingPrivate = db.BooleanProperty()
-    incomingPending = db.BooleanProperty()
-
-    outgoing = db.ReferenceProperty(Psinque)
-    outgoingPrivate = db.BooleanProperty()
-    outgoingPending = db.BooleanProperty()
-
-    friend = db.ReferenceProperty(UserProfile)
-    
-    group = db.ReferenceProperty(Group)
-    permit = db.ReferenceProperty(Permit)
-
-    displayName = db.StringProperty()
-    creationTime = db.DateTimeProperty(auto_now = True)
-
-class Group(db.Model):
-    
-    name = db.StringProperty()
-    sync = db.BooleanProperty(default = True)
+from DataModels import Psinque, Group, Contact
 
 #-----------------------------------------------------------------------------
-# Request handler
 
 class PsinquesHandler(MasterHandler):
 

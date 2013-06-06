@@ -12,8 +12,9 @@ from Psinque import Contact, Group
 
 #-----------------------------------------------------------------------------
 
-class CardDAVPassword(db.Model):
+class CardDAVLogin(db.Model):
 
+    name = db.StringProperty()
     generatedUsername = db.StringProperty()
     generatedPassword = db.StringProperty()
 
@@ -50,26 +51,25 @@ def getVCard(friendID):
     return [permit.vcard, permit.vcarsMTime, permit.vcardMD5]
 
 
-#TODO: Set up generated password indexes
-def cardDAVPassword(username):
+def getCardDAVLogin(username):
+
+    carddavLogin = CardDAVPassword.all().
+                                   filter("generatedUsername =", username).
+                                   get()
+    if not carddavLogin:
+        return None
     
-    password = CardDAVPassword.all().filter("generatedUsername =", username).get()
-    if not password:  # no user profile registered yet
+    if not carddavLogin.parent().userSettings.cardDAVenabled:
         return None
 
-    if not getUserSettings(password.user).cardDAVenabled: # this can happen if the user's disabled CardDAV, but somehow the passwords is still here
-        password.delete()
-        return False
-
-    return password.generatedPassword
+    return carddavLogin
 
 
-def cardDAVUser(username):
+def getUserProfile(username):
     
-    password = CardDAVPassword.all().filter("generatedUsername =", username).get()
-    if not password:
-        return None
-    return password.user
+    carddavLogin = getCardDAVLogin()
+    
+    return carddavLogin.parent()
 
 #-----------------------------------------------------------------------------
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import os
 
@@ -9,9 +10,7 @@ from google.appengine.api import users
 
 from django.utils import simplejson as json
 
-from users.UserDataModels import UserSettings
-from users.UserDataModels import UserProfile
-from users.UserDataModels import Psinque
+from DataModels import UserSettings, UserProfile, Psinque
 
 jinja_environment = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -43,7 +42,7 @@ class MasterHandler(webapp2.RequestHandler):
     '''
 
     def get(self, actionName):
-        
+
         if self.safeGuard():
             
             try:
@@ -75,7 +74,7 @@ class MasterHandler(webapp2.RequestHandler):
         if self.safeGuard():
             self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
             if not self.userProfile:
-                self.redirect("/mycard/edit")
+                self.redirect("/mycard/view")
                 return False
             self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
             return True
@@ -130,7 +129,7 @@ class MasterHandler(webapp2.RequestHandler):
             self.psinqueText = "Psinques"
 
         menuentries = [
-            MenuEntry("mycard/edit", "My card"),
+            MenuEntry("mycard/view", "My card"),
             MenuEntry("groups/view", "Groups"),
             MenuEntry("psinques/view", self.psinqueText),
             MenuEntry("settings/view", "Settings")
@@ -166,15 +165,15 @@ class MasterHandler(webapp2.RequestHandler):
             raise Exception("User not logged in.")   # this should never happen, because sendTopTemplate() redirects to /login earlier
 
 
-    def getLanguage(self):
+    #def getLanguage(self):
         
-        query = UserSettings.all()
-        userProfile = query.filter("user =", self.user).get()
-        if not userProfile:  # no user profile registered yet
-            self.LANGUAGE_CODE = "en"
-        else:
-            self.LANGUAGE_CODE = userProfile.preferredLanguage
-            logging.error("Changed language to " + settings.LANGUAGE_CODE)
+        #query = UserSettings.all()
+        #userProfile = query.filter("user =", self.user).get()
+        #if not userProfile:  # no user profile registered yet
+            #self.LANGUAGE_CODE = "en"
+        #else:
+            #self.LANGUAGE_CODE = userProfile.preferredLanguage
+            #logging.error("Changed language to " + settings.LANGUAGE_CODE)
 
 
     def sendContent(self, templateName, templateVariables = None):

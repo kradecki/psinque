@@ -29,6 +29,12 @@ indexes:
 - kind: UserEmail
   ancestor: yes
   properties:
+  - name: primary
+    direction: desc
+
+- kind: UserEmail
+  ancestor: yes
+  properties:
   - name: user
   - name: primary
 

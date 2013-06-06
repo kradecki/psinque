@@ -193,7 +193,7 @@ Pages:
   URL: /mycard/*
 
   Views:   # return HTML
-  - edit: Displays the contact details edit form.
+  - view: Displays the contact details edit form.
   
   Actions: # return JSON, used for AJAX and as API for external apps
   - updategeneral: Updates the singular contact details (names, birthday, gender)
@@ -437,7 +437,16 @@ Pages:
     
   Actions:
   
-  - generatecarddavlogin
+  - generatecarddavlogin:
+    Parameters:
+    - name:
+    Returns:
+    - key
+  
+  - deletecarddav:
+    Description: Removes an old CarDAVLogin entity.
+    Parameters:
+    - key
   
   - updatesettings:
     Parameters:

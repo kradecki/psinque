@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import logging
 import webapp2
 
@@ -8,53 +9,10 @@ import md5
 
 from MasterHandler import MasterHandler, AjaxError
 from Psinques import Contact
+   
+from DataModels import Permit
 
 #-----------------------------------------------------------------------------
-# Data models
-
-class Permit(db.Model):
-    
-    name = db.StringProperty()
-    public = db.BooleanProperty(default = False)
-
-    canViewName = db.BooleanProperty(default = True)
-    canViewBirthday = db.BooleanProperty(default = False)
-    canViewGender = db.BooleanProperty(default = False)
-
-    vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
-                        # because it might be longer than 500 characters
-    vcardMTime = db.StringProperty() # modification time
-    vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
-    
-    def generateVCard(self):
-        
-        userProfile = Permit.parent()
-        newVCard = vCard()
-        newVCard.add('n')
-        newVCard.n.value = userProfile.name
-        newVCard.add('fn')
-        newVCard.fn.value = userProfile.fullName
-        if userProfile.companyName:
-            newVCard.add('org')
-            newVCard.org.value = userProfile.companyName
-        for email in userProfile.emails:
-            newVCard.add('email')
-            newVCard.email.value = email.email
-            newVCard.email.type_param = email.emailType  #TODO: convert to vCard type names?
-        
-        Permit.vcard = newVCard.serialize()
-        Permit.vcardMTime = str(datetime.date(datetime.now())) + "-" + str(datetime.time(datetime.now()))
-        Permit.vcardMD5 = md5.new(Permit.vcard).hexdigest()
-
-
-class PermitEmail(db.Model):
-
-    userEmail = db.ReferenceProperty(UserEmail,
-                                     collection_name = "permitEmails")
-    canView = db.BooleanProperty(default = False)
-    
-#-----------------------------------------------------------------------------
-# Request handler
 
 class PermitsHandler(MasterHandler):
 
