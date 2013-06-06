@@ -14,11 +14,9 @@ from wsgidav.dav_provider import DAVProvider, _DAVResource
 from wsgidav import util
 
 from lxml import etree
-from datetime import datetime
 import urllib
-import md5
 
-from users import UserManagement
+import CardDAV
 
 class CardDAVResource(_DAVResource):
 
@@ -60,9 +58,10 @@ class CardDAVResource(_DAVResource):
     def generateVCard(self):
         if not self.isCollection and self.vCard is None:
             logging.info("Generating vcard...")
-            self.vCard = UserManagement.generateVCard(self.user, self.friendID)
-            self.vCardMtime = str(datetime.date(datetime.now())) + "-" + str(datetime.time(datetime.now()))
-            self.vCardMD5 = md5.new(self.vCard).hexdigest()
+            vCard = CardDAV.getVCard(self.user, self.friendID)
+            self.vCard = vCard[0]
+            self.vCardMtime = vCard[1]
+            self.vCardMD5 = vCard[2]
     
     def getContentLength(self):
         if self.isCollection:
@@ -83,9 +82,7 @@ class CardDAVResource(_DAVResource):
             etag = '"' + md5.new(self.path).hexdigest() +'"'
         else:
             self.generateVCard()
-            etag = md5.new(self.path).hexdigest() + '-' + str(self.vCardMD5)
-        #logging.info("Path = " + self.path)
-        #logging.info("Etag = " + etag)
+            etag = self.vCardMtime + '-' + self.vCardMD5
         return etag
     
     def getMemberNames(self):

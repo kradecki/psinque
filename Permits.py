@@ -5,6 +5,8 @@ import webapp2
 from MasterHandler import MasterHandler, AjaxError
 
 from vobject import vCard
+from datetime import datetime
+import md5
 
 #-----------------------------------------------------------------------------
 # Data models
@@ -20,6 +22,7 @@ class Permit(db.Model):
 
     vcard = db.Text()   # vCard for CardDAV access; it's not a StringProperty
                         # because it might be longer than 500 characters
+    vcardMTime = db.StringProperty() # modification time
     vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
     
     def generateVCard(self):
@@ -39,6 +42,7 @@ class Permit(db.Model):
             newVCard.email.type_param = email.emailType  #TODO: convert to vCard type names?
         
         Permit.vcard = newVCard.serialize()
+        Permit.vcardMTime = str(datetime.date(datetime.now())) + "-" + str(datetime.time(datetime.now()))
         Permit.vcardMD5 = md5.new(Permit.vcard).hexdigest()
 
 class PermitEmail(db.Model):

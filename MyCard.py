@@ -35,7 +35,11 @@ class UserProfile(db.Model):
 
     birthDay = db.DateProperty()  
 
-    # nationality? namesday?
+    # Shortcuts to non-removable permits
+    defaultPermit = db.ReferenceProperty(Permit)
+    publicPermit = db.ReferenceProperty(Permit)
+    
+    publicEnabled = db.BooleanProperty(default = False)
 
     @property
     def vcardName(self):
@@ -116,17 +120,20 @@ class ProfileHandler(MasterHandler):
             defaultGroup = Group(parent = userProfile,
                                  name = 'Default')
             defaultGroup.put()
+            userProfile.defaultGroup = defaultGroup
             
             defaultPermit = Permit(parent = userProfile,
                                    name = "Default")
             defaultPermit.generateVCard()
             defaultPermit.put()
+            userProfile.defaultPermit = defaultPermit
 
             publicPermit = Permit(parent = userProfile,
                                   name = "Public",
                                   public = True)
             publicPermit.generateVCard()
             publicPermit.put()
+            userProfile.publicPermit = publicPermit
 
             userEmail = UserEmail(parent = userProfile,
                                   user = userProfile,
@@ -139,6 +146,8 @@ class ProfileHandler(MasterHandler):
                                               userGroup = publicGroup,
                                               emailAddress = userEmail)
             permissionEmail.put()
+            
+            userProfile.put()  # save the updated UserProfile
         
         userAddresses = userProfile.addresses.ancestor(userProfile).fetch(100)
         addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))

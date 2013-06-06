@@ -16,8 +16,8 @@ class Psinque(db.Model):
     
     fromUser = db.ReferenceProperty(UserProfile,
                                     collection_name = "outgoing")
-    toUser   = db.ReferenceProperty(UserProfile,
-                                    collection_name = "incoming")
+    #toUser   = db.ReferenceProperty(UserProfile,
+                                    #collection_name = "incoming")
     
     status = db.StringProperty(choices = ["pending", "established", "banned"])
     private = db.BooleanProperty()
@@ -60,11 +60,11 @@ class PsinquesHandler(MasterHandler):
         return user.emails.ancestor(user.key()).filter("primary =", True).get().email
 
 
-    def _getPublicGroup(user):
-        publicGroup = UserGroup.all(keys_only = True)
-        publicGroup.ancestor(user.key())
-        publicGroup.filter("name =", "Public")
-        return publicGroup.get()
+    #def _getPublicGroup(user):
+        #publicGroup = UserGroup.all(keys_only = True)
+        #publicGroup.ancestor(user.key())
+        #publicGroup.filter("name =", "Public")
+        #return publicGroup.get()
 
 
     #def _getIncomingDisplayNameFromPsinque(psinque):
@@ -77,14 +77,14 @@ class PsinquesHandler(MasterHandler):
         #return _getPrimaryEmail(psinque.fromUser)
 
 
-    def _getOutgoingDisplayNameFromPsinque(psinque):
-        publicGroupKey = _getPublicGroup(psinque.toUser)
-        if UserGroup.get(publicGroupKey).canViewName:
-            return getName(psinque.toUser)
-        for group in psinque.groups:
-            if group and group.canViewName:
-                return getName(psinque.toUser)
-        return _getPrimaryEmail(psinque.toUser)
+    #def _getOutgoingDisplayNameFromPsinque(psinque):
+        #publicGroupKey = _getPublicGroup(psinque.toUser)
+        #if UserGroup.get(publicGroupKey).canViewName:
+            #return getName(psinque.toUser)
+        #for group in psinque.groups:
+            #if group and group.canViewName:
+                #return getName(psinque.toUser)
+        #return _getPrimaryEmail(psinque.toUser)
 
 
     #def _getDisplayName(user, toUser):
@@ -114,17 +114,24 @@ class PsinquesHandler(MasterHandler):
     
     
     def _getContactForOutgoing(self, psinque):
+        '''
+        Finds and returns a Contact that has the "psinque" in the 
+        "outgoing" field. This Contact will belong to an unknown
+        user, so we cannot use ancestor queries.
+        '''
         return Contact.all(keys_only = True).
-                       ancestor(self.userProfile).
-                       filter("outgoing =", psinque.key()).
+                       ancestor(psinque.fromUser).
+                       filter("outgoing =", psinque).
                        get()
 
-    #TODO: Think of a way to use an ancestor query
     def _getContactForIncoming(self, psinque):
-        return Contact.all(keys_only = True).
-                       filter("incoming =", psinque).
-                       get()
-                       
+        '''
+        Finds and returns a Contact that has the "psinque" in the 
+        "incoming" field. This Contact is in fact the parent of this
+        Psinque.
+        '''
+        return psinque.parent()
+
 
     def _clearIncoming(self, contact):
         contact.incoming = None
@@ -138,8 +145,12 @@ class PsinquesHandler(MasterHandler):
             contact.delete()
 
 
-    def _removeIncoming(self, contact)
-
+    def _removeIncoming(self, contact):
+        '''
+        Removes the incoming Psinque from a Contact. If the Contact
+        is empty, it is removed. This Psinque is also removed from
+        the friend's Contact. The Psinque is removed as well.
+        '''
         psinque = contact.incoming
         friendsContact = self._getContactForOutgoing(psinque)
         self._clearIncoming(contact)
@@ -148,11 +159,16 @@ class PsinquesHandler(MasterHandler):
         Notifications.notifyStoppedUsingPrivateData(psinque)
 
 
-    def _removeOutgoing(self, contact)
-
+    def _removeOutgoing(self, contact):
+        '''
+        Removes the outgoing Psinque from a Contact. If the Contact
+        is empty, it is removed. The Psinque is then downgraded to
+        a public psinque, so it's not removed from the friend's
+        Contact.
+        '''
         psinque = contact.outgoing        
         self._clearOutgoing(contact)
-        psinque.private = False  # downgrade psinque to public
+        psinque.private = False
         Notifications.notifyDowngradedPsinque(psinque)
 
 
@@ -167,41 +183,12 @@ class PsinquesHandler(MasterHandler):
             raise AjaxError("Psinque not found.")
         return psinque
 
-
-    def _getContactIn(self):
-        return Contact.all().
-                       ancestor(psinque.toUser).
-                       filter("friend =", psinque.fromUser).
+    
+    def _getPsinqueFrom(self):
+        return Psinque.all(keys_only = True).
+                       ancestor(self.userProfile).
+                       filter("fromUser =", userProfile).
                        get()
-
-
-    def _getContactOut(self):
-        return Contact.all().
-                       ancestor(psinque.fromUser).
-                       filter("friend =", psinque.toUser).
-                       get()
-
-
-    def _getPublicPermit(self):
-        return Permit.all().
-                      ancestor(self.userProfile).
-                      filter("name =", "Public").
-                      get()
-                      
-        
-    def _getDefaultPrivatePermit(self):
-        return Permit.all().
-                      ancestor(self.userProfile).
-                      filter("name =", "Default").
-                      get()
-    
-    
-    def _getDefaultGroup(self):
-        return Group.all().
-                     ancestor(self.userProfile).
-                     filter("name =", "Default").
-                     get()
-    
     
     #****************************
     # Views
@@ -285,17 +272,17 @@ class PsinquesHandler(MasterHandler):
         
         # Check if there already is a Psinque from that user
         userProfile = userEmail.parent()
-        psinque = Psinque.all(keys_only = True).ancestor(self.userProfile).filter("fromUser =", userProfile).get()
+        psinque = self._getPsinqueFrom(userProfile)
         if psinque:
             raise AjaxError("Psinque already exists")
         
         self.sendJsonOK({
             "key": userProfile.key(),
-            "publicEnabled": userProfile
+            "publicEnabled": userProfile.publicEnabled,
         })
 
 
-    def requestprivate(self):
+    def requestupgrade(self):
         
         contact = self._getContact()       
         if contact.incoming.private:
@@ -309,6 +296,22 @@ class PsinquesHandler(MasterHandler):
         newPsinque.put()
         Notifications.notifyPendingPsinque(newPsinque)
         self.sendJsonOK()
+        
+        
+    def addpublic(self):
+        
+        if not self.getUserProfile():
+            raise AjaxError("User not logged in")
+        
+        friendsProfile = UserProfile.get(checkGetParameter("key"))
+        psinque = Psinque.all().
+                          ancestor(self.userProfile).
+                          filter("fromUser =", friendsProfile)
+
+
+    def addprivate(self):
+        
+        raise AjaxError("Unimplemented")
 
 
     def removeincoming(self):
@@ -360,8 +363,8 @@ class PsinquesHandler(MasterHandler):
         psinque = self._getPsinqueByKey()
         #TODO: check for userProfile
         
-        contactIn = self._getContactIn(psinque)
-        contactOut = self._getContactOut(psinque)
+        contactIn = self._getContactForIncoming(psinque)
+        contactOut = self._getContactForOutgoing(psinque)
         
         if contactOut.outgoing:
             raise AjaxError("There already is a psinque from this user")
@@ -369,8 +372,8 @@ class PsinquesHandler(MasterHandler):
         if not contactIn:
             contactIn = Contact(parent = psinque.toUser,
                                 incoming = psinque,
-                                permit = self._getDefaultPrivatePermit(),
-                                group = self._getDefaultGroup())
+                                permit = self.userProfile.defaultPermit,
+                                group = self.userProfile.defaultGroup)
         else:
             existingPsinque = contactIn.incoming
             if existingPsinque:
@@ -387,6 +390,7 @@ class PsinquesHandler(MasterHandler):
         contactOut.put()
         
         psinque.status = "established"
+        psinque.permit = psinque.fromUser.defaultPermit
         psinque.put()
         
         Notifications.notifyAcceptedRequest(psinque)

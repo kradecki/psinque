@@ -45,7 +45,9 @@ def friendList(userProfile, groupName):
 
 def getVCard(friendID):
     
-    return Contact.get_by_id(friendID).group.vCard
+    # This is 3 Datastore fetches: Contact, Psinque, Permit
+    permit = Contact.get_by_id(friendID).incoming.permit
+    return [permit.vcard, permit.vcarsMTime, permit.vcardMD5]
 
 
 #TODO: Set up generated password indexes

@@ -13,6 +13,18 @@ Data models:
   - pseudonyms:
     Type: List of Strings
   - birthDay
+  - publicEnabled
+  - defaultPermit:
+    Type: Reference to Permit
+    Description: >
+      Shortcut to the default Permit to minimize the number of Datastore queries.
+  - publicPermit
+    Type: Reference to Permit
+    Description: >
+      Shortcut to the public Permit to minimize the number of Datastore queries.
+  - defaultGroup
+  # - nationality?
+  # - namesday?
 
 - UserSettings:
   Parent: UserProfile
@@ -42,8 +54,12 @@ Data models:
     Description: >
       Determines whether this Psinque feeds on private or public data.
     Type: Boolean
+  - permit:
+    Type: Reference to Permit
+    Description: >
+      "A reference to the friend's Permit entity that holds the vCard. In case"
   - fromUser
-  - toUser
+#   - toUser
   - creationTime
   - status:
     Description: "'pending', 'established' or 'banned'"
@@ -199,6 +215,12 @@ Pages:
   - removeim
   - removewww
   - removephone
+  
+  - enablepublic:
+    Description: Enables or disables the public permit.
+    Parameters:
+    - enable:
+      Type: Boolean
 
 #-----------------------------------------------------------------------------
 
@@ -279,8 +301,10 @@ Pages:
     Parameters:
     - email
     Returns:
-    - key
-    - publicEnabled
+    - key:
+      Description: "Datastore key to the other person's UserProfile."
+    - publicEnabled:
+      Description: True if the other user has enabled the public profile.
     Action flow:
     - Search for the owner of the email address.
     - Check if a Psinque from that user to the current user already exists.
@@ -368,7 +392,7 @@ Pages:
     - Set the outgoing Psinque's 'private' field to False.
     - If enabled, notify friend that he's been downgraded to public.
   
-  - requestprivate:
+  - requestupgrade:
     Description: >
       Sends a request to a person from a Contact list to share his/her
       private profile. There already must exist a Contact with a public
@@ -379,20 +403,38 @@ Pages:
     Action flow:
     - "Create a new Psinque with this Contact as parent, but don't assign it to the Contact's 'incoming' field until the decision is made."
     - If enabled, notify the user 'fromUser'.
+    
+  - addpublic:
+    Description: "Adds the person's public profile as a new Contact."
+    Parameters:
+    - key:
+      Description: Datastore key of the other person's UserProfile.
+    Action flow:
+    - Check if a Psinque already exists.
+    - Create a new Psinque between the two contacts.
+    - If necessary, create a new Contact for the friend, add the new Psinque to it.
+    
+  - addprivate:
+    Description: "Asks for a person's private profile and create a new Contact."
+    Parameters:
+    - key:
+      Description: Datastore key of the other person's UserProfile.
+    Action flow:
+    - "Check if a Psinque already exists; if it's private, run 'requestupgrade'."
+    - "Create a new Contact and a new public Psinque from the friend, then run 'requestupgrade'".
+    - If enabled, notify the other user.
 
 - Settings:
 
   Views:
 
-  - view:
-    Description: Displays the lists of Contacts and Psinques.
-    Parameters:
-    - offset
-    - cursor
+  - view
     
   Actions:
   
-  - generatecarddav
+  - generatecarddavlogin
+  
+  - updatesettings
 
 ##############################################################################
 
@@ -402,12 +444,3 @@ Notifications:
 - When someone adds me to his private group. (?)
 - When my request for private data is accepted/rejected/banned.
 - When someone revokes the permission to access his/her private data.
-
-##############################################################################
-# 
-# CardDAV queries: >
-#   We start by getting all Psinques
-#     SELECT * from Psinque WHERE toUser = <user> AND status = established
-#   Then, for every Psinque we can
-#     psinque.parent().group.vcard
-#     psinque.parent().group.etag
