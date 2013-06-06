@@ -39,7 +39,7 @@ class AjaxError(Exception):
 
 class MasterHandler(webapp2.RequestHandler):
     '''
-    This is the base class for all Psinque handlers.
+    The base class for all Psinque request handlers.
     '''
 
     def get(self, actionName):
@@ -67,7 +67,11 @@ class MasterHandler(webapp2.RequestHandler):
     
     
     def getUserProfile(self):
-        
+        '''
+        Retrieves the UserProfile for the current user from the Datastore.
+        If the profile does not exist, the user is redirected to the profile
+        edit page.
+        '''        
         if self.safeGuard():
             self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
             if not self.userProfile:
@@ -79,13 +83,29 @@ class MasterHandler(webapp2.RequestHandler):
             return False
 
 
-    def checkGetParameter(self, parameterName):
-        
+    def getRequiredParameter(self, parameterName):
+        '''
+        Retrieves a text parameter from the HTTP request and raises an
+        error if the parameter is not found.
+        '''
         val = self.request.get(parameterName)
         if val == "":
             raise AjaxError("Parameter " + parameterName + " should not be empty.")
         return val
         
+        
+    def getRequiredBoolParameter(self, name):
+        '''
+        Retrieves a Boolean parameter from the HTTP request and raises an 
+        error if the parameter is not found.
+        '''
+        try:
+            val = self.getRequiredParameter(name)
+            val = {"true": True, "false": False}[val]
+            return val
+        except KeyError:
+            raise AjaxError("Unknown permission value: " + val);
+    
         
     def sendJsonOK(self, additionalValues = {}):
         

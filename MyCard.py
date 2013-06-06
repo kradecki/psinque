@@ -173,8 +173,8 @@ class ProfileHandler(MasterHandler):
         
         if self.getUserProfile():
             
-            firstname = self.checkGetParameter('firstname')
-            lastname = self.checkGetParameter('lastname')
+            firstname = self.getRequiredParameter('firstname')
+            lastname = self.getRequiredParameter('lastname')
 
             self.userProfile.firstName = firstname
             self.userProfile.middleName = self.request.get("middlename")
@@ -187,8 +187,8 @@ class ProfileHandler(MasterHandler):
         
         if self.getUserProfile():
             
-            email = self.checkGetParameter('email')
-            emailType = self.checkGetParameter('emailType')
+            email = self.getRequiredParameter('email')
+            emailType = self.getRequiredParameter('emailType')
             
             userEmail = UserEmail(parent = self.userProfile,
                                   user = self.userProfile,
@@ -208,9 +208,9 @@ class ProfileHandler(MasterHandler):
         
         if self.getUserProfile():
             
-            emailKey = self.checkGetParameter('emailKey')
-            email = self.checkGetParameter('email')
-            emailType = self.checkGetParameter('emailType')
+            emailKey = self.getRequiredParameter('emailKey')
+            email = self.getRequiredParameter('email')
+            emailType = self.getRequiredParameter('emailType')
             
             userEmail = UserEmail.get(emailKey)
             userEmail.email = email
@@ -221,7 +221,7 @@ class ProfileHandler(MasterHandler):
 
     def removeemail(self):
         
-            emailKey = self.checkGetParameter('emailKey')
+            emailKey = self.getRequiredParameter('emailKey')
                
             userEmail = UserEmail.get(self.emailKey)
             if userEmail is None:

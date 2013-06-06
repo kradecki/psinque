@@ -7,69 +7,85 @@ from google.appengine.api import users
 
 from MasterHandler import MasterHandler
 
+#-----------------------------------------------------------------------------
+# Data models
+
 availableLanguages = {
                       'en': 'English',
                       'pl': 'Polski',
                       'de': 'Deutsch',
                      }
 
-#-----------------------------------------------------------------------------
-
 class UserSettings(db.Model):
-  '''User settings other than those stored in the profile'''
-  user = db.UserProperty()
- 
-  # Settings:
-  preferredLanguage = db.StringProperty(choices = availableLanguages.keys(),
-                                        default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
-  notifyNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
-  notifyEmails = db.BooleanProperty(default = True)
-  notifyStopsUsingMyPrivateData = db.BooleanProperty(default = True)
-  notifyAsksForPrivateData = db.BooleanProperty(default = True)
-  notifyAllowsMePrivateData = db.BooleanProperty(default = True)
-  notifyDisallowsMePrivateData = db.BooleanProperty(default = True)
-  notifyRequestDecision = db.BooleanProperty(default = True)
-  
-  cardDAVenabled = db.BooleanProperty(default = False)
-  syncWithGoogle = db.BooleanProperty(default = False)
+    '''
+    User settings other than those stored in the UserProfile.
+    '''
+    #user = db.UserProperty()
+
+    preferredLanguage = db.StringProperty(choices = availableLanguages.keys(),
+                                            default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
+    notifyNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
+    notifyEmails = db.BooleanProperty(default = True)
+    notifyStopsUsingMyPrivateData = db.BooleanProperty(default = True)
+    notifyAsksForPrivateData = db.BooleanProperty(default = True)
+    notifyAllowsMePrivateData = db.BooleanProperty(default = True)
+    notifyDisallowsMePrivateData = db.BooleanProperty(default = True)
+    notifyRequestDecision = db.BooleanProperty(default = True)
+
+    cardDAVenabled = db.BooleanProperty(default = False)
+    #syncWithGoogle = db.BooleanProperty(default = False)
 
 #-----------------------------------------------------------------------------
+# Request handler
 
 class Settings(MasterHandler):
 
-  def getUserSettings(user):
-      return UserSettings.all().filter("user =", user).get()
+    #****************************
+    # Private methods
+    # 
+    
 
-  def get(self):
-    userSettings = self.getUserSettings(users.get_current_user())
-    if not userSettings is None:
-        template_values = {
-          'preferredLanguage': userSettings.preferredLanguage,
-          'availableLanguages': availableLanguages,
-          'notifyNewsletter': userSettings.notifyNewsletter,
-          'notifyEmails': userSettings.notifyEmails,
-          'cardDAVenabled': userSettings.cardDAVenabled,
-          'syncWithGoogle': userSettings.syncWithGoogle,
-        }
-        MasterHandler.sendTopTemplate(self, activeEntry = "Settings")
-        MasterHandler.sendContent(self, 'templates/settings_viewSettings.html', template_values)
-        MasterHandler.sendBottomTemplate(self)
-    else:
-      self.redirect('/login')  #TODO: Create settings for the user?
+    #****************************
+    # Views
+    # 
+    
+    def view(self):
+        
+        if self.getUserProfile():
+            
+            userSettings = UserSettings.all().
+                                        ancestor(self.userProfile).
+                                        get()
+            
+            self.sendTopTemplate(activeEntry = "Settings")
+            self.sendContent('templates/settings_viewSettings.html', {
+                'userSettings': userSettings,
+                'availableLanguages': availableLanguages,
+            })
+            self.sendBottomTemplate()
 
-  def post(self):
-    userSettings = getUserSettings(users.get_current_user())
-    userSettings.preferredLanguage = self.request.get('language')
-    userSettings.notifyNewsletter = bool(self.request.get('newsletter'))
-    userSettings.notifyEmails = bool(self.request.get('emailnotifications'))
-    userSettings.cardDAVenabled = bool(self.request.get('synccarddav'))
-    userSettings.syncWithGoogle = bool(self.request.get('syncgoogle'))
-    userSettings.put()
+    #****************************
+    # AJAX methods
+    # 
+    
+    def updatesettings(self):
+        
+        userSettings = getUserSettings(users.get_current_user())
+        userSettings.preferredLanguage = self.getRequiredParameter('language')
+        userSettings.notifyNewsletter = self.getRequiredBoolParameter('newsletter')
+        userSettings.notifyEmails = self.getRequiredBoolParameter('emailnotifications')
+        userSettings.cardDAVenabled = self.getRequiredBoolParameter('synccarddav')
+        userSettings.syncWithGoogle = self.getRequiredBoolParameter('syncgoogle')
+        userSettings.put()
 
-    self.redirect('/settings')  # redirects to Settings
+        self.redirect('/settings')  # redirects to Settings
+        
+    def generatecarddavlogin(self):
+        
+        raise AjaxError("Unimplemented")
 
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-  ('/settings', Settings)
+  ('/settings/(\w+)', Settings)
 ], debug=True)

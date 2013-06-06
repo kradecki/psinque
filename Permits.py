@@ -2,11 +2,12 @@
 import logging
 import webapp2
 
-from MasterHandler import MasterHandler, AjaxError
-
 from vobject import vCard
 from datetime import datetime
 import md5
+
+from MasterHandler import MasterHandler, AjaxError
+from Psinques import Contact
 
 #-----------------------------------------------------------------------------
 # Data models
@@ -45,6 +46,7 @@ class Permit(db.Model):
         Permit.vcardMTime = str(datetime.date(datetime.now())) + "-" + str(datetime.time(datetime.now()))
         Permit.vcardMD5 = md5.new(Permit.vcard).hexdigest()
 
+
 class PermitEmail(db.Model):
 
     userEmail = db.ReferenceProperty(UserEmail,
@@ -56,16 +58,16 @@ class PermitEmail(db.Model):
 
 class PermitsHandler(MasterHandler):
 
+    #****************************
+    # Private methods
+    # 
+    
     def _getPermitByName(self, permitName):
         return Permit.all().ancestor(self.userProfile).filter("name =", "Default").get()
 
-    def _htmlBoolToPython(self, name):
-        try:
-            val = self.checkGetParameter(name)
-            val = {"true": True, "false": False}[val]
-            return val
-        except KeyError:
-            raise AjaxError("Unknown permission value: " + val);
+    #****************************
+    # Views
+    # 
     
     def view(self):
         
@@ -79,9 +81,14 @@ class PermitsHandler(MasterHandler):
             })
             self.sendBottomTemplate()
 
+
+    #****************************
+    # AJAX methods
+    # 
+    
     def removepermit(self):
         
-        permit = Permit.get(self.checkGetParameter('key'))
+        permit = Permit.get(self.getRequiredParameter('key'))
         
         # Check for errors
         if permit is None:
@@ -107,9 +114,10 @@ class PermitsHandler(MasterHandler):
 
         self.sendJsonOK()
             
+            
     def addpermit(self):
         
-        permitName = self.checkGetParameter('name')
+        permitName = self.getRequiredParameter('name')
         
         # Error checking
         if permitName == "Public":
@@ -138,16 +146,17 @@ class PermitsHandler(MasterHandler):
         
         self.sendJsonOK({"key": str(newPermit.key())});       
     
+    
     def setpermit(self):
 
-        pkey = self.checkGetParameter('key')
-        ptype = self.checkGetParameter('type')
+        pkey = self.getRequiredParameter('key')
+        ptype = self.getRequiredParameter('type')
 
         if ptype == "general":
 
-            canViewName = self._htmlBoolToPython('canViewName')
-            canViewBirthday = self._htmlBoolToPython('canViewBirthday')
-            canViewGender = self._htmlBoolToPython('canViewGender')
+            canViewName = self.getRequiredBoolParameter('canViewName')
+            canViewBirthday = self.getRequiredBoolParameter('canViewBirthday')
+            canViewGender = self.getRequiredBoolParameter('canViewGender')
             
             userGroup = UserGroup.get(pkey)
             
@@ -161,7 +170,7 @@ class PermitsHandler(MasterHandler):
             
         elif ptype == "email":
 
-            canView = self._htmlBoolToPython('canView')
+            canView = self.getRequiredBoolParameter('canView')
             
             permissionEmail = PermissionEmail.get(pkey)
             if permissionEmail is None:
@@ -177,6 +186,15 @@ class PermitsHandler(MasterHandler):
         newPermit.generateVCard()
         
         self.sendJsonOK()
+        
+        
+    def enablepublic(self):
+        
+        publicEnabled = self.getRequiredBoolParameter("enable")
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
+        
+        self.userProfile.publicEnabled = publicEnabled
 
 #-----------------------------------------------------------------------------
 

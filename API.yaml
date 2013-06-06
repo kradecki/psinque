@@ -39,8 +39,6 @@ Data models:
     Type: Boolean
   - cardDAVenabled:
     Type: Boolean
-  - syncWithGoogle:
-    Type: Boolean
 
 - Psinque:
   Description: >
@@ -59,7 +57,6 @@ Data models:
     Description: >
       "A reference to the friend's Permit entity that holds the vCard. In case"
   - fromUser
-#   - toUser
   - creationTime
   - status:
     Description: "'pending', 'established' or 'banned'"
@@ -101,12 +98,14 @@ Data models:
   - canViewGender
   - public:
     Type: Boolean
-  - vCard:
+  - vcard:
     Description: >
       Cached vCard that is being updated every time there is a change
       to the permissions for a particular set of groups.
-  - Etag:
-    Description: Etag calculated for the vCard.
+  - vcardMTime:
+    Description: Modification timestamp for the vCard, used for etags.
+  - vcardMD5:
+    Description: MD5 checksum calculated for the vCard, used for etags.
 
 - Group:
   Description: A group of Contacts (or, in fact, incoming Psinques).
@@ -191,6 +190,8 @@ Pages:
 
 - My card:
 
+  URL: /mycard/*
+
   Views:   # return HTML
   - edit: Displays the contact details edit form.
   
@@ -225,6 +226,8 @@ Pages:
 #-----------------------------------------------------------------------------
 
 - Permits:
+
+  URL: /permits/*
 
   Views:
   - view: Displays the list of existing Permits.
@@ -276,6 +279,8 @@ Pages:
 
 - Psinques:
 
+  URL: /psinques/*
+
   Views:
 
   - view:
@@ -317,10 +322,7 @@ Pages:
     Returns:
     - key: datastore key to the newly created Contact.
     Action flow:
-    - Search for existing Contacts on both sides of the Psinque:
-        - Find Contact owned by Psinque.fromUser and sourcing from Psinque.toUser (contactOut).
-        - Find Contact owned by Psinque.toUser and sourcing from Psinque.fromUser (contactIn).
-    - If contactIn does not exist, create a new Contact, assign the new Contact to the default private Permit.
+    - Search for existing Contacts on both sides of the Psinque.
     - "If contactIn.incoming points to an existing Psinque, raise error if it's a private Psinque and replace it with the accepted Psinque otherwise; remove the old Psinque"
     - Add new Psinque as 'outgoing' in that Contact.
     - Set the status of the Psinque to "established".
@@ -411,8 +413,7 @@ Pages:
       Description: Datastore key of the other person's UserProfile.
     Action flow:
     - Check if a Psinque already exists.
-    - Create a new Psinque between the two contacts.
-    - If necessary, create a new Contact for the friend, add the new Psinque to it.
+    - Create a new Contact and a new Psinque between the two contacts.
     
   - addprivate:
     Description: "Asks for a person's private profile and create a new Contact."
@@ -420,11 +421,15 @@ Pages:
     - key:
       Description: Datastore key of the other person's UserProfile.
     Action flow:
-    - "Check if a Psinque already exists; if it's private, run 'requestupgrade'."
+    - "Check if a Psinque already exists; if it's public, run 'requestupgrade'."
     - "Create a new Contact and a new public Psinque from the friend, then run 'requestupgrade'".
     - If enabled, notify the other user.
 
+#-----------------------------------------------------------------------------
+
 - Settings:
+
+  URL: /settings/*
 
   Views:
 
@@ -434,7 +439,17 @@ Pages:
   
   - generatecarddavlogin
   
-  - updatesettings
+  - updatesettings:
+    Parameters:
+    - language
+    - synccarddav
+    - notifyNewsletter
+    - notifyEmails
+    - notifyStopsUsingMyPrivateData
+    - notifyAsksForPrivateData
+    - notifyAllowsMePrivateData
+    - notifyDisallowsMePrivateData
+    - notifyRequestDecision
 
 ##############################################################################
 

@@ -46,14 +46,12 @@ handlers:
   script: Psinques.app
 
 # User settings
-- url: /settings
-  script: Settings.app
-- url: /savesettings
+- url: /settings/([^/]+)
   script: Settings.app
 
 # Static pages
-- url: /about
-  script: StaticPages.app
+# - url: /about
+#   script: StaticPages.app
   
 # Static files
 - url: /javascripts

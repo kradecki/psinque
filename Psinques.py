@@ -20,7 +20,7 @@ class Psinque(db.Model):
                                     #collection_name = "incoming")
     
     status = db.StringProperty(choices = ["pending", "established", "banned"])
-    private = db.BooleanProperty()
+    private = db.BooleanProperty(default = False)
 
     creationTime = db.DateTimeProperty(auto_now = True)
   
@@ -103,7 +103,7 @@ class PsinquesHandler(MasterHandler):
             raise AjaxError("User not logged in")
 
         # Find contact on this end
-        contact = Contact.get(self.checkGetParameter('key'))
+        contact = Contact.get(self.getRequiredParameter('key'))
         if contact is None:
             raise AjaxError("Contact not found")
             
@@ -177,7 +177,7 @@ class PsinquesHandler(MasterHandler):
         if not self.getUserProfile():
             raise AjaxError("User profile not found")
         
-        psinqueKey = self.checkGetParameter('key')
+        psinqueKey = self.getRequiredParameter('key')
         psinque = Psinque.get(psinqueKey)
         if psinque is None:
             raise AjaxError("Psinque not found.")
@@ -190,6 +190,41 @@ class PsinquesHandler(MasterHandler):
                        filter("fromUser =", userProfile).
                        get()
     
+    
+    def _addRequestToUpgrade(self, contact):
+
+        if contact.incoming.private:
+            raise AjaxError("You already have access to private data")
+            
+        newPsinque = Psinque(parent = contact,
+                             private = True,
+                             fromUser = contact.parent(),
+                             status = "pending")
+        newPsinque.put()
+        Notifications.notifyPendingPsinque(newPsinque)
+    
+    
+    def _addPublicPsinque(self, friendsProfile):
+        
+        if not self.getUserProfile():
+            raise AjaxError("User not logged in")
+
+        newContact = Contact(parent = self.userProfile,
+                             friend = friendsProfile,
+                             group = self.userProfile.defaultGroup,
+                             permit = self.userProfile.publicPermit)
+        newContact.put()
+        
+        newPsinque = Psinque(parent = newContact,
+                             fromUser = friendsProfile,
+                             private = False,
+                             permit = friendsProfile.defaultPermit,
+                             status = "established")
+        newPsinque.put()
+        
+        return newPsinque
+        
+
     #****************************
     # Views
     # 
@@ -205,36 +240,37 @@ class PsinquesHandler(MasterHandler):
                 offset = int(offset)
             currentCursor = self.request.get('cursor')
             
+            # Pending decisions
             pendingPsinques = Psinque.all().filter("fromUser =", self.userProfile).filter("status =", "pending")
             pendingList = []
             for pending in pendingPsinques:
                 pendingList.append({'name': _getOutgoingDisplayNameFromPsinque(pending),
                                     'key': str(pending.key())})
 
-            psinqueQuery = UserPsinque.all(keys_only = True).ancestor(self.userProfile).order("establishingTime")
-            count = psinqueQuery.count(1000)
-            contacts = []
+            # List of contacts
+            contactQuery = Contact.all(keys_only = True).
+                                   ancestor(self.userProfile).
+                                   order("establishingTime")
+            count = contactQuery.count(1000)
             if currentCursor:
-                psinqueQuery.with_cursor(currentCursor)  # start from the previous position
-            for psinqueKey in psinqueQuery.run(limit=10):
-                psinque = UserPsinque.get(psinqueKey)
-                contacts.append({'nr': offset + len(contacts) + 1,
-                                 'name': psinque.displayName,
-                                 'date': psinque.establishingTime,
-                                 'incomingType': psinque.incomingType,
-                                 'outgoingType': psinque.outgoingType,
-                                 'key': psinque.key(),
-                                })
+                contactQuery.with_cursor(currentCursor)  # start from the previous position
+            contacts = contactQuery.run(limit = 10)
+            
+            if len(contacts) == 10:
+                isThereMore = (offset + 10 < count)
+            else:
+                isThereMore = False
                     
-            self.sendTopTemplate( activeEntry = "Psinques")
+            self.sendTopTemplate(activeEntry = "Psinques")
             self.sendContent('templates/psinques_view.html', {
                 'offset': offset,
                 'isThereMore': (offset + len(contacts) < count),
                 'count': count,
-                'nextCursor': psinqueQuery.cursor(),
+                'nextCursor': contactQuery.cursor(),
                 'contacts': contacts,
                 'pendings': pendingList,
-                'groups': UserGroup.all().ancestor(self.userProfile),
+                'groups': Group.all().ancestor(self.userProfile),
+                'permits': Permit.all().ancestor(self.userProfile),
             })
             self.sendBottomTemplate()
 
@@ -284,34 +320,37 @@ class PsinquesHandler(MasterHandler):
 
     def requestupgrade(self):
         
-        contact = self._getContact()       
-        if contact.incoming.private:
-            raise AjaxError("You already have access to private data")
-            
-        newPsinque = Psinque(parent = contact,
-                             private = True,
-                             toUser = self.userProfile,
-                             fromUser = contact.parent(),
-                             status = "pending")
-        newPsinque.put()
-        Notifications.notifyPendingPsinque(newPsinque)
+        contact = self._getContact()     
+        self._addRequestToUpgrade(contact)
         self.sendJsonOK()
-        
-        
+    
+
     def addpublic(self):
+                
+        friendsProfile = UserProfile.get(getRequiredParameter("key"))
+
+        psinque = self._getPsinqueFrom(friendsProfile)
+        if psinque:
+            raise AjaxError("You already have this psinque")
         
-        if not self.getUserProfile():
-            raise AjaxError("User not logged in")
-        
-        friendsProfile = UserProfile.get(checkGetParameter("key"))
-        psinque = Psinque.all().
-                          ancestor(self.userProfile).
-                          filter("fromUser =", friendsProfile)
+        self._addPublicPsinque(friendsProfile)
 
 
     def addprivate(self):
         
-        raise AjaxError("Unimplemented")
+        if not self.getUserProfile():
+            raise AjaxError("User not logged in")
+        
+        friendsProfile = UserProfile.get(getRequiredParameter("key"))
+        psinque = self._getPsinqueFrom(friendsProfile)
+        if psinque:
+            if psinque.private:
+                raise AjaxError("You already have this psinque")
+            else:
+                self._addRequestToUpgrade(psinque.parent())
+        else:
+            newPsinque = self._addPublicPsinque(friendsProfile)
+            self._addRequestToUpgrade(newPsinque.parent())
 
 
     def removeincoming(self):
@@ -338,11 +377,11 @@ class PsinquesHandler(MasterHandler):
 
     def changepermit(self):
 
-        contact = Contact.get(self.checkGetParameter('contact'))
+        contact = Contact.get(self.getRequiredParameter('contact'))
         if not contact:
             raise AjaxError("Contact does not exist")
 
-        permit  = Permit.get(self.checkGetParameter('permit'))
+        permit  = Permit.get(self.getRequiredParameter('permit'))
         if not permit:
             raise AjaxError("Permit does not exist")
         
@@ -369,19 +408,13 @@ class PsinquesHandler(MasterHandler):
         if contactOut.outgoing:
             raise AjaxError("There already is a psinque from this user")
         
-        if not contactIn:
-            contactIn = Contact(parent = psinque.toUser,
-                                incoming = psinque,
-                                permit = self.userProfile.defaultPermit,
-                                group = self.userProfile.defaultGroup)
-        else:
-            existingPsinque = contactIn.incoming
-            if existingPsinque:
-                if existingPsinque.private:
-                    psinque.delete()
-                    raise AjaxError("There already is a private psinque from this user")
-                else:
-                    existingPsinque.delete()
+        existingPsinque = contactIn.incoming
+        if existingPsinque:
+            if existingPsinque.private:
+                psinque.delete()
+                raise AjaxError("There already is a private psinque from this user")
+            else:
+                existingPsinque.delete()
                     
         contactIn.incoming = psinque
         contactIn.put()
