@@ -9,27 +9,34 @@ from google.appengine.api import users
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-from DataModels import UserProfile, UserEmail, Permit, Group, UserSettings
+from DataModels import UserProfile, UserEmail, UserSettings, Group
+from DataModels import Permit, PermitEmail
 from DataModels import emailTypes, addressTypes
 
 from MasterHandler import MasterHandler, AjaxError
-from vobject import vcard
 
 #-----------------------------------------------------------------------------
 
 class ProfileHandler(MasterHandler):
 
-    def view(self):   # form for editing details
+    #****************************
+    # Private methods
+    # 
 
-        userProfile = UserProfile.all().filter("user =", self.user).get()
-        firstLogin = (not userProfile)
+    def _updateAllVCards(self):
+        
+        for permit in Permit.all().ancestor(self.userProfile):
+            permit.generateVCard()
+            permit.put()
 
-        if firstLogin:  # no user profile registered yet, so create a new one
+
+    def _createNewProfile(self):
         
             userProfile = UserProfile(user = self.user)
             userProfile.put()  # save the new (and empty) profile in the Datastore
             
-            userSettings = UserSettings(parent = userProfile, user = self.user)
+            userSettings = UserSettings(parent = userProfile,
+                                        user = self.user)
             userSettings.put()
             
             # Default groups and permits
@@ -52,124 +59,163 @@ class ProfileHandler(MasterHandler):
             userProfile.publicPermit = publicPermit
 
             userEmail = UserEmail(parent = userProfile,
-                                  user = userProfile,
                                   email = "primary@nonexistant.com",
                                   emailType = 'private',
                                   primary = True)
             userEmail.put()
             
-            permissionEmail = PermissionEmail(parent = publicGroup,
-                                              userGroup = publicGroup,
-                                              emailAddress = userEmail)
-            permissionEmail.put()
+            publicPermitEmail = PermitEmail(parent = publicPermit,
+                                      userEmail = userEmail)
+            publicPermitEmail.put()
+
+            defaultPermitEmail = PermitEmail(parent = defaultPermit,
+                                      userEmail = userEmail)
+            defaultPermitEmail.put()
             
             userProfile.put()  # save the updated UserProfile
+            
+            return userProfile
         
+    #****************************
+    # Views
+    # 
+    
+    def view(self):   # form for editing details
+
+        userProfile = UserProfile.all().filter("user =", self.user).get()
+        firstLogin = (not userProfile)
+
+        if firstLogin:  # no user profile registered yet, so create a new one
+          userProfile = self._createNewProfile()
+
         userAddresses = userProfile.addresses.fetch(100)
         addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
         if len(addresses) == 0:
             addresses = [{'nr': 1, 'value': None}]
             
-        userEmails = userProfile.emails.ancestor(userProfile).order("-primary")
-        
         self.sendTopTemplate(activeEntry = "My card")
-        self.sendContent('templates/myCard_edit.html', {
+        self.sendContent('templates/myCard_view.html', {
             'firstlogin': firstLogin,
             'userProfile': userProfile,
-            'userEmails': userEmails,
+            'userEmails': userProfile.emails,
             'emailTypes': emailTypes,
             'addresses': addresses,
             'addressTypes': addressTypes,
         })
         self.sendBottomTemplate()
             
+    #****************************
+    # AJAX methods
+    # 
+    
     def updategeneral(self):
         
-        if self.getUserProfile():
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
             
-            firstname = self.getRequiredParameter('firstname')
-            lastname = self.getRequiredParameter('lastname')
+        firstname = self.getRequiredParameter('firstname')
+        lastname = self.getRequiredParameter('lastname')
 
-            self.userProfile.firstName = firstname
-            self.userProfile.middleName = self.request.get("middlename")
-            self.userProfile.lastName = lastname
-            self.userProfile.put()
-            
-            self.sendJsonOK()
+        self.userProfile.givenNames = [ firstname ]
+        self.userProfile.familyNames = [ lastname ]
+        self.userProfile.put()
+        
+        self._updateAllVCards()
+        
+        self.sendJsonOK()
+    
     
     def addemail(self):
         
-        if self.getUserProfile():
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
             
-            email = self.getRequiredParameter('email')
-            emailType = self.getRequiredParameter('emailType')
+        email = self.getRequiredParameter('email')
+        emailType = self.getRequiredParameter('emailType')
+        
+        userEmail = UserEmail(parent = self.userProfile,
+                              email = email,
+                              emailType = emailType)
+        userEmail.put()
+        
+        # Add permissions for this email in every outgoing group
+        for userGroup in self.userProfile.groups:
+            permissionEmail = PermissionEmail(userGroup = userGroup,
+                                                emailAddress = userEmail)
+            permissionEmail.put()
             
-            userEmail = UserEmail(parent = self.userProfile,
-                                  user = self.userProfile,
-                                  email = email,
-                                  emailType = emailType)
-            userEmail.put()
-            
-            # Add permissions for this email in every outgoing group
-            for userGroup in self.userProfile.groups:
-                permissionEmail = PermissionEmail(userGroup = userGroup,
-                                                  emailAddress = userEmail)
-                permissionEmail.put()
-                
-            self.sendJsonOK({'key': str(userEmail.key())})
+        self._updateAllVCards()
+
+        self.sendJsonOK({'key': str(userEmail.key())})
+
 
     def updateemail(self):
         
-        if self.getUserProfile():
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
             
-            emailKey = self.getRequiredParameter('emailKey')
-            email = self.getRequiredParameter('email')
-            emailType = self.getRequiredParameter('emailType')
-            
-            userEmail = UserEmail.get(emailKey)
-            userEmail.email = email
-            userEmail.emailType = emailType
-            userEmail.put()
-            
-            self.sendJsonOK()
+        emailKey = self.getRequiredParameter('emailKey')
+        email = self.getRequiredParameter('email')
+        emailType = self.getRequiredParameter('emailType')
+        
+        userEmail = UserEmail.get(emailKey)
+        userEmail.email = email
+        userEmail.emailType = emailType
+        userEmail.put()
+        
+        self._updateAllVCards()
+
+        self.sendJsonOK()
+
 
     def removeemail(self):
         
-            emailKey = self.getRequiredParameter('emailKey')
-               
-            userEmail = UserEmail.get(self.emailKey)
-            if userEmail is None:
-                raise AjaxError("User email not found.")
+        emailKey = self.getRequiredParameter('emailKey')
             
-            for permissionEmail in userEmail.permissionEmails:
-                permissionEmail.delete()
-            userEmail.delete()
+        userEmail = UserEmail.get(self.emailKey)
+        if userEmail is None:
+            raise AjaxError("User email not found.")
+        
+        for permitEmail in userEmail.permitEmails:
+            permitEmail.delete()
+        userEmail.delete()
 
-            self.sendJsonOK()
+        self._updateAllVCards()
+
+        self.sendJsonOK()
+            
             
     def addim(self):
         self.sendJsonError("Unimplemented")
             
+            
     def updateim(self):
         self.sendJsonError("Unimplemented")
+            
             
     def removeim(self):
         self.sendJsonError("Unimplemented")
 
+
     def addwww(self):
         self.sendJsonError("Unimplemented")
+            
             
     def updatewww(self):
         self.sendJsonError("Unimplemented")
             
+            
     def removewww(self):
         self.sendJsonError("Unimplemented")
+
 
     def addphone(self):
         self.sendJsonError("Unimplemented")
             
+            
     def updatephone(self):
         self.sendJsonError("Unimplemented")
+            
             
     def removephone(self):
         self.sendJsonError("Unimplemented")

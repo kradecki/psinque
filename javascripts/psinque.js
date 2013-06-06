@@ -6,7 +6,7 @@ executeAJAX = function(query, done) {
             if(parsedJSON["status"] != 0) {
                 alert("Error while performing operation: " + parsedJSON["message"]);
             } else {
-                done();
+                done(parsedJSON);
             }
             $(".spinner").hide();
         })

@@ -8,15 +8,7 @@ import wsgidav.util
 from carddav.Provider import CardDAVProvider, WellKnownProvider
 from carddav.DomainController import PsinqueDomainController
 
-from Psinque import Contact, Group
-
-#-----------------------------------------------------------------------------
-
-class CardDAVLogin(db.Model):
-
-    name = db.StringProperty()
-    generatedUsername = db.StringProperty()
-    generatedPassword = db.StringProperty()
+from DataModels import Contact, Group, CardDAVLogin
 
 #-----------------------------------------------------------------------------
 
@@ -37,8 +29,16 @@ def friendList(userProfile, groupName):
     
     friendList = []
 
-    group = Group.all().ancestor(userProfile).filter("name =", groupName).get()
-    for contact in Contact.all().ancestor(userProfile).filter("group =", group):
+    group = Group.all(). \
+                  ancestor(userProfile). \
+                  filter("name =", groupName). \
+                  get()
+    
+    contacts = Contact.all(). \
+                       ancestor(userProfile). \
+                       filter("group =", group)
+    
+    for contact in contacts:
         friendList.append(contact.id())
         
     return friendList
@@ -53,8 +53,8 @@ def getVCard(friendID):
 
 def getCardDAVLogin(username):
 
-    carddavLogin = CardDAVPassword.all().
-                                   filter("generatedUsername =", username).
+    carddavLogin = CardDAVPassword.all(). \
+                                   filter("generatedUsername =", username). \
                                    get()
     if not carddavLogin:
         return None

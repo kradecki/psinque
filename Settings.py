@@ -8,10 +8,9 @@ import string
 
 from google.appengine.api import users
 
-from MasterHandler import MasterHandler
-from CardDAV import CardDAVPassword
-
-from DataModels import UserSettings
+from MasterHandler import MasterHandler, AjaxError
+from DataModels import UserSettings, CardDAVLogin
+from DataModels import availableLanguages
 
 #-----------------------------------------------------------------------------
 # Request handler
@@ -63,18 +62,18 @@ class Settings(MasterHandler):
     
     def updatesettings(self):
         
-        if self.getUserProfile():
+        if not self.getUserProfile():
             raise AjaxError("User profile not found")
 
         userSettings = self._getUserSettings()
-        if userSettings.parent() != self.userProfile:
+        if userSettings.parent().key() != self.userProfile.key():
             raise AjaxError("You don't own these settings")
         
         userSettings.preferredLanguage = self.getRequiredParameter('language')
         userSettings.notifyNewsletter = self.getRequiredBoolParameter('newsletter')
         userSettings.notifyEmails = self.getRequiredBoolParameter('emailnotifications')
         userSettings.cardDAVenabled = self.getRequiredBoolParameter('synccarddav')
-        userSettings.syncWithGoogle = self.getRequiredBoolParameter('syncgoogle')
+        #userSettings.syncWithGoogle = self.getRequiredBoolParameter('syncgoogle')
         userSettings.put()
 
         self.sendJsonOK()
@@ -82,37 +81,45 @@ class Settings(MasterHandler):
         
     def generatecarddavlogin(self):
         
-        if self.getUserProfile():
+        if not self.getUserProfile():
             raise AjaxError("User profile not found")
         
         carddavName = self.getRequiredParameter("name")
         
         while True:
             generatedUsername = self._generateRandomSequence(6)
-            if not CardDAVPassword.all().filter("generatedUsername =", generatedUsername).get():
+            if not CardDAVLogin.all().filter("generatedUsername =", generatedUsername).get():
                 break
 
         # With 62 password characters, the entropy of a 14-character password is 71 bits,
         # which is reasonably difficult to hack
-        cardDAVPassword = CardDAVPassword(parent = self.userProfile,
-                                          name = carddavName,
-                                          generatedUsername = generatedUsername,
-                                          generatedPassword = self._generateRandomSequence(12))
-        cardDAVPassword.put()
+        generatedPassword = self._generateRandomSequence(12)
+        cardDAVLogin = CardDAVLogin(parent = self.userProfile,
+                                    name = carddavName,
+                                    generatedUsername = generatedUsername,
+                                    generatedPassword = generatedPassword)
+        cardDAVLogin.put()
         
-        self.sendJsonOK()
+        self.sendJsonOK({
+            "username": generatedUsername,
+            "password": generatedPassword,
+        })
 
         
     def deletecarddav(self):
         
-        if self.getUserProfile():
+        if not self.getUserProfile():
             raise AjaxError("User profile not found")
         
-        cardDAVPassword = CardDAVPassword.get(self.getRequiredParameter("key"))
-        if cardDAVPassword.parent() != self.userProfile:
+        cardDAVLogin = CardDAVLogin.get(self.getRequiredParameter("key"))
+        
+        logging.info(cardDAVLogin.parent())
+        logging.info(self.userProfile.key())
+        
+        if cardDAVLogin.parent().key() != self.userProfile.key():
             raise AjaxError("You don't own these CardDAV credentials")
         
-        cardDAVPassword.delete()
+        cardDAVLogin.delete()
 
         self.sendJsonOK()
         
@@ -122,3 +129,4 @@ class Settings(MasterHandler):
 app = webapp2.WSGIApplication([
   ('/settings/(\w+)', Settings)
 ], debug=True)
+

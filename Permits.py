@@ -3,14 +3,8 @@
 import logging
 import webapp2
 
-from vobject import vCard
-from datetime import datetime
-import md5
-
 from MasterHandler import MasterHandler, AjaxError
-from Psinques import Contact
-   
-from DataModels import Permit
+from DataModels import Permit, PermitEmail, Contact
 
 #-----------------------------------------------------------------------------
 
@@ -33,9 +27,9 @@ class PermitsHandler(MasterHandler):
         
             permits = Permit.all().ancestor(self.userProfile)
             
-            self.sendTopTemplate(activeEntry = "Groups")
+            self.sendTopTemplate(activeEntry = "Permits")
             self.sendContent('templates/permits_view.html', {
-                'groups': permits,
+                'permits': permits,
             })
             self.sendBottomTemplate()
 
@@ -105,43 +99,40 @@ class PermitsHandler(MasterHandler):
         self.sendJsonOK({"key": str(newPermit.key())});       
     
     
-    def setpermit(self):
+    def setgeneralpermit(self):
 
         pkey = self.getRequiredParameter('key')
-        ptype = self.getRequiredParameter('type')
 
-        if ptype == "general":
-
-            canViewName = self.getRequiredBoolParameter('canViewName')
-            canViewBirthday = self.getRequiredBoolParameter('canViewBirthday')
-            canViewGender = self.getRequiredBoolParameter('canViewGender')
-            
-            userGroup = UserGroup.get(pkey)
-            
-            if userGroup is None:
-                raise AjaxError("User group not found.")
-            
-            userGroup.canViewName = canViewName
-            userGroup.canViewBirthday = canViewBirthday
-            userGroup.canViewGender = canViewGender
-            userGroup.put()
-            
-        elif ptype == "email":
-
-            canView = self.getRequiredBoolParameter('canView')
-            
-            permissionEmail = PermissionEmail.get(pkey)
-            if permissionEmail is None:
-                raise AjaxError("Email permission not found.")
-            
-            permissionEmail.canView = canView
-            permissionEmail.put()
+        canViewName = self.getRequiredBoolParameter('canViewName')
+        canViewBirthday = self.getRequiredBoolParameter('canViewBirthday')
+        canViewGender = self.getRequiredBoolParameter('canViewGender')
         
-        else:
-            raise AjaxError("Unknown permission type.")
+        permit = Permit.get(pkey)
+        if permit is None:
+            raise AjaxError("Permit not found.")
         
-        # Re-generate the Permit's vCard and eTag:
-        newPermit.generateVCard()
+        permit.canViewName = canViewName
+        permit.canViewBirthday = canViewBirthday
+        permit.canViewGender = canViewGender
+        permit.generateVCard()
+        permit.put()
+        
+        self.sendJsonOK()
+            
+    def setemailpermit(self):
+
+        pkey = self.getRequiredParameter('key')
+        canView = self.getRequiredBoolParameter('canView')
+        
+        permitEmail = PermitEmail.get(pkey)
+        if permitEmail is None:
+            raise AjaxError("Email permit not found.")
+        
+        permitEmail.canView = canView
+        permitEmail.put()
+               
+        permitEmail.parent().generateVCard()
+        permitEmail.parent().put()
         
         self.sendJsonOK()
         

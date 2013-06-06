@@ -130,7 +130,7 @@ class MasterHandler(webapp2.RequestHandler):
 
         menuentries = [
             MenuEntry("mycard/view", "My card"),
-            MenuEntry("groups/view", "Groups"),
+            MenuEntry("permits/view", "Permits"),
             MenuEntry("psinques/view", self.psinqueText),
             MenuEntry("settings/view", "Settings")
         ]

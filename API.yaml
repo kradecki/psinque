@@ -208,7 +208,13 @@ Pages:
   - addim
   - addwww
   - addphone
-  - updateemail
+  
+  - updateemail:
+    Parameters:
+    - emailKey
+    - email
+    - emailType  
+  
   - updateim
   - updatewww
   - updatephone
@@ -253,19 +259,16 @@ Pages:
     - Creates a new Permit entity, with all Permission* children.
     - "Generate the Permit's vCard and etag."
 
-  - setpermit:
+  - setgeneralpermit:
     Description: >
       The permissions need to be set separately for each element of the
       user profile, because of their unbounded number.
     Action flow:
-    - Get and modify the Permit/Permission entity.
+    - Get and modify the Permit entity.
     - "Update the Permit's vCard and etag."
     Parameters:
     - key:
       Description: Datastore key of the Permit* entity.
-    - type:
-      Description: >
-        "One of the following: 'general', 'email'"
     - canViewName:
       Description: In case of type = general.
     - canViewBirthday:
@@ -274,6 +277,14 @@ Pages:
       Description: In case of type = general.
     - canView:
       Description: In case of type != general.
+
+  - setemailpermit:
+    Action flow:
+    - Get and modify the PermitEmail entity.
+    - "Update the Permit's vCard and etag."
+    Parameters:
+    - key
+    - canView
 
 #-----------------------------------------------------------------------------
 
@@ -439,9 +450,10 @@ Pages:
   
   - generatecarddavlogin:
     Parameters:
-    - name:
+    - name
     Returns:
-    - key
+    - username
+    - password
   
   - deletecarddav:
     Description: Removes an old CarDAVLogin entity.

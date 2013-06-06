@@ -1,7 +1,7 @@
 <script type="text/javascript" src="/javascripts/jquery.js"></script>
 <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
-<script type="text/javascript" src="/javascripts/myCard_edit.js"></script>
+<script type="text/javascript" src="/javascripts/myCard_view.js"></script>
 <script type="text/javascript">
   var emailCounter = {{ emails|length }};
   var addressCounter = {{ addresses|length }};
@@ -14,24 +14,19 @@
         <fieldset id="generalInfo">
           <legend>General information</legend>
           <p>
-            <label>First name*:</label>
-            <input type="text" id="firstname" value="{{ userProfile.firstName }}" class="required" minlength="2" />
+            <label>Given names:</label>
+            {% for givenName in userProfile.givenNames %}
+            <input type="text" id="firstname" value="{{ givenName }}" class="required" minlength="2" />
             <span class="donemark"><img src="/images/donemark.png" /></span>
+            {% endfor %}
           </p>
           <p>
-            <label>Middle name:</label>
-            <input type="text" id="middlename" value="{% if userProfile.middleName %}{{ userProfile.middleName }}{% endif %}" minlength="2" />
+            <label>Family names:</label>
+            {% for familyName in userProfile.familyNames %}
+            <input type="text" id="lastname" value="{{ familyName }}" class="required" minlength="2" />
             <span class="donemark"><img src="/images/donemark.png" /></span>
+            {% endfor %}
           </p>
-          <p>
-            <label>Family name*:</label>
-            <input type="text" id="lastname" value="{{ userProfile.lastName }}" class="required" minlength="2" />
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-          </p>
-<!--          <p>
-            <label>Pseudonym:</label>
-            <input type="text" name="pseudonym" value="{{ pseudonym }}" minlength="2" />
-          </p>-->
 <!--          <p>
             <label>Gender</label><br/>
             <input type="radio" name="sex" value="male">Male<br/>

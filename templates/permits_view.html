@@ -1,23 +1,22 @@
 <script type="text/javascript" src="/javascripts/jquery.js"></script>
 <script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript" src="/javascripts/psinque.js"></script>
-<script type="text/javascript" src="/javascripts/groups_view.js"></script>
+<script type="text/javascript" src="/javascripts/permits_view.js"></script>
 <div id="content">
-  {% for group in groups %}
+  {% for permit in permits %}
   <form>
     <fieldset id="searchContacts">
-    <legend>{{ group.name }}</legend>
+    <legend>{{ permit.name }}</legend>
     <p>
-      <input type="hidden" class="keys" value="{{ group.key() }}"></input>
-      <input type="checkbox" class="general" id="canViewName" {% if group.canViewName %}checked="checked"{% endif %}>First, middle and last name</input></br>
-<!--      <input type="checkbox" class="general" name="canViewPsuedonym" {% if group.canViewPsuedonym %}checked="checked"{% endif %}>Pseudonym</input>-->
-      <input type="checkbox" class="general" id="canViewBirthday" {% if group.canViewBirthday %}checked="checked"{% endif %}>Birthday</input></br>
-      <input type="checkbox" class="general" id="canViewGender" {% if group.canViewGender %}checked="checked"{% endif %}>Gender</input></br>
-      {% for permissionEmail in group.permissionEmails %}
-      <input type="checkbox" class="email" name="{{ permissionEmail.key() }}" {% if permissionEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permissionEmail.emailAddress.email }}</input></br>
+      <input type="hidden" class="keys" value="{{ permit.key() }}"></input>
+      <input type="checkbox" class="general" id="canViewName" {% if permit.canViewName %}checked="checked"{% endif %}>First, middle and last name</input></br>
+      <input type="checkbox" class="general" id="canViewBirthday" {% if permit.canViewBirthday %}checked="checked"{% endif %}>Birthday</input></br>
+      <input type="checkbox" class="general" id="canViewGender" {% if permit.canViewGender %}checked="checked"{% endif %}>Gender</input></br>
+      {% for permitEmail in permit.permitEmails %}
+      <input type="checkbox" class="email" name="{{ permitEmail.key() }}" {% if permitEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permitEmail.userEmail.email }}</input></br>
       {% endfor %}
       <input type="button" class="updateButtons" value="Update">
-      {% if group.name != "Public" -%}
+      {% if permit.name != "Public" -%}
       <input type="button" class="removeButtons" value="Remove">
       {%- endif %}
       <span class="donemark"><img src="/images/donemark.png" /></span>
@@ -26,8 +25,8 @@
     </fieldset>
   </form>
   {% endfor %}  
-    <form id="addGroupForm">
-      <label>Add new group:</label><input type="text" id="groupName">
+    <form id="addPermitForm">
+      <label>Add new permit:</label><input type="text" id="permitName">
       <input type="button" value="Create" id="createButton">
       <span class="spinner"><img src="/images/psinque.gif" /></span>
     </p>
