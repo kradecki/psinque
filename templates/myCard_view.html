@@ -49,7 +49,7 @@
           <legend>E-mail addresses</legend>
           {% for email in userEmails %}
           <p class="emailAddress">
-            <label>{% if email.primary %}Primary*:{% else %}Additional:{% endif %}</label>
+            <label>{% if email.primary %}Primary:{% else %}Additional:{% endif %}</label>
             <input type="hidden" id="emailKey" value="{{ email.key() }}"/>
             <input type="text" id="emailAddress" value="{% if email.email != "primary@nonexistant.com" %}{{ email.email }}{% endif %}" class="{% if not email.primary %}required {% endif %}email" />
             <select id="typeofEmail">
@@ -58,6 +58,19 @@
             {% endfor %}
             </select>
             <a href="" class="emailRemovers">{% if not email.primary %}Remove{% endif %}</a>
+            <span class="donemark"><img src="/images/donemark.png" /></span>
+            </p>
+          {% else %}
+          <p class="emailAddress">
+            <label>Primary:</label>
+            <input type="hidden" id="emailKey" />
+            <input type="text" id="emailAddress" class="required email" />
+            <select id="typeofEmail">
+            {% for emailTypeCode, emailTypeName in emailTypes.items() %}
+              <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
+            {% endfor %}
+            </select>
+            <a href="" class="emailRemovers"></a>
             <span class="donemark"><img src="/images/donemark.png" /></span>
             </p>
           {% endfor %}

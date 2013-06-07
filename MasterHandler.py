@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+from datetime import datetime
+import dateutil.relativedelta
 
 import jinja2
 import logging
@@ -12,8 +14,34 @@ from django.utils import simplejson as json
 
 from DataModels import UserSettings, UserProfile, Psinque
 
+#-----------------------------------------------------------------------------
+
 jinja_environment = jinja2.Environment(
-    loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
+)
+
+# Custom filter for jinja2 to display date in a human-readable form
+def humanizeDateTime(value):
+    
+    timeDifference = dateutil.relativedelta.relativedelta(datetime.now(), value)
+    
+    attrs = [u'years', u'months', u'days', u'hours', u'minutes', u'seconds']
+    human_readable = lambda delta: ['%d %s' % (getattr(delta, attr), getattr(delta, attr) > 1 and attr or attr[:-1]) for attr in attrs if getattr(delta, attr)]
+    
+    readableDifference = human_readable(timeDifference)
+    
+    if len(readableDifference) == 0:
+        return u"Just now"
+    
+    readableDifference = readableDifference[0] + u" ago"
+    if u'seconds' in readableDifference:
+        return u"Less than a minute ago"
+    if u'minutes' in readableDifference and timeDifference.minutes < 10:
+        return u"Few minutes ago"
+
+    return readableDifference
+
+jinja_environment.filters['humanizeddatetime'] = humanizeDateTime
 
 #-----------------------------------------------------------------------------
 
@@ -52,6 +80,7 @@ class MasterHandler(webapp2.RequestHandler):
                 logging.error("MasterHandler: Action method not found.")
                 logging.error(e)
                 self.error404()
+                return
 
             try:
                 actionFunction()

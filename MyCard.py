@@ -32,49 +32,63 @@ class ProfileHandler(MasterHandler):
 
     def _createNewProfile(self):
         
-            userProfile = UserProfile(user = self.user)
-            userProfile.put()  # save the new (and empty) profile in the Datastore
-            
-            userSettings = UserSettings(parent = userProfile,
-                                        user = self.user)
-            userSettings.put()
-            
-            # Default groups and permits
-            defaultGroup = Group(parent = userProfile,
-                                 name = 'Default')
-            defaultGroup.put()
-            userProfile.defaultGroup = defaultGroup
-            
-            defaultPermit = Permit(parent = userProfile,
-                                   name = "Default")
-            defaultPermit.generateVCard()
-            defaultPermit.put()
-            userProfile.defaultPermit = defaultPermit
+        logging.info("Creating new profile")
+        
+        # Create an empty profile
+        userProfile = UserProfile(user = self.user)
+        userProfile.put()  # save the new (and empty) profile in the Datastore in order to obtain its key
+        
+        # User settings
+        userSettings = UserSettings(parent = userProfile)
+        userSettings.put()
+        
+        # Primary email address (needed for notifications, etc.)
+        userEmail = UserEmail(parent = userProfile,
+                              email = "primary@nonexistant.com",
+                              emailType = 'private',
+                              primary = True)
+        userEmail.put()
+                
+        # Default group
+        defaultGroup = Group(parent = userProfile,
+                                name = 'Default')
+        defaultGroup.put()
+        userProfile.defaultGroup = defaultGroup
+        
+        # Default private permit
+        defaultPermit = Permit(parent = userProfile,
+                                name = "Default")
+        defaultPermit.put()
 
-            publicPermit = Permit(parent = userProfile,
-                                  name = "Public",
-                                  public = True)
-            publicPermit.generateVCard()
-            publicPermit.put()
-            userProfile.publicPermit = publicPermit
+        userProfile.defaultPermit = defaultPermit
 
-            userEmail = UserEmail(parent = userProfile,
-                                  email = "primary@nonexistant.com",
-                                  emailType = 'private',
-                                  primary = True)
-            userEmail.put()
-            
-            publicPermitEmail = PermitEmail(parent = publicPermit,
-                                      userEmail = userEmail)
-            publicPermitEmail.put()
+        defaultPermitEmail = PermitEmail(parent = defaultPermit,
+                                         userEmail = userEmail)
+        defaultPermitEmail.put()
+        
+        defaultPermit.generateVCard()
+        defaultPermit.put()
 
-            defaultPermitEmail = PermitEmail(parent = defaultPermit,
-                                      userEmail = userEmail)
-            defaultPermitEmail.put()
-            
-            userProfile.put()  # save the updated UserProfile
-            
-            return userProfile
+        # Public permit
+        publicPermit = Permit(parent = userProfile,
+                                name = "Public",
+                                public = True)
+        publicPermit.put()
+
+        userProfile.publicPermit = publicPermit
+
+        publicPermitEmail = PermitEmail(parent = publicPermit,
+                                        userEmail = userEmail)
+        publicPermitEmail.put()
+        publicPermit.put()
+
+        publicPermit.generateVCard()
+
+        # Save the updated user profile
+        userProfile.put()
+        
+        logging.info("Profile created")
+        return userProfile
         
     #****************************
     # Views

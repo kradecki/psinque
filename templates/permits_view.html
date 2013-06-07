@@ -16,7 +16,7 @@
       <input type="checkbox" class="email" name="{{ permitEmail.key() }}" {% if permitEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permitEmail.userEmail.email }}</input></br>
       {% endfor %}
       <input type="button" class="updateButtons" value="Update">
-      {% if permit.name != "Public" -%}
+      {% if permit.name != "Public" and permit.name != "Default" -%}
       <input type="button" class="removeButtons" value="Remove">
       {%- endif %}
       <span class="donemark"><img src="/images/donemark.png" /></span>

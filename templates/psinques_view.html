@@ -1,4 +1,5 @@
 <script type="text/javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript" src="/javascripts/psinque.js"></script>
 <script type="text/javascript" src="/javascripts/psinques_view.js"></script>
 <div id="content">
   <legend>Add new psinque</legend>
@@ -6,8 +7,8 @@
     <label>By email:</label>
     <input type="text" id="email" />
     <a href="" id="search">Search</a></br>
-    <label>By telephone number:</label>
-    <input type="text" id="email" /><br/>
+<!--     <label>By telephone number:</label> -->
+<!--     <input type="text" id="email" /><br/> -->
   </p>
 <!--  <p>
     <a href="">Search from Google contacts.</a>
@@ -16,7 +17,7 @@
   {% if pendings|length %}
   <legend>Pending</legend>
   The following people want to access your private profile data:
-  <table><tbody>
+  <table class="contacttables"><tbody>
     <th>#</th>
     <th>Name</th>
     <th></th>
@@ -25,19 +26,19 @@
     <td>{{ loop.index }}</td>
     <td>{{ pending.name }}</td>
     <td>
-      <input type="hidden" value="{{ pending.key }}" class="keys" />
-      <input type="button" value="Reject" class="rejectButtons" />
-      or select groups
-      <select class="groupSelectors" multiple="multiple">
-        {% for group in groups %}
-        <option value="{{ group.name }}">{{ group.name }}</option>
+      <input type="hidden" value="{{ pending.key }}" class="PsinqueKeys" />
+      <input type="button" value="Reject" class="Rejecters" />
+      or select permit
+      <select class="groupSelectors">
+        {% for permit in permits %}
+        <option value="{{ permit.name }}" {% if permit.name == "Default" %}selected="selected"{% endif %}>{{ permit.name }}</option>
         {% endfor %}
       </select>
-      and <input type="button" value="Accept" class="acceptButtons" />
+      and <input type="button" value="Accept" class="Accepters" />
     </td>
     </tr>
   {% endfor %}
-  </tbody></table>  
+  </tbody></table>
   {% endif %}
   </span>
   <legend>Active psinques</legend>
@@ -45,16 +46,26 @@
   <table class="contacttables">
     <th>#</th>
     <th>Name</th>
-    <th>Status</th>
-    <th>Established</th>
+    <th>Incoming status</th>
+    <th>Incoming private</th>
+    <th>Outgoing status</th>
+    <th>Created</th>
     <th></th>
   {% for contact in contacts %}
     <tr>
-    <td>{{ contact.nr }}</td>
-    <td>{{ contact.name }}</td>
-    <td>{{ contact.status }}</td>
-    <td>{{ contact.date }}</td>
-    <td><a href="/incoming/removepsinque?key={{ contact.key }}">Remove</a></td>
+    <td>{{ loop.index+count-1 }}</td>
+    <td>{{ contact.incoming.permit.displayName }}</td>
+    <td>{{ contact.incoming.status }}</td>
+    <td>{{ contact.incoming.private }}</td>
+    <td>{{ contact.outgoing.status }}</td>
+    <td>{{ contact.creationTime|humanizeddatetime }}</td>
+    <td>
+        <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
+        <a href="" class="Removers">Remove</a>
+        {% if not contact.incoming.private %}
+        | <a href="" class="Requesters">Request private data</a>
+        {% endif %}
+    </td>
     </tr>
   {% endfor %}
   </table>

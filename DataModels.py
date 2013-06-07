@@ -31,10 +31,10 @@ class Permit(db.Model):
         return PermitEmail.all().ancestor(self)
     
     def _updateDisplayName(self):
-        if canViewName:
+        if self.canViewName:
             self.displayName = self.parent().fullName
         else:
-            for permitEmail in self.permitEmails.order("-primary"):
+            for permitEmail in self.permitEmails:
                 if permitEmail.canView:
                     self.displayName = permitEmail.userEmail.mail
                     return
@@ -53,7 +53,7 @@ class Permit(db.Model):
             newVCard.addNames(u"", u"")
 
         for email in userProfile.emails:
-            permitEmail = email.permitEmails.ancestor(self).get()
+            permitEmail = email.permitEmails.get()
             if permitEmail.canView:
                 newVCard.addEmail(email.email, email.emailType)
         
@@ -96,18 +96,18 @@ class UserProfile(db.Model):
 
     birthDay = db.DateProperty()  
 
+    publicEnabled = db.BooleanProperty(default = False)
+
     # Shortcuts to non-removable permits
     defaultPermit = db.ReferenceProperty(Permit,
                                          collection_name = "userProfile1")
     publicPermit = db.ReferenceProperty(Permit,
                                         collection_name = "userProfile2")
+    defaultGroup = db.ReferenceProperty(Group)
     
-    publicEnabled = db.BooleanProperty(default = False)
-
     @property
     def fullName(self):
-            return self.firstName + " " + \
-                   self.lastName
+        return u" ".join(self.givenNames) + u" " + u" ".join(self.familyNames)
      
     @property
     def emails(self):
@@ -131,34 +131,34 @@ class Psinque(db.Model):
     
     fromUser = db.ReferenceProperty(UserProfile,
                                     collection_name = "outgoing")
-    #toUser   = db.ReferenceProperty(UserProfile,
-                                    #collection_name = "incoming")
     
     status = db.StringProperty(choices = ["pending", "established", "banned"])
     private = db.BooleanProperty(default = False)
 
     creationTime = db.DateTimeProperty(auto_now = True)
+    
+    permit = db.ReferenceProperty(Permit)
+    
+    @property
+    def displayName(self):
+        if not self.permit is None:
+            return self.permit.displayName
+        return self.fromUser.publicPermit.displayName
   
 #-----------------------------------------------------------------------------
 
 class Contact(db.Model):
 
     incoming = db.ReferenceProperty(Psinque,
-                                    collection_name = "contact1")
-    incomingPrivate = db.BooleanProperty()
-    incomingPending = db.BooleanProperty()
-
+                                    collection_name = "contact1")   
     outgoing = db.ReferenceProperty(Psinque,
                                     collection_name = "contact2")
-    outgoingPrivate = db.BooleanProperty()
-    outgoingPending = db.BooleanProperty()
 
     friend = db.ReferenceProperty(UserProfile)
     
     group = db.ReferenceProperty(Group)
     permit = db.ReferenceProperty(Permit)
 
-    displayName = db.StringProperty()
     creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------

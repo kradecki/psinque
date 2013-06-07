@@ -67,12 +67,6 @@ Data models:
   Fields:
   - incoming
   - outgoing
-  - displayName:
-    Description: >
-      Cached name for this Contact. It can be either a name of the other
-      person, if it is shared with the current user, or, if not, an email
-      address, if that is shared. If nothing of the above is shared, it
-      is '(undisclosed)'.
   - friend:
     Description: UserProfile of the friend, who is represented by this Contact.
     Type: Reference to UserProfile
@@ -106,6 +100,8 @@ Data models:
     Description: Modification timestamp for the vCard, used for etags.
   - vcardMD5:
     Description: MD5 checksum calculated for the vCard, used for etags.
+  - displayName:
+    Description: Cached display name for all contacts with this permit.
 
 - Group:
   Description: A group of Contacts (or, in fact, incoming Psinques).
@@ -415,6 +411,7 @@ Pages:
       Description: datastore key of the Contact.
     Action flow:
     - "Create a new Psinque with this Contact as parent, but don't assign it to the Contact's 'incoming' field until the decision is made."
+    - If the Contact only has the public Permit, change the Permit to the default private Permit (we need to share our data in order to get private data from our friend).
     - If enabled, notify the user 'fromUser'.
     
   - addpublic:
