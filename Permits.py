@@ -15,7 +15,7 @@ class PermitsHandler(MasterHandler):
     # 
     
     def _getPermitByName(self, permitName):
-        return Permit.all().ancestor(self.userProfile).filter("name =", "Default").get()
+        return Permit.all().ancestor(self.userProfile).filter("name =", permitName).get()
 
     #****************************
     # Views
@@ -44,11 +44,11 @@ class PermitsHandler(MasterHandler):
         
         # Check for errors
         if permit is None:
-            raise AjaxError("Group not found")
-        if permit.name == "Public":  # cannot remove the public group
-            raise AjaxError("Cannot remove the public group")
-        if permit.name == "Default":  # cannot remove the default group
-            raise AjaxError("Cannot remove the default private group")
+            raise AjaxError("Permit not found")
+        if permit.name == "Public":  # cannot remove the public permit
+            raise AjaxError("Cannot remove the public permit")
+        if permit.name == "Default":  # cannot remove the default permit
+            raise AjaxError("Cannot remove the default private permit")
         if not self.getUserProfile():
             raise AjaxError("User profile not found")
 
@@ -70,19 +70,21 @@ class PermitsHandler(MasterHandler):
     def addpermit(self):
         
         permitName = self.getRequiredParameter('name')
+        logging.info(permitName)
         
         # Error checking
         if permitName == "Public":
-            raise AjaxError("Cannot create another public group")
+            raise AjaxError("Cannot create another public permit")
         if permitName == "Default":
-            raise AjaxError("Cannot create another default private group")
+            raise AjaxError("Cannot create another default private permit")
         if not self.getUserProfile():
             raise AjaxError("User profile not found")
 
         # Check if the permit already exists
         permit = self._getPermitByName(permitName)
+        logging.info(permit)
         if not permit is None:
-            raise AjaxError("Group with that name already exists")
+            raise AjaxError("Permit with that name already exists")
 
         # Create a new Permit
         newPermit = Permit(parent = self.userProfile,

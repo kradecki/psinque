@@ -19,17 +19,6 @@ class PsinquesHandler(MasterHandler):
     #****************************
     # Private methods
     # 
-    
-    def _getPrimaryEmail(user):
-        return user.emails.ancestor(user.key()).filter("primary =", True).get().email
-
-
-    #def _getPublicGroup(user):
-        #publicGroup = UserGroup.all(keys_only = True)
-        #publicGroup.ancestor(user.key())
-        #publicGroup.filter("name =", "Public")
-        #return publicGroup.get()
-
 
     #def _getIncomingDisplayNameFromPsinque(psinque):
         #publicGroupKey = _getPublicGroup(psinque.fromUser)
@@ -39,26 +28,6 @@ class PsinquesHandler(MasterHandler):
             #if group and group.canViewName:
                 #return getName(psinque.fromUser)
         #return _getPrimaryEmail(psinque.fromUser)
-
-
-    #def _getOutgoingDisplayNameFromPsinque(psinque):
-        #publicGroupKey = _getPublicGroup(psinque.toUser)
-        #if UserGroup.get(publicGroupKey).canViewName:
-            #return getName(psinque.toUser)
-        #for group in psinque.groups:
-            #if group and group.canViewName:
-                #return getName(psinque.toUser)
-        #return _getPrimaryEmail(psinque.toUser)
-
-
-    #def _getDisplayName(user, toUser):
-        
-        #if not _getPublicGroup(fromUser).canViewName: # Perhaps the name is visible to everyone?  
-            #psinque = Psinque.all().filter("toUser =", toUser).filter("fromUser =", user).get()
-            #primaryEmail = _getPrimaryEmail(user)
-            #if (len(psinque) == 0) or (psinque.status != "Established") or (not psinque.group.canViewName):
-                #return primaryEmail    # email address is always visible
-        #return getName(user)
 
 
     def _getContact(self):
@@ -83,9 +52,9 @@ class PsinquesHandler(MasterHandler):
         "outgoing" field. This Contact will belong to an unknown
         user, so we cannot use ancestor queries.
         '''
-        return Contact.all(keys_only = True).
-                       ancestor(psinque.fromUser).
-                       filter("outgoing =", psinque).
+        return Contact.all(keys_only = True). \
+                       ancestor(psinque.fromUser). \
+                       filter("outgoing =", psinque). \
                        get()
 
     def _getContactForIncoming(self, psinque):
@@ -149,9 +118,9 @@ class PsinquesHandler(MasterHandler):
 
     
     def _getPsinqueFrom(self):
-        return Psinque.all(keys_only = True).
-                       ancestor(self.userProfile).
-                       filter("fromUser =", userProfile).
+        return Psinque.all(keys_only = True). \
+                       ancestor(self.userProfile). \
+                       filter("fromUser =", userProfile). \
                        get()
     
     
@@ -208,12 +177,12 @@ class PsinquesHandler(MasterHandler):
             pendingPsinques = Psinque.all().filter("fromUser =", self.userProfile).filter("status =", "pending")
             pendingList = []
             for pending in pendingPsinques:
-                pendingList.append({'name': _getOutgoingDisplayNameFromPsinque(pending),
+                pendingList.append({'name': pending.permit.displayName,
                                     'key': str(pending.key())})
 
             # List of contacts
-            contactQuery = Contact.all(keys_only = True).
-                                   ancestor(self.userProfile).
+            contactQuery = Contact.all(keys_only = True). \
+                                   ancestor(self.userProfile). \
                                    order("establishingTime")
             count = contactQuery.count(1000)
             if currentCursor:

@@ -47,12 +47,18 @@ class MasterHandler(webapp2.RequestHandler):
             
             try:
                 actionFunction = getattr(self, actionName)
-                actionFunction()
-            except AttributeError:
+                logging.info("MasterHandler: Found action method.")
+            except AttributeError as e:
+                logging.error("MasterHandler: Action method not found.")
+                logging.error(e)
                 self.error404()
+
+            try:
+                actionFunction()
             except AjaxError as e:
                 self.sendJsonError(e.value)
-  
+
+
     def safeGuard(self):
         '''
         Checks if a user is logged in and if not, redirects

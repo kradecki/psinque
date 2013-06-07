@@ -35,18 +35,20 @@
       </p>
     </fieldset>
     <span id="carddavLogins" {% if not cardDAVenabled %}disabled="disabled"{% endif %}>
-      {% if carddavLogins %}
-      Existing CardDAV logins:
+      <b>Existing CardDAV logins:</b><br/>
       {% for login in carddavLogins %}
         <p>{{ login.name }}
           <input type="hidden" class="CardDAVkeys" value="{{ login.key() }}">
           <input type="button" class="RemoveCardDAV" value="Remove" />
         </p>
+      {% else %}
+      None.<br/>
       {% endfor %}
-      {% endif %}
-      <input type="text" id="newCardDAVName" />
-      <input type="button" id="generateCardDAV" value="Generate CardDAV login data"/>
+      <b>Add new CardDAV login:</b></br>
+      <label>Device name:</label><input type="text" id="newCardDAVName" />
+      <input type="button" id="generateCardDAV" value="Generate login data"/>
     </span>
+    </br>
     <input type="submit" id="saveButton" value="Save" />
     <span class="donemark"><img src="/images/donemark.png" /></span>
 <!--   </form> -->

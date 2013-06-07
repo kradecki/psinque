@@ -24,9 +24,21 @@ class Permit(db.Model):
     vcardMTime = db.StringProperty() # modification time
     vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
     
+    displayName = db.StringProperty()
+    
     @property
     def permitEmails(self):
         return PermitEmail.all().ancestor(self)
+    
+    def _updateDisplayName(self):
+        if canViewName:
+            self.displayName = self.parent().fullName
+        else:
+            for permitEmail in self.permitEmails.order("-primary"):
+                if permitEmail.canView:
+                    self.displayName = permitEmail.userEmail.mail
+                    return
+            self.displayName = u""
     
     def generateVCard(self):
         
@@ -40,9 +52,8 @@ class Permit(db.Model):
         else:
             newVCard.addNames(u"", u"")
 
-            
         for email in userProfile.emails:
-            permitEmail = PermitEmail.all().ancestor(self).filter("userEmail =", email).get()
+            permitEmail = email.permitEmails.ancestor(self).get()
             if permitEmail.canView:
                 newVCard.addEmail(email.email, email.emailType)
         
@@ -53,6 +64,8 @@ class Permit(db.Model):
             self.vcard = newVCard
             self.vcardMTime = str(datetime.date(datetime.now())) + "." + str(datetime.time(datetime.now()))
             self.vcardMD5 = md5.new(self.vcard.encode('utf8')).hexdigest()
+            
+        self._updateDisplayName()
 
 
 #-----------------------------------------------------------------------------
@@ -93,11 +106,6 @@ class UserProfile(db.Model):
 
     @property
     def fullName(self):
-        if not middleName is None:
-            return self.firstName + " " + \
-                   self.middleName + " " + \
-                   self.lastName
-        else:
             return self.firstName + " " + \
                    self.lastName
      
@@ -108,6 +116,10 @@ class UserProfile(db.Model):
     @property
     def addresses(self):
         return UserAddress.all().ancestor(self)
+    
+    @property
+    def permits(self):
+        return Permit.all().ancestor(self)
 
 #class UserPhoto(db.Model):
   #user = db.ReferenceProperty(UserProfile, collection_name = "photos")
@@ -193,10 +205,11 @@ class PermitEmail(db.Model):
 #-----------------------------------------------------------------------------
 
 availableLanguages = {
-                      'en': 'English',
-                      'pl': 'Polski',
-                      'de': 'Deutsch',
-                     }
+    'en': u'English',
+    'pl': u'Polski',
+    'de': u'Deutsch',
+    'jp': u'日本語',
+}
 
 class UserSettings(db.Model):
     '''

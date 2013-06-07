@@ -139,10 +139,10 @@ class ProfileHandler(MasterHandler):
         userEmail.put()
         
         # Add permissions for this email in every outgoing group
-        for userGroup in self.userProfile.groups:
-            permissionEmail = PermissionEmail(userGroup = userGroup,
-                                                emailAddress = userEmail)
-            permissionEmail.put()
+        for permit in self.userProfile.permits:
+            permitEmail = PermitEmail(parent = permit,
+                                      userEmail = userEmail)
+            permitEmail.put()
             
         self._updateAllVCards()
 
@@ -170,9 +170,12 @@ class ProfileHandler(MasterHandler):
 
     def removeemail(self):
         
+        if not self.getUserProfile():
+            raise AjaxError("User profile not found")
+            
         emailKey = self.getRequiredParameter('emailKey')
             
-        userEmail = UserEmail.get(self.emailKey)
+        userEmail = UserEmail.get(emailKey)
         if userEmail is None:
             raise AjaxError("User email not found.")
         

@@ -2,7 +2,8 @@
 
 from google.appengine.api import mail
 
-from users.UserManagement import getPrimaryEmail, getOutgoingDisplayNameFromPsinque
+def getPrimaryEmail(userProfile):
+    return userProfile.emails.ancestor(user.key()).filter("primary =", True).get().email
 
 def createAcceptUrl(psinque):
     return "http://psinque.appspot.com/outgoing/acceptpsinque?key=" + str(psinque.key())
@@ -34,7 +35,7 @@ Please click <a href="%s">this link</a> to accept this psinque.
 
 The Psinque Team
 """ % (fromUser.firstName + " " + fromUser.lastName,
-       getOutgoingDisplayNameFromPsinque(psinque),
+       psinque.permit.displayName,
        createRejectUrl(psinque),
        createAcceptUrl(psinque)))
 
@@ -55,7 +56,7 @@ Another user, %s, has stopped using your private data.
 
 The Psinque Team
 """ % (psinque.fromUser.fullName,
-       getOutgoingDisplayNameFromPsinque(psinque)))
+       psinque.permit.displayName))
 
     
 def notifyDowngradedPsinque(psinque):
@@ -68,7 +69,7 @@ Another user, %s, has revoked your access to his/her private data.
 
 The Psinque Team
 """ % (psinque.fromUser.fullName,
-       getOutgoingDisplayNameFromPsinque(psinque)))
+       psinque.permit.displayName))
     
     
 def notifyAcceptedRequest(psinque):
@@ -81,7 +82,7 @@ Another user, %s, has accepted your request for sharing private contact data.
 
 The Psinque Team
 """ % (psinque.fromUser.fullName,
-       getOutgoingDisplayNameFromPsinque(psinque)))
+       psinque.permit.displayName))
     
     
 def notifyRejectedRequest(psinque):
@@ -94,4 +95,4 @@ Another user, %s, has rejected your request for sharing private contact data.
 
 The Psinque Team
 """ % (psinque.fromUser.fullName,
-       getOutgoingDisplayNameFromPsinque(psinque)))
+       psinque.permit.displayName))

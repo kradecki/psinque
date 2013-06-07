@@ -18,12 +18,18 @@
             {% for givenName in userProfile.givenNames %}
             <input type="text" id="firstname" value="{{ givenName }}" class="required" minlength="2" />
             <span class="donemark"><img src="/images/donemark.png" /></span>
+            {% else %}
+            <input type="text" id="firstname" value="" class="required" minlength="2" />
+            <span class="donemark"><img src="/images/donemark.png" /></span>
             {% endfor %}
           </p>
           <p>
             <label>Family names:</label>
             {% for familyName in userProfile.familyNames %}
             <input type="text" id="lastname" value="{{ familyName }}" class="required" minlength="2" />
+            <span class="donemark"><img src="/images/donemark.png" /></span>
+            {% else %}
+            <input type="text" id="lastname" value="" class="required" minlength="2" />
             <span class="donemark"><img src="/images/donemark.png" /></span>
             {% endfor %}
           </p>

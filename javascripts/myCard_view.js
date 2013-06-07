@@ -140,6 +140,7 @@ function updateEmail(parent) {
             parsedJSON = $.parseJSON(data);
             if(parsedJSON["status"] == 0) {
                 decreaseElementCount();
+                console.log(parsedJSON["key"]);
                 parent.find("#emailKey").val(parsedJSON["key"]);
                 parent.find(".donemark").show();
             } else {
