@@ -1,35 +1,28 @@
-<script type="text/javascript" src="/javascripts/jquery.js"></script>
-<script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" src="/javascripts/psinque.js"></script>
+{% extends "templates/masterTemplate.html" %}
+{% block title %}Permits{% endblock %}
+{% block javascripts %}
 <script type="text/javascript" src="/javascripts/permits_view.js"></script>
-<div id="content">
+{% endblock %}
+{% block content %}
   {% for permit in permits %}
-  <form>
-    <fieldset id="searchContacts">
-    <legend>{{ permit.name }}</legend>
-    <p>
-      <input type="hidden" class="keys" value="{{ permit.key() }}"></input>
-      <input type="checkbox" class="general" id="canViewName" {% if permit.canViewName %}checked="checked"{% endif %}>First, middle and last name</input></br>
-      <input type="checkbox" class="general" id="canViewBirthday" {% if permit.canViewBirthday %}checked="checked"{% endif %}>Birthday</input></br>
-      <input type="checkbox" class="general" id="canViewGender" {% if permit.canViewGender %}checked="checked"{% endif %}>Gender</input></br>
-      {% for permitEmail in permit.permitEmails %}
-      <input type="checkbox" class="email" name="{{ permitEmail.key() }}" {% if permitEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permitEmail.userEmail.email }}</input></br>
-      {% endfor %}
-      <input type="button" class="updateButtons" value="Update">
-      {% if permit.name != "Public" and permit.name != "Default" -%}
-      <input type="button" class="removeButtons" value="Remove">
-      {%- endif %}
-      <span class="donemark"><img src="/images/donemark.png" /></span>
-      <span class="spinner"><img src="/images/psinque.gif" /></span>
-    </p>
-    </fieldset>
-  </form>
+  <h1>{{ permit.name }}</h1>
+  <p>
+    <input type="hidden" class="keys" value="{{ permit.key() }}"></input>
+    <input type="checkbox" class="general" id="canViewName" {% if permit.canViewName %}checked="checked"{% endif %}>First, middle and last name</input></br>
+    <input type="checkbox" class="general" id="canViewBirthday" {% if permit.canViewBirthday %}checked="checked"{% endif %}>Birthday</input></br>
+    <input type="checkbox" class="general" id="canViewGender" {% if permit.canViewGender %}checked="checked"{% endif %}>Gender</input></br>
+    {% for permitEmail in permit.permitEmails %}
+    <input type="checkbox" class="email" name="{{ permitEmail.key() }}" {% if permitEmail.canView %}checked="checked"{% endif %}>E-mail: {{ permitEmail.userEmail.email }}</input></br>
+    {% endfor %}
+    <input type="button" class="updateButtons" value="Update">
+    {% if permit.name != "Public" and permit.name != "Default" -%}
+    <input type="button" class="removeButtons" value="Remove">
+    {%- endif %}
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    <span class="spinner"><img src="/images/psinque.gif" /></span>
+  </p>
   {% endfor %}  
-    <form id="addPermitForm">
-      <label>Add new permit:</label><input type="text" id="permitName">
-      <input type="button" value="Create" id="createButton">
-      <span class="spinner"><img src="/images/psinque.gif" /></span>
-    </p>
-    </fieldset>
-  </form>
-</div>
+  <label>Add new permit:</label><input type="text" id="permitName">
+  <input type="button" value="Create" id="createButton">
+  <span class="spinner"><img src="/images/psinque.gif" /></span>
+{% endblock %}

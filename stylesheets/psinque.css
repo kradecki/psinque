@@ -28,38 +28,38 @@ div#header {
     text-align: left;
 }
 
-    div#header img {
-        float: left;
-    }
-    
-    div#header ul {
-        list-style: none;
-        float: left;
-    }
-    
-    div#header li {
-        float: left;
-    }
-    
-    div#header li a {
-        color: #000;
-        font-size: 16px;
-        text-decoration: none;
-        display: block;
-        padding-top: 8px;
-        padding-bottom: 8px;
-        width: 100px;
-        text-align: center;
-    }
-    
-    div#header li a:hover {
-        border-bottom: 3px solid #000;
-    }
+div#header img {
+    float: left;
+}
 
-    div#header li a.active {
-        font-weight: 800;
-        border-bottom: 3px solid #000;
-    }
+div#header ul {
+    list-style: none;
+    float: left;
+}
+
+div#header li {
+    float: left;
+}
+
+div#header li a {
+    color: #000;
+    font-size: 16px;
+    text-decoration: none;
+    display: block;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 100px;
+    text-align: center;
+}
+
+div#header li a:hover {
+    border-bottom: 3px solid #000;
+}
+
+div#header li a.active {
+    font-weight: 800;
+    border-bottom: 3px solid #000;
+}
 
 div#topicons {
     float: right;
@@ -74,6 +74,13 @@ div#wrapper {
     text-align: left;
 }
 
+div#footer {
+    width: 100%;
+    text-align: center;
+    border-top: 2px solid #000;
+    padding-top: 15px;
+}
+
 div#content {
     position: relative;
     margin: 0 auto;
@@ -82,11 +89,43 @@ div#content {
     min-height: 100%;
     width: 957px;
     background-color: #d8d4cb;
+    padding: 10px;
 }
 
-div#footer {
-    width: 100%;
-    text-align: center;
-    border-top: 2px solid #000;
-    padding-top: 15px;
+div#content label {
+    padding: 5px;
+    background-color: #404040;
+    color: #fff;
+    font-size: 15px;
+    width: 120px;
+    float: left;
+    text-align: right;
+}
+
+div#content input[type=text] {
+    border: 0;
+    margin: 0;
+    margin-left: 10px;
+    padding: 5px;
+    font-size: 15px;
+}
+
+div#images {
+    float: left;
+    width: 230px;
+    padding: 10px;
+}
+
+div#mycard {
+    float: left;
+    width: 627px;
+    padding: 10px;
+}
+
+.spinner {
+    display: none;
+}
+
+.donemark {
+    display: none;
 }

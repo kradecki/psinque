@@ -107,8 +107,9 @@ class ProfileHandler(MasterHandler):
         if len(addresses) == 0:
             addresses = [{'nr': 1, 'value': None}]
             
-        self.sendTopTemplate(activeEntry = "My card")
-        self.sendContent('templates/myCard_view.html', {
+        self.sendContent('templates/myCard_view.html',
+                         activeEntry = "My card",
+                         templateVariables = {
             'firstlogin': firstLogin,
             'userProfile': userProfile,
             'userEmails': userProfile.emails,
@@ -116,7 +117,6 @@ class ProfileHandler(MasterHandler):
             'addresses': addresses,
             'addressTypes': addressTypes,
         })
-        self.sendBottomTemplate()
             
     #****************************
     # AJAX methods
@@ -124,9 +124,6 @@ class ProfileHandler(MasterHandler):
     
     def updategeneral(self):
         
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-            
         firstname = self.getRequiredParameter('firstname')
         lastname = self.getRequiredParameter('lastname')
 
@@ -141,9 +138,6 @@ class ProfileHandler(MasterHandler):
     
     def addemail(self):
         
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-            
         email = self.getRequiredParameter('email')
         emailType = self.getRequiredParameter('emailType')
         
@@ -165,9 +159,6 @@ class ProfileHandler(MasterHandler):
 
     def updateemail(self):
         
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-            
         emailKey = self.getRequiredParameter('emailKey')
         email = self.getRequiredParameter('email')
         emailType = self.getRequiredParameter('emailType')
@@ -184,9 +175,6 @@ class ProfileHandler(MasterHandler):
 
     def removeemail(self):
         
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-            
         emailKey = self.getRequiredParameter('emailKey')
             
         userEmail = UserEmail.get(emailKey)

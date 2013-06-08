@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {% block head %}
+    <link rel="stylesheet" type="text/css" href="/stylesheets/psinque.css" />
+    <title>{% block title %}{% endblock %} - Psinque</title>
+    {% endblock %}
+    {% block javascripts %}
+    <script type="text/javascript" src="/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="/javascripts/psinque.js"></script>
+    {% endblock %}
+</head>
+<body>
+  <div id="headerwrapper">
+    <div id="header">
+      <img src="/images/logo.png"/>
+      <ul>
+      {% for menuentry in menuentries %}
+        <li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>
+      {% endfor %}
+      </ul>
+      <div id="topicons">
+        <a href="/settings/view"><img src="/images/settings.png"/></a>
+        <a href="{{ loginurl }}"><img src="/images/logout.png"/></a>
+      </div>
+    </div>
+  </div>
+  <div id="wrapper">
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+    <div id="footer">
+      &copy; Copyright 2013 by <a href="http://psinque.com/">Psinque sp. z o.o.</a>.
+    </div>
+  </div>
+</body>

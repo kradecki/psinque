@@ -1,4 +1,6 @@
-<script type="text/javascript" src="/javascripts/jquery.js"></script>
+{% extends "templates/masterTemplate.html" %}
+{% block title %}My Card{% endblock %}
+{% block javascripts %}
 <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
 <script type="text/javascript" src="/javascripts/myCard_view.js"></script>
@@ -6,117 +8,111 @@
   var emailCounter = {{ emails|length }};
   var addressCounter = {{ addresses|length }};
 </script>
-<div id="content">
+{% endblock %}
+{% block content %}
   {% if firstlogin %}
   <p>This is your first login, so please fill up your profile below:</p>
   {% endif %}
-  <form>
-        <fieldset id="generalInfo">
-          <legend>General information</legend>
-          <p>
-            <label>Given names:</label>
-            {% for givenName in userProfile.givenNames %}
-            <input type="text" id="firstname" value="{{ givenName }}" class="required" minlength="2" />
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-            {% else %}
-            <input type="text" id="firstname" value="" class="required" minlength="2" />
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-            {% endfor %}
-          </p>
-          <p>
-            <label>Family names:</label>
-            {% for familyName in userProfile.familyNames %}
-            <input type="text" id="lastname" value="{{ familyName }}" class="required" minlength="2" />
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-            {% else %}
-            <input type="text" id="lastname" value="" class="required" minlength="2" />
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-            {% endfor %}
-          </p>
+  <div id="images">Images will appear here...</div>
+  <div id="mycard">
+    <p>
+    <label>Given names</label>
+    {% for givenName in userProfile.givenNames %}
+    <input type="text" id="firstname" value="{{ givenName }}" class="required" minlength="2" />
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    {% else %}
+    <input type="text" id="firstname" value="" class="required" minlength="2" />
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    {% endfor %}
+    </p>
+    <p>
+    <label>Family names</label>
+    {% for familyName in userProfile.familyNames %}
+    <input type="text" id="lastname" value="{{ familyName }}" class="required" minlength="2" />
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    {% else %}
+    <input type="text" id="lastname" value="" class="required" minlength="2" />
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    {% endfor %}
+    </p>
 <!--          <p>
-            <label>Gender</label><br/>
-            <input type="radio" name="sex" value="male">Male<br/>
-            <input type="radio" name="sex" value="female">Female<br/>
-            <input type="radio" name="sex" value="none">I won't tell
-          </p>-->
+    <label>Gender</label><br/>
+    <input type="radio" name="sex" value="male">Male<br/>
+    <input type="radio" name="sex" value="female">Female<br/>
+    <input type="radio" name="sex" value="none">I won't tell
+    </p>-->
 <!--          <p>
-            <label>Birthday</label>
-            <input type="date" id="birthday">
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-          </p>-->
-        </fieldset>
-        <fieldset id="electronicAddresses">
-          <legend>E-mail addresses</legend>
-          {% for email in userEmails %}
-          <p class="emailAddress">
-            <label>{% if email.primary %}Primary:{% else %}Additional:{% endif %}</label>
-            <input type="hidden" id="emailKey" value="{{ email.key() }}"/>
-            <input type="text" id="emailAddress" value="{% if email.email != "primary@nonexistant.com" %}{{ email.email }}{% endif %}" class="{% if not email.primary %}required {% endif %}email" />
-            <select id="typeofEmail">
-            {% for emailTypeCode, emailTypeName in emailTypes.items() %}
-              <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
-            {% endfor %}
-            </select>
-            <a href="" class="emailRemovers">{% if not email.primary %}Remove{% endif %}</a>
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-            </p>
-          {% else %}
-          <p class="emailAddress">
-            <label>Primary:</label>
-            <input type="hidden" id="emailKey" />
-            <input type="text" id="emailAddress" class="required email" />
-            <select id="typeofEmail">
-            {% for emailTypeCode, emailTypeName in emailTypes.items() %}
-              <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
-            {% endfor %}
-            </select>
-            <a href="" class="emailRemovers"></a>
-            <span class="donemark"><img src="/images/donemark.png" /></span>
-            </p>
-          {% endfor %}
-          <p id="addEmail"><a href="">Add e-mail</a></p>
-        </fieldset>
-<!--        <fieldset id="addresses">
-          <legend>Physical addresses</legend>
-          {% for address in addresses %}
-          <p id="address{{ address.nr }}">
-            <label>Address:</label>
-            <input type="text" name="address{{ address.nr }}" value="{{ address.value.address }}" class="required" />
-            <select name="typeofAddress{{ address.nr }}">
-            {% for addressTypeCode, addressTypeName in addressTypes.iteritems() %}
-              {% if addressTypeCode == address.value.addressType %}
-                <option value="{{ addressTypeCode }}" selected="selected">{{ addressTypeName }}</option>
-              {% else %}
-                <option value="{{ addressTypeCode }}">{{ addressTypeName }}</option>
-              {% endif %}
-            {% endfor %}
-            </select>
-            <br />
-            <label>Postal code:</label>
-            <input type="text" name="postal{{ address.nr }}" value="{{ address.value.postalCode }}" /><br />
-            <label>City/town/village:</label>
-            <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" /><br />
+    <label>Birthday</label>
+    <input type="date" id="birthday">
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    </p>-->
+    {% for email in userEmails %}
+    <p class="emailAddress">
+    <label>{% if email.primary %}Primary email{% else %}Additional email{% endif %}</label>
+    <input type="hidden" id="emailKey" value="{{ email.key() }}"/>
+    <input type="text" id="emailAddress" value="{% if email.email != "primary@nonexistant.com" %}{{ email.email }}{% endif %}" class="{% if not email.primary %}required {% endif %}email" />
+    <select id="typeofEmail">
+    {% for emailTypeCode, emailTypeName in emailTypes.items() %}
+        <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
+    {% endfor %}
+    </select>
+    <a href="" class="emailRemovers">{% if not email.primary %}Remove{% endif %}</a>
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    </p>
+    {% else %}
+    <p class="emailAddress">
+    <label>Primary email</label>
+    <input type="hidden" id="emailKey" />
+    <input type="text" id="emailAddress" class="required email" />
+    <select id="typeofEmail">
+    {% for emailTypeCode, emailTypeName in emailTypes.items() %}
+        <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
+    {% endfor %}
+    </select>
+    <a href="" class="emailRemovers"></a>
+    <span class="donemark"><img src="/images/donemark.png" /></span>
+    </p>
+    {% endfor %}
+    <p id="addEmail"><a href="">Add e-mail</a></p>
+<!--    <legend>Physical addresses</legend>
+    {% for address in addresses %}
+    <p id="address{{ address.nr }}">
+    <label>Address:</label>
+    <input type="text" name="address{{ address.nr }}" value="{{ address.value.address }}" class="required" />
+    <select name="typeofAddress{{ address.nr }}">
+    {% for addressTypeCode, addressTypeName in addressTypes.iteritems() %}
+        {% if addressTypeCode == address.value.addressType %}
+        <option value="{{ addressTypeCode }}" selected="selected">{{ addressTypeName }}</option>
+        {% else %}
+        <option value="{{ addressTypeCode }}">{{ addressTypeName }}</option>
+        {% endif %}
+    {% endfor %}
+    </select>
+    <br />
+    <label>Postal code:</label>
+    <input type="text" name="postal{{ address.nr }}" value="{{ address.value.postalCode }}" /><br />
+    <label>City/town/village:</label>
+    <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" /><br />
 
-            {% if address.value.location %}
-            <span class="hiddenCoordinates">
-              <label>Longitude:</label>
-              <input type="text" name="long{{ address.nr }}" id="long{{ address.nr }}" value="{{ address.value.location.lon }}" readonly="readonly" /><br />
-              <label>Latitude:</label>
-              <input type="text" name="lat{{ address.nr }}" id="lat{{ address.nr }}" value="{{ address.value.location.lat }}" readonly="readonly" /><br />
-            </span>
-            {% endif %}
+    {% if address.value.location %}
+    <span class="hiddenCoordinates">
+        <label>Longitude:</label>
+        <input type="text" name="long{{ address.nr }}" id="long{{ address.nr }}" value="{{ address.value.location.lon }}" readonly="readonly" /><br />
+        <label>Latitude:</label>
+        <input type="text" name="lat{{ address.nr }}" id="lat{{ address.nr }}" value="{{ address.value.location.lat }}" readonly="readonly" /><br />
+    </span>
+    {% endif %}
 
-            <a href="" class="addMap">Find coordinates</a>
-            <a href="" class="hideMap">Hide the map</a>
-            <a href="" class="showMap">Show the map</a>
-            {% if address.nr != 1 %}  <!-- You cannot remove the primary address -->
-              | <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
-            {% endif %}
-          </p>
-          {% endfor %}
-          <p id="addAddress"><a href="">Add address</a></p>
-        </fieldset>-->
-        <div id="bottonButton"><input type="button" id="submitButton" value="Apply"/></div>
-        <span class="spinner"><img src="/images/psinque.gif" /></span>
-  </form>
-</div>
+    <a href="" class="addMap">Find coordinates</a>
+    <a href="" class="hideMap">Hide the map</a>
+    <a href="" class="showMap">Show the map</a>
+    {% if address.nr != 1 %}
+        | <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
+    {% endif %}
+    </p>
+    {% endfor %}
+    <p id="addAddress"><a href="">Add address</a></p> -->
+    <span class="spinner"><img src="/images/psinque.gif" /></span>
+  </div>
+  <br style="clear:both;"/>
+{% endblock %}

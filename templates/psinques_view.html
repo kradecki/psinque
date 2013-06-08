@@ -1,8 +1,10 @@
-<script type="text/javascript" src="/javascripts/jquery.js"></script>
-<script type="text/javascript" src="/javascripts/psinque.js"></script>
+{% extends "templates/masterTemplate.html" %}
+{% block title %}Psinques{% endblock %}
+{% block javascripts %}
 <script type="text/javascript" src="/javascripts/psinques_view.js"></script>
-<div id="content">
-  <legend>Add new psinque</legend>
+{% endblock %}
+{% block content %}
+  <h1>Add new psinque</h1>
   <p>
     <label>By email:</label>
     <input type="text" id="email" />
@@ -15,7 +17,7 @@
   </p>-->
   <span id="pendings">
   {% if pendings|length %}
-  <legend>Pending</legend>
+  <h1>Pending</h1>
   The following people want to access your private profile data:
   <table class="contacttables"><tbody>
     <th>#</th>
@@ -41,7 +43,7 @@
   </tbody></table>
   {% endif %}
   </span>
-  <legend>Active psinques</legend>
+  <h1>Active psinques</h1>
   You have {% if count == 1000 %}1000+{% else %}{{ count }}{% endif %} psinques.
   <table class="contacttables">
     <th>#</th>
@@ -75,4 +77,4 @@
   {% if isThereMore %}
   <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
   {% endif %}
-</div>
+{% endblock %}

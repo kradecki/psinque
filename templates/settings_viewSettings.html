@@ -1,39 +1,33 @@
-<script type="text/javascript" src="/javascripts/jquery.js"></script>
-<script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" src="/javascripts/psinque.js"></script>
+{% extends "templates/masterTemplate.html" %}
+{% block title %}Settings{% endblock %}
+{% block javascripts %}
 <script type="text/javascript" src="/javascripts/settings_view.js"></script>
-<div id="content">
-<!--   <form action="/settings" method="POST"> -->
-    <fieldset>
-      <legend>Language settings</legend>
-      <p>
-        <label>Preferred language:</label>
-        <select id="language">
-          {% for languageCode, languageName in availableLanguages.iteritems() %}
-            <option {% if languageCode == userSettings.preferredLanguage %} selected {% endif %} value="{{ languageCode }}">{{ languageName }}</option>
-          {% endfor %}
-        </select>
-      </p>
-    </fieldset>
-    <fieldset>
-      <legend>Notifications</legend>
-      <p>
-        <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}">Send me a Newsletter
-      </p>
-      <p>
-        <input type="checkbox" id="emailNotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}">Send me a email notifications
-      </p>
-    </fieldset>
-    <fieldset>
-      <legend>Contact synchronization</legend>
+{% endblock %}
+{% block content %}
+    <legend>Language settings</legend>
+    <p>
+    <label>Preferred language:</label>
+    <select id="language">
+        {% for languageCode, languageName in availableLanguages.iteritems() %}
+        <option {% if languageCode == userSettings.preferredLanguage %} selected {% endif %} value="{{ languageCode }}">{{ languageName }}</option>
+        {% endfor %}
+    </select>
+    </p>
+    <legend>Notifications</legend>
+    <p>
+    <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}">Send me a Newsletter
+    </p>
+    <p>
+    <input type="checkbox" id="emailNotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}">Send me a email notifications
+    </p>
+    <legend>Contact synchronization</legend>
 <!--      <p>
-        <input type="checkbox" name="syncgoogle" {% if syncWithGoogle %}checked="checked"{% endif %}">Psinque with my Google account
-      </p>-->
-      <p>
-        <input type="checkbox" id="syncCardDAV" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}">Allow CardDAV psinquing
-        <br />
-      </p>
-    </fieldset>
+    <input type="checkbox" name="syncgoogle" {% if syncWithGoogle %}checked="checked"{% endif %}">Psinque with my Google account
+    </p>-->
+    <p>
+    <input type="checkbox" id="syncCardDAV" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}">Allow CardDAV psinquing
+    <br />
+    </p>
     <span id="carddavLogins" {% if not cardDAVenabled %}disabled="disabled"{% endif %}>
       <b>Existing CardDAV logins:</b><br/>
       {% for login in carddavLogins %}
@@ -51,5 +45,4 @@
     </br>
     <input type="submit" id="saveButton" value="Save" />
     <span class="donemark"><img src="/images/donemark.png" /></span>
-<!--   </form> -->
-</div>
+{% endblock %}

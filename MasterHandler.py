@@ -73,6 +73,9 @@ class MasterHandler(webapp2.RequestHandler):
 
         if self.safeGuard():
             
+            if (not "view" in actionName) and (not self.getUserProfile()):
+                self.sendJsonError("User profile not found")
+            
             try:
                 actionFunction = getattr(self, actionName)
                 logging.info("MasterHandler: Found action method.")
@@ -153,11 +156,20 @@ class MasterHandler(webapp2.RequestHandler):
                                             "message": msg}))
 
 
-    def sendTopTemplate(self, activeEntry = ""):
+    def sendContent(self, templateName,
+                    activeEntry = "",
+                    templateVariables = None):
         
-        user = users.get_current_user()
-        currentUserProfile = UserProfile.all().filter("user =", user).fetch(1, keys_only=True)[0]
-        notificationCount = Psinque.all().filter("userTo =", currentUserProfile).filter("status =", "pending").count()
+        try:
+            getattr(self, "userProfile")
+        except AttributeError:
+            if not self.getUserProfile():
+                return
+
+        notificationCount = Psinque.all(keys_only = True). \
+                                    ancestor(self.userProfile). \
+                                    filter("status =", "pending"). \
+                                    count()
         if notificationCount > 0:
             self.psinqueText = "Psinques (" + str(notificationCount) + ")"
         else:
@@ -167,23 +179,18 @@ class MasterHandler(webapp2.RequestHandler):
             MenuEntry("mycard/view", "My card"),
             MenuEntry("permits/view", "Permits"),
             MenuEntry("psinques/view", self.psinqueText),
-            MenuEntry("settings/view", "Settings")
         ]
         if activeEntry != "":
             for entry in menuentries:
                 if entry.title == activeEntry:
                     entry.entryclass = "active"  # mark menu item as active
-        
-        template = jinja_environment.get_template('templates/topTemplate.html')
+
+        template = jinja_environment.get_template(templateName)
         self.response.out.write(template.render(
-            dict(self.getUserVariables().items() + {'menuentries': menuentries}.items()
-        )))
-
-
-    def sendBottomTemplate(self):
-        
-        template = jinja_environment.get_template('templates/bottomTemplate.html')
-        self.response.out.write(template.render())
+            dict(templateVariables.items() +
+                 self.getUserVariables().items() +
+                 {'menuentries': menuentries}.items())
+        ))
 
 
     def getUserVariables(self):
@@ -209,12 +216,6 @@ class MasterHandler(webapp2.RequestHandler):
         #else:
             #self.LANGUAGE_CODE = userProfile.preferredLanguage
             #logging.error("Changed language to " + settings.LANGUAGE_CODE)
-
-
-    def sendContent(self, templateName, templateVariables = None):
-        
-        template = jinja_environment.get_template(templateName)
-        self.response.out.write(template.render(templateVariables))
 
 
     def render(self, activeEntry, templateName, templateVariables = None):

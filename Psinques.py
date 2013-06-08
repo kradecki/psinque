@@ -22,9 +22,6 @@ class PsinquesHandler(MasterHandler):
 
     def _getContact(self):
 
-        if not self.getUserProfile():
-            raise AjaxError("User not logged in")
-
         # Find contact on this end
         contact = Contact.get(self.getRequiredParameter('key'))
         if contact is None:
@@ -99,9 +96,6 @@ class PsinquesHandler(MasterHandler):
 
     def _getPsinqueByKey(self):
         
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-        
         psinqueKey = self.getRequiredParameter('key')
         psinque = Psinque.get(psinqueKey)
         if psinque is None:
@@ -136,9 +130,6 @@ class PsinquesHandler(MasterHandler):
     
     def _addPublicPsinque(self, friendsProfile):
         
-        if not self.getUserProfile():
-            raise AjaxError("User not logged in")
-
         newContact = Contact(parent = self.userProfile,
                              friend = friendsProfile,
                              group = self.userProfile.defaultGroup,
@@ -165,7 +156,7 @@ class PsinquesHandler(MasterHandler):
     def view(self):
         
         if self.getUserProfile():
-                        
+
             offset = self.request.get('offset')
             if not offset:
                 offset = 0
@@ -182,9 +173,9 @@ class PsinquesHandler(MasterHandler):
 
             # List of contacts
             contactQuery = Contact.all(). \
-                                   ancestor(self.userProfile). \
-                                   order("creationTime")
-                               
+                                    ancestor(self.userProfile). \
+                                    order("creationTime")
+                                
             count = contactQuery.count(1000)
             if currentCursor:
                 contactQuery.with_cursor(currentCursor)  # start from the previous position
@@ -195,8 +186,9 @@ class PsinquesHandler(MasterHandler):
             else:
                 isThereMore = False
                     
-            self.sendTopTemplate(activeEntry = "Psinques")
-            self.sendContent('templates/psinques_view.html', {
+            self.sendContent('templates/psinques_view.html',
+                            activeEntry = "Psinques",
+                            templateVariables = {
                 'offset': offset,
                 'isThereMore': (offset + len(contacts) < count),
                 'count': count,
@@ -206,7 +198,6 @@ class PsinquesHandler(MasterHandler):
                 'groups': Group.all().ancestor(self.userProfile),
                 'permits': Permit.all().ancestor(self.userProfile).filter("public =", False),
             })
-            self.sendBottomTemplate()
 
 
     #def viewdecision(self):
@@ -237,8 +228,6 @@ class PsinquesHandler(MasterHandler):
 
         if userEmail is None:
             raise AjaxError("User not found")
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
         
         # Check if there already is a Psinque from that user
         userProfile = UserProfile.get(userEmail.parent())
@@ -270,9 +259,6 @@ class PsinquesHandler(MasterHandler):
 
     def addpublic(self):
                 
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-
         friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
 
         psinque = self._getPsinqueFrom(friendsProfile)
@@ -286,9 +272,6 @@ class PsinquesHandler(MasterHandler):
 
 
     def addprivate(self):
-        
-        if not self.getUserProfile():
-            raise AjaxError("User not logged in")
         
         friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
         psinque = self._getPsinqueFrom(friendsProfile)

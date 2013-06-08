@@ -24,14 +24,14 @@ class PermitsHandler(MasterHandler):
     def view(self):
         
         if self.getUserProfile():
-        
+            
             permits = Permit.all().ancestor(self.userProfile)
             
-            self.sendTopTemplate(activeEntry = "Permits")
-            self.sendContent('templates/permits_view.html', {
+            self.sendContent('templates/permits_view.html',
+                            activeEntry = "Permits",
+                            templateVariables = {
                 'permits': permits,
             })
-            self.sendBottomTemplate()
 
 
     #****************************
@@ -49,8 +49,6 @@ class PermitsHandler(MasterHandler):
             raise AjaxError("Cannot remove the public permit")
         if permit.name == "Default":  # cannot remove the default permit
             raise AjaxError("Cannot remove the default private permit")
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
 
         # Get all contacts that use this permit and assign them the default permit
         contacts = Contact.all().ancestor(self.userProfile).filter("permit =", permit)
@@ -77,8 +75,6 @@ class PermitsHandler(MasterHandler):
             raise AjaxError("Cannot create another public permit")
         if permitName == "Default":
             raise AjaxError("Cannot create another default private permit")
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
 
         # Check if the permit already exists
         permit = self._getPermitByName(permitName)
@@ -142,8 +138,6 @@ class PermitsHandler(MasterHandler):
     def enablepublic(self):
         
         publicEnabled = self.getRequiredBoolParameter("enable")
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
         
         self.userProfile.publicEnabled = publicEnabled
 

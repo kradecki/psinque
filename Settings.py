@@ -34,7 +34,6 @@ class Settings(MasterHandler):
         
         return "".join([random.SystemRandom().choice(self.passwordCharacters) for x in range(passwordLength)])
         
-        
 
     #****************************
     # Views
@@ -48,13 +47,14 @@ class Settings(MasterHandler):
             
             carddavLogins = CardDAVLogin.all().ancestor(self.userProfile)
             
-            self.sendTopTemplate(activeEntry = "Settings")
-            self.sendContent('templates/settings_viewSettings.html', {
+            self.sendContent('templates/settings_viewSettings.html',
+                            activeEntry = "",
+                            templateVariables = {
                 'userSettings': userSettings,
                 'carddavLogins': carddavLogins,
                 'availableLanguages': availableLanguages,
             })
-            self.sendBottomTemplate()
+
 
     #****************************
     # AJAX methods
@@ -62,9 +62,6 @@ class Settings(MasterHandler):
     
     def updatesettings(self):
         
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
-
         userSettings = self._getUserSettings()
         if userSettings.parent().key() != self.userProfile.key():
             raise AjaxError("You don't own these settings")
@@ -80,9 +77,6 @@ class Settings(MasterHandler):
         
         
     def generatecarddavlogin(self):
-        
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
         
         carddavName = self.getRequiredParameter("name")
         
@@ -107,9 +101,6 @@ class Settings(MasterHandler):
 
         
     def deletecarddav(self):
-        
-        if not self.getUserProfile():
-            raise AjaxError("User profile not found")
         
         cardDAVLogin = CardDAVLogin.get(self.getRequiredParameter("key"))
         

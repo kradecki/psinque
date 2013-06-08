@@ -27,10 +27,6 @@ handlers:
 - url: /login
   script: StartPage.app    # user not logged in
 
-# New layout
-- url: /newlayout
-  script: NewLayout.app
-  
 # User profile viewing and editing
 - url: /mycard/([^/]+)
   script: MyCard.app
