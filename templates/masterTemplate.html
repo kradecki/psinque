@@ -14,6 +14,7 @@
   <div id="headerwrapper">
     <div id="header">
       <img src="/images/logo.png"/>
+      <span class="spinner"><img src="/images/psinque.gif" /></span>
       <ul>
       {% for menuentry in menuentries %}
         <li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>

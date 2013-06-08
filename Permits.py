@@ -26,6 +26,7 @@ class PermitsHandler(MasterHandler):
         if self.getUserProfile():
             
             permits = Permit.all().ancestor(self.userProfile)
+            logging.info(permits.count())
             
             self.sendContent('templates/permits_view.html',
                             activeEntry = "Permits",

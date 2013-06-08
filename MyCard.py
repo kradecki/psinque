@@ -51,13 +51,13 @@ class ProfileHandler(MasterHandler):
                 
         # Default group
         defaultGroup = Group(parent = userProfile,
-                                name = 'Default')
+                             name = 'Default')
         defaultGroup.put()
         userProfile.defaultGroup = defaultGroup
         
         # Default private permit
         defaultPermit = Permit(parent = userProfile,
-                                name = "Default")
+                               name = "Default")
         defaultPermit.put()
 
         userProfile.defaultPermit = defaultPermit
@@ -71,8 +71,8 @@ class ProfileHandler(MasterHandler):
 
         # Public permit
         publicPermit = Permit(parent = userProfile,
-                                name = "Public",
-                                public = True)
+                              name = "Public",
+                              public = True)
         publicPermit.put()
 
         userProfile.publicPermit = publicPermit

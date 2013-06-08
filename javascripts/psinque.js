@@ -1,5 +1,5 @@
 
-executeAJAX = function(query, done) {
+function executeAJAX(query, done) {
     $.ajax(query)
         .done(function(data) {
             parsedJSON = $.parseJSON(data);
@@ -15,3 +15,20 @@ executeAJAX = function(query, done) {
             $(".spinner").hide();
         });
 }
+
+function cloneElement(oldElement) {
+    newElement = oldElement.clone();  // clone an existing address field group
+
+    // Clean all the input values:
+    newElement.find("input,select").val('');
+
+    newElement.hide();
+
+    return newElement;
+}
+
+$(document).ready(function() {
+    $("input[type=text],input").change(function() {
+        $(this).css("color", "#de5d35");
+    });
+});
