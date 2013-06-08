@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {% block head %}
+    <link rel="stylesheet" type="text/css" href="/stylesheets/newlayout.css" />
+    <title>{% block title %}{% endblock %} - Psinque</title>
+    {% endblock %}
+</head>
+<body>
+  <div id="headerwrapper">
+    <div id="header">
+      <img src="/images/logo.png"/>
+      <ul>
+      {% for menuentry in menuentries %}
+        <li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>
+      {% endfor %}
+      </ul>
+      <div id="topicons">
+        <a href="/settings/view"><img src="/images/settings.png"/></a>
+        <a href="{{ loginurl }}"><img src="/images/logout.png"/></a>
+      </div>
+    </div>
+  </div>
+  <div id="wrapper">
+    <div id="content">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec dolor nec mi mollis convallis. Vivamus pretium elementum dui, sed ullamcorper eros vestibulum nec. Vivamus id tempor massa, pellentesque pulvinar lectus. Nam dictum nisi in sapien lobortis, consectetur semper nulla fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis erat sed volutpat placerat. Proin velit mauris, posuere iaculis est dictum, commodo pharetra ante. Etiam a mollis eros. Vestibulum nec accumsan ipsum, et laoreet enim. Aliquam sem lorem, ultrices nec ultricies hendrerit, convallis a sem.
+
+Quisque a dapibus urna, nec lobortis mauris. In erat velit, rhoncus eu dignissim in, ultricies ac purus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam non metus quis lectus vestibulum dictum. Morbi mollis laoreet porta. Duis convallis eu ipsum vel posuere. Duis vulputate, tortor eu iaculis porta, augue enim laoreet lacus, at adipiscing dolor sem ac quam. Duis et dignissim tortor, quis dignissim orci. Nulla tincidunt tellus imperdiet aliquet gravida. Duis placerat mollis nisl, nec eleifend nulla.
+
+In aliquet suscipit lorem, non tincidunt nisl elementum et. Vivamus quis purus nec nunc convallis volutpat in et est. Proin ac porttitor arcu. Integer quis velit massa. Etiam ut mauris commodo, semper nisi in, luctus nulla. Etiam non vulputate tellus. Integer faucibus molestie mi, id laoreet ante sagittis quis. Vivamus tincidunt erat nec tristique pretium. Aliquam ante velit, ullamcorper auctor nunc in, consequat accumsan ligula. Sed blandit purus a felis porta ultrices. Sed pulvinar blandit bibendum. Nullam rhoncus eros at ultrices feugiat. Curabitur mattis vehicula purus. Pellentesque fringilla varius elementum.
+
+Phasellus quis mi enim. Vestibulum sit amet justo molestie dolor pulvinar laoreet ut sed neque. In scelerisque leo mauris, id venenatis neque aliquam id. Vestibulum auctor dapibus enim, id tincidunt purus eleifend a. Sed ullamcorper aliquet dui dignissim lacinia. Integer feugiat orci eu placerat accumsan. Vestibulum nec nisi eu libero suscipit egestas nec fermentum arcu. Vestibulum id sapien sodales, rutrum nibh ac, interdum ipsum. Duis eget bibendum leo, et laoreet enim. Proin a tristique diam, ac fringilla eros. Curabitur varius lobortis nisi, eget aliquam dui hendrerit sed. Pellentesque a lorem ante. Morbi euismod rhoncus ligula eget volutpat.
+
+Aenean malesuada sem eu metus vestibulum sodales. Nullam in facilisis lorem, in venenatis nibh. Integer eros leo, porta suscipit suscipit porttitor, placerat eget risus. Pellentesque vestibulum massa in mauris suscipit, nec vulputate turpis pharetra. Duis hendrerit bibendum tortor in adipiscing. Maecenas in lacus quis libero mattis vulputate vel eget velit. Proin placerat ligula ac diam bibendum varius. Suspendisse scelerisque, dolor ut dignissim aliquet, nibh lorem aliquam eros, a commodo quam tellus at ligula. Fusce quis lacus consequat, aliquet nisl a, porttitor mi.
+    </div>
+    <div id="footer">
+        &copy; Copyright 2013 by <a href="http://psinque.com/">Psinque sp. z o.o.</a>.
+    </div>
+  </div>
+</body>
