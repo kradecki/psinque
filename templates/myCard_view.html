@@ -15,6 +15,7 @@
   {% endif %}
   <div id="images">Images will appear here...</div>
   <div id="mycard">
+  <span id="generalInfo">
     <p>
     <label>Given names</label>
     {% for givenName in userProfile.givenNames %}
@@ -46,6 +47,8 @@
     <input type="date" id="birthday">
     <span class="donemark"><img src="/images/donemark.png" /></span>
     </p>-->
+  </span>
+  <span id="electronicAddresses">
     {% for email in userEmails %}
     <p class="emailAddress">
     <label>{% if email.primary %}Primary email{% else %}Additional email{% endif %}</label>
@@ -74,6 +77,7 @@
     </p>
     {% endfor %}
     <p id="addEmail"><a href="">Add e-mail</a></p>
+  </span>
 <!--    <legend>Physical addresses</legend>
     {% for address in addresses %}
     <p id="address{{ address.nr }}">
@@ -112,6 +116,7 @@
     </p>
     {% endfor %}
     <p id="addAddress"><a href="">Add address</a></p> -->
+    <div id="bottonButton"><input type="button" id="submitButton" value="Apply"/></div>
     <span class="spinner"><img src="/images/psinque.gif" /></span>
   </div>
   <br style="clear:both;"/>
