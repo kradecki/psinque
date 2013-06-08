@@ -73,6 +73,10 @@ handlers:
   secure: optional
   script: CardDAV.app
 
+# New layout
+- url: /newlayout
+  script: NewLayout.py
+  
 # Error handling
 - url: /.*
   script: NotFound.app
