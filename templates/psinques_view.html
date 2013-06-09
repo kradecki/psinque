@@ -30,13 +30,7 @@
     <td>
       <input type="hidden" value="{{ pending.key }}" class="PsinqueKeys" />
       <input type="button" value="Reject" class="Rejecters" />
-      or select permit
-      <select class="groupSelectors">
-        {% for permit in permits %}
-        <option value="{{ permit.name }}" {% if permit.name == "Default" %}selected="selected"{% endif %}>{{ permit.name }}</option>
-        {% endfor %}
-      </select>
-      and <input type="button" value="Accept" class="Accepters" />
+      or <input type="button" value="Accept" class="Accepters" />
     </td>
     </tr>
   {% endfor %}
@@ -56,7 +50,7 @@
   {% for contact in contacts %}
     <tr>
     <td>{{ loop.index+count-1 }}</td>
-    <td>{{ contact.incoming.permit.displayName }}</td>
+    <td>{{ contact.displayName }}</td>
     <td>{{ contact.incoming.status }}</td>
     <td>{{ contact.incoming.private }}</td>
     <td>{{ contact.outgoing.status }}</td>
@@ -64,8 +58,12 @@
     <td>
         <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
         <a href="" class="Removers">Remove</a>
+        {% if not contact.incoming %}
+        | <a href="" class="privateadders">Request private data</a>
+        {% else %}
         {% if not contact.incoming.private %}
-        | <a href="" class="Requesters">Request private data</a>
+        | <a href="" class="requesters">Request private data</a>
+        {% endif %}
         {% endif %}
     </td>
     </tr>

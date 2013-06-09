@@ -4,6 +4,8 @@ import os
 import logging
 import webapp2
 
+from google.appengine.ext.db import KindError
+
 from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler, AjaxError
@@ -39,10 +41,11 @@ class PsinquesHandler(MasterHandler):
         "outgoing" field. This Contact will belong to an unknown
         user, so we cannot use ancestor queries.
         '''
-        return Contact.all(keys_only = True). \
-                       ancestor(psinque.fromUser). \
-                       filter("outgoing =", psinque). \
-                       get()
+        return psinque.parent().friendsContact
+        #return Contact.all(). \
+                       #ancestor(psinque.fromUser). \
+                       #filter("outgoing =", psinque). \
+                       #get()
 
     def _getContactForIncoming(self, psinque):
         '''
@@ -56,13 +59,23 @@ class PsinquesHandler(MasterHandler):
     def _clearIncoming(self, contact):
         contact.incoming = None
         if contact.outgoing is None:
+            if not contact.friendsContact is None:
+                contact.friendsContact.friendsContact = None
             contact.delete()
 
 
     def _clearOutgoing(self, contact):
         contact.outgoing = None
         if contact.incoming is None:
+            if not contact.friendsContact is None:
+                contact.friendsContact.friendsContact = None
+                contact.friendsContact.put()
             contact.delete()
+
+    def _downgradePsinqueToPublic(self, psinque):
+        psinque.private = False
+        psinque.permit = psinque.fromUser.publicPermit
+        psinque.put()
 
 
     def _removeIncoming(self, contact):
@@ -71,11 +84,11 @@ class PsinquesHandler(MasterHandler):
         is empty, it is removed. This Psinque is also removed from
         the friend's Contact. The Psinque is removed as well.
         '''
-        psinque = contact.incoming
-        friendsContact = self._getContactForOutgoing(psinque)
+        if (not contact.incoming is None) and contact.incoming.private:
+            Notifications.notifyStoppedUsingPrivateData(contact.incoming)
+        if not contact.friendsContact is None:  # in case we use a public psinque, there might be no Contact on the other side
+            self._clearOutgoing(contact.friendsContact)
         self._clearIncoming(contact)
-        if not friendsContact is None:  # in case we use a public psinque, there might be no Contact on the other side
-            self._clearOutgoing(friendsContact)
 
         for psinque in Psinque.all().ancestor(contact):
             psinque.delete()
@@ -90,8 +103,9 @@ class PsinquesHandler(MasterHandler):
         '''
         psinque = contact.outgoing
         if not psinque is None:
+            Notifications.notifyDowngradedPsinque(psinque)
             self._clearOutgoing(contact)
-            psinque.private = False
+            self._downgradePsinqueToPublic(psinque)
 
 
     def _getPsinqueByKey(self):
@@ -130,21 +144,26 @@ class PsinquesHandler(MasterHandler):
     
     def _addPublicPsinque(self, friendsProfile):
         
-        newContact = Contact(parent = self.userProfile,
-                             friend = friendsProfile,
-                             group = self.userProfile.defaultGroup,
-                             permit = self.userProfile.publicPermit)
-        newContact.put()
+        contact = Contact.all(). \
+                          ancestor(self.userProfile). \
+                          filter("friend =", friendsProfile). \
+                          get()
+        if contact is None:
+            contact = Contact(parent = self.userProfile,
+                              friend = friendsProfile,
+                              group = self.userProfile.defaultGroup,
+                              permit = self.userProfile.publicPermit)
+            contact.put()
         
-        newPsinque = Psinque(parent = newContact,
+        newPsinque = Psinque(parent = contact,
                              fromUser = friendsProfile,
                              private = False,
                              permit = friendsProfile.defaultPermit,
                              status = "established")
         newPsinque.put()
         
-        newContact.incoming = newPsinque
-        newContact.put()
+        contact.incoming = newPsinque
+        contact.put()
         
         return newPsinque
         
@@ -273,7 +292,11 @@ class PsinquesHandler(MasterHandler):
 
     def addprivate(self):
         
-        friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
+        try:
+            friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
+        except KindError:
+            friendsProfile = Contact.get(self.getRequiredParameter("key")).friend
+        
         psinque = self._getPsinqueFrom(friendsProfile)
         if not psinque is None:
             if psinque.private:
@@ -289,15 +312,8 @@ class PsinquesHandler(MasterHandler):
 
     def removeincoming(self):
         
-        contact = self._getContact()
-        if not contact.incoming is None:
-            wasPrivate = contact.incoming.private
-            
-        self._removeIncoming(contact)        
+        self._removeIncoming(self._getContact())
 
-        if wasPrivate:
-            Notifications.notifyStoppedUsingPrivateData(psinque)
-            
         self.sendJsonOK()
 
 
@@ -305,22 +321,15 @@ class PsinquesHandler(MasterHandler):
         
         contact = self._getContact()       
         self._removeOutgoing(contact)
-        Notifications.notifyDowngradedPsinque(psinque)
         self.sendJsonOK()
 
 
     def removecontact(self):
         
         contact = self._getContact()
-        if not contact.incoming is None:
-            wasPrivate = contact.incoming.private
-            
         self._removeIncoming(contact)
         self._removeOutgoing(contact)
         
-        if wasPrivate:
-            Notifications.notifyStoppedUsingPrivateData(psinque)
-            
         self.sendJsonOK()
                        
 
@@ -353,7 +362,16 @@ class PsinquesHandler(MasterHandler):
         
         contactIn = self._getContactForIncoming(psinque)
         contactOut = self._getContactForOutgoing(psinque)
-        
+
+        if contactOut is None:
+            contactOut = Contact(parent = self.userProfile,
+                                 friend = contactIn.parent(),
+                                 friendsContact = contactIn,
+                                 group = self.userProfile.defaultGroup,
+                                 permit = self.userProfile.defaultPermit)
+            contactOut.put()
+            contactIn.friendsContact = contactOut
+                                         
         if not contactOut.outgoing is None:
             raise AjaxError("There already is a psinque from this user")
         

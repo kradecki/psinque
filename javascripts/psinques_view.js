@@ -71,10 +71,24 @@ $(document).ready(function() {
     });
     
 
-    $(".Requesters").click(function() {
+    $(".requesters").click(function() {
         
         contactKey = $(this).parent().find(".ContactKeys").val();
         executeAJAX("/psinques/requestupgrade?key=" + contactKey,
+            function() {
+                window.alert("Request sent");
+            }
+        );
+        
+        return false;
+        
+    });
+    
+    
+    $(".privateadders").click(function() {
+        
+        contactKey = $(this).parent().find(".ContactKeys").val();
+        executeAJAX("/psinques/addprivate?key=" + contactKey,
             function() {
                 window.alert("Request sent");
             }

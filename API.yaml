@@ -427,7 +427,9 @@ Pages:
     Description: "Asks for a person's private profile and create a new Contact."
     Parameters:
     - key:
-      Description: Datastore key of the other person's UserProfile.
+      Description: >
+        "Datastore key of the other person's UserProfile or of a Contact
+        that has this person's UserProfile as a friend."
     Action flow:
     - "Check if a Psinque already exists; if it's public, run 'requestupgrade'."
     - "Create a new Contact and a new public Psinque from the friend, then run 'requestupgrade'".

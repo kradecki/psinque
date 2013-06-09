@@ -78,7 +78,6 @@ class MasterHandler(webapp2.RequestHandler):
             
             try:
                 actionFunction = getattr(self, actionName)
-                logging.info("MasterHandler: Found action method.")
             except AttributeError as e:
                 logging.error("MasterHandler: Action method not found.")
                 logging.error(e)
@@ -108,7 +107,8 @@ class MasterHandler(webapp2.RequestHandler):
         Retrieves the UserProfile for the current user from the Datastore.
         If the profile does not exist, the user is redirected to the profile
         edit page.
-        '''        
+        '''
+        logging.info("getUserProfile()")
         if self.safeGuard():
             self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
             if not self.userProfile:
@@ -167,7 +167,7 @@ class MasterHandler(webapp2.RequestHandler):
                 return
 
         notificationCount = Psinque.all(keys_only = True). \
-                                    ancestor(self.userProfile). \
+                                    filter("fromUser =", self.userProfile). \
                                     filter("status =", "pending"). \
                                     count()
         if notificationCount > 0:

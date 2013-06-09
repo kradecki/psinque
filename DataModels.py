@@ -155,12 +155,19 @@ class Contact(db.Model):
                                     collection_name = "contact2")
 
     friend = db.ReferenceProperty(UserProfile)
+    friendsContact = db.SelfReferenceProperty()
     
     group = db.ReferenceProperty(Group)
     permit = db.ReferenceProperty(Permit)
 
     creationTime = db.DateTimeProperty(auto_now = True)
 
+    @property
+    def displayName(self):
+        if not self.incoming is None:
+            return self.incoming.displayName
+        return self.friendsContact.permit.displayName
+  
 #-----------------------------------------------------------------------------
 
 class UserAddress(db.Model):
