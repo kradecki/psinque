@@ -63,6 +63,7 @@ class PsinqueDomainController(object):
             return None
         if self.userPassword == u"":   # we haven't checked the user yet
             self.userPassword = CardDAV.getCardDAVLogin(username)
+        logging.info(self.userPassword.generatedPassword)
         return self.userPassword.generatedPassword
     
     

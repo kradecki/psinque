@@ -39,23 +39,25 @@ def friendList(userProfile, groupName):
                        filter("group =", group)
     
     for contact in contacts:
-        friendList.append(contact.id())
+        friendList.append(str(contact.key()) + ".vcf")
         
     return friendList
 
 
-def getVCard(friendID):
+def getVCard(contactID):
     
     # This is 3 Datastore fetches: Contact, Psinque, Permit
-    permit = Contact.get_by_id(friendID).incoming.permit
-    return [permit.vcard, permit.vcarsMTime, permit.vcardMD5]
+    logging.info("Getting vCard for Contact "+ contactID)
+    contact = Contact.get(contactID)
+    permit = contact.incoming.permit
+    return [permit.vcard, permit.vcardMTime, permit.vcardMD5]
 
 
 def getCardDAVLogin(username):
 
-    carddavLogin = CardDAVPassword.all(). \
-                                   filter("generatedUsername =", username). \
-                                   get()
+    carddavLogin = CardDAVLogin.all(). \
+                                filter("generatedUsername =", username). \
+                                get()
     if not carddavLogin:
         return None
     
@@ -67,7 +69,7 @@ def getCardDAVLogin(username):
 
 def getUserProfile(username):
     
-    carddavLogin = getCardDAVLogin()
+    carddavLogin = getCardDAVLogin(username)
     
     return carddavLogin.parent()
 

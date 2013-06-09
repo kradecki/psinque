@@ -1,6 +1,7 @@
 
 import os.path
 import logging
+import md5
 
 from string import replace
 
@@ -44,7 +45,7 @@ class CardDAVResource(_DAVResource):
                 self.isCollection = False
                 if fileName[1] != u".vcf":
                     raise ValueError("Unsupported extension: %r" % fileName[1])
-                self.friendID = fileName[0]           
+                self.contactID = fileName[0]           
                 self.name = "Forest Gump"
                 self.vCard = None  # we're lazy at generating the vCard
             else:
@@ -58,7 +59,7 @@ class CardDAVResource(_DAVResource):
     def generateVCard(self):
         if not self.isCollection and self.vCard is None:
             logging.info("Generating vcard...")
-            vCard = CardDAV.getVCard(self.userProfile, self.friendID)
+            vCard = CardDAV.getVCard(self.contactID)
             self.vCard = vCard[0]
             self.vCardMtime = vCard[1]
             self.vCardMD5 = vCard[2]
@@ -88,9 +89,9 @@ class CardDAVResource(_DAVResource):
     def getMemberNames(self):
         assert self.isCollection
         if self.path == "/":
-            memberNames = UserManagement.groupList(self.userProfile)
+            memberNames = CardDAV.groupList(self.userProfile)
         else:
-            memberNames = UserManagement.friendList(self.userProfile, self.groupName)
+            memberNames = CardDAV.friendList(self.userProfile, self.groupName)
         return memberNames
     
     def getContent(self):

@@ -41,6 +41,7 @@ class ProfileHandler(MasterHandler):
         # User settings
         userSettings = UserSettings(parent = userProfile)
         userSettings.put()
+        userProfile.userSettings = userSettings
         
         # Primary email address (needed for notifications, etc.)
         userEmail = UserEmail(parent = userProfile,
@@ -83,7 +84,7 @@ class ProfileHandler(MasterHandler):
         publicPermit.put()
 
         publicPermit.generateVCard()
-
+        
         # Save the updated user profile
         userProfile.put()
         

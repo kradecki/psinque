@@ -78,6 +78,33 @@ class Group(db.Model):
 
 #-----------------------------------------------------------------------------
 
+availableLanguages = {
+    'en': u'English',
+    'pl': u'Polski',
+    'de': u'Deutsch',
+    'jp': u'日本語',
+}
+
+class UserSettings(db.Model):
+    '''
+    User settings other than those stored in the UserProfile.
+    '''
+    preferredLanguage = db.StringProperty(choices = availableLanguages.keys(),
+                                            default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
+    notifyNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
+    
+    notifyEmails = db.BooleanProperty(default = True)
+    notifyStopsUsingMyPrivateData = db.BooleanProperty(default = True)
+    notifyAsksForPrivateData = db.BooleanProperty(default = True)
+    notifyAllowsMePrivateData = db.BooleanProperty(default = True)
+    notifyDisallowsMePrivateData = db.BooleanProperty(default = True)
+    notifyRequestDecision = db.BooleanProperty(default = True)
+
+    cardDAVenabled = db.BooleanProperty(default = False)
+    #syncWithGoogle = db.BooleanProperty(default = False)
+
+#-----------------------------------------------------------------------------
+
 genders    = ["male", "female"]
 phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
 addressTypes = {'home': 'Home', 'work': 'Work'}
@@ -104,6 +131,8 @@ class UserProfile(db.Model):
     publicPermit = db.ReferenceProperty(Permit,
                                         collection_name = "userProfile2")
     defaultGroup = db.ReferenceProperty(Group)
+    
+    userSettings = db.ReferenceProperty(UserSettings)
     
     @property
     def fullName(self):
@@ -208,33 +237,6 @@ class PermitEmail(db.Model):
                                      collection_name = "permitEmails")
     canView = db.BooleanProperty(default = False)
 
-
-#-----------------------------------------------------------------------------
-
-availableLanguages = {
-    'en': u'English',
-    'pl': u'Polski',
-    'de': u'Deutsch',
-    'jp': u'日本語',
-}
-
-class UserSettings(db.Model):
-    '''
-    User settings other than those stored in the UserProfile.
-    '''
-    preferredLanguage = db.StringProperty(choices = availableLanguages.keys(),
-                                            default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
-    notifyNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
-    
-    notifyEmails = db.BooleanProperty(default = True)
-    notifyStopsUsingMyPrivateData = db.BooleanProperty(default = True)
-    notifyAsksForPrivateData = db.BooleanProperty(default = True)
-    notifyAllowsMePrivateData = db.BooleanProperty(default = True)
-    notifyDisallowsMePrivateData = db.BooleanProperty(default = True)
-    notifyRequestDecision = db.BooleanProperty(default = True)
-
-    cardDAVenabled = db.BooleanProperty(default = False)
-    #syncWithGoogle = db.BooleanProperty(default = False)
 
 #-----------------------------------------------------------------------------
 
