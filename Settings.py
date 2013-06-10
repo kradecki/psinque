@@ -21,7 +21,7 @@ class Settings(MasterHandler):
     # Private methods
     # 
     
-    passwordCharacters = string.ascii_uppercase + string.ascii_lowercase + string.digits + '_'
+    passwordCharacters = string.ascii_lowercase
     
     def _getUserSettings(self):
         
@@ -81,13 +81,11 @@ class Settings(MasterHandler):
         carddavName = self.getRequiredParameter("name")
         
         while True:
-            generatedUsername = self._generateRandomSequence(6)
+            generatedUsername = self._generateRandomSequence(8)
             if not CardDAVLogin.all().filter("generatedUsername =", generatedUsername).get():
                 break
 
-        # With 62 password characters, the entropy of a 14-character password is 71 bits,
-        # which is reasonably difficult to hack
-        generatedPassword = self._generateRandomSequence(12)
+        generatedPassword = self._generateRandomSequence(16)
         cardDAVLogin = CardDAVLogin(parent = self.userProfile,
                                     name = carddavName,
                                     generatedUsername = generatedUsername,
