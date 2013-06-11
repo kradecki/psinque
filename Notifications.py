@@ -42,8 +42,8 @@ Please click <a href="%s">this link</a> to accept this psinque.
 Please click <a href="%s">this link</a> to reject this psinque.
 
 The Psinque Team
-""" % (u" ".join(psinque.parent().parent().givenNames),
-       psinque.displayName,
+""" % (u" ".join(psinque.fromUser.givenNames),
+       psinque.parent().parent().defaultPermit.displayName,
        createRejectUrl(psinque),
        createAcceptUrl(psinque)))
 
@@ -80,11 +80,14 @@ def notifyDowngradedPsinque(psinque):
 Another user, %s, has revoked your access to his/her private data.
 
 The Psinque Team
-""" % (psinque.fromUser.fullName,
+""" % (u" ".join(psinque.parent().parent().givenNames,
        psinque.displayName))
     
     
 def notifyAcceptedRequest(psinque):
+    
+    if psinque.parent().friendsContact:
+        friendsName = friendsContact.
 
     sendNotification(psinque, 
                      "Your request for sharing private contact data has been accepted",
@@ -93,9 +96,9 @@ def notifyAcceptedRequest(psinque):
 Another user, %s, has accepted your request for sharing private contact data.
 
 The Psinque Team
-""" % (psinque.fromUser.fullName,
+""" % (u" ".join(psinque.parent().parent().givenNames,
        psinque.displayName))
-    
+
     
 def notifyRejectedRequest(psinque):
     
@@ -106,5 +109,5 @@ def notifyRejectedRequest(psinque):
 Another user, %s, has rejected your request for sharing private contact data.
 
 The Psinque Team
-""" % (psinque.fromUser.fullName,
+""" % (u" ".join(psinque.parent().parent().givenNames,
        psinque.displayName))

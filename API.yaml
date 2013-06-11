@@ -197,7 +197,7 @@ Pages:
     Description: Adds a new email entry.
     Parameters:
     - email
-    - emailType
+    - type
     Action flow:
     - Create a new UserEmail with UserProfile as a parent.
     - Set 'email' and 'emailType'.
@@ -207,9 +207,9 @@ Pages:
   
   - updateemail:
     Parameters:
-    - emailKey
+    - key
     - email
-    - emailType  
+    - type
   
   - updateim
   - updatewww

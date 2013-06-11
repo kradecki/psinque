@@ -103,20 +103,25 @@ class ProfileHandler(MasterHandler):
         if firstLogin:  # no user profile registered yet, so create a new one
           userProfile = self._createNewProfile()
 
-        userAddresses = userProfile.addresses.fetch(100)
-        addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
-        if len(addresses) == 0:
-            addresses = [{'nr': 1, 'value': None}]
+        #userAddresses = userProfile.addresses.fetch(100)
+        #addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
+        #if len(addresses) == 0:
+            #addresses = [{'nr': 1, 'value': None}]
+
+        primaryEmail = userProfile.emails.filter("primary =", True).get()
+        additionalEmails = userProfile.emails.filter("primary =", False).fetch(limit = 1000)
             
         self.sendContent('templates/myCard_view.html',
                          activeEntry = "My card",
                          templateVariables = {
             'firstlogin': firstLogin,
             'userProfile': userProfile,
-            'userEmails': userProfile.emails,
+            'primaryEmail': primaryEmail,
+            'additionalEmails': additionalEmails,
+            #'anyAdditionalEmails': anyAdditionalEmails,
             'emailTypes': emailTypes,
-            'addresses': addresses,
-            'addressTypes': addressTypes,
+            #'addresses': addresses,
+            #'addressTypes': addressTypes,
         })
             
     #****************************
@@ -140,7 +145,7 @@ class ProfileHandler(MasterHandler):
     def addemail(self):
         
         email = self.getRequiredParameter('email')
-        emailType = self.getRequiredParameter('emailType')
+        emailType = self.getRequiredParameter('type')
         
         userEmail = UserEmail(parent = self.userProfile,
                               email = email,
@@ -160,9 +165,9 @@ class ProfileHandler(MasterHandler):
 
     def updateemail(self):
         
-        emailKey = self.getRequiredParameter('emailKey')
+        emailKey = self.getRequiredParameter('key')
         email = self.getRequiredParameter('email')
-        emailType = self.getRequiredParameter('emailType')
+        emailType = self.getRequiredParameter('type')
         
         userEmail = UserEmail.get(emailKey)
         userEmail.email = email
@@ -176,7 +181,7 @@ class ProfileHandler(MasterHandler):
 
     def removeemail(self):
         
-        emailKey = self.getRequiredParameter('emailKey')
+        emailKey = self.getRequiredParameter('key')
             
         userEmail = UserEmail.get(emailKey)
         if userEmail is None:

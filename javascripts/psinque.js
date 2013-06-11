@@ -8,11 +8,9 @@ function executeAJAX(query, done) {
             } else {
                 done(parsedJSON);
             }
-            $(".spinner").hide();
         })
         .error(function(data) {
             alert("Uknown error occured while performing operation.");
-            $(".spinner").hide();
         });
 }
 
@@ -25,6 +23,22 @@ function cloneElement(oldElement) {
     newElement.hide();
 
     return newElement;
+}
+
+function startLogoAnimation() {
+    $("#staticlogo").hide();
+    $("#animatedlogo").show();
+}
+
+function stopLogoAnimation() {
+    $("#staticlogo").show();
+    $("#animatedlogo").hide();
+}
+
+function removeElementNicely(element) {
+  element.slideUp('fast', function() {
+    element.remove();
+  });
 }
 
 $(document).ready(function() {

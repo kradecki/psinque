@@ -1,13 +1,12 @@
 {% extends "templates/masterTemplate.html" %}
 {% block title %}My Card{% endblock %}
 {% block javascripts %}
-<script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
-<script type="text/javascript" src="/javascripts/myCard_view.js"></script>
-<script type="text/javascript">
-  var emailCounter = {{ emails|length }};
-  var addressCounter = {{ addresses|length }};
-</script>
+    <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
+    <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script> -->
+    <script type="text/javascript" src="/javascripts/myCard_view.js"></script>
+    <script type="text/javascript">
+        var additionalEmailCounter = {{ additionalEmails|count }};
+    </script>
 {% endblock %}
 {% block content %}
   {% if firstlogin %}
@@ -17,79 +16,88 @@
     <img src="/images/linustorvalds.jpg" />
   </div>
   <div id="mycard">
+    <span id="generalinfo">
     <table><tr>
       <td class="mycardlabels">Given names</td>
       {% for givenName in userProfile.givenNames %}
-      <td class="mycardinputs"><input type="text" id="firstname" value="{{ givenName }}" class="required" minlength="2" /></td>
+      <td class="mycardinputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
       <td class="mycardbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
       {% else %}
-      <td class="mycardinputs"><input type="text" id="firstname" value="" class="required" minlength="2" /></td>
+      <td class="mycardinputs"><input type="text" id="firstname" value="" minlength="2" /></td>
       <td class="mycardbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
       {% endfor %}
     </tr></table>
     <table><tr>
       <td class="mycardlabels">Family names</td>
       {% for familyName in userProfile.familyNames %}
-      <td class="mycardinputs"><input type="text" id="lastname" value="{{ familyName }}" class="required" minlength="2" /></td>
+      <td class="mycardinputs"><input type="text" id="lastname" value="{{ familyName }}" minlength="2" /></td>
       {% else %}
-      <td class="mycardinputs"><input type="text" id="lastname" value="" class="required" minlength="2" /></td>
+      <td class="mycardinputs"><input type="text" id="lastname" value="" minlength="2" /></td>
       {% endfor %}
-    </tr></table>
+    </tr>
+    </table>
+    </span>
     <span id="emails">
-      {% for email in userEmails %}
-      <table class="emailAddress"><tr>
-        <td class="mycardlabels">{% if email.primary %}Primary email{% else %}Additional email{% endif %}</td>
+      <table id="primaryemailaddress">
+      <tbody>
+      <tr>
+        <td class="mycardlabels">Primary email</td>
         <td class="mycardinputs">
-          <input type="hidden" id="emailKey" value="{{ email.key() }}"/>
-          <input type="text" id="emailAddress" value="{% if email.email != "primary@nonexistant.com" %}{{ email.email }}{% endif %}" class="{% if not email.primary %}required {% endif %}email" />
+          <input type="hidden" class="emailkeys" value="{{ primaryEmail.key() }}"/>
+          <input type="text" class="emailaddresses" value="{% if primaryEmail.email != "primary@nonexistant.com" %}{{ primaryEmail.email }}{% endif %}" />
         </td>
         <td class="mycardextras">
-          <select id="typeofEmail">
+          <select class="typesofemail">
           {% for emailTypeCode, emailTypeName in emailTypes.items() %}
-            <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
+            <option value="{{ emailTypeCode }}" {% if emailTypeCode == primaryEmail.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
           {% endfor %}
           </select>
         </td>
+        <td class="mycardbuttons">
+          <a href="" id="addemail"><img src="/images/squareicons/add.png" /></a>
+        </td>
+      </tr>
+      </tbody>
+      </table>
+      <table id="additionalemailaddresses">
+      <tbody>
+      {% for email in additionalEmails %}
+      <tr>
         {% if loop.first %}
-        <td class="mycardbuttons">
-          <a href="" id="addEmail"><img src="/images/squareicons/add.png" /></a>
-        </td>
+        <td rowspan="{{ additionalEmails|count }}" class="mycardlabels">Additional emails</td>
         {% endif %}
-        {% if not email.primary %}
-        <td class="mycardbuttons">
-          <a href="" class="emailRemovers"><img src="/images/squareicons/remove.png" /></a>
-        </td>
-        {% endif %}
-      </tr></table>
-      {% else %}
-      <table class="emailAddress"><tr>
-        <td class="mycardlabels">Primary email<td>
         <td class="mycardinputs">
-          <input type="hidden" id="emailKey" />
-          <input type="text" id="emailAddress" class="required email" />
+          <input type="hidden" class="emailkeys" value="{{ email.key() }}"/>
+          <input type="text" class="emailaddresses" value="{{ email.email }}" />
         </td>
         <td class="mycardextras">
-          <select id="typeofEmail">
+          <select class="typesofemail">
           {% for emailTypeCode, emailTypeName in emailTypes.items() %}
             <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
           {% endfor %}
           </select>
         </td>
         <td class="mycardbuttons">
-          <a href="" id="addEmail"><img src="/images/squareicons/add.png" /></a>
+          <a href="" class="emailremovers"><img src="/images/squareicons/remove.png" /></a>
         </td>
-      </tr></table>
+      </tr>
       {% endfor %}
+      </tbody>
+      </table>
     </span>
     <span>
-      <table><tr>
+      <table>
+      <tbody>
+      <tr>
         <td class="mycardbuttonlabels">
           Save changes
         </td>
         <td class="mycardbuttons">
-          <a href="" id="submitButton"><img src="/images/squareicons/save.png" /></a>
+          <a href="" id="submitbutton"><img src="/images/squareicons/save.png" /></a>
         </td>
-      </tr></table>
+      </tr>
+      </tbody>
+      </table>
     </span>
 <!--    <legend>Physical addresses</legend>
     {% for address in addresses %}

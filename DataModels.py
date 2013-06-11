@@ -200,35 +200,35 @@ class Contact(db.Model):
 #-----------------------------------------------------------------------------
 
 class UserAddress(db.Model):
-  address = db.PostalAddressProperty()
-  city = db.StringProperty()
-  postalCode = db.StringProperty()
-  addressType = db.StringProperty(choices = addressTypes.keys())
-  location = db.GeoPtProperty()
+    address = db.PostalAddressProperty()
+    city = db.StringProperty()
+    postalCode = db.StringProperty()
+    addressType = db.StringProperty(choices = addressTypes.keys())
+    location = db.GeoPtProperty()
 
 #-----------------------------------------------------------------------------
 
 class UserEmail(db.Model):
-  email = db.EmailProperty()
-  emailType = db.StringProperty(choices = emailTypes.keys())
-  primary = db.BooleanProperty(default = False)
+    email = db.EmailProperty()
+    emailType = db.StringProperty(choices = emailTypes.keys())
+    primary = db.BooleanProperty(default = False)
 
 #-----------------------------------------------------------------------------
 
 class UserIM(db.Model):
-  im = db.IMProperty()
+    im = db.IMProperty()
 
 #-----------------------------------------------------------------------------
 
 class UserPhoneNumber(db.Model):
-  phone = db.PhoneNumberProperty(required = True)
-  phoneType = db.StringProperty(choices = phoneTypes)
+    phone = db.PhoneNumberProperty(required = True)
+    phoneType = db.StringProperty(choices = phoneTypes)
 
 #-----------------------------------------------------------------------------
 
 class UserWebpage(db.Model):
-  address = db.StringProperty()
-  webpageType = db.StringProperty(choices = ["private homepage", "business homepage", "facebook", "myspace", "other"])
+    address = db.StringProperty()
+    webpageType = db.StringProperty(choices = ["private homepage", "business homepage", "facebook", "myspace", "other"])
 
 #-----------------------------------------------------------------------------
 
