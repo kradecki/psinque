@@ -147,6 +147,13 @@ class ProfileHandler(MasterHandler):
         email = self.getRequiredParameter('email')
         emailType = self.getRequiredParameter('type')
         
+        # Check if this email has already been registered:
+        existingEmail = UserEmail.all(keys_only = True). \
+                                  filter("email =", email). \
+                                  get()
+        if not existingEmail is None:
+            raise AjaxError("Email is already registered in the system")
+        
         userEmail = UserEmail(parent = self.userProfile,
                               email = email,
                               emailType = emailType)

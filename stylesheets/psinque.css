@@ -105,7 +105,12 @@ div#mycard {
     padding: 10px;
 }
 
-div#mycard table {
+div#tableform {
+    padding: 0;
+    margin: 0;
+}
+
+div#tableform table {
     width: 100%;
     padding: 0;
     height: 39px;
@@ -114,18 +119,18 @@ div#mycard table {
     margin: 0;
 }
 
-div#mycard tr {
+div#tableform tr {
     border-bottom: 10px solid #d8d4cb;
 }
 
-div#mycard td {
+div#tableform td {
     padding: 0;
     margin: 0;
 }
 
-div#mycard td.mycardlabels {
+div#tableform td.tableformlabels {
     vertical-align: text-top;
-    width: 140px;
+    width: 150px;
     padding-right: 5px;
     padding-top: 10px;
     background-color: #404040;
@@ -134,31 +139,32 @@ div#mycard td.mycardlabels {
     text-align: right;
 }
 
-div#mycard td.mycardinputs {
+div#tableform td.tableforminputs {
     padding-left: 10px;
 }
 
-div#mycard td.mycardbuttons {
+div#tableform td.tableformbuttons {
     text-align: right;
     padding-left: 10px;
     padding-right: 0px;
     width: 39px;
 }
 
-div#mycard td.mycardextras {
+div#tableform td.tableformextras {
     padding-left: 10px;
     padding-right: 0px;
     width: 120px;
 }
 
-div#mycard td.mycardbuttonlabels {
+div#tableform td.tableformbuttonlabels {
     text-align: right;
     padding-right: 5px;
     background-color: #fff;
     font-size: 15px;
 }
 
-div#mycard input[type=text],select {
+div#tableform input[type=text],select,label {
+    background-color: #fff;
     border: 0;
     font-size: 15px;
     width: 100%;
@@ -171,15 +177,21 @@ div#mycard input[type=text],select {
     padding-bottom: 0px;
 }
 
-div#mycard select {
+div#tableform label {
+    display: block;
+/*     vertical-align: middle; */
+    padding-top: 8px;
+}
+
+div#tableform select {
     background-color: #fff;
 }
     
-div#mycard a {
+div#tableform a {
     display: block;
 }
 
-div#mycard img {
+div#tableform img {
     display: block;
 }
 

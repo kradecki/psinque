@@ -45,7 +45,9 @@ class Settings(MasterHandler):
             
             userSettings = self._getUserSettings()
             
-            carddavLogins = CardDAVLogin.all().ancestor(self.userProfile)
+            carddavLogins = CardDAVLogin.all(). \
+                                         ancestor(self.userProfile). \
+                                         fetch(1000)
             
             self.sendContent('templates/settings_viewSettings.html',
                             activeEntry = "",

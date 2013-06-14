@@ -1,58 +1,71 @@
 
 $(document).ready(function() {
+
+    if(!$("#synccarddav").is(':checked')) {
+        $("#carddavlogins").hide();
+    }
+    
+    $("input,label").change(function() {
+        markChangedFields($(this));
+    });
     
     $("#synccarddav").click(function() {
-        
         if($(this).is(':checked')) {
-            $("#carddavLogins").each(function() {
-                $(this).attr("diabled", "disabled");
-            });
+            console.log("checked");
+            showElementWithEffects($("#carddavlogins"));
         } else {
-            $("#carddavLogins").each(function() {
-                $(this).removeAttr("diabled");
-            });
+            console.log("unchecked");
+            hideElementWithEffects($("#carddavlogins"));
         }
         
     });
         
-    $("#generateCardDAV").click(function() {
+    $("#generatecarddav").click(function() {
         
-        $(".newCardDAVLogin").remove();
+        parent = $(this).parent().parent();
+        cardDAVName = $("#newcarddavname").val();
+        if(cardDAVName == "") {
+            window.alert("You need to name your device.");
+        } else {   
+            executeAJAX("/settings/generatecarddavlogin?name=" + cardDAVName,
+                function(parsedJSON) {
+                    parent.find(".tableforminputs").append("</br>" +
+                        "<p>New CardDAV login:</br>Username: " + 
+                        parsedJSON.username + "</br>Password: " +
+                        parsedJSON.password + "</p>");
+                });
+        }       
         
-        cardDAVName = $("#newCardDAVName").val()
-        
-        executeAJAX("/settings/generatecarddavlogin?name=" + cardDAVName,
-            function(parsedJSON) {
-                $("#carddavLogins").append("<p class='newCardDAVLogin'>New CardDAV login:</br>Username: " + 
-                    parsedJSON.username + "</br>Password: " +
-                    parsedJSON.password + "</p>");
-            });
-        
+        return false;
     });
         
-    $(".RemoveCardDAV").click(function() {
+    $(".removecarddav").click(function() {
         
-        cardDAVInfo = $(this).parent();
-        cardDAVKey = cardDAVInfo.find(".CardDAVkeys").val();
+        cardDAVInfo = $(this).parent().parent();
+        cardDAVKey = cardDAVInfo.find("td > label > .carddavkeys").val();
         
         executeAJAX("/settings/deletecarddav?key=" + cardDAVKey,
             function() {
-                cardDAVInfo.slideUp(function() {
-                    cardDAVInfo.remove();
-                });
+                labelCell = $("#carddavlogins > tbody > tr > .tableformlabels")
+                loginCount = parseInt(labelCell.attr('rowspan'));
+                labelCell.attr('rowspan', loginCount - 1);
+                removeElementWithEffects(cardDAVInfo);
             });
+        
+        return false;
     });
     
-    $("#saveButton").click(function() {
-        
-        theWholeForm = $(this).parent();
+    $("#submitbutton").click(function() {
+        startLogoAnimation();
         executeAJAX("/settings/updatesettings" + 
-            "?emailnotifications=" + $("#emailNotifications").is(":checked") +
-            "&language=" + $("#language").val() +
-            "&synccarddav=" + $("#syncCardDAV").is(":checked") +
-            "&newsletter=" + $("#newsletter").is(":checked"),
+                "?emailnotifications=" + $("#emailnotifications").is(":checked") +
+                "&language=" + $("#language").val() +
+                "&synccarddav=" + $("#synccarddav").is(":checked") +
+                "&newsletter=" + $("#newsletter").is(":checked"),
             function() {
-                theWholeForm.find(".donemark").show();                
+                stopLogoAnimation();           
             });
+
+        return false;
     });
 });

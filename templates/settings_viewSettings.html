@@ -1,48 +1,138 @@
 {% extends "templates/masterTemplate.html" %}
 {% block title %}Settings{% endblock %}
 {% block javascripts %}
-<script type="text/javascript" src="/javascripts/settings_view.js"></script>
+    <script type="text/javascript" src="/javascripts/psinque.js"></script>
+    <script type="text/javascript" src="/javascripts/settings_view.js"></script>
 {% endblock %}
 {% block content %}
-    <legend>Language settings</legend>
-    <p>
-    <label>Preferred language:</label>
-    <select id="language">
-        {% for languageCode, languageName in availableLanguages.iteritems() %}
-        <option {% if languageCode == userSettings.preferredLanguage %} selected {% endif %} value="{{ languageCode }}">{{ languageName }}</option>
-        {% endfor %}
-    </select>
-    </p>
-    <legend>Notifications</legend>
-    <p>
-    <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}">Send me a Newsletter
-    </p>
-    <p>
-    <input type="checkbox" id="emailNotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}">Send me a email notifications
-    </p>
-    <legend>Contact synchronization</legend>
+    <div id="tableform">
+    <span id="languagesettings">
+      <table>
+      <tbody>
+      <tr>
+        <td class="tableformlabels">Preferred language</td>
+        <td class="tableforminputs">
+          <select id="language">
+            {% for languageCode, languageName in availableLanguages.iteritems() %}
+            <option {% if languageCode == userSettings.preferredLanguage %} selected {% endif %} value="{{ languageCode }}">{{ languageName }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      </tbody>
+      </table>
+    </span>
+    <span id="notificationsetting">
+      <table>
+      <tbody>
+      <tr>
+        <td rowspan="6" class="tableformlabels">Notifications</td>
+        <td class="tableforminputs">
+          <label>
+          <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}"> Send me a newsletter
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td class="tableforminputs">
+          <label>
+          <input type="checkbox" id="emailnotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}"> Send me a email notifications
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td class="tableforminputs">
+          <label>
+          <input type="checkbox" id="notifystops"> Notify me when someone stops using my private data
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td class="tableforminputs">
+          <label>
+          <input type="checkbox" id="notifyasks"> Notify me when someone asks for my private data
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td class="tableforminputs">
+          <label>
+          <input type="checkbox" id="notifyaccepts"> Notify me when my request for private data has been accepted or rejected
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td class="tableforminputs">
+          <label>
+          <input type="checkbox" id="notifyrevokes"> Notify me when someone revokes permission to use private data
+          </label>
+        </td>
+      </tr>
+      </tbody>
+      </table>
+    </span>
+    <span id="notificationsetting">
+      <table>
+      <tbody>
 <!--      <p>
     <input type="checkbox" name="syncgoogle" {% if syncWithGoogle %}checked="checked"{% endif %}">Psinque with my Google account
     </p>-->
-    <p>
-    <input type="checkbox" id="syncCardDAV" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}">Allow CardDAV psinquing
-    <br />
-    </p>
-    <span id="carddavLogins" {% if not cardDAVenabled %}disabled="disabled"{% endif %}>
-      <b>Existing CardDAV logins:</b><br/>
+      <tr>
+        <td rowspan="1" class="tableformlabels">Synchronization</td>
+        <td class="tableforminputs">
+          <label>
+          <input type="checkbox" id="synccarddav" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}"> Allow CardDAV psinquing
+          </label>
+        </td>
+      </tr>
+      </tbody>
+      </table>
+    </span>    
+    <span id="carddavlogins" >
+      <table>
+      <tbody>
+      <tr>
+      <td rowspan="{{ carddavLogins|count + 1 }}" class="tableformlabels">CardDAV devices</td>
+      <td class="tableforminputs">
+        <input type="text" id="newcarddavname" value="" placeholder="Type a name for your device">
+      </td>
+      <td class="tableformbuttons">
+        <a href="" id="generatecarddav">
+          <img src="/images/squareicons/add.png" />
+        </a>
+      </td>
+      </tr>
       {% for login in carddavLogins %}
-        <p>{{ login.name }}
-          <input type="hidden" class="CardDAVkeys" value="{{ login.key() }}">
-          <input type="button" class="RemoveCardDAV" value="Remove" />
-        </p>
-      {% else %}
-      None.<br/>
+      <tr>
+      <td class="tableforminputs">
+        <label>
+        {{ login.name }}
+        <input type="hidden" class="carddavkeys" value="{{ login.key() }}">
+        </label>
+      </td>
+      <td class="tableformbuttons">
+        <a href="" class="removecarddav">
+          <img src="/images/squareicons/remove.png" />
+        </a>
+      </td>
+      </tr>
       {% endfor %}
-      <b>Add new CardDAV login:</b></br>
-      <label>Device name:</label><input type="text" id="newCardDAVName" />
-      <input type="button" id="generateCardDAV" value="Generate login data"/>
+      </tbody>
+      </table>
     </span>
-    </br>
-    <input type="submit" id="saveButton" value="Save" />
-    <span class="donemark"><img src="/images/donemark.png" /></span>
+    <span>
+      <table>
+      <tbody>
+      <tr>
+        <td class="tableformbuttonlabels">
+          Save changes
+        </td>
+        <td class="tableformbuttons">
+          <a href="" id="submitbutton"><img src="/images/squareicons/save.png" /></a>
+        </td>
+      </tr>
+      </tbody>
+      </table>
+    </span>
+    </div>
 {% endblock %}

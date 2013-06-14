@@ -35,10 +35,26 @@ function stopLogoAnimation() {
     $("#animatedlogo").hide();
 }
 
-function removeElementNicely(element) {
+function markChangedFields(where) {
+    where.css("color", "#de5d35");
+}
+
+function unmarkChangedFields(where) {
+    where.find("input,select").css("color", "#000");
+}
+
+function removeElementWithEffects(element) {
   element.slideUp('fast', function() {
     element.remove();
   });
+}
+
+function hideElementWithEffects(element) {
+  element.slideUp('fast');
+}
+
+function showElementWithEffects(element) {
+  element.slideDown('fast');
 }
 
 $(document).ready(function() {

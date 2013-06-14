@@ -80,15 +80,12 @@ def notifyDowngradedPsinque(psinque):
 Another user, %s, has revoked your access to his/her private data.
 
 The Psinque Team
-""" % (u" ".join(psinque.parent().parent().givenNames,
+""" % (u" ".join(psinque.parent().parent().givenNames),
        psinque.displayName))
-    
-    
+
+
 def notifyAcceptedRequest(psinque):
     
-    if psinque.parent().friendsContact:
-        friendsName = friendsContact.
-
     sendNotification(psinque, 
                      "Your request for sharing private contact data has been accepted",
                      u"""Dear %s:
@@ -96,7 +93,7 @@ def notifyAcceptedRequest(psinque):
 Another user, %s, has accepted your request for sharing private contact data.
 
 The Psinque Team
-""" % (u" ".join(psinque.parent().parent().givenNames,
+""" % (u" ".join(psinque.parent().parent().givenNames),
        psinque.displayName))
 
     
@@ -109,5 +106,5 @@ def notifyRejectedRequest(psinque):
 Another user, %s, has rejected your request for sharing private contact data.
 
 The Psinque Team
-""" % (u" ".join(psinque.parent().parent().givenNames,
+""" % (u" ".join(psinque.parent().parent().givenNames),
        psinque.displayName))

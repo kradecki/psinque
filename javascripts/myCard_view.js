@@ -76,136 +76,6 @@
 //   return false;
 // }
 
-function removeParent(whose) {
-  addressParent = whose.parent();
-  addressParent.slideUp('fast', function() {
-    addressParent.remove(); // remove the parent
-  });
-}
-
-function decreaseElementCount() {
-    window.elementCount--;
-    if(window.elementCount == 0) {  // all fields are updated
-        stopLogoAnimation();
-    }
-}
-
-function updateGeneralInfo(parent) {
-    firstName = $("#firstname").val();
-    lastName = $("#lastname").val();
-    $.ajax("/mycard/updategeneral?firstname=" + firstName +
-                                "&lastname=" + lastName)
-        .done(function(data) {
-            parsedJSON = $.parseJSON(data);
-            if(parsedJSON["status"] == 0) {
-                decreaseElementCount();
-                parent.find("input,select").css("color", "#000");
-            } else {
-                alert("Error while updating general information: " + parsedJSON["message"]);
-            }
-        })
-        .error(function(data) {
-            alert("Error while updating general information.");
-        })
-}
-
-function updateEmail(emailinput) {
-    emailAddress = emailinput.val();
-    parent = emailinput.parent()
-    typeofEmail = parent.next().find(".typesofemail").val();
-    emailKey = parent.find(".emailkeys").val();
-    if(emailKey) {
-        ajaxMethod = "updateemail?key=" + emailKey + "&";
-    } else {
-        ajaxMethod = "addemail?";
-    }
-    $.ajax("/mycard/" + ajaxMethod + "email=" + emailAddress + "&type=" + typeofEmail)
-        .done(function(data) {
-            parsedJSON = $.parseJSON(data);
-            if(parsedJSON["status"] == 0) {
-                decreaseElementCount();
-                if(!emailKey) {
-                    parent.find(".emailkeys").val(parsedJSON["key"]);
-                }
-                parent.find("input").css("color", "#000");
-                parent.next().find("select").css("color", "#000");
-            } else {
-                alert("Error while updating email: " + parsedJSON["message"]);
-            }
-        })
-        .error(function(data) {
-            alert("Error while updating email.");
-        })
-}
-
-function removeEmailEntry(parent) {
-    if(mycardlabel = parent.find(".mycardlabels")) {
-        if(mycardlabel.html() == "Additional emails") {
-            additionalEmailCounter--;
-            if(additionalEmailCounter > 0){
-                mycardlabel.attr("rowspan", additionalEmailCounter);
-                mycardlabel.insertBefore(parent.parent().find("tr:first > td:first"));
-            }
-        }
-    }
-    removeElementNicely(parent);
-}
-
-function removeEmail(removeButton) {
-    parent = removeButton.parent().parent();
-    emailKey = parent.find(".mycardinputs > .emailkeys").val();
-    if(emailKey) {
-        $.ajax("/mycard/removeemail?key=" + emailKey)
-            .done(function(data) {
-                parsedJSON = $.parseJSON(data);
-                if(parsedJSON["status"] == 0) {
-                    removeEmailEntry(parent);
-                } else {
-                    alert("Error while removing email: " + parsedJSON["message"]);
-                }
-            })
-            .error(function(data) {
-                alert("Error while removing email.");
-            })
-    } else {
-        removeEmailEntry(parent);
-    }
-}
-
-// Set all event handlers when the page is ready
-$(document).ready(function() {
-    
-  $('#addemail').click(function() {
-      
-      newEmail = cloneElement($("#primaryemailaddress > tbody > tr"));
-
-      newEmail.find('.mycardlabels').remove();
-      newEmail.find('.mycardbuttons').html("<a href='' class='emailremovers'><img src='/images/squareicons/remove.png' /></a>");
-      newEmail.find('input,select').change(function() {
-          $(this).css("color", "#de5d35");
-      });
-      newEmail.find('input,select').val('');
-
-      if(additionalEmailCounter == 0) {
-          $("<td rowspan=" + additionalEmailCounter + " class='mycardlabels'>Additional emails</td>").insertBefore(newEmail.find("td:first"));
-      } else {
-          $("#additionalemailaddresses > tbody > tr > .mycardlabels").attr('rowspan', additionalEmailCounter + 1);
-      }
-      additionalEmailCounter++;
-      
-      newEmail.find('.emailremovers').click(function() {
-          removeEmail($(this));
-          return false;
-      });
-
-      console.log(newEmail);
-
-      newEmail.appendTo("#additionalemailaddresses");
-      newEmail.slideDown();
-      
-      return false;   // stop page refresh
-  });
-  
 //   $('#addAddress').click(function() {
 //     newAddress = cloneElement("address", addressCounter++, addressCounter+1);
 //     newAddress.insertBefore("#addAddress"); // insert hidden
@@ -223,7 +93,7 @@ $(document).ready(function() {
 //     if(addressCounter == 2)  // we cloned the first address, so we need to add a 'remove' link
 //       newAddress.append(' | <a href="" id="remover' + addressCounter + '" class="removers">Remove</a>')
 //     newAddress.find('#remover' + addressCounter).click(function() {
-//       removeParent($(this));
+//       removeElementWithEffects($(this).parent());
 //       return false;
 //     });
 // 
@@ -233,10 +103,112 @@ $(document).ready(function() {
 //     return false;   // stop page refresh
 //   });
 
+function decreaseElementCount() {
+    window.elementCount--;
+    if(window.elementCount == 0) {  // all fields are updated
+        stopLogoAnimation();
+    }
+}
+
+function removeEmailEntry(parent) {
+    if(tableformlabel = parent.find(".tableformlabels")) {
+        if(tableformlabel.html() == "Additional emails") {
+            additionalEmailCounter--;
+            if(additionalEmailCounter > 0){
+                tableformlabel.attr("rowspan", additionalEmailCounter);
+                tableformlabel.insertBefore(parent.parent().find("tr:first > td:first"));
+            }
+        }
+    }
+    removeElementWithEffects(parent);
+}
+
+//---------------------------------------------------------
+// AJAX executing functions
+
+function updateGeneralInfo(parent) {
+    firstName = $("#firstname").val();
+    lastName = $("#lastname").val();
+    executeAJAX("/mycard/updategeneral?firstname=" + firstName +
+                                     "&lastname=" + lastName,
+                function() {
+                    decreaseElementCount();
+                    unmarkChangedFields(parent);
+                });
+}
+
+function updateEmail(emailinput) {
+    emailAddress = emailinput.val();
+    parent = emailinput.parent()
+    typeofEmail = parent.next().find(".typesofemail").val();
+    emailKey = parent.find(".emailkeys").val();
+    if(emailKey) {
+        ajaxMethod = "updateemail?key=" + emailKey + "&";
+    } else {
+        ajaxMethod = "addemail?";
+    }
+    executeAJAX("/mycard/" + ajaxMethod + "email=" + emailAddress + "&type=" + typeofEmail,
+                function() {
+                    decreaseElementCount();
+                    if(!emailKey) {
+                        parent.find(".emailkeys").val(parsedJSON["key"]);
+                    }
+                    parent.find("input").css("color", "#000");
+                    parent.next().find("select").css("color", "#000");
+                });
+}
+
+function removeEmail(removeButton) {
+    parent = removeButton.parent().parent();
+    emailKey = parent.find(".tableforminputs > .emailkeys").val();
+    if(emailKey) {
+        executeAJAX("/mycard/removeemail?key=" + emailKey,
+                    function() {
+                        removeEmailEntry(parent);
+                    });
+    } else {
+        removeEmailEntry(parent);
+    }
+}
+
+//---------------------------------------------------------
+// Initial JS handlers
+
+$(document).ready(function() {
+    
+  $('#addemail').click(function() {
+      
+      newEmail = cloneElement($("#primaryemailaddress > tbody > tr"));
+
+      newEmail.find('.tableformlabels').remove();
+      newEmail.find('.tableformbuttons').html("<a href='' class='emailremovers'><img src='/images/squareicons/remove.png' /></a>");
+      newEmail.find('input,select').change(function() {
+          markChangedFields($(this));
+      });
+      newEmail.find('input,select').val('');
+
+      if(additionalEmailCounter == 0) {
+          $("<td rowspan=" + additionalEmailCounter + " class='tableformlabels'>Additional emails</td>").insertBefore(newEmail.find("td:first"));
+      } else {
+          $("#additionalemailaddresses > tbody > tr > .tableformlabels").attr('rowspan', additionalEmailCounter + 1);
+      }
+      additionalEmailCounter++;
+      
+      newEmail.find('.emailremovers').click(function() {
+          removeEmail($(this));
+          return false;
+      });
+
+      newEmail.appendTo("#additionalemailaddresses");
+      newEmail.slideDown();
+      
+      return false;   // stop page refresh
+  });
+  
   // Add removers to already existing fields
   $('.removers').each(function() {
     $(this).click(function() {
-      removeParent($(this));
+      removeElementWithEffects($(this).parent());
       return false;          // represss page refresh
     });
   });
@@ -250,12 +222,12 @@ $(document).ready(function() {
 
   $("#submitbutton").click(function() {
       startLogoAnimation();
-      window.elementCount = 1;
+      window.elementCount = 1; // the general info is always there
       updateGeneralInfo($("#generalinfo"));
       $(".emailaddresses").each(function() {  // first count the objects
           window.elementCount++;
       });
-      $(".emailaddresses").each(function() {  // then run the AJAX querries
+      $(".emailaddresses").each(function() {  // then run the AJAX queries
           updateEmail($(this));
       });
       return false;
