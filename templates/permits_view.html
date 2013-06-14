@@ -1,11 +1,13 @@
 {% extends "templates/masterTemplate.html" %}
 {% block title %}Permits{% endblock %}
 {% block javascripts %}
-<script type="text/javascript" src="/javascripts/permits_view.js"></script>
+    <script type="text/javascript" src="/javascripts/permits_view.js"></script>
 {% endblock %}
 {% block content %}
+  <div id="permitlist">
   {% for permit in permits %}
-  <h1>{{ permit.name }}</h1>
+  <h3>{{ permit.name }}</h3>
+  <div>
   <p>
     <input type="hidden" class="keys" value="{{ permit.key() }}"></input>
     <input type="checkbox" class="general" id="canViewName" {% if permit.canViewName %}checked="checked"{% endif %}>First, middle and last name</input></br>
@@ -18,11 +20,10 @@
     {% if permit.name != "Public" and permit.name != "Default" -%}
     <input type="button" class="removeButtons" value="Remove">
     {%- endif %}
-    <span class="donemark"><img src="/images/donemark.png" /></span>
-    <span class="spinner"><img src="/images/psinque.gif" /></span>
   </p>
-  {% endfor %}  
+  </div>
+  {% endfor %}
+  </div>
   <label>Add new permit:</label><input type="text" id="permitName">
   <input type="button" value="Create" id="createButton">
-  <span class="spinner"><img src="/images/psinque.gif" /></span>
 {% endblock %}

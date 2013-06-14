@@ -113,4 +113,6 @@ $(document).ready(function() {
         addPermit($(this).parent());
     });
     
+    // jQuery UI
+    $("#permitlist").accordion();
 });
