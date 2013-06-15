@@ -243,7 +243,9 @@ class PsinquesHandler(MasterHandler):
 
         # Search for the owner of the email address
         email = self.request.get('email')
-        userEmail = UserEmail.all(keys_only = True).filter("email =", email).get()
+        userEmail = UserEmail.all(keys_only = True). \
+                              filter("email =", email). \
+                              get()
 
         if userEmail is None:
             raise AjaxError("User not found")

@@ -45,7 +45,7 @@ $(document).ready(function() {
             }
             
             else if(statusCode == 1) {
-                displayMessage('Psinque already exists.');
+                displayMessage(jsonResults["message"]);
             }
             
             else {
