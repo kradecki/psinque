@@ -15,37 +15,8 @@ indexes:
   properties:
   - name: creationTime
 
-- kind: Psinque
-  ancestor: yes
-  properties:
-  - name: establishingTime
-
-- kind: UserAddress
-  properties:
-  - name: user
-  - name: primary
-
-- kind: UserAddress
-  properties:
-  - name: user
-  - name: primary
-    direction: desc
-
 - kind: UserEmail
   ancestor: yes
   properties:
-  - name: primary
-    direction: desc
-
-- kind: UserEmail
-  ancestor: yes
-  properties:
-  - name: user
-  - name: primary
-
-- kind: UserEmail
-  ancestor: yes
-  properties:
-  - name: user
   - name: primary
     direction: desc
