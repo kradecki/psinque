@@ -24,7 +24,7 @@ def sendNotification(psinque, subject, body):
                                 subject=subject)
     fromUser = psinque.fromUser
     message.to = getPrimaryEmail(fromUser)
-    message.body = body
+    message.html = body
     message.send()
 
 
