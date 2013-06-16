@@ -5,13 +5,13 @@
     <script type="text/javascript" src="/javascripts/settings_view.js"></script>
 {% endblock %}
 {% block content %}
-    <div id="tableform">
+    <div class="tableform">
     <span id="languagesettings">
       <table>
       <tbody>
       <tr>
-        <td class="tableformlabels">Preferred language</td>
-        <td class="tableforminputs">
+        <td class="formlabels"><label>Preferred language</label></td>
+        <td class="forminputs">
           <select id="language">
             {% for languageCode, languageName in availableLanguages.iteritems() %}
             <option {% if languageCode == userSettings.preferredLanguage %} selected {% endif %} value="{{ languageCode }}">{{ languageName }}</option>
@@ -26,78 +26,92 @@
       <table>
       <tbody>
       <tr>
-        <td rowspan="7" class="tableformlabels">Notifications</td>
-        <td class="tableformbuttons">
+        <td rowspan="7" class="formlabels"><label>Notifications</label></td>
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}">
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
         <label for="newsletter">
           Send me a newsletter
         </label>
         </td>
       </tr>
       <tr>
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="emailnotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}">
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
           <label for="emailnotifications">
             Send me a email notifications
           </label>
         </td>
       </tr>
       <tr class="individualnotifications">
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="notifystops" {% if userSettings.notifyStopsUsingMyPrivateData %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
           <label for="notifystops">
             Notify me when someone stops using my private data
           </label>
         </td>
       </tr>
       <tr class="individualnotifications">
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="notifyasks" {% if userSettings.notifyAsksForPrivateData %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
           <label for="notifyasks">
             Notify me when someone asks for my private data
           </label>
         </td>
       </tr>
       <tr class="individualnotifications">
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="notifyaccepts" {% if userSettings.notifyAllowsMePrivateData %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
           <label for="notifyaccepts">
             Notify me when my request for private data has been accepted 
           </label>
         </td>
       </tr>
       <tr class="individualnotifications">
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="notifyrejects" {% if userSettings.notifyDisallowsMePrivateData %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
           <label for="notifyrejects">
             Notify me when my request for private data has been rejected
           </label>
         </td>
       </tr>
       <tr class="individualnotifications">
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="notifyrevokes" {% if userSettings.notifyRequestDecision %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
           <label for="notifyrevokes">
             Notify me when someone revokes permission to use private data
           </label>
@@ -113,12 +127,14 @@
     <input type="checkbox" name="syncgoogle" {% if syncWithGoogle %}checked="checked"{% endif %}">Psinque with my Google account
     </p>-->
       <tr>
-        <td rowspan="1" class="tableformlabels">Synchronization</td>
-        <td class="tableformbuttons">
+        <td class="formlabels"><label>Synchronization</label></td>
+        <td class="forminputs formbuttons">
+        <div class="checkboxwrapper">
           <input type="checkbox" id="synccarddav" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}">
           <div class="checkboxdiv"></div>
+        </div>
         </td>
-        <td class="tableforminputs">
+        <td class="forminputs">
           <label for="synccarddav">
             Allow CardDAV psinquing
           </label>
@@ -131,11 +147,11 @@
       <table>
       <tbody>
       <tr>
-      <td rowspan="{{ carddavLogins|count + 1 }}" class="tableformlabels">CardDAV devices</td>
-      <td class="tableforminputs">
+      <td rowspan="{{ carddavLogins|count + 1 }}" class="formlabels"><label>CardDAV devices</label></td>
+      <td class="forminputs">
         <input type="text" id="newcarddavname" value="" placeholder="Type a name for your device">
       </td>
-      <td class="tableformbuttons">
+      <td class="forminputs formbuttons">
         <a href="" id="generatecarddav">
           <img src="/images/squareicons/add.png" />
         </a>
@@ -143,13 +159,13 @@
       </tr>
       {% for login in carddavLogins %}
       <tr>
-      <td class="tableforminputs">
+      <td class="forminputs">
         <label>
         {{ login.name }}
         <input type="hidden" class="carddavkeys" value="{{ login.key() }}">
         </label>
       </td>
-      <td class="tableformbuttons">
+      <td class="forminputs formbuttons">
         <a href="" class="removecarddav">
           <img src="/images/squareicons/remove.png" />
         </a>
@@ -159,20 +175,18 @@
       </tbody>
       </table>
     </span>
-    <span>
-      <table>
-      <tbody>
+    <table>
+    <tbody>
       <tr>
-        <td class="tableformlabels">Save changes</td>
-        <td class="tableformbuttons">
+        <td class="formlabels"><label>Save changes</label></td>
+        <td class="forminputs formbuttons">
           <a href="" id="submitbutton">
             <img src="/images/squareicons/save.png" />
           </a>
         </td>
         <td><br style="clear:both;"/></td>
       </tr>
-      </tbody>
-      </table>
-    </span>
+    </tbody>
+    </table>
     </div>
 {% endblock %}

@@ -31,6 +31,7 @@ class PermitsHandler(MasterHandler):
             self.sendContent('templates/permits_view.html',
                             activeEntry = "Permits",
                             templateVariables = {
+                'userProfile': self.userProfile,
                 'permits': permits,
             })
 
@@ -102,15 +103,17 @@ class PermitsHandler(MasterHandler):
 
         pkey = self.getRequiredParameter('key')
 
-        canViewName = self.getRequiredBoolParameter('canViewName')
-        canViewBirthday = self.getRequiredBoolParameter('canViewBirthday')
-        canViewGender = self.getRequiredBoolParameter('canViewGender')
+        canViewFirstNames = self.getRequiredBoolParameter('firstnames')
+        canViewLastNames = self.getRequiredBoolParameter('lastnames')
+        canViewBirthday = self.getRequiredBoolParameter('birthday')
+        canViewGender = self.getRequiredBoolParameter('gender')
         
         permit = Permit.get(pkey)
         if permit is None:
             raise AjaxError("Permit not found.")
         
-        permit.canViewName = canViewName
+        permit.canViewFirstNames = canViewFirstNames
+        permit.canViewLastNames = canViewLastNames
         permit.canViewBirthday = canViewBirthday
         permit.canViewGender = canViewGender
         permit.generateVCard()
@@ -121,7 +124,7 @@ class PermitsHandler(MasterHandler):
     def setemailpermit(self):
 
         pkey = self.getRequiredParameter('key')
-        canView = self.getRequiredBoolParameter('canView')
+        canView = self.getRequiredBoolParameter('canview')
         
         permitEmail = PermitEmail.get(pkey)
         if permitEmail is None:

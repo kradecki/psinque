@@ -15,7 +15,8 @@ class Permit(db.Model):
     name = db.StringProperty()
     public = db.BooleanProperty(default = False)
 
-    canViewName = db.BooleanProperty(default = True)
+    canViewFirstNames = db.BooleanProperty(default = True)
+    canViewLastNames = db.BooleanProperty(default = True)
     canViewBirthday = db.BooleanProperty(default = False)
     canViewGender = db.BooleanProperty(default = False)
 
@@ -30,27 +31,43 @@ class Permit(db.Model):
     def permitEmails(self):
         return PermitEmail.all().ancestor(self)
     
-    def _updateDisplayName(self):
-        if self.canViewName:
-            self.displayName = self.parent().fullName
+    def _getFirstNames(self, userProfile):
+        if self.canViewFirstNames:
+            return userProfile.givenNames
         else:
+            return []
+    
+    def _getLastNames(self, userProfile):
+        if self.canViewLastNames:
+            return userProfile.familyNames
+        else:
+            return []
+    
+    def _updateDisplayName(self, firstNames, lastNames):
+        displayName = u""
+        if len(firstNames) > 0:
+            displayName = displayName + u" ".join(firstNames)
+        if len(lastNames) > 0:
+            if displayName != u"":
+                displayName = displayName + u" "
+            displayName = displayName + u" ".join(lastNames)
+        self.displayName = displayName
+        if self.displayName == u"":
             for permitEmail in self.permitEmails:
                 if permitEmail.canView:
                     self.displayName = permitEmail.userEmail.mail
                     return
-            self.displayName = u""
     
     def generateVCard(self):
         
         logging.info("Generating vCard")
         userProfile = self.parent()
         newVCard = vCard.VCard()
-        
-        if self.canViewName:
-            newVCard.addNames(u",".join(userProfile.givenNames),
-                              u",".join(userProfile.familyNames))
-        else:
-            newVCard.addNames(u"", u"")
+
+        firstNames = self._getFirstNames(userProfile)
+        lastNames = self._getLastNames(userProfile)
+        newVCard.addNames(u", ".join(firstNames),
+                          u", ".join(lastNames))
 
         for email in userProfile.emails:
             permitEmail = email.permitEmails.get()
@@ -65,7 +82,7 @@ class Permit(db.Model):
             self.vcardMTime = str(datetime.date(datetime.now())) + "." + str(datetime.time(datetime.now()))
             self.vcardMD5 = md5.new(self.vcard.encode('utf8')).hexdigest()
             
-        self._updateDisplayName()
+        self._updateDisplayName(firstNames, lastNames)
 
 
 #-----------------------------------------------------------------------------
@@ -134,10 +151,6 @@ class UserProfile(db.Model):
     
     userSettings = db.ReferenceProperty(UserSettings)
     
-    @property
-    def fullName(self):
-        return u" ".join(self.givenNames) + u" " + u" ".join(self.familyNames)
-     
     @property
     def emails(self):
         return UserEmail.all().ancestor(self).order("-primary")

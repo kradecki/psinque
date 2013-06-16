@@ -16,47 +16,50 @@
     <img src="/images/linustorvalds.jpg" />
   </div>
   <div id="mycard">
-  <div id="tableform">
+  <div class="tableform">
     <span id="generalinfo">
     <table>
     <tr>
-      <td class="tableformlabels">Given names</td>
+      <td class="formlabels"><label>Given names</label></td>
       {% for givenName in userProfile.givenNames %}
-      <td class="tableforminputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
-      <td class="tableformbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
+      <td class="forminputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
+      <td class="forminputs formbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
       {% else %}
-      <td class="tableforminputs"><input type="text" id="firstname" value="" minlength="2" /></td>
-      <td class="tableformbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
+      <td class="forminputs"><input type="text" id="firstname" value="" minlength="2" /></td>
+      <td class="forminputs formbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
       {% endfor %}
     </tr>
     </table>
-    <table><tr>
-      <td class="tableformlabels">Family names</td>
+    <table>
+    <tbody>
+    <tr>
+      <td class="formlabels"><label>Family names</label></td>
       {% for familyName in userProfile.familyNames %}
-      <td class="tableforminputs"><input type="text" id="lastname" value="{{ familyName }}" minlength="2" /></td>
+      <td class="forminputs"><input type="text" id="lastname" value="{{ familyName }}" minlength="2" /></td>
       {% else %}
-      <td class="tableforminputs"><input type="text" id="lastname" value="" minlength="2" /></td>
+      <td class="forminputs"><input type="text" id="lastname" value="" minlength="2" /></td>
       {% endfor %}
     </tr>
+    </tbody>
     </table>
     </span>
     <span id="emails">
       <table id="primaryemailaddress">
       <tbody>
       <tr>
-        <td class="tableformlabels">Primary email</td>
-        <td class="tableforminputs">
+        <td class="formlabels"><label>Primary email</label></td>
+        <td class="forminputs">
           <input type="hidden" class="emailkeys" value="{{ primaryEmail.key() }}"/>
           <input type="text" class="emailaddresses" value="{% if primaryEmail.email != "primary@nonexistant.com" %}{{ primaryEmail.email }}{% endif %}" />
         </td>
-        <td class="tableformextras">
+        <td class="forminputs formextras">
           <select class="typesofemail">
           {% for emailTypeCode, emailTypeName in emailTypes.items() %}
             <option value="{{ emailTypeCode }}" {% if emailTypeCode == primaryEmail.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
           {% endfor %}
           </select>
         </td>
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
           <a href="" id="addemail"><img src="/images/squareicons/add.png" /></a>
         </td>
       </tr>
@@ -67,20 +70,20 @@
       {% for email in additionalEmails %}
       <tr>
         {% if loop.first %}
-        <td rowspan="{{ additionalEmails|count }}" class="tableformlabels">Additional emails</td>
+        <td rowspan="{{ additionalEmails|count }}" class="formlabels"><label>Additional emails</label></td>
         {% endif %}
-        <td class="tableforminputs">
+        <td class="forminputs">
           <input type="hidden" class="emailkeys" value="{{ email.key() }}"/>
           <input type="text" class="emailaddresses" value="{{ email.email }}" />
         </td>
-        <td class="tableformextras">
+        <td class="forminputs formextras">
           <select class="typesofemail">
           {% for emailTypeCode, emailTypeName in emailTypes.items() %}
             <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
           {% endfor %}
           </select>
         </td>
-        <td class="tableformbuttons">
+        <td class="forminputs formbuttons">
           <a href="" class="emailremovers"><img src="/images/squareicons/remove.png" /></a>
         </td>
       </tr>
@@ -92,8 +95,8 @@
       <table>
       <tbody>
       <tr>
-        <td class="tableformlabels">Save changes</td>
-        <td class="tableformbuttons">
+        <td class="formlabels"><label>Save changes</label></td>
+        <td class="forminputs formbuttons">
           <a href="" id="submitbutton">
             <img src="/images/squareicons/save.png" />
           </a>

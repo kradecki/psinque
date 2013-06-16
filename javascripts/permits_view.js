@@ -1,40 +1,46 @@
 
-updatePermit = function(permits) {
+window.ajaxCounter = 0;
 
-    permitKey = permits.find(".keys").val()
-    permits.find(".spinner").show();
+updatePermit = function(permitContent) {
+
+    startLogoAnimation();
+    
+    permitKey = permitContent.find(".keys").val();
+    permitNr  = permitContent.find(".indices").val();
     
     // Count the number of AJAX queries
-    window.permitCount = 1;
-    permits.find("input").each(function(dupa) {
+    window.ajaxCounter++;
+    permitContent.find("input").each(function(dupa) {
         if(($(this).attr("type") == "checkbox") &&
            ($(this).attr("class") != "general")) {
-                window.permitCount++;
+                window.ajaxCounter++;
         }
     });
     
     // Update the general permits
-    canViewName = permits.find("#canViewName").is(':checked');
-    canViewBirthday = permits.find("#canViewBirthday").is(':checked');
-    canViewGender = permits.find("#canViewGender").is(':checked');
+    canViewFirstNames = $("#firstnames" + permitNr).is(':checked');
+    canViewLastNames = $("#lastnames" + permitNr).is(':checked');
+    canViewBirthday = $("#birthday" + permitNr).is(':checked');
+    canViewGender = $("#gender" + permitNr).is(':checked');
     executeAJAX("/permits/setgeneralpermit?key=" + permitKey +
-                                "&canViewName=" + canViewName +
-                                "&canViewBirthday=" + canViewBirthday +
-                                "&canViewGender=" + canViewGender,
+                                "&firstnames=" + canViewFirstNames +
+                                "&lastnames=" + canViewLastNames +
+                                "&birthday=" + canViewBirthday +
+                                "&gender=" + canViewGender,
         function() {
-            window.permitCount--;
+            window.ajaxCounter--;
         });
     
     // Update all the other permits
-    permits.find("input").each(function() {
+    permitContent.find("input").each(function() {
         if($(this).attr("type") == "checkbox") {
             if($(this).attr("class") == "email") {
                 executeAJAX("/permits/setemailpermit?key=" + $(this).attr("name") +
-                                "&canView=" + $(this).is(':checked'),
+                                "&canview=" + $(this).is(':checked'),
                     function() {
-                        window.permitCount--;
-                        if(window.permitCount == 0) {
-                            permits.find(".donemark").show();
+                        window.ajaxCounter--;
+                        if(window.ajaxCounter == 0) {
+                            stopLogoAnimation();
                         }
                     });
             }
@@ -93,26 +99,23 @@ removePermit = function(removedPermit) {
 
 $(document).ready(function() {
 
-    // Use jQueryUI style for buttons
-    $("input[type=button]")
-        .button()
-        .click(function(event) {
-            event.preventDefault();
-        });
-
-    $(".updateButtons").click(function() {
-        updatePermit($(this).parent());
+    $(".submitbuttons").click(function() {
+        updatePermit($(this).closest(".tableform"));
+        return false;
     });
     
     $(".removeButtons").click(function() {
         removePermit($(this).parent().parent().parent());
+        return false;
     });
     
-    $("#createButton").click(function() {
+    $("#createbutton").click(function() {
         $(this).parent().find(".spinner").show();
         addPermit($(this).parent());
+        return false;
     });
     
     // jQuery UI
     $("#permitlist").accordion();
+    
 });
