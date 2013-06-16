@@ -35,7 +35,7 @@ updatePermit = function(permitContent) {
     permitContent.find("input").each(function() {
         if($(this).attr("type") == "checkbox") {
             if($(this).attr("class") == "email") {
-                executeAJAX("/permits/setemailpermit?key=" + $(this).attr("name") +
+                executeAJAX("/permits/setemailpermit?key=" + $(this).attr("") +
                                 "&canview=" + $(this).is(':checked'),
                     function() {
                         window.ajaxCounter--;
