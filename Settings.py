@@ -70,9 +70,17 @@ class Settings(MasterHandler):
         
         userSettings.preferredLanguage = self.getRequiredParameter('language')
         userSettings.notifyNewsletter = self.getRequiredBoolParameter('newsletter')
+
         userSettings.notifyEmails = self.getRequiredBoolParameter('emailnotifications')
+        userSettings.notifyStopsUsingMyPrivateData = self.getRequiredBoolParameter('notifystops')
+        userSettings.notifyAsksForPrivateData = self.getRequiredBoolParameter('notifyasks')
+        userSettings.notifyAllowsMePrivateData = self.getRequiredBoolParameter('notifyaccepts')
+        userSettings.notifyDisallowsMePrivateData = self.getRequiredBoolParameter('notifyrejects')
+        userSettings.notifyRequestDecision = self.getRequiredBoolParameter('notifyrevokes')
+
         userSettings.cardDAVenabled = self.getRequiredBoolParameter('synccarddav')
         #userSettings.syncWithGoogle = self.getRequiredBoolParameter('syncgoogle')
+
         userSettings.put()
 
         self.sendJsonOK()

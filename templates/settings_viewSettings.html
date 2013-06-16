@@ -26,7 +26,7 @@
       <table>
       <tbody>
       <tr>
-        <td rowspan="6" class="tableformlabels">Notifications</td>
+        <td rowspan="7" class="tableformlabels">Notifications</td>
         <td class="tableformbuttons">
           <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}">
           <div class="checkboxdiv"></div>
@@ -50,7 +50,7 @@
       </tr>
       <tr class="individualnotifications">
         <td class="tableformbuttons">
-          <input type="checkbox" id="notifystops">
+          <input type="checkbox" id="notifystops" {% if userSettings.notifyStopsUsingMyPrivateData %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
         </td>
         <td class="tableforminputs">
@@ -61,7 +61,7 @@
       </tr>
       <tr class="individualnotifications">
         <td class="tableformbuttons">
-          <input type="checkbox" id="notifyasks">
+          <input type="checkbox" id="notifyasks" {% if userSettings.notifyAsksForPrivateData %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
         </td>
         <td class="tableforminputs">
@@ -72,18 +72,29 @@
       </tr>
       <tr class="individualnotifications">
         <td class="tableformbuttons">
-          <input type="checkbox" id="notifyaccepts">
+          <input type="checkbox" id="notifyaccepts" {% if userSettings.notifyAllowsMePrivateData %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
         </td>
         <td class="tableforminputs">
           <label for="notifyaccepts">
-            Notify me when my request for private data has been accepted or rejected
+            Notify me when my request for private data has been accepted 
           </label>
         </td>
       </tr>
       <tr class="individualnotifications">
         <td class="tableformbuttons">
-          <input type="checkbox" id="notifyrevokes">
+          <input type="checkbox" id="notifyrejects" {% if userSettings.notifyDisallowsMePrivateData %}checked="checked"{% endif %}>
+          <div class="checkboxdiv"></div>
+        </td>
+        <td class="tableforminputs">
+          <label for="notifyrejects">
+            Notify me when my request for private data has been rejected
+          </label>
+        </td>
+      </tr>
+      <tr class="individualnotifications">
+        <td class="tableformbuttons">
+          <input type="checkbox" id="notifyrevokes" {% if userSettings.notifyRequestDecision %}checked="checked"{% endif %}>
           <div class="checkboxdiv"></div>
         </td>
         <td class="tableforminputs">

@@ -6,7 +6,7 @@ $(document).ready(function() {
     }
     
     $("input,label").change(function() {
-        markChangedFields($(this));
+        markChangedFields($(this).parent().next());
     });
     
     $("#synccarddav").click(function() {
@@ -59,11 +59,17 @@ $(document).ready(function() {
         startLogoAnimation();
         executeAJAX("/settings/updatesettings" + 
                 "?emailnotifications=" + $("#emailnotifications").is(":checked") +
+                "&notifystops=" + $("#notifystops").is(":checked") +
+                "&notifyasks=" + $("#notifyasks").is(":checked") +
+                "&notifyaccepts=" + $("#notifyaccepts").is(":checked") +
+                "&notifyrejects=" + $("#notifyrejects").is(":checked") +
+                "&notifyrevokes=" + $("#notifyrevokes").is(":checked") +
                 "&language=" + $("#language").val() +
                 "&synccarddav=" + $("#synccarddav").is(":checked") +
                 "&newsletter=" + $("#newsletter").is(":checked"),
             function() {
-                stopLogoAnimation();           
+                stopLogoAnimation();
+                unmarkChangedFields($("#tableform"));
             });
 
         return false;

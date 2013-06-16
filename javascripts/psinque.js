@@ -40,21 +40,23 @@ function markChangedFields(where) {
 }
 
 function unmarkChangedFields(where) {
-    where.find("input,select").css("color", "#000");
+    where.find("input,select,label").css("color", "#000");
 }
 
 function removeElementWithEffects(element) {
-  element.slideUp('fast', function() {
+//   element.slideUp('fast', function() {
     element.remove();
-  });
+//   });
 }
 
 function hideElementWithEffects(element) {
-  element.slideUp('fast');
+//   element.slideUp('fast');
+    element.hide();
 }
 
 function showElementWithEffects(element) {
-  element.slideDown('fast');
+//   element.slideDown('fast');
+    element.show();
 }
 
 $(document).ready(function() {
