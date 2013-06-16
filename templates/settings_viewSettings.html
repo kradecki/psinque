@@ -27,44 +27,68 @@
       <tbody>
       <tr>
         <td rowspan="6" class="tableformlabels">Notifications</td>
+        <td class="tableformbuttons">
+          <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}">
+          <div class="checkboxdiv"></div>
+        </td>
         <td class="tableforminputs">
-          <label>
-          <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}"> Send me a newsletter
-          </label>
+        <label for="newsletter">
+          Send me a newsletter
+        </label>
         </td>
       </tr>
       <tr>
+        <td class="tableformbuttons">
+          <input type="checkbox" id="emailnotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}">
+          <div class="checkboxdiv"></div>
+        </td>
         <td class="tableforminputs">
-          <label>
-          <input type="checkbox" id="emailnotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}"> Send me a email notifications
+          <label for="emailnotifications">
+            Send me a email notifications
           </label>
         </td>
       </tr>
-      <tr>
+      <tr class="individualnotifications">
+        <td class="tableformbuttons">
+          <input type="checkbox" id="notifystops">
+          <div class="checkboxdiv"></div>
+        </td>
         <td class="tableforminputs">
-          <label>
-          <input type="checkbox" id="notifystops"> Notify me when someone stops using my private data
+          <label for="notifystops">
+            Notify me when someone stops using my private data
           </label>
         </td>
       </tr>
-      <tr>
+      <tr class="individualnotifications">
+        <td class="tableformbuttons">
+          <input type="checkbox" id="notifyasks">
+          <div class="checkboxdiv"></div>
+        </td>
         <td class="tableforminputs">
-          <label>
-          <input type="checkbox" id="notifyasks"> Notify me when someone asks for my private data
+          <label for="notifyasks">
+            Notify me when someone asks for my private data
           </label>
         </td>
       </tr>
-      <tr>
+      <tr class="individualnotifications">
+        <td class="tableformbuttons">
+          <input type="checkbox" id="notifyaccepts">
+          <div class="checkboxdiv"></div>
+        </td>
         <td class="tableforminputs">
-          <label>
-          <input type="checkbox" id="notifyaccepts"> Notify me when my request for private data has been accepted or rejected
+          <label for="notifyaccepts">
+            Notify me when my request for private data has been accepted or rejected
           </label>
         </td>
       </tr>
-      <tr>
+      <tr class="individualnotifications">
+        <td class="tableformbuttons">
+          <input type="checkbox" id="notifyrevokes">
+          <div class="checkboxdiv"></div>
+        </td>
         <td class="tableforminputs">
-          <label>
-          <input type="checkbox" id="notifyrevokes"> Notify me when someone revokes permission to use private data
+          <label for="notifyrevokes">
+            Notify me when someone revokes permission to use private data
           </label>
         </td>
       </tr>
@@ -79,9 +103,13 @@
     </p>-->
       <tr>
         <td rowspan="1" class="tableformlabels">Synchronization</td>
+        <td class="tableformbuttons">
+          <input type="checkbox" id="synccarddav" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}">
+          <div class="checkboxdiv"></div>
+        </td>
         <td class="tableforminputs">
-          <label>
-          <input type="checkbox" id="synccarddav" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}"> Allow CardDAV psinquing
+          <label for="synccarddav">
+            Allow CardDAV psinquing
           </label>
         </td>
       </tr>
@@ -124,12 +152,13 @@
       <table>
       <tbody>
       <tr>
-        <td class="tableformbuttonlabels">
-          Save changes
-        </td>
+        <td class="tableformlabels">Save changes</td>
         <td class="tableformbuttons">
-          <a href="" id="submitbutton"><img src="/images/squareicons/save.png" /></a>
+          <a href="" id="submitbutton">
+            <img src="/images/squareicons/save.png" />
+          </a>
         </td>
+        <td><br style="clear:both;"/></td>
       </tr>
       </tbody>
       </table>

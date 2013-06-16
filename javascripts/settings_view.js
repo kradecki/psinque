@@ -68,4 +68,12 @@ $(document).ready(function() {
 
         return false;
     });
+    
+    $("#emailnotifications").click(function() {
+        if($("#emailnotifications").is(":checked")) {
+            $(".individualnotifications").show();
+        } else {
+            $(".individualnotifications").hide();
+        }
+    });
 });

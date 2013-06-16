@@ -105,6 +105,14 @@ div#mycard {
     padding: 10px;
 }
 
+#animatedlogo {
+    display: none;
+}
+
+/****************************************
+ * Forms
+ ****************************************/
+
 div#tableform {
     padding: 0;
     margin: 0;
@@ -180,6 +188,8 @@ div#tableform input[type=text],select,label {
 div#tableform label {
     display: block;
     padding-top: 8px;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 div#tableform select {
@@ -193,6 +203,10 @@ div#tableform a {
 div#tableform img {
     display: block;
 }
+
+/****************************************
+ * Permit list
+ ****************************************/
 
 div#permitlist h3 {
     background-color: #404040;
@@ -208,14 +222,27 @@ div#permitlist h3 {
     margin: 0;
 }
 
-div#permitlist div {
-/*     background-color: #fff; */
-}
-
 div#permitlist div p {
     margin: 0;
 }
 
-#animatedlogo {
+/****************************************
+ * Checkboxes
+ ****************************************/
+
+input[type="checkbox"] {
     display: none;
+}
+
+input[type="checkbox"] + div {
+/*     display: inline-block; */
+    float: left;
+    margin: 0;
+    width: 39px;
+    height: 39px;
+    background: url(/images/squareicons/checkbox.png) left top no-repeat;
+}
+
+input[type="checkbox"]:checked + div {
+    background:url(/images/squareicons/checkbox.png) -39px top no-repeat;
 }
