@@ -1,78 +1,121 @@
 {% extends "templates/masterTemplate.html" %}
 {% block title %}Psinques{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="/stylesheets/psinques_view.css" />
+{% endblock %}
 {% block javascripts %}
-<script type="text/javascript" src="/javascripts/psinques_view.js"></script>
+    <script type="text/javascript" src="/javascripts/psinques_view.js"></script>
+{% endblock %}
+{% block abovecontent %}
+  <div class="aboveconent">
+    <div class="abovecontentcolumn">
+      {% if pendings|length %}
+      <div class="tableform" id="pendings">
+        <table class="tableform">
+        <tbody>
+          {% for pending in pendings %}
+          <tr>
+            <td class="forminputs">
+              <label>
+              <b>{{ pending.name }}</b> wants to access your private contact data.
+              </label>
+            </td>
+            <td>
+              <input type="hidden" value="{{ pending.key }}" class="psinquekeys" />
+            </td>
+            <td class="forminputs formbuttons">
+              <a href="" class="accepters">
+                <img src="/images/squareicons/add.png" />
+              </a>
+            </td>
+            <td class="forminputs formbuttons">
+              <a href="" class="rejecters">
+                <img src="/images/squareicons/remove.png" />
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+    <div id="searchbox">
+      <div class="abovecontentcolumn">
+        <img src="/images/incoming.png" />
+        <img src="/images/outgoing.png" />
+        <select>
+          {% for group in groups %}
+            <option value="{{ group.name }}" >{{ group.name }}</option>
+          {% endfor %}
+        </select>
+        <input type="text" />
+      </div>
+    </div>
+  </div>
 {% endblock %}
 {% block content %}
-  <h1>Add new psinque</h1>
-  <p>
-    <label>By email:</label>
-    <input type="text" id="email" />
-    <a href="" id="search">Search</a></br>
-<!--     <label>By telephone number:</label> -->
-<!--     <input type="text" id="email" /><br/> -->
-  </p>
-<!--  <p>
-    <a href="">Search from Google contacts.</a>
-  </p>-->
-  <span id="pendings">
-  {% if pendings|length %}
-  <h1>Pending</h1>
-  The following people want to access your private profile data:
-  <table class="contacttables"><tbody>
-    <th>#</th>
-    <th>Name</th>
-    <th></th>
-  {% for pending in pendings %}
+  <div class="onecolumn">
+  <div class="tableform">
+    <table class="tableform">
+    <tbody>
     <tr>
-    <td>{{ loop.index }}</td>
-    <td>{{ pending.name }}</td>
-    <td>
-      <input type="hidden" value="{{ pending.key }}" class="PsinqueKeys" />
-      <input type="button" value="Reject" class="Rejecters" />
-      or <input type="button" value="Accept" class="Accepters" />
-    </td>
+      <td class="formlabels">
+        <label>New psinque</label>
+      </td>
+      <td class="forminputs">
+        <input type="text" placeholder="Type an email address to search" />
+      </td>
+      <td class="forminputs formbuttons">
+        <a href="" class="search">
+          <img src="/images/squareicons/add.png" />
+        </a>
+      </td>
     </tr>
-  {% endfor %}
-  </tbody></table>
-  {% endif %}
-  </span>
-  <h1>Active psinques</h1>
-  You have {% if count == 1000 %}1000+{% else %}{{ count }}{% endif %} psinques.
-  <table class="contacttables">
-    <th>#</th>
-    <th>Name</th>
-    <th>Incoming status</th>
-    <th>Incoming private</th>
-    <th>Outgoing status</th>
-    <th>Created</th>
-    <th></th>
+    </tbody>
+    </table>
+  </div>
+<!--   <table class="contacttables"> -->
   {% for contact in contacts %}
-    <tr>
-    <td>{{ loop.index+count-1 }}</td>
-    <td>{{ contact.displayName }}</td>
-    <td>{{ contact.incoming.status }}</td>
-    <td>{{ contact.incoming.private }}</td>
-    <td>{{ contact.outgoing.status }}</td>
-    <td>{{ contact.creationTime|humanizeddatetime }}</td>
-    <td>
-        <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
-        <a href="" class="Removers">Remove</a>
-        {% if not contact.incoming %}
-        | <a href="" class="privateadders">Request private data</a>
-        {% else %}
-        {% if not contact.incoming.private %}
-        | <a href="" class="requesters">Request private data</a>
-        {% endif %}
-        {% endif %}
-    </td>
-    </tr>
+  <div class="contact">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>{{ contact.displayName }}</b></br>
+      Created {{ contact.creationTime|humanizeddatetime }}</br>
+      <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
+      <a href="" class="Removers">Remove</a>
+      | <a href="" class="privateadders">Request private data</a>
+      | <a href="" class="requesters">Request private data</a>  
+    </div>
+    <div class="psinques">
+    {% if contact.incoming.private %}
+    kłódka
+    {% endif %}
+    {% if contact.incoming.status == "established" %}
+    <img src="/images/incoming_established.png" />
+    {% elif contact.incoming.status == "pending" %}
+    <img src="/images/incoming_pending.png" />
+    {% else %}
+    <img src="/images/incoming_none.png" />
+    {% endif %}
+    {% if contact.outgoing.status == "established" %}
+    <img src="/images/outgoing_established.png" />
+    {% else %}
+    <img src="/images/outgoing_none.png" />
+    {% endif %}
+    </div>
+  </div>
+  {% else %}
+  You are not psinquing with anyone yet.
   {% endfor %}
-  </table>
+<!--   </table> -->
   {% if offset > 0 %}
   <a href="javascript: history.go(-1)">Previous page</a>
   {% endif %}
   {% if isThereMore %}
   <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
   {% endif %}
+  </div>
 {% endblock %}

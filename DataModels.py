@@ -92,7 +92,6 @@ class Group(db.Model):
     name = db.StringProperty()
     sync = db.BooleanProperty(default = True)
 
-
 #-----------------------------------------------------------------------------
 
 availableLanguages = {

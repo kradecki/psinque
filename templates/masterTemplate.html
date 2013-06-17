@@ -1,8 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <link rel="stylesheet" type="text/css" href="/stylesheets/psinque.css" />
+    {% block stylesheets %}
+    {% endblock %}
     <title>{% block title %}{% endblock %} - Psinque</title>
     <script type="text/javascript" src="/javascripts/jquery.js"></script>
     <script type="text/javascript" src="/javascripts/psinque.js"></script>
@@ -10,7 +12,7 @@
     {% endblock %}
 </head>
 <body>
-  <div id="headerwrapper">
+  <div id="headerwrapper" class="outerwrappers">
     <div id="header">
       <span id="staticlogo"><img src="/images/logo_01.png"/></span>
       <span id="animatedlogo"><img src="/images/animated_logo.gif" /></span>
@@ -27,11 +29,31 @@
     </div>
   </div>
   <div id="wrapper">
+    {% block abovecontent %}{% endblock %}
     <div id="content">
       {% block content %}{% endblock %}
     </div>
+  </div>
+  <div id="footerwrapper" class="outerwrappers">
     <div id="footer">
-      &copy; Copyright 2013 by <a href="http://psinque.com/">Psinque sp. z o.o.</a>.
+      <table>
+      <tbody>
+      <tr>
+      <td id="copyright">
+        &copy; Copyright 2013 <a href="http://psinque.com/">Psinque sp. z o.o.</a>.
+      </td>
+      <td id="faq">
+        <a href="/">About Psinque</a>
+        <a href="/">p<b>sinq</b>ue FAQ</a>
+        <a href="/">Terms of service</a>
+        <a href="/">Mobile configuration how-to</a>
+      </td>
+      <td id="numalab">
+        <a href="http://numalab.eu/">graphic&amp;stuff numalab°</a>
+      </td>
+      <tr>
+      <tbody>
+      <table>
     </div>
   </div>
 </body>

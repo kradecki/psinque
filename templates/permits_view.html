@@ -1,10 +1,14 @@
 {% extends "templates/masterTemplate.html" %}
 {% block title %}Permits{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="/stylesheets/permits_view.css" />
+{% endblock %}
 {% block javascripts %}
     <script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
     <script type="text/javascript" src="/javascripts/permits_view.js"></script>
 {% endblock %}
 {% block content %}
+  <div class="onecolumn">
   <div id="permitlist">
   {% for permit in permits %}
   {% set permitloop = loop %}
@@ -109,7 +113,7 @@
     <tr>
       <td class="formlabels">
         <label>
-          Displayed name</td>
+          Displayed name
         </label>
       <td class="forminputs">
       <label class="displaynames"></label>
@@ -155,6 +159,7 @@
     </tr>
     </tbody>
     </table>
+  </div>
   </div>
   </div>
 {% endblock %}

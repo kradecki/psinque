@@ -5,6 +5,7 @@
     <script type="text/javascript" src="/javascripts/settings_view.js"></script>
 {% endblock %}
 {% block content %}
+    <div class="onecolumn">
     <div class="tableform">
     <span id="languagesettings">
       <table>
@@ -61,7 +62,7 @@
         </td>
         <td class="forminputs">
           <label for="notifystops">
-            Notify me when someone stops using my private data
+            When someone stops using my private data
           </label>
         </td>
       </tr>
@@ -74,7 +75,7 @@
         </td>
         <td class="forminputs">
           <label for="notifyasks">
-            Notify me when someone asks for my private data
+            When someone asks for my private data
           </label>
         </td>
       </tr>
@@ -87,7 +88,7 @@
         </td>
         <td class="forminputs">
           <label for="notifyaccepts">
-            Notify me when my request for private data has been accepted 
+            When my request for private data has been accepted 
           </label>
         </td>
       </tr>
@@ -100,7 +101,7 @@
         </td>
         <td class="forminputs">
           <label for="notifyrejects">
-            Notify me when my request for private data has been rejected
+            When my request for private data has been rejected
           </label>
         </td>
       </tr>
@@ -113,7 +114,7 @@
         </td>
         <td class="forminputs">
           <label for="notifyrevokes">
-            Notify me when someone revokes permission to use private data
+            When permission to use private data is revoked
           </label>
         </td>
       </tr>
@@ -188,5 +189,6 @@
       </tr>
     </tbody>
     </table>
+    </div>
     </div>
 {% endblock %}

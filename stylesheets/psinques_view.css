@@ -1,0 +1,69 @@
+
+div.aboveconent {
+    width: 100%;
+    padding: 0;
+    background-color: #d8d4cb;
+}
+
+div.abovecontentcolumn {
+    float: none;
+    width: 627px;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+}
+
+div#pendings {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div#searchbox {
+    width: 100%;
+    background-color: #404040;
+    height: 49px;
+    color: white;
+    padding-top: 5px;
+    text-align: left;
+}
+
+div#searchbox img {
+    display: inline-block;
+}
+
+div#searchbox select {
+    width: 220px;
+    background-color: #d8d4cb;
+}
+
+div.contact {
+    width: 607px;
+    height: 104px;
+    background-color: #fff;
+    padding: 10px;
+    margin: 5px 0 5px;
+}
+
+div.contactphoto {
+    height: 104px;
+    width: 104px;
+    float: left;
+}
+
+div.contactdetails {
+    height: 104px;
+    width: 380px;
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+}
+
+div.psinques {
+    height: 104px;
+    width: 104px;
+    float: right;
+}
+
+div.psinques img {
+    display: inline-block;
+}

@@ -99,9 +99,9 @@ $(document).ready(function() {
     });
     
     
-    $(".Accepters").click(function() {
+    $(".accepters").click(function() {
         
-        psinqueKey = $(this).parent().find(".PsinqueKeys").val();
+        psinqueKey = $(this).closest(".psinquekeys").val();
         
         executeAJAX("/psinques/acceptrequest?key=" + psinqueKey,
             function() {
@@ -113,9 +113,9 @@ $(document).ready(function() {
     });
 
     
-    $(".Rejecters").click(function() {
+    $(".rejecters").click(function() {
         
-        psinqueKey = $(this).parent().find(".PsinqueKeys").val();
+        psinqueKey = $(this).closest(".psinquekeys").val();
         
         executeAJAX("/psinques/rejectrequest?key=" + psinqueKey,
             function() {
