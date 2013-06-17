@@ -133,7 +133,8 @@ function updateGeneralInfo(parent) {
                                      "&lastname=" + lastName,
                 function() {
                     decreaseElementCount();
-                    unmarkChangedFields(parent);
+//                     unmarkChangedFields(parent);
+                    parent.find("input").css("color", "#000");
                 });
 }
 
