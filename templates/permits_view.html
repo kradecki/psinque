@@ -12,7 +12,14 @@
   <div id="permitlist">
   {% for permit in permits %}
   {% set permitloop = loop %}
-  <h3>{{ permit.name }}</h3>
+  <h3>
+  {% if permit.name == "Public" %}
+  <img src="/images/public.png" />
+  {% else %}
+  <img src="/images/private.png" />
+  {% endif %}
+  {{ permit.name }}
+  </h3>
   <div class="tableform">
     <input type="hidden" class="indices" value="{{ permitloop.index }}" />
     <input type="hidden" class="keys" value="{{ permit.key() }}" />
@@ -20,7 +27,7 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="firstnames{{ permitloop.index }}" {% if permit.canViewFirstNames %}checked="checked"{% endif %} class="general"/>
+        <input type="checkbox" id="firstnames{{ permitloop.index }}" {% if permit.canViewFirstNames %}checked="checked"{% endif %} class="general names"/>
         <div class="checkboxdiv"></div>
         <label for="firstnames{{ permitloop.index }}">
           First names
@@ -38,7 +45,7 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="lastnames{{ permitloop.index }}" {% if permit.canViewLastNames %}checked="checked"{% endif %} class="general"/>
+        <input type="checkbox" id="lastnames{{ permitloop.index }}" {% if permit.canViewLastNames %}checked="checked"{% endif %} class="general names"/>
         <div class="checkboxdiv"></div>
         <label for="lastnames{{ permitloop.index }}">
           Last names
@@ -132,13 +139,22 @@
         </td>
         <td><br style="clear:both;"/></td>
        </tr>
+       {% if permit.name != "Public" and permit.name != "Default" -%}
+       <tr>
+        <td class="formlabels"><label>Remove</label></td>
+        <td class="forminputs formbuttons">
+          <a href="" class="removebuttons">
+            <img src="/images/squareicons/remove.png" />
+          </a>
+        </td>
+        <td><br style="clear:both;"/></td>
+       </tr>
+       {%- endif %}
     </tbody>
     </table>
-<!--    {% if permit.name != "Public" and permit.name != "Default" -%}
-    <input type="button" class="removeButtons" value="Remove">
-    {%- endif %}-->
   </div>
   {% endfor %}
+  <span id="newpermit">
   <div class="tableform">
     <table>
     <tbody>
@@ -149,7 +165,7 @@
         </label>
       </td>
       <td class="forminputs">
-        <input type="text" id="permitName" placeholder="Your permit name" />
+        <input type="text" id="permitname" placeholder="Your permit name" />
       </td>
       <td class="forminputs formbuttons">
           <a href="" id="createbutton">
@@ -160,6 +176,7 @@
     </tbody>
     </table>
   </div>
+  </span>
   </div>
   </div>
 {% endblock %}

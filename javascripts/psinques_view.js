@@ -101,7 +101,7 @@ $(document).ready(function() {
     
     $(".accepters").click(function() {
         
-        psinqueKey = $(this).closest(".psinquekeys").val();
+        psinqueKey = $(this).parent().prev().find(".psinquekeys").val();
         
         executeAJAX("/psinques/acceptrequest?key=" + psinqueKey,
             function() {

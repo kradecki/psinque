@@ -59,7 +59,7 @@ class PermitsHandler(MasterHandler):
             contact.permit = defaultPermit
 
         # Remove all children
-        permitEmails = PermitEmails.all(keys_only = True).ancestor(permit)
+        permitEmails = PermitEmail.all().ancestor(permit)
         for permitEmail in permitEmails:
             permitEmail.delete()
         permit.delete()  # and the permit itself
@@ -115,9 +115,13 @@ class PermitsHandler(MasterHandler):
         permit.canViewFirstNames = canViewFirstNames
         permit.canViewLastNames = canViewLastNames
         permit.canViewBirthday = canViewBirthday
-        permit.canViewGender = canViewGender
+        #logging.info(canViewGender)
+        #logging.info(permit.canViewGender)
         permit.generateVCard()
+        #logging.info(permit.canViewGender)
         permit.put()
+        #logging.info(permit.canViewGender)
+        #logging.info(permit.key().id())
         
         self.sendJsonOK()
             

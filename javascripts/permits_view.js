@@ -12,7 +12,7 @@ updatePermit = function(permitContent) {
     window.ajaxCounter++;
     permitContent.find("input").each(function(dupa) {
         if(($(this).attr("type") == "checkbox") &&
-           ($(this).attr("class") != "general")) {
+           (!$(this).hasClass("general"))) {
                 window.ajaxCounter++;
         }
     });
@@ -49,25 +49,26 @@ updatePermit = function(permitContent) {
 }
 
 addPermit = function(permits) {
-    permitName = permits.find("#permitName").val();
+    permitName = $("#permitname").val();
     if(permitName != "") {
         executeAJAX("/permits/addpermit?name=" + permitName,
-            function() {
-                lastPermit = $("#searchContacts:last").parent();
-                newPermit = lastPermit.clone();
+            function(parsedJSON) {
+                $("<h3><img src='/images/private.png'> " + permitName + "</h3>").insertBefore($("#newpermit"));
+                newPermit = $(".tableform:first").clone();
                 newPermit.hide();
-                newPermit.insertBefore($("#addPermitForm"));
+                newPermit.insertBefore($("#newpermit"));
                 newPermit.find(".keys").val(parsedJSON["key"]);
-                newPermit.find("legend").html(permitName);
+                newPermit.find(".indices").val($(".permits").length);
+//                 newPermit.find("h3").html(permitName);
                 newPermit.find("input[type=checkbox]").each(function() {
-                    if($(this).attr("id") != "canViewName") {
-                        $(this).prop('checked', false);
-                    } else {
+                    if($(this).hasClass("names")) {
                         $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
                     }
                 });
                 
-                if(newPermit.find(".removeButtons").length == 0) {
+                if(newPermit.find(".removebuttons").length == 0) {
                     newPermit.find("p").append('<input type="button" class="removeButtons" value="Remove">');
                 }
                 
@@ -80,6 +81,9 @@ addPermit = function(permits) {
                 });
 
                 newPermit.slideDown();
+                
+                recreateAccordeon();
+                stopLogoAnimation();
             });
     } else {
         alert("Permit name cannot be empty!");
@@ -87,14 +91,26 @@ addPermit = function(permits) {
 }
 
 removePermit = function(removedPermit) {
-    removedPermit.find(".spinner").show();
+    
+    startLogoAnimation();
+    
     permitKey = removedPermit.find(".keys").val();
+
     executeAJAX("/permits/removepermit?key=" + permitKey,
         function() {
             removedPermit.slideUp(function() {
+                removedPermit.prev().remove();
                 removedPermit.remove();
+                recreateAccordeon();
+                stopLogoAnimation();
             });
         });
+}
+
+recreateAccordeon = function() {
+//     window.permitAccordeon.destroy();
+//     window.permitAccordeon = $("#permitlist").accordion();
+    $("#permitlist").accordion('destroy').accordion();
 }
 
 $(document).ready(function() {
@@ -105,17 +121,17 @@ $(document).ready(function() {
     });
     
     $(".removeButtons").click(function() {
-        removePermit($(this).parent().parent().parent());
+        removePermit($(this).closest(".tableform"));
         return false;
     });
     
     $("#createbutton").click(function() {
-        $(this).parent().find(".spinner").show();
+        startLogoAnimation();
         addPermit($(this).parent());
         return false;
     });
     
     // jQuery UI
-    $("#permitlist").accordion();
+    window.permitAccordeon = $("#permitlist").accordion();
     
 });

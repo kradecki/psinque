@@ -14,7 +14,7 @@ div.abovecontentcolumn {
 }
 
 div#pendings {
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom: 10px;
 }
 
@@ -27,13 +27,35 @@ div#searchbox {
     text-align: left;
 }
 
-div#searchbox img {
-    display: inline-block;
+div#searchbox table, tbody, tr {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+div#searchbox td {
+    height: 39px;
+}
+
+div#searchbox td.formbuttons, td.formextras {
+    margin: 0;
+    margin-right: 10px;
 }
 
 div#searchbox select {
     width: 220px;
-    background-color: #d8d4cb;
+}
+
+div#searchbox td.forminputs {
+    width: 100%;
+}
+
+div#searchbox td.forminputs input[type=text] {
+    width: 100%;
+    height: 39px;
+    background-color: #fff;
+    border: none;
+    padding: 5px;
 }
 
 div.contact {
@@ -62,6 +84,10 @@ div.psinques {
     height: 104px;
     width: 104px;
     float: right;
+}
+
+div.tableform td.formnopadding {
+    padding-left: 0;
 }
 
 div.psinques img {

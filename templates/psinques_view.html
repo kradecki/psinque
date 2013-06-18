@@ -11,11 +11,11 @@
     <div class="abovecontentcolumn">
       {% if pendings|length %}
       <div class="tableform" id="pendings">
-        <table class="tableform">
+        <table>
         <tbody>
           {% for pending in pendings %}
           <tr>
-            <td class="forminputs">
+            <td class="forminputs formnopadding">
               <label>
               <b>{{ pending.name }}</b> wants to access your private contact data.
               </label>
@@ -42,14 +42,28 @@
     </div>
     <div id="searchbox">
       <div class="abovecontentcolumn">
-        <img src="/images/incoming.png" />
-        <img src="/images/outgoing.png" />
-        <select>
-          {% for group in groups %}
-            <option value="{{ group.name }}" >{{ group.name }}</option>
-          {% endfor %}
-        </select>
-        <input type="text" />
+        <table>
+        <tbody>
+        <tr>
+          <td class="formbuttons">
+            <img src="/images/incoming.png" />
+          </td>
+          <td class="formbuttons">
+            <img src="/images/outgoing.png" />
+          </td>
+          <td class="formextras">
+            <select>
+              {% for group in groups %}
+              <option value="{{ group.name }}" >{{ group.name }}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td class="forminputs">
+            <input type="text" />
+          </td>
+        </tr>
+        </tbody>
+        </table>
       </div>
     </div>
   </div>
