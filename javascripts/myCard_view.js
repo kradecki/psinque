@@ -160,8 +160,8 @@ function updateEmail(emailinput) {
 }
 
 function removeEmail(removeButton) {
-    parent = removeButton.parent().parent();
-    emailKey = parent.find(".tableforminputs > .emailkeys").val();
+    parent = removeButton.parent().parent()
+    emailKey = parent.find(".emailkeys").val();
     if(emailKey) {
         executeAJAX("/mycard/removeemail?key=" + emailKey,
                     function() {

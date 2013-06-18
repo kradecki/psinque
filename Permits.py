@@ -95,6 +95,7 @@ class PermitsHandler(MasterHandler):
         
         # Generate the Permit's vCard and eTag:
         newPermit.generateVCard()
+        newPermit.put()
         
         self.sendJsonOK({"key": str(newPermit.key())});       
     

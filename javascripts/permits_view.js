@@ -55,10 +55,11 @@ addPermit = function(permits) {
             function(parsedJSON) {
                 $("<h3><img src='/images/private.png'> " + permitName + "</h3>").insertBefore($("#newpermit"));
                 newPermit = $(".tableform:first").clone();
+                permitIndex = $(".permits").length;
                 newPermit.hide();
                 newPermit.insertBefore($("#newpermit"));
                 newPermit.find(".keys").val(parsedJSON["key"]);
-                newPermit.find(".indices").val($(".permits").length);
+                newPermit.find(".indices").val(permitIndex);
 //                 newPermit.find("h3").html(permitName);
                 newPermit.find("input[type=checkbox]").each(function() {
                     if($(this).hasClass("names")) {
@@ -66,6 +67,10 @@ addPermit = function(permits) {
                     } else {
                         $(this).prop('checked', false);
                     }
+                });
+                
+                newPermit.find("div.checkboxdiv > label").each(function() {
+                    $(this).attr("for", $(this).attr("for").replace(/\d+/g, "") + permitIndex);
                 });
                 
                 if(newPermit.find(".removebuttons").length == 0) {
