@@ -2,6 +2,7 @@
 <html lang="en">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:300&subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="/stylesheets/psinque.css" />
     {% block stylesheets %}
     {% endblock %}
@@ -14,18 +15,30 @@
 <body>
   <div id="headerwrapper" class="outerwrappers">
     <div id="header">
-      <span id="staticlogo"><img src="/images/logo_01.png"/></span>
-      <span id="animatedlogo"><img src="/images/animated_logo.gif" /></span>
-      <img src="/images/logo_text.png" />
-      <ul>
-      {% for menuentry in menuentries %}
-        <li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>
-      {% endfor %}
-      </ul>
-      <div id="topicons">
-        <a href="/settings/view"><img src="/images/settings.png"/></a>
-        <a href="{{ loginurl }}"><img src="/images/logout.png"/></a>
-      </div>
+      <table>
+      <tbody>
+      <tr>
+        <td id="logographics">
+          <span id="staticlogo"><img src="/images/logo_01.png"/></span>
+          <span id="animatedlogo"><img src="/images/animated_logo.gif" /></span>
+        </td>
+        <td id="logographics">
+          <img src="/images/logo_text.png" />
+        </td>
+        <td id="menu">
+          <ul>
+          {% for menuentry in menuentries %}
+            <li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>
+          {% endfor %}
+          </ul>
+        </td>
+        <td id="topicons">
+          <a href="/settings/view"><img src="/images/squareicons/settings.png"/></a>
+          <a href="{{ loginurl }}"><img src="/images/squareicons/logout.png"/></a>
+        </td>
+      </tr>
+      </tbody>
+      </table>
     </div>
   </div>
   <div id="wrapper">

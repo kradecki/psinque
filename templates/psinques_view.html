@@ -7,8 +7,8 @@
     <script type="text/javascript" src="/javascripts/psinques_view.js"></script>
 {% endblock %}
 {% block abovecontent %}
-  <div class="aboveconent">
-    <div class="abovecontentcolumn">
+  <div class="abovecontentcolumn">
+<!--     <div class="abovecontentcolumn"> -->
       {% if pendings|length %}
       <div class="tableform" id="pendings">
         <table>
@@ -39,17 +39,16 @@
         </table>
       </div>
       {% endif %}
-    </div>
+<!--     </div> -->
     <div id="searchbox">
-      <div class="abovecontentcolumn">
         <table>
         <tbody>
         <tr>
           <td class="formbuttons">
-            <img src="/images/incoming.png" />
+            <img src="/images/squareicons/incoming.png" />
           </td>
           <td class="formbuttons">
-            <img src="/images/outgoing.png" />
+            <img src="/images/squareicons/outgoing.png" />
           </td>
           <td class="formextras">
             <select>
@@ -64,9 +63,8 @@
         </tr>
         </tbody>
         </table>
-      </div>
     </div>
-  </div>
+    </div>
 {% endblock %}
 {% block content %}
   <div class="onecolumn">
@@ -108,16 +106,16 @@
     kłódka
     {% endif %}
     {% if contact.incoming.status == "established" %}
-    <img src="/images/incoming_established.png" />
+    <img src="/images/squareicons/incoming_established.png" />
     {% elif contact.incoming.status == "pending" %}
-    <img src="/images/incoming_pending.png" />
+    <img src="/images/squareicons/incoming_pending.png" />
     {% else %}
-    <img src="/images/incoming_none.png" />
+    <img src="/images/squareicons/incoming_none.png" />
     {% endif %}
     {% if contact.outgoing.status == "established" %}
-    <img src="/images/outgoing_established.png" />
+    <img src="/images/squareicons/outgoing_established.png" />
     {% else %}
-    <img src="/images/outgoing_none.png" />
+    <img src="/images/squareicons/outgoing_none.png" />
     {% endif %}
     </div>
   </div>

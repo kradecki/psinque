@@ -6,11 +6,12 @@ div.aboveconent {
 }
 
 div.abovecontentcolumn {
-    float: none;
-    width: 627px;
+    width: 1200px;
     margin: 0 auto;
     padding: 0;
-    position: relative;
+/*     position: relative; */
+    background-color: #404040;
+    border-top: 3px solid #e35c33;
 }
 
 div#pendings {
@@ -19,9 +20,10 @@ div#pendings {
 }
 
 div#searchbox {
-    width: 100%;
+    width: 862px;
+    height: 70px;
+    margin: 0 auto;
     background-color: #404040;
-    height: 49px;
     color: white;
     padding-top: 5px;
     text-align: left;
@@ -34,7 +36,7 @@ div#searchbox table, tbody, tr {
 }
 
 div#searchbox td {
-    height: 39px;
+    height: 50px;
 }
 
 div#searchbox td.formbuttons, td.formextras {
@@ -52,14 +54,14 @@ div#searchbox td.forminputs {
 
 div#searchbox td.forminputs input[type=text] {
     width: 100%;
-    height: 39px;
+    height: 50px;
     background-color: #fff;
     border: none;
     padding: 5px;
 }
 
 div.contact {
-    width: 607px;
+    width: 842px;
     height: 104px;
     background-color: #fff;
     padding: 10px;

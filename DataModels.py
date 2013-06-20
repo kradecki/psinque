@@ -21,7 +21,7 @@ class Permit(db.Model):
     canViewGender = db.BooleanProperty(default = False)
 
     vcard = db.TextProperty()   # vCard for CardDAV access; it's not a StringProperty
-                        # because it might be longer than 500 characters
+                                # because it might be longer than 500 characters
     vcardMTime = db.StringProperty() # modification time
     vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
     
