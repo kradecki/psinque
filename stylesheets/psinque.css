@@ -181,7 +181,7 @@ div.tableform td {
 
 div.tableform td.formlabels {
     vertical-align: text-top;
-    width: 150px;
+    width: 200px;
     padding-right: 10px;
     padding-top: 0px;
     background-color: #404040;
@@ -253,16 +253,15 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"] + div {
-/*     display: inline-block; */
     float: left;
-    margin: 5px;
-    width: 29px;
-    height: 29px;
+    margin: 6px;
+    width: 37px;
+    height: 37px;
     background: url(/images/squareicons/checkbox.png) left top no-repeat;
 }
 
 input[type="checkbox"]:checked + div {
-    background:url(/images/squareicons/checkbox.png) -29px 0px no-repeat;
+    background:url(/images/squareicons/checkbox.png) -37px 0px no-repeat;
 }
 
 /****************************************

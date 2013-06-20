@@ -111,12 +111,12 @@ function decreaseElementCount() {
 }
 
 function removeEmailEntry(parent) {
-    if(tableformlabel = parent.find(".tableformlabels")) {
-        if(tableformlabel.html() == "Additional emails") {
+    if(formlabel = parent.find(".formlabels")) {
+        if(formlabel.html() == "Additional emails") {
             additionalEmailCounter--;
             if(additionalEmailCounter > 0){
-                tableformlabel.attr("rowspan", additionalEmailCounter);
-                tableformlabel.insertBefore(parent.parent().find("tr:first > td:first"));
+                formlabel.attr("rowspan", additionalEmailCounter);
+                formlabel.insertBefore(parent.parent().find("tr:first > td:first"));
             }
         }
     }
@@ -140,7 +140,7 @@ function updateGeneralInfo(parent) {
 
 function updateEmail(emailinput) {
     emailAddress = emailinput.val();
-    parent = emailinput.parent()
+    parent = emailinput.parent(); // <td>
     typeofEmail = parent.next().find(".typesofemail").val();
     emailKey = parent.find(".emailkeys").val();
     if(emailKey) {
@@ -149,11 +149,12 @@ function updateEmail(emailinput) {
         ajaxMethod = "addemail?";
     }
     executeAJAX("/mycard/" + ajaxMethod + "email=" + emailAddress + "&type=" + typeofEmail,
-                function() {
+                function(parsedJSON) {
                     decreaseElementCount();
                     if(!emailKey) {
                         parent.find(".emailkeys").val(parsedJSON["key"]);
                     }
+                    console.log(parent.find("input"));
                     parent.find("input").css("color", "#000");
                     parent.next().find("select").css("color", "#000");
                 });
@@ -181,17 +182,17 @@ $(document).ready(function() {
       
       newEmail = cloneElement($("#primaryemailaddress > tbody > tr"));
 
-      newEmail.find('.tableformlabels').remove();
-      newEmail.find('.tableformbuttons').html("<a href='' class='emailremovers'><img src='/images/squareicons/remove.png' /></a>");
+      newEmail.find('.formlabels').remove();
+      newEmail.find('.formbuttons').html("<a href='' class='emailremovers'><img src='/images/squareicons/remove.png' /></a>");
       newEmail.find('input,select').change(function() {
           markChangedFields($(this));
       });
       newEmail.find('input,select').val('');
 
       if(additionalEmailCounter == 0) {
-          $("<td rowspan=" + additionalEmailCounter + " class='tableformlabels'>Additional emails</td>").insertBefore(newEmail.find("td:first"));
+          $("<td rowspan=" + additionalEmailCounter + " class='formlabels'><label>Additional emails</label></td>").insertBefore(newEmail.find("td:first"));
       } else {
-          $("#additionalemailaddresses > tbody > tr > .tableformlabels").attr('rowspan', additionalEmailCounter + 1);
+          $("#additionalemailaddresses > tbody > tr > .formlabels").attr('rowspan', additionalEmailCounter + 1);
       }
       additionalEmailCounter++;
       

@@ -63,4 +63,10 @@ $(document).ready(function() {
     $("input[type=text],input").change(function() {
         $(this).css("color", "#de5d35");
     });
+    
+    $("input[type=checkbox] + div").click(function() {
+        console.log("checkbox clicked");
+        checkBox = $(this).prev();
+        checkBox.prop("checked", !checkBox.prop("checked"));
+    });
 });
