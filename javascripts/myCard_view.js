@@ -148,8 +148,13 @@ function updateEmail(emailinput) {
     } else {
         ajaxMethod = "addemail?";
     }
-    executeAJAX("/mycard/" + ajaxMethod + "email=" + emailAddress + "&type=" + typeofEmail,
-                function(parsedJSON) {
+    $.ajax("/mycard/" + ajaxMethod + "email=" + emailAddress + "&type=" + typeofEmail,
+        success: function(data) {
+            parsedJSON = $.parseJSON(data);
+            if(parsedJSON["status"] != 0) {
+                alert("Error while performing operation: " + parsedJSON["message"]);
+            } else {
+//                 function(parsedJSON) {
                     decreaseElementCount();
                     if(!emailKey) {
                         parent.find(".emailkeys").val(parsedJSON["key"]);
@@ -157,7 +162,12 @@ function updateEmail(emailinput) {
                     console.log(parent.find("input"));
                     parent.find("input").css("color", "#000");
                     parent.next().find("select").css("color", "#000");
-                });
+//                 }
+            }
+        },
+        error: function(data) {
+            alert("Uknown error occured while performing operation.");
+        });
 }
 
 function removeEmail(removeButton) {
@@ -230,6 +240,7 @@ $(document).ready(function() {
           window.elementCount++;
       });
       $(".emailaddresses").each(function() {  // then run the AJAX queries
+          console.log($(this));
           updateEmail($(this));
       });
       return false;

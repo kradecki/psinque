@@ -120,7 +120,8 @@ recreateAccordeon = function() {
 
 $(document).ready(function() {
 
-    $(".submitbuttons").click(function() {
+    $(".submitbuttons").click(function(url) {
+        alert($(this).attr('href'));
         updatePermit($(this).closest(".tableform"));
         return false;
     });
@@ -137,6 +138,8 @@ $(document).ready(function() {
     });
     
     // jQuery UI
-    window.permitAccordeon = $("#permitlist").accordion();
+    window.permitAccordeon = $("#permitlist").accordion({
+        heightStyle: "content"
+    });
     
 });

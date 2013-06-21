@@ -64,7 +64,7 @@ $(document).ready(function() {
         $(this).css("color", "#de5d35");
     });
     
-    $("input[type=checkbox] + div").click(function() {
+    $("input[type=checkbox] + div").unbind('click').bind('click', function() {
         console.log("checkbox clicked");
         checkBox = $(this).prev();
         checkBox.prop("checked", !checkBox.prop("checked"));
