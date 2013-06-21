@@ -70,7 +70,7 @@ class PermitsHandler(MasterHandler):
     def addpermit(self):
         
         permitName = self.getRequiredParameter('name')
-        logging.info(permitName)
+        permitIndex = self.getRequiredParameter('index')
         
         # Error checking
         if permitName == "Public":
@@ -97,7 +97,14 @@ class PermitsHandler(MasterHandler):
         newPermit.generateVCard()
         newPermit.put()
         
-        self.sendJsonOK({"key": str(newPermit.key())});       
+        #self.sendJsonOK({"key": str(newPermit.key())});    
+        self.sendContent('templates/permits_singlepermit.html',
+                         activeEntry = "Permits",
+                         templateVariables = {
+                'permit': newPermit,
+                'userProfile': self.userProfile,
+                'permitIndex': permitIndex,
+            })
     
     
     def setgeneralpermit(self):
@@ -116,13 +123,9 @@ class PermitsHandler(MasterHandler):
         permit.canViewFirstNames = canViewFirstNames
         permit.canViewLastNames = canViewLastNames
         permit.canViewBirthday = canViewBirthday
-        #logging.info(canViewGender)
-        #logging.info(permit.canViewGender)
+        permit.canViewGender = canViewGender
         permit.generateVCard()
-        #logging.info(permit.canViewGender)
         permit.put()
-        #logging.info(permit.canViewGender)
-        #logging.info(permit.key().id())
         
         self.sendJsonOK()
             

@@ -48,11 +48,10 @@ table {
  ****************************************/
 
 body {
-    font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Verdana', 'Arial', sans-serif;
-    font-size: 20px;
-    text-align: center;
-    padding: 0px;
-    margin: 0px;
+/*     font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Verdana', 'Arial', sans-serif; */
+    font-family: 'Segoe UI Light', 'Segoe UI Normal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    line-height: 100%;
     background-color: #fff;
 }
 
@@ -199,11 +198,6 @@ div.onecolumn {
  * Square forms are implemented with tables
  ****************************************/
 
-/*div.tableform table, tr, td {
-    padding: 0;
-    margin: 0;
-}
-*/
 div.tableform {
     padding: 0;
     margin: 0;
@@ -213,9 +207,6 @@ div.tableform {
 div.tableform table {
     width: 100%;
     height: 50px;
-/*     border: 0; */
-/*     border-collapse: collapse; */
-/*     margin: 0; */
 }
 
 div.tableform tr {
@@ -223,7 +214,7 @@ div.tableform tr {
 }
 
 div.tableform td.formlabels {
-/*     vertical-align: text-top; */
+    vertical-align: text-top;
     width: 200px;
     padding-right: 10px;
     padding-top: 0px;
@@ -281,11 +272,18 @@ div.tableform td.forminputs label {
     display: block;
     padding-top: 15px;
     vertical-align: middle;
+}
+
+div.tableform .clickable {
     cursor: pointer;
 }
 
-div.tableform a,img {
+div.tableform img, span.buttons {
     display: block;
+}
+
+div.tableform span.buttons {
+    cursor: pointer;
 }
 
 /****************************************
@@ -302,6 +300,7 @@ input[type="checkbox"] + div {
     width: 37px;
     height: 37px;
     background: url(/images/squareicons/checkbox.png) left top no-repeat;
+    cursor: pointer;
 }
 
 input[type="checkbox"]:checked + div {

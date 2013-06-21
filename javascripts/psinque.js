@@ -1,25 +1,10 @@
 
-function executeAJAX(query, done) {
-    $.ajax(query)
-        .done(function(data) {
-            parsedJSON = $.parseJSON(data);
-            if(parsedJSON["status"] != 0) {
-                alert("Error while performing operation: " + parsedJSON["message"]);
-            } else {
-                done(parsedJSON);
-            }
-        })
-        .error(function(data) {
-            alert("Uknown error occured while performing operation.");
-        });
-}
 
 function cloneElement(oldElement) {
     newElement = oldElement.clone();  // clone an existing address field group
 
     // Clean all the input values:
     newElement.find("input,select").val('');
-
     newElement.hide();
 
     return newElement;
@@ -40,7 +25,8 @@ function markChangedFields(where) {
 }
 
 function unmarkChangedFields(where) {
-    where.find("input,select,label").css("color", "#000");
+//     where.find("input,select,label").css("color", "#000");
+    where.css("color", "#000");
 }
 
 function removeElementWithEffects(element) {
@@ -59,14 +45,24 @@ function showElementWithEffects(element) {
     element.show();
 }
 
-$(document).ready(function() {
-    $("input[type=text],input").change(function() {
-        $(this).css("color", "#de5d35");
-    });
-    
+function initializeCheckboxes() {
     $("input[type=checkbox] + div").unbind('click').bind('click', function() {
-        console.log("checkbox clicked");
         checkBox = $(this).prev();
         checkBox.prop("checked", !checkBox.prop("checked"));
     });
+}
+
+$(document).ready(function() {
+    
+    $(document).ajaxError(function() {
+//         $("div.log").text("Triggered ajaxError handler.");
+        alert("Uknown error occured while performing operation.");
+    });
+
+    
+    $("input[type=text],input").change(function() {
+        $(this).css("color", "#de5d35");
+    });
+
+    initializeCheckboxes();
 });

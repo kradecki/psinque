@@ -4,178 +4,36 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/permits_view.css" />
 {% endblock %}
 {% block javascripts %}
-    <script type="text/javascript" src="/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
     <script type="text/javascript" src="/javascripts/permits_view.js"></script>
 {% endblock %}
 {% block content %}
   <div class="onecolumn">
   <div id="permitlist">
   {% for permit in permits %}
-  {% set permitloop = loop %}
-  <h3>
-  {% if permit.name == "Public" %}
-  <img src="/images/squareicons/public.png" />
-  {% else %}
-  <img src="/images/squareicons/private.png" />
-  {% endif %}
-  {{ permit.name }}
-  </h3>
-  <div class="tableform">
-    <input type="hidden" class="indices" value="{{ permitloop.index }}" />
-    <input type="hidden" class="keys" value="{{ permit.key() }}" />
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="firstnames{{ permitloop.index }}" {% if permit.canViewFirstNames %}checked="checked"{% endif %} class="general names"/>
-        <div class="checkboxdiv"></div>
-        <label for="firstnames{{ permitloop.index }}">
-          First names
-        </label>
-      </td>
-      <td class="forminputs">
-        <label>
-          {{ userProfile.givenNames|join(" ") }}
-        </label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="lastnames{{ permitloop.index }}" {% if permit.canViewLastNames %}checked="checked"{% endif %} class="general names"/>
-        <div class="checkboxdiv"></div>
-        <label for="lastnames{{ permitloop.index }}">
-          Last names
-        </label>
-      </td>
-      <td class="forminputs">
-        <label>
-          {{ userProfile.familyNames|join(" ") }}
-        </label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="birthday{{ permitloop.index }}" {% if permit.canViewBirthday %}checked="checked"{% endif %} class="general"/>
-        <div class="checkboxdiv"></div>
-        <label for="birthday{{ permitloop.index }}">
-          Birthday
-        </label>
-      </td>
-      <td class="forminputs">
-        <label>
-          {{ userProfile.birthDay }}
-        </label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="gender{{ permitloop.index }}" {% if permit.canViewGender %}checked="checked"{% endif %} class="general"/>
-        <div class="checkboxdiv"></div>
-        <label for="gender{{ permitloop.index }}">
-        Gender
-        </label>
-      </td>
-      <td class="forminputs">
-        <label>
-          {{ userProfile.gender }}
-        </label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    {% for permitEmail in permit.permitEmails %}
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="email{{ permitloop.index }}_{{ loop.index }}" {% if permitEmail.canView %}checked="checked"{% endif %} class="email" name="{{ permitEmail.key() }}"/>
-        <div class="checkboxdiv"></div>
-        <label for="email{{ permitloop.index }}_{{ loop.index }}">
-        E-mail
-        </label>
-      </td>
-      <td class="forminputs">
-      <label>
-        {{ permitEmail.userEmail.email }}
-      </label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    {% endfor %}
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <label>
-          Displayed name
-        </label>
-      <td class="forminputs">
-      <label class="displaynames"></label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-      <tbody>
-      <tr>
-        <td class="formlabels"><label>Save changes</label></td>
-        <td class="forminputs formbuttons">
-          <a href="test" class="submitbuttons">
-            <img src="/images/squareicons/save.png" />
-          </a>
-        </td>
-        <td><br style="clear:both;"/></td>
-       </tr>
-       {% if permit.name != "Public" and permit.name != "Default" -%}
-       <tr>
-        <td class="formlabels"><label>Remove</label></td>
-        <td class="forminputs formbuttons">
-          <a href="" class="removebuttons">
-            <img src="/images/squareicons/remove.png" />
-          </a>
-        </td>
-        <td><br style="clear:both;"/></td>
-       </tr>
-       {%- endif %}
-    </tbody>
-    </table>
-  </div>
+  {% set permitIndex = loop.index %}
+  {% include "templates/permits_singlepermit.html" %}
   {% endfor %}
   <span id="newpermit">
-  <div class="tableform">
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <label>
-          New permit
-        </label>
-      </td>
-      <td class="forminputs">
-        <input type="text" id="permitname" placeholder="Your permit name" />
-      </td>
-      <td class="forminputs formbuttons">
-          <a href="" id="createbutton">
+    <div class="tableform">
+      <table>
+      <tbody>
+        <tr>
+        <td class="formlabels">
+          <label>New permit</label>
+        </td>
+        <td class="forminputs">
+          <input type="text" id="newpermitname" placeholder="Please type name of your new permit" />
+        </td>
+        <td class="forminputs formbuttons">
+          <span href="" id="addbutton" class="buttons clickable">
             <img src="/images/squareicons/add.png" />
-          </a>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-  </div>
+          </span>
+        </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
   </span>
   </div>
   </div>
