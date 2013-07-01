@@ -103,6 +103,45 @@
 //     return false;   // stop page refresh
 //   });
 
+//---------------------------------------------------------
+
+function removeEmailEntry(tableRow) {
+    if(formlabel = tableRow.find(".formlabels")) {
+        if(formlabel.html() == "Additional emails") {
+            additionalEmailCounter--;
+            if(additionalEmailCounter > 0){
+                formlabel.attr("rowspan", additionalEmailCounter);
+                formlabel.insertBefore(tableRow.parent().find("tr:first > td:first"));
+            }
+        }
+    }
+    removeElementWithEffects(tableRow);
+}
+
+function addRemoveEmailHandler(where) {
+
+    $(where).click(function() {
+        
+        startLogoAnimation();
+
+        tableRow = removeButton.parent().parent();
+        emailKey = tableRow.find(".emailkeys").val();
+        if(emailKey) {
+            psinqueRemovePermit(emailKey, function() {
+                removeEmailEntry(tableRow);
+                stopLogoAnimation();
+            });
+        } else {
+            removeEmailEntry(tableRow);
+            stopLogoAnimation();
+        }
+      
+        return false;
+    });
+}
+
+//---------------------------------------------------------
+
 function decreaseElementCount() {
     window.elementCount--;
     if(window.elementCount == 0) {  // all fields are updated
@@ -110,83 +149,54 @@ function decreaseElementCount() {
     }
 }
 
-function removeEmailEntry(parent) {
-    if(formlabel = parent.find(".formlabels")) {
-        if(formlabel.html() == "Additional emails") {
-            additionalEmailCounter--;
-            if(additionalEmailCounter > 0){
-                formlabel.attr("rowspan", additionalEmailCounter);
-                formlabel.insertBefore(parent.parent().find("tr:first > td:first"));
-            }
-        }
-    }
-    removeElementWithEffects(parent);
-}
+function addUpdateHandler(where) {
+    
+    $(where).click(function() {
+      
+        startLogoAnimation();
 
-//---------------------------------------------------------
-// AJAX executing functions
-
-function updateGeneralInfo(parent) {
-    firstName = $("#firstname").val();
-    lastName = $("#lastname").val();
-    executeAJAX("/mycard/updategeneral?firstname=" + firstName +
-                                     "&lastname=" + lastName,
-                function() {
-                    decreaseElementCount();
-//                     unmarkChangedFields(parent);
-                    parent.find("input").css("color", "#000");
-                });
-}
-
-function updateEmail(emailinput) {
-    emailAddress = emailinput.val();
-    parent = emailinput.parent(); // <td>
-    typeofEmail = parent.next().find(".typesofemail").val();
-    emailKey = parent.find(".emailkeys").val();
-    if(emailKey) {
-        ajaxMethod = "updateemail?key=" + emailKey + "&";
-    } else {
-        ajaxMethod = "addemail?";
-    }
-    $.ajax("/mycard/" + ajaxMethod + "email=" + emailAddress + "&type=" + typeofEmail,
-        success: function(data) {
-            parsedJSON = $.parseJSON(data);
-            if(parsedJSON["status"] != 0) {
-                alert("Error while performing operation: " + parsedJSON["message"]);
+        window.elementCount = $(".emailaddresses").length + 1;
+        
+        psinqueUpdateGeneral($("#firstname").val(), $("#lastname").val(),
+            function() {
+                decreaseElementCount();
+                unmarkChangedFields(parent);
+            });
+        
+        $(".emailaddresses").each(function() {  // then run the AJAX queries
+            emailinput = $(this);
+            emailAddress = emailinput.val();
+            parent = emailinput.parent(); // <td>
+            typeofEmail = parent.next().find(".typesofemail").val();
+            emailKey = parent.find(".emailkeys").val();
+            if(emailKey) {
+                psinqueUpdateEmail(emailKey, emailAddress, typeOfEmail,
+                    function() {
+                        decreaseElementCount();
+                        parent.find("input").css("color", "#000");
+                        parent.next().find("select").css("color", "#000");
+                    });
             } else {
-//                 function(parsedJSON) {
+                psinqueAddEmail(emailAddress, typeOfEmail, function() {
                     decreaseElementCount();
-                    if(!emailKey) {
-                        parent.find(".emailkeys").val(parsedJSON["key"]);
-                    }
-                    console.log(parent.find("input"));
+                    parent.find(".emailkeys").val(parsedJSON["key"]);
                     parent.find("input").css("color", "#000");
                     parent.next().find("select").css("color", "#000");
-//                 }
+                });
             }
-        },
-        error: function(data) {
-            alert("Uknown error occured while performing operation.");
         });
-}
-
-function removeEmail(removeButton) {
-    parent = removeButton.parent().parent()
-    emailKey = parent.find(".emailkeys").val();
-    if(emailKey) {
-        executeAJAX("/mycard/removeemail?key=" + emailKey,
-                    function() {
-                        removeEmailEntry(parent);
-                    });
-    } else {
-        removeEmailEntry(parent);
-    }
+        
+        return false;
+    });
 }
 
 //---------------------------------------------------------
-// Initial JS handlers
 
 $(document).ready(function() {
+   
+    addAddEmailHandler("#addemail");
+    addRemoveEmailHandler(".emailremovers");
+    addUpdateHandler("#submitbutton");
     
   $('#addemail').click(function() {
       
@@ -215,35 +225,6 @@ $(document).ready(function() {
       newEmail.slideDown();
       
       return false;   // stop page refresh
-  });
-  
-  // Add removers to already existing fields
-  $('.removers').each(function() {
-    $(this).click(function() {
-      removeElementWithEffects($(this).parent());
-      return false;          // represss page refresh
-    });
-  });
-  
-  $('.emailremovers').each(function() {
-    $(this).click(function() {
-      removeEmail($(this));
-      return false;          // represss page refresh
-    });
-  });
-
-  $("#submitbutton").click(function() {
-      startLogoAnimation();
-      window.elementCount = 1; // the general info is always there
-      updateGeneralInfo($("#generalinfo"));
-      $(".emailaddresses").each(function() {  // first count the objects
-          window.elementCount++;
-      });
-      $(".emailaddresses").each(function() {  // then run the AJAX queries
-          console.log($(this));
-          updateEmail($(this));
-      });
-      return false;
   });
   
   // Turn the form validation on

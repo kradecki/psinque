@@ -4,11 +4,54 @@
 // 
 //*******************************************************************
 
+psinqueAPI_mycard = "/mycard/"
+psinqueAPI_removeEmail   = psinqueAPI_mycard + "removeemail"
+psinqueAPI_updateGeneral = psinqueAPI_mycard + "updategeneral"
+psinqueAPI_updateEmail   = psinqueAPI_mycard + "updateemail"
+psinqueAPI_addEmail      = psinqueAPI_mycard + "addemail"
+
 psinqueAPI_permits = "/permits/"
 psinqueAPI_removePermit     = psinqueAPI_permits + "removepermit"
 psinqueAPI_setGeneralPermit = psinqueAPI_permits + "setgeneralpermit"
 psinqueAPI_setEmailPermit   = psinqueAPI_permits + "setemailpermit"
 psinqueAPI_addPermit        = psinqueAPI_permits + "addpermit"
+
+//------------------------------
+// My Card
+
+function psinqueRemovePermit(emailKey, successFunction) {
+    $.get(psinqueAPI_removeEmail, {
+            key: emailKey,
+        }, successFunction);
+}
+
+function psinqueUpdateGeneral(firstName, lastName,
+                              successFunction) {
+    $.get(psinqueAPI_updateGeneral, {
+              firstname: firstName,
+              lastname: lastName,
+          }, successFunction);
+}
+
+function psinqueUpdateEmail(emailKey, emailAddress, typeOfEmail,
+                            successFunction) {
+    $.get(psinqueAPI_updateEmail, {
+              key: emailKey,
+              email: emailAddress,
+              type: typeOfEmail,
+          }, successFunction);
+}
+
+function psinqueAddEmail(emailAddress, typeOfEmail,
+                         successFunction) {
+    $.get(psinqueAPI_addEmail, {
+              email: emailAddress,
+              type: typeOfEmail,
+          }, successFunction);
+}
+
+//------------------------------
+// Permits
 
 function psinqueRemovePermit(permitKey, successFunction) {
     $.get(psinqueAPI_removePermit, {
@@ -40,16 +83,4 @@ function psinqueAddPermit(name, index, successFunction) {
                   name: name,
                   index: index,
               }, successFunction);
-}
-
-function executeAJAX(query, done) {
-    $.ajax(query)
-        .done(function(data) {
-            parsedJSON = $.parseJSON(data);
-            if(parsedJSON["status"] != 0) {
-                alert("Error while performing operation: " + parsedJSON["message"]);
-            } else {
-                done(parsedJSON);
-            }
-        })
 }
