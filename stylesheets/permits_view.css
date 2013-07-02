@@ -1,9 +1,9 @@
 
 div#permitlist h3 {
-    background-color: #404040;
-    background-image: url('/images/squareicons/downarrow.png');
+/*    background-image: url('/images/squareicons/downarrow.png');
     background-repeat: no-repeat;
-    background-position: right center;
+    background-position: right center; */
+    background-color: #404040;
     width: 852px;
     height: 40px;
     color: #fff;
@@ -15,10 +15,36 @@ div#permitlist h3 {
     text-align: left;
 }
 
+div#permitlist .ui-accordion-header-active img.downarrows {
+    display: inline-block;
+}  
+
+div#permitlist .ui-accordion-header-active img.uparrows {
+    display: none;
+}  
+
+div#permitlist .ui-accordion-header-inactive img.downarrows {
+    display: none;
+}  
+
+div#permitlist .ui-accordion-header-inactive img.uparrows {
+    display: inline-block;
+}  
+
 div#permitlist h3 img {
     vertical-align: middle;
     display: inline-block;
     margin: 0;
+}
+
+div#permitlist h3 img.headerarrows {
+    float: right;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+div#permitlist h3 img.downarrows {
+    display: none;
 }
 
 div#permitlist div p {
