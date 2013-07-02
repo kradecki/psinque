@@ -1,86 +1,61 @@
-/* css reset http://meyerweb.com/eric/tools/css/reset/ */
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-/*     vertical-align: baseline; */
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-    display: block;
-}
-body {
-    line-height: 1;
-}
-ol, ul {
-    list-style: none;
-}
-blockquote, q {
-    quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-    content: '';
-    content: none;
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
 
 /****************************************
  * General
  ****************************************/
 
+html, body {
+/*     height: auto !important; */
+    height: 100%;
+/*     min-height: 100%; */
+}
+
 body {
-/*     font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Verdana', 'Arial', sans-serif; */
-    font-family: 'Segoe UI Light', 'Segoe UI Normal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Verdana', 'Arial', sans-serif;
+/*     font-family: 'Segoe UI Light', 'Segoe UI Normal', 'Helvetica Neue', Helvetica, Arial, sans-serif; */
     font-size: 18px;
     line-height: 100%;
     background-color: #fff;
 }
 
-div#wrapper {    
+div#uberwrapper {
     width: 100%;
     height: auto !important;
     height: 100%;
     min-height: 100%;
-    margin-top: 75px;
-    margin-bottom: 52px;
+    position: relative;
+}
+
+div#contentwrapper {
+    width: 100%;
+    height: auto !important; 
+    height: 100%;
+    min-height: 100%; 
+/*     padding-top: 75px; */
+/*     padding-bottom: 52px; */
 }
 
 div#content {
     width: 1180px;
-    height: auto !important;
+    height: auto !important; 
     height: 100%;
-    min-height: 100%;
+    min-height: 100%; 
     margin: 0 auto;
     padding: 10px;
     background-color: #d8d4cb;
 }
 
 div.outerwrappers {
-    position: fixed;
+/*    position: fixed;
     left: 0;
     z-index: 999;
     width: 100%;
     text-align: center;
-    background-color: #fff;
+    background-color: #fff;*/
+/*     height: 50px; /* Define height of the footer */ */
+    position: absolute;
+/*     bottom: 0; /* Sit it on the bottom */ */
+    left: 0;
+    width: 100%; /* As wide as it's allowed */
 }
 
 a {
@@ -312,7 +287,7 @@ input[type="checkbox"]:checked + div {
  ****************************************/
 
 div#footerwrapper {
-    bottom: 0px;
+    bottom: 0;
     height: 35px;
     text-align: center;
     border-top: 2px solid #000;

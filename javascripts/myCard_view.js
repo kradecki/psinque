@@ -122,7 +122,11 @@ function addRemoveEmailHandler(where) {
 
     $(where).click(function() {
         
+        if(window.ajaxCounter > 0)  // another query in progress
+            return false;
+
         startLogoAnimation();
+        window.ajaxCounter = 1;
 
         tableRow = removeButton.parent().parent();
         emailKey = tableRow.find(".emailkeys").val();
@@ -134,6 +138,7 @@ function addRemoveEmailHandler(where) {
         } else {
             removeEmailEntry(tableRow);
             stopLogoAnimation();
+            window.ajaxCounter = 0;
         }
       
         return false;
@@ -153,6 +158,9 @@ function addUpdateHandler(where) {
     
     $(where).click(function() {
       
+        if(window.ajaxCounter > 0)  // another query in progress
+            return false;
+
         startLogoAnimation();
 
         window.elementCount = $(".emailaddresses").length + 1;
@@ -160,28 +168,27 @@ function addUpdateHandler(where) {
         psinqueUpdateGeneral($("#firstname").val(), $("#lastname").val(),
             function() {
                 decreaseElementCount();
-                unmarkChangedFields(parent);
+                unmarkChangedFields("#generalinfo");
             });
         
         $(".emailaddresses").each(function() {  // then run the AJAX queries
             emailinput = $(this);
             emailAddress = emailinput.val();
-            parent = emailinput.parent(); // <td>
-            typeofEmail = parent.next().find(".typesofemail").val();
-            emailKey = parent.find(".emailkeys").val();
+            td = emailinput.parent();
+            typeOfEmail = td.next().find(".typesofemail").val();
+            emailKey = td.find(".emailkeys").val();
             if(emailKey) {
-                psinqueUpdateEmail(emailKey, emailAddress, typeOfEmail,
-                    function() {
-                        decreaseElementCount();
-                        parent.find("input").css("color", "#000");
-                        parent.next().find("select").css("color", "#000");
-                    });
-            } else {
-                psinqueAddEmail(emailAddress, typeOfEmail, function() {
+                psinqueUpdateEmail(emailKey, emailAddress, typeOfEmail, function() {
                     decreaseElementCount();
-                    parent.find(".emailkeys").val(parsedJSON["key"]);
-                    parent.find("input").css("color", "#000");
-                    parent.next().find("select").css("color", "#000");
+                    unmarkChangedFields(td);
+                    unmarkChangedFields(td.next());
+                });
+            } else {
+                psinqueAddEmail(emailAddress, typeOfEmail, function(data) {
+                    decreaseElementCount();
+                    td.find(".emailkeys").val(data["key"]);  // save the key for further queries
+                    unmarkChangedFields(td);
+                    unmarkChangedFields(td.next());
                 });
             }
         });
@@ -194,7 +201,7 @@ function addUpdateHandler(where) {
 
 $(document).ready(function() {
    
-    addAddEmailHandler("#addemail");
+//     addAddEmailHandler("#addemail");
     addRemoveEmailHandler(".emailremovers");
     addUpdateHandler("#submitbutton");
     

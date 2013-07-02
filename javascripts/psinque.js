@@ -21,12 +21,12 @@ function stopLogoAnimation() {
 }
 
 function markChangedFields(where) {
-    where.css("color", "#de5d35");
+    $(where).css("color", "#de5d35");
 }
 
 function unmarkChangedFields(where) {
 //     where.find("input,select,label").css("color", "#000");
-    where.css("color", "#000");
+    $(where).find("input,select").css("color", "#000");
 }
 
 function removeElementWithEffects(element) {
@@ -61,7 +61,8 @@ $(document).ready(function() {
 
     
     $("input[type=text],input").change(function() {
-        $(this).css("color", "#de5d35");
+//         $(this).css("color", "#de5d35");
+        markChangedFields(this);
     });
 
     initializeCheckboxes();
