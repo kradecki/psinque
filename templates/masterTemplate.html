@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset='UTF-8' />
-    <link href='http://fonts.googleapis.com/css?family=Roboto:300&subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic' rel='stylesheet' type='text/css'>
+    <meta charset="utf-8" />
+    <title>{% block title %}{% endblock %} - Psinque</title>
+    <link rel="shortcut icon" href="/favicon_64.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto:300&subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic'>
     <link rel="stylesheet" type="text/css" href="/stylesheets/psinque.css" />
     {% block stylesheets %}
     {% endblock %}
-    <title>{% block title %}{% endblock %} - Psinque</title>
     <script type="text/javascript" src="/javascripts/jquery.js"></script>
     <script type="text/javascript" src="/javascripts/psinque.js"></script>
     <script type="text/javascript" src="/javascripts/ajaxAPI.js"></script>
