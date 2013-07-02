@@ -21,12 +21,13 @@ function stopLogoAnimation() {
 }
 
 function markChangedFields(where) {
-    $(where).css("color", "#de5d35");
+    if($(where).css("color", "#de5d35").size() == 0)
+        $(where).find("input,select").css("color", "#de5d35");
 }
 
 function unmarkChangedFields(where) {
-//     where.find("input,select,label").css("color", "#000");
-    $(where).find("input,select").css("color", "#000");
+    if($(where).css("color", "#000").size() == 0)
+        $(where).find("input,select").css("color", "#000");
 }
 
 function removeElementWithEffects(element) {

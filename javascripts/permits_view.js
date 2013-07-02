@@ -115,6 +115,8 @@ function addAddPermitHandler(where) {
                     recreateAccordeon();
                     initializeCheckboxes();
                     stopLogoAnimation();
+                    unmarkChangedFields("#newpermitname");
+                    $("#newpermitname").val("");
                     window.ajaxCounter = 0;
                     
                 });

@@ -35,12 +35,13 @@ div#permitlist h3 img {
     vertical-align: middle;
     display: inline-block;
     margin: 0;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 div#permitlist h3 img.headerarrows {
     float: right;
     margin-top: 10px;
-    margin-right: 5px;
 }
 
 div#permitlist h3 img.downarrows {
