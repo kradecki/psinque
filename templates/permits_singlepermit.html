@@ -14,9 +14,9 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="firstnames{{ permitIndex }}" {% if permit.canViewFirstNames %}checked="checked"{% endif %} class="general names"/>
+        <input type="checkbox" id="givennames{{ permitIndex }}" {% if permit.canViewFirstNames %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general names"/>
         <div class="checkboxdiv"></div>
-        <label for="firstnames{{ permitIndex }}" class="clickable">First names</label>
+        <label for="givennames{{ permitIndex }}" class="clickable">First names</label>
       </td>
       <td class="forminputs">
         <label>{{ userProfile.givenNames|join(" ") }}</label>
@@ -28,9 +28,9 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="lastnames{{ permitIndex }}" {% if permit.canViewLastNames %}checked="checked"{% endif %} class="general names"/>
+        <input type="checkbox" id="familynames{{ permitIndex }}" {% if permit.canViewLastNames %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general names"/>
         <div class="checkboxdiv"></div>
-        <label for="lastnames{{ permitIndex }}" class="clickable">Last names</label>
+        <label for="familynames{{ permitIndex }}" class="clickable">Last names</label>
       </td>
       <td class="forminputs">
         <label>
@@ -44,7 +44,7 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="birthday{{ permitIndex }}" {% if permit.canViewBirthday %}checked="checked"{% endif %} class="general"/>
+        <input type="checkbox" id="birthday{{ permitIndex }}" {% if permit.canViewBirthday %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general"/>
         <div class="checkboxdiv"></div>
         <label for="birthday{{ permitIndex }}" class="clickable">Birthday</label>
       </td>
@@ -60,7 +60,7 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="gender{{ permitIndex }}" {% if permit.canViewGender %}checked="checked"{% endif %} class="general"/>
+        <input type="checkbox" id="gender{{ permitIndex }}" {% if permit.canViewGender %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general"/>
         <div class="checkboxdiv"></div>
         <label for="gender{{ permitIndex }}" class="clickable">Gender</label>
       </td>
@@ -77,14 +77,12 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="email{{ permitIndex }}_{{ loop.index }}" {% if permitEmail.canView %}checked="checked"{% endif %} class="email" name="{{ permitEmail.key() }}"/>
+        <input type="checkbox" id="email{{ permitIndex }}_{{ loop.index }}" {% if permitEmail.canView %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="email" name="{{ permitEmail.key() }}"/>
         <div class="checkboxdiv"></div>
         <label for="email{{ permitIndex }}_{{ loop.index }}" class="clickable">E-mail</label>
       </td>
       <td class="forminputs">
-      <label>
-        {{ permitEmail.userEmail.email }}
-      </label>
+      <label id="emailaddress{{ permitIndex }}_{{ loop.index }}">{{ permitEmail.userEmail.email }}</label>
       </td>
     </tr>
     </tbody>
@@ -96,7 +94,7 @@
       <td class="formlabels">
         <label>Displayed name</label>
       <td class="forminputs">
-      <label class="displaynames">{{ permit.displayName }}</label>
+      <label id="displayname{{ permitIndex }}">{{ permit.displayName }}</label>
       </td>
     </tr>
     </tbody>

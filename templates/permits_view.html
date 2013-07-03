@@ -6,6 +6,10 @@
 {% block javascripts %}
     <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
     <script type="text/javascript" src="/javascripts/permits_view.js"></script>
+    <script type="text/javascript">
+      window.givenNames = "{{ userProfile.givenNames|join(" ") }}";
+      window.familyNames = "{{ userProfile.familyNames|join(" ") }}";
+    </script>
 {% endblock %}
 {% block content %}
   <div class="onecolumn">

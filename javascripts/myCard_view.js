@@ -210,7 +210,7 @@ $(document).ready(function() {
       newEmail = cloneElement($("#primaryemailaddress > tbody > tr"));
 
       newEmail.find('.formlabels').remove();
-      newEmail.find('.formbuttons').html("<a href='' class='emailremovers'><img src='/images/squareicons/remove.png' /></a>");
+      newEmail.find('.formbuttons').html("<span class='emailremovers buttons clickable'><img src='/images/squareicons/remove.png' /></span>");
       newEmail.find('input,select').change(function() {
           markChangedFields($(this));
       });

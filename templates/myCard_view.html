@@ -23,10 +23,10 @@
       <td class="formlabels"><label>Given names</label></td>
       {% for givenName in userProfile.givenNames %}
       <td class="forminputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
-      <td class="forminputs formbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
+      <td class="forminputs formbuttons"><span id="addgivenname buttons clickable"><img src="/images/squareicons/add.png" /></span></td>
       {% else %}
       <td class="forminputs"><input type="text" id="firstname" value="" minlength="2" /></td>
-      <td class="forminputs formbuttons"><a href="" id="addgivenname"><img src="/images/squareicons/add.png" /></a></td>
+      <td class="forminputs formbuttons"><span id="addgivenname buttons clickable"><img src="/images/squareicons/add.png" /></span></td>
       {% endfor %}
     </tr>
     </table>
@@ -60,7 +60,9 @@
           </select>
         </td>
         <td class="forminputs formbuttons">
-          <a href="" id="addemail"><img src="/images/squareicons/add.png" /></a>
+          <span id="addemail buttons clickable">
+            <img src="/images/squareicons/add.png" />
+          </span>
         </td>
       </tr>
       </tbody>
@@ -84,7 +86,9 @@
           </select>
         </td>
         <td class="forminputs formbuttons">
-          <a href="" class="emailremovers"><img src="/images/squareicons/remove.png" /></a>
+          <span class="emailremovers buttons clickable">
+            <img src="/images/squareicons/remove.png" />
+          </span>
         </td>
       </tr>
       {% endfor %}
@@ -97,9 +101,9 @@
       <tr>
         <td class="formlabels"><label>Save changes</label></td>
         <td class="forminputs formbuttons">
-          <a href="" id="submitbutton">
+          <span id="submitbutton buttons clickable">
             <img src="/images/squareicons/save.png" />
-          </a>
+          </span>
         </td>
         <td><br style="clear:both;"/></td>
       </tr>

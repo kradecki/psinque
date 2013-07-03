@@ -130,6 +130,32 @@ function addAddPermitHandler(where) {
     });
 }
 
+function updateDisplayName(permitIndex) {
+    
+    displayName = "";
+    
+    if($("#givennames" + permitIndex).is(":checked"))
+        displayName += window.givenNames;
+    
+    if($("#familynames" + permitIndex).is(":checked")) {
+        if(displayName.length > 0)
+            displayName += " ";
+        displayName += window.familyNames;
+    }
+    
+    if(displayName.length == 0) {
+        emailPermits = $("#permitform" + permitIndex).find(".email");
+        for(ii = 0; ii < emailPermits.length; ii++) {
+            if($("#email" + permitIndex + "_" + (ii+1)).is(":checked")) {
+                displayName = $("#emailaddress" + permitIndex + "_" + (ii+1)).html();
+                break;
+            }
+        }
+    }
+     
+    $("#displayname" + permitIndex).html(displayName);
+}
+
 $(document).ready(function() {
     
     window.highestExistingPermitNumber = parseInt($("h3").length);
@@ -137,7 +163,15 @@ $(document).ready(function() {
     addUpdatePermitHandler(".updatebuttons");
     addRemovePermitHandler(".removebuttons");
     addAddPermitHandler("#addbutton");
-        
+
+    $("input[type=checkbox]").change(function() {
+        console.log("Dupa!");
+        updateDisplayName($(this).attr("data-psinque-index"));
+    });
+
+//     $("input[type=checkbox]").change(function() {
+//     });
+
     // jQuery UI
     $("#permitlist").accordion({
         heightStyle: "content",
