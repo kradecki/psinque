@@ -30,9 +30,36 @@ class ProfileHandler(MasterHandler):
             permit.put()
 
 
-    def _createNewProfile(self):
+    def _createNewPermit(self, userProfile, permitName, userEmail):
         
-        logging.info("Creating new profile")
+        permit = Permit(parent = userProfile,
+                        name = permitName)
+        permit.put()
+
+        permitEmail = PermitEmail(parent = permit, 
+                                  userEmail = userEmail)
+        permitEmail.put()
+        
+        permit.generateVCard()
+        permit.put()
+        
+        logging.info("New permit created, key = " + str(permit.key()))
+        
+        return permit
+    
+    
+    def _createNewGroup(self, userProfile, groupName):
+        
+        group = Group(parent = userProfile,
+                      name = groupName)
+        group.put()
+        
+        #logging.info("New group created, key = " + str(group.key()))
+
+        return group
+
+
+    def _createNewProfile(self):
         
         # Create an empty profile
         userProfile = UserProfile(user = self.user)
@@ -50,46 +77,23 @@ class ProfileHandler(MasterHandler):
                               primary = True)
         userEmail.put()
                 
-        # Default group
-        defaultGroup = Group(parent = userProfile,
-                             name = 'Default')
-        defaultGroup.put()
-        userProfile.defaultGroup = defaultGroup
-        
-        # Default private permit
-        defaultPermit = Permit(parent = userProfile,
-                               name = "Default")
-        defaultPermit.put()
+        userProfile.defaultGroup = self._createNewGroup(userProfile,
+                                                        'Default')
 
-        userProfile.defaultPermit = defaultPermit
+        userProfile.defaultPermit = self._createNewPermit(userProfile,
+                                                          'Default',
+                                                          userEmail)
 
-        defaultPermitEmail = PermitEmail(parent = defaultPermit,
-                                         userEmail = userEmail)
-        defaultPermitEmail.put()
-        
-        defaultPermit.generateVCard()
-        defaultPermit.put()
-
-        # Public permit
-        publicPermit = Permit(parent = userProfile,
-                              name = "Public",
-                              public = True)
-        publicPermit.put()
-
-        userProfile.publicPermit = publicPermit
-
-        publicPermitEmail = PermitEmail(parent = publicPermit,
-                                        userEmail = userEmail)
-        publicPermitEmail.put()
-        publicPermit.put()
-
-        publicPermit.generateVCard()
+        userProfile.publicPermit = self._createNewPermit(userProfile,
+                                                          'Public',
+                                                          userEmail)
         
         # Save the updated user profile
         userProfile.put()
         
-        logging.info("Profile created")
+        logging.info("New profile created")
         return userProfile
+    
         
     #****************************
     # Views

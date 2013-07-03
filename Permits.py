@@ -96,7 +96,8 @@ class PermitsHandler(MasterHandler):
         # Generate the Permit's vCard and eTag:
         newPermit.generateVCard()
         newPermit.put()
-        
+        logging.info("New permit created, key = " + str(newPermit.key()))
+
         #self.sendJsonOK({"key": str(newPermit.key())});    
         self.sendContent('templates/permits_singlepermit.html',
                          activeEntry = "Permits",
@@ -124,8 +125,12 @@ class PermitsHandler(MasterHandler):
         permit.canViewLastNames = canViewLastNames
         permit.canViewBirthday = canViewBirthday
         permit.canViewGender = canViewGender
+        permit.put()  # it doesn't work without this line, don't ask me why
         permit.generateVCard()
         permit.put()
+
+        logging.info(permit.key())
+        logging.info(permit.canViewBirthday)
         
         self.sendJsonOK()
             
