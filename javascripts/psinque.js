@@ -11,11 +11,15 @@ function cloneElement(oldElement) {
 }
 
 function startLogoAnimation() {
+    window.onbeforeunload = function() {
+        return "An AJAX query is in progress. Please wait until it's done.";
+    }
     $("#staticlogo").hide();
     $("#animatedlogo").show();
 }
 
 function stopLogoAnimation() {
+    window.onbeforeunload = null;
     $("#staticlogo").show();
     $("#animatedlogo").hide();
 }
