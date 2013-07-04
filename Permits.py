@@ -26,7 +26,6 @@ class PermitsHandler(MasterHandler):
         if self.getUserProfile():
             
             permits = Permit.all().ancestor(self.userProfile)
-            logging.info(permits.count())
             
             self.sendContent('templates/permits_view.html',
                             activeEntry = "Permits",
@@ -80,7 +79,6 @@ class PermitsHandler(MasterHandler):
 
         # Check if the permit already exists
         permit = self._getPermitByName(permitName)
-        logging.info(permit)
         if not permit is None:
             raise AjaxError("Permit with that name already exists")
 
@@ -98,7 +96,6 @@ class PermitsHandler(MasterHandler):
         newPermit.put()
         logging.info("New permit created, key = " + str(newPermit.key()))
 
-        #self.sendJsonOK({"key": str(newPermit.key())});    
         self.sendContent('templates/permits_singlepermit.html',
                          activeEntry = "Permits",
                          templateVariables = {
@@ -129,9 +126,6 @@ class PermitsHandler(MasterHandler):
         permit.generateVCard()
         permit.put()
 
-        logging.info(permit.key())
-        logging.info(permit.canViewBirthday)
-        
         self.sendJsonOK()
             
     def setemailpermit(self):

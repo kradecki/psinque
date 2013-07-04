@@ -34,6 +34,10 @@ function unmarkChangedFields(where) {
         $(where).find("input,select").css("color", "#000");
 }
 
+function unmarkAllFields() {
+    unmarkChangedFields(document);
+}
+
 function removeElementWithEffects(element) {
 //   element.slideUp('fast', function() {
     element.remove();
@@ -59,16 +63,10 @@ function initializeCheckboxes() {
 
 $(document).ready(function() {
     
-    $(document).ajaxError(function() {
-//         $("div.log").text("Triggered ajaxError handler.");
-        alert("Uknown error occured while performing operation.");
-    });
-
-    
-    $("input[type=text],input").change(function() {
+    $("input").change(function() {
 //         $(this).css("color", "#de5d35");
         markChangedFields(this);
     });
-
+    
     initializeCheckboxes();
 });

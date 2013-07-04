@@ -19,7 +19,7 @@
         <label for="givennames{{ permitIndex }}" class="clickable">First names</label>
       </td>
       <td class="forminputs">
-        <label>{{ userProfile.givenNames|join(" ") }}</label>
+        <label class="generallabels">{{ userProfile.givenNames|join(" ") }}</label>
       </td>
     </tr>
     </tbody>
@@ -33,9 +33,7 @@
         <label for="familynames{{ permitIndex }}" class="clickable">Last names</label>
       </td>
       <td class="forminputs">
-        <label>
-          {{ userProfile.familyNames|join(" ") }}
-        </label>
+        <label class="generallabels">{{ userProfile.familyNames|join(" ") }}</label>
       </td>
     </tr>
     </tbody>
@@ -49,9 +47,7 @@
         <label for="birthday{{ permitIndex }}" class="clickable">Birthday</label>
       </td>
       <td class="forminputs">
-        <label>
-          {{ userProfile.birthDay }}
-        </label>
+        <label class="generallabels">{{ userProfile.birthDay }}</label>
       </td>
     </tr>
     </tbody>
@@ -65,9 +61,7 @@
         <label for="gender{{ permitIndex }}" class="clickable">Gender</label>
       </td>
       <td class="forminputs">
-        <label>
-          {{ userProfile.gender }}
-        </label>
+        <label class="generallabels">{{ userProfile.gender }}</label>
       </td>
     </tr>
     </tbody>
@@ -77,12 +71,12 @@
     <tbody>
     <tr>
       <td class="formlabels">
-        <input type="checkbox" id="email{{ permitIndex }}_{{ loop.index }}" {% if permitEmail.canView %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="email" name="{{ permitEmail.key() }}"/>
+        <input type="checkbox" id="email{{ permitIndex }}_{{ loop.index }}" {% if permitEmail.canView %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" data-psinque-subindex="{{ loop.index }}" class="email" name="{{ permitEmail.key() }}" />
         <div class="checkboxdiv"></div>
         <label for="email{{ permitIndex }}_{{ loop.index }}" class="clickable">E-mail</label>
       </td>
       <td class="forminputs">
-      <label id="emailaddress{{ permitIndex }}_{{ loop.index }}">{{ permitEmail.userEmail.email }}</label>
+        <label id="emailaddress{{ permitIndex }}_{{ loop.index }}">{{ permitEmail.userEmail.email }}</label>
       </td>
     </tr>
     </tbody>

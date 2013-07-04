@@ -17,31 +17,29 @@
   </div>
   <div id="mycard">
   <div class="tableform">
-    <span id="generalinfo">
+  <span id="generalinfo">
     <table>
     <tr>
-      <td class="formlabels"><label>Given names</label></td>
-      {% for givenName in userProfile.givenNames %}
-      <td class="forminputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
-      <td class="forminputs formbuttons"><span id="addgivenname buttons clickable"><img src="/images/squareicons/add.png" /></span></td>
-      {% else %}
-      <td class="forminputs"><input type="text" id="firstname" value="" minlength="2" /></td>
-      <td class="forminputs formbuttons"><span id="addgivenname buttons clickable"><img src="/images/squareicons/add.png" /></span></td>
-      {% endfor %}
-    </tr>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels"><label>Family names</label></td>
-      {% for familyName in userProfile.familyNames %}
-      <td class="forminputs"><input type="text" id="lastname" value="{{ familyName }}" minlength="2" /></td>
-      {% else %}
-      <td class="forminputs"><input type="text" id="lastname" value="" minlength="2" /></td>
-      {% endfor %}
-    </tr>
-    </tbody>
-    </table>
+        <td class="formlabels"><label>Given names</label></td>
+        {% for givenName in userProfile.givenNames %}
+        <td class="forminputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
+        {% else %}
+        <td class="forminputs"><input type="text" id="firstname" value="" minlength="2" /></td>
+        {% endfor %}
+      </tr>
+      </table>
+      <table>
+      <tbody>
+      <tr>
+        <td class="formlabels"><label>Family names</label></td>
+        {% for familyName in userProfile.familyNames %}
+        <td class="forminputs"><input type="text" id="lastname" value="{{ familyName }}" minlength="2" /></td>
+        {% else %}
+        <td class="forminputs"><input type="text" id="lastname" value="" minlength="2" /></td>
+        {% endfor %}
+      </tr>
+      </tbody>
+      </table>
     </span>
     <span id="emails">
       <table id="primaryemailaddress">
@@ -60,8 +58,13 @@
           </select>
         </td>
         <td class="forminputs formbuttons">
-          <span id="addemail buttons clickable">
+          <span class="buttons clickable" id="addemail">
             <img src="/images/squareicons/add.png" />
+          </span>
+        </td>
+        <td class="forminputs formbuttons">
+          <span class="emailremovers buttons clickable">
+            <img src="/images/squareicons/remove.png" />
           </span>
         </td>
       </tr>
@@ -70,27 +73,9 @@
       <table id="additionalemailaddresses">
       <tbody>
       {% for email in additionalEmails %}
-      <tr>
-        {% if loop.first %}
-        <td rowspan="{{ additionalEmails|count }}" class="formlabels"><label>Additional emails</label></td>
-        {% endif %}
-        <td class="forminputs">
-          <input type="hidden" class="emailkeys" value="{{ email.key() }}"/>
-          <input type="text" class="emailaddresses" value="{{ email.email }}" />
-        </td>
-        <td class="forminputs formextras">
-          <select class="typesofemail">
-          {% for emailTypeCode, emailTypeName in emailTypes.items() %}
-            <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
-          {% endfor %}
-          </select>
-        </td>
-        <td class="forminputs formbuttons">
-          <span class="emailremovers buttons clickable">
-            <img src="/images/squareicons/remove.png" />
-          </span>
-        </td>
-      </tr>
+      {% set additionalEmailsCount = additionalEmails|count %}
+      {% set loopfirst = loop.first %}
+      {% include "templates/myCard_singleemail.html" %}
       {% endfor %}
       </tbody>
       </table>
@@ -101,7 +86,7 @@
       <tr>
         <td class="formlabels"><label>Save changes</label></td>
         <td class="forminputs formbuttons">
-          <span id="submitbutton buttons clickable">
+          <span id="submitbutton" class="buttons clickable">
             <img src="/images/squareicons/save.png" />
           </span>
         </td>

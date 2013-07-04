@@ -55,7 +55,7 @@ class Permit(db.Model):
         if self.displayName == u"":
             for permitEmail in self.permitEmails:
                 if permitEmail.canView:
-                    self.displayName = permitEmail.userEmail.mail
+                    self.displayName = permitEmail.userEmail.email
                     return
     
     def generateVCard(self):

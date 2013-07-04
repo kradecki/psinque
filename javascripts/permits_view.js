@@ -1,23 +1,10 @@
 
-window.ajaxCounter = 0;
-
-recreateAccordeon = function() {
-    var active = $("#permitlist").accordion("option", "active");
-    $("#permitlist").accordion('destroy').accordion({
-        heightStyle: "content",
-        active: active,
-    });
-}
-
 function addRemovePermitHandler(where) {
     
     $(where).click(function() {
         
-        if(window.ajaxCounter > 0)  // another query in progress
+        if(!psinqueAjaxSafeguard())  // another query in progress
             return false;
-        
-        startLogoAnimation();
-        window.ajaxCounter = 1;
 
         permitIndex = $(this).attr('data-psinque-index');
         permitKey = $("#permitkey" + permitIndex).val();
@@ -29,7 +16,6 @@ function addRemovePermitHandler(where) {
                 permit.remove();
                 recreateAccordeon();
                 stopLogoAnimation();
-                window.ajaxCounter = 0;
             });
         });
         
@@ -41,42 +27,33 @@ function addUpdatePermitHandler(where) {
     
     $(where).click(function(url) {
         
-        if(window.ajaxCounter > 0)  // another query in progress
+        if(!psinqueAjaxSafeguard())  // another query in progress
             return false;
 
-        startLogoAnimation();
-
         permitIndex = $(this).attr('data-psinque-index');
-        permitKey = $("#permitkey" + permitIndex).val();
         permitForm = $("#permitform" + permitIndex);
         
-        // Count the number of AJAX queries
-        window.ajaxCounter++;  // the general permit data
-        permitForm.find("input").each(function() {
-            if(($(this).attr("type") == "checkbox") && (!$(this).hasClass("general")))
-                window.ajaxCounter++;
-        });
-        
         // Update the general permits
-        psinqueSetGeneralPermit(permitKey,
+        psinqueSetGeneralPermit($("#permitkey" + permitIndex).val(),
             $("#firstnames" + permitIndex).is(':checked'),
             $("#lastnames" + permitIndex).is(':checked'),
             $("#birthday" + permitIndex).is(':checked'),
             $("#gender" + permitIndex).is(':checked'),
-            function() {
-                window.ajaxCounter--;
+        function() {
+            unmarkChangedFields(permitForm.find(".generallabels"));    
         });
         
         // Update all the other permits
         permitForm.find("input").each(function() {
-            if(($(this).attr("type") == "checkbox") && ($(this).attr("class") == "email"))
-                psinqueSetEmailPermit($(this).attr("name"), $(this).is(':checked'),
+            input = $(this);
+            if((input.attr("type") == "checkbox") && (input.attr("class") == "email")) {
+                emailIndex = input.attr("data-psinque-subindex");
+                psinqueSetEmailPermit(input.attr("name"), input.is(':checked'),
                     function() {
-                        window.ajaxCounter--;
-                        if(window.ajaxCounter == 0) {
-                            stopLogoAnimation();
-                        }
-                    });
+                        unmarkChangedFields($("#emailaddress" + permitIndex + "_" + emailIndex));
+                    }
+                );
+            }
         });
 
         return false;
@@ -87,14 +64,10 @@ function addAddPermitHandler(where) {
     
     $(where).click(function() {
         
-        if(window.ajaxCounter > 0)  // another query in progress
+        if(!psinqueAjaxSafeguard())  // another query in progress
             return false;
         
-        startLogoAnimation();
-        window.ajaxCounter = 1;
-                
         permitName = $("#newpermitname").val();
-        
         if(permitName != "") {
             
             psinqueAddPermit(permitName, window.highestExistingPermitNumber + 1,
@@ -114,10 +87,8 @@ function addAddPermitHandler(where) {
                     
                     recreateAccordeon();
                     initializeCheckboxes();
-                    stopLogoAnimation();
                     unmarkChangedFields("#newpermitname");
                     $("#newpermitname").val("");
-                    window.ajaxCounter = 0;
                     
                 });
             
@@ -127,6 +98,14 @@ function addAddPermitHandler(where) {
         } 
         
         return false;
+    });
+}
+
+function recreateAccordeon() {
+    var active = $("#permitlist").accordion("option", "active");
+    $("#permitlist").accordion('destroy').accordion({
+        heightStyle: "content",
+        active: active,
     });
 }
 
@@ -165,12 +144,12 @@ $(document).ready(function() {
     addAddPermitHandler("#addbutton");
 
     $("input[type=checkbox]").change(function() {
-        console.log("Dupa!");
         updateDisplayName($(this).attr("data-psinque-index"));
     });
 
-//     $("input[type=checkbox]").change(function() {
-//     });
+    $("input[type=checkbox]").change(function() {
+        markChangedFields($(this).parent().next());
+    });
 
     // jQuery UI
     $("#permitlist").accordion({

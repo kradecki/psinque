@@ -1,0 +1,21 @@
+      <tr class="additionalemails">
+        {% if loopfirst %}
+        <td rowspan="{{ additionalEmailsCount }}" class="formlabels"><label>Additional emails</label></td>
+        {% endif %}
+        <td class="forminputs">
+          <input type="hidden" class="emailkeys" value="{{ email.key() }}"/>
+          <input type="text" class="emailaddresses" value="{{ email.email }}" />
+        </td>
+        <td class="forminputs formextras">
+          <select class="typesofemail">
+          {% for emailTypeCode, emailTypeName in emailTypes.items() %}
+            <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
+          {% endfor %}
+          </select>
+        </td>
+        <td class="forminputs formbuttons">
+          <span class="emailremovers buttons clickable">
+            <img src="/images/squareicons/remove.png" />
+          </span>
+        </td>
+      </tr>

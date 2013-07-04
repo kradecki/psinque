@@ -108,9 +108,9 @@
 function removeEmailEntry(tableRow) {
     if(formlabel = tableRow.find(".formlabels")) {
         if(formlabel.html() == "Additional emails") {
-            additionalEmailCounter--;
-            if(additionalEmailCounter > 0){
-                formlabel.attr("rowspan", additionalEmailCounter);
+            window.additionalEmailCounter--;
+            if(window.additionalEmailCounter > 0){
+                formlabel.attr("rowspan", window.additionalEmailCounter);
                 formlabel.insertBefore(tableRow.parent().find("tr:first > td:first"));
             }
         }
@@ -122,23 +122,17 @@ function addRemoveEmailHandler(where) {
 
     $(where).click(function() {
         
-        if(window.ajaxCounter > 0)  // another query in progress
+        if(!psinqueAjaxSafeguard())  // another query in progress
             return false;
-
-        startLogoAnimation();
-        window.ajaxCounter = 1;
 
         tableRow = removeButton.parent().parent();
         emailKey = tableRow.find(".emailkeys").val();
         if(emailKey) {
             psinqueRemovePermit(emailKey, function() {
                 removeEmailEntry(tableRow);
-                stopLogoAnimation();
             });
         } else {
             removeEmailEntry(tableRow);
-            stopLogoAnimation();
-            window.ajaxCounter = 0;
         }
       
         return false;
@@ -147,27 +141,15 @@ function addRemoveEmailHandler(where) {
 
 //---------------------------------------------------------
 
-function decreaseElementCount() {
-    window.elementCount--;
-    if(window.elementCount == 0) {  // all fields are updated
-        stopLogoAnimation();
-    }
-}
-
 function addUpdateHandler(where) {
     
     $(where).click(function() {
       
-        if(window.ajaxCounter > 0)  // another query in progress
+        if(!psinqueAjaxSafeguard())  // another query in progress
             return false;
 
-        startLogoAnimation();
-
-        window.elementCount = $(".emailaddresses").length + 1;
-        
         psinqueUpdateGeneral($("#firstname").val(), $("#lastname").val(),
             function() {
-                decreaseElementCount();
                 unmarkChangedFields("#generalinfo");
             });
         
@@ -179,13 +161,11 @@ function addUpdateHandler(where) {
             emailKey = td.find(".emailkeys").val();
             if(emailKey) {
                 psinqueUpdateEmail(emailKey, emailAddress, typeOfEmail, function() {
-                    decreaseElementCount();
                     unmarkChangedFields(td);
                     unmarkChangedFields(td.next());
                 });
             } else {
                 psinqueAddEmail(emailAddress, typeOfEmail, function(data) {
-                    decreaseElementCount();
                     td.find(".emailkeys").val(data["key"]);  // save the key for further queries
                     unmarkChangedFields(td);
                     unmarkChangedFields(td.next());
@@ -199,46 +179,58 @@ function addUpdateHandler(where) {
 
 //---------------------------------------------------------
 
+function addAddEmailHandler(where) {
+    
+    $(where).click(function() {
+        
+        newEmail = cloneElement($("#primaryemailaddress > tbody > tr"));
+
+        newEmail.find('.formlabels').remove();
+        newEmail.find('.formbuttons:first').remove();
+        newEmail.find('.formbuttons').html("<span class='emailremovers buttons clickable'><img src='/images/squareicons/remove.png' /></span>");
+        newEmail.find('input,select').change(function() {
+            markChangedFields($(this));
+        });
+        newEmail.find('input,select').val('');
+
+        if(window.additionalEmailCounter == 0) {
+            $("<td rowspan=" + window.additionalEmailCounter + " class='formlabels'><label>Additional emails</label></td>").insertBefore(newEmail.find("td:first"));
+        } else {
+            $("#additionalemailaddresses > tbody > tr > .formlabels").attr('rowspan', window.additionalEmailCounter + 1);
+        }
+        window.additionalEmailCounter++;
+        
+        newEmail.find('.emailremovers').click(function() {
+            removeEmail($(this));
+            return false;
+        });
+
+        newEmail.appendTo("#additionalemailaddresses > tbody");
+        newEmail.slideDown();
+        
+        return false;   // stop page refresh
+    });
+}
+
+//---------------------------------------------------------
+
 $(document).ready(function() {
-   
-//     addAddEmailHandler("#addemail");
+
+    addAddEmailHandler("#addemail");
     addRemoveEmailHandler(".emailremovers");
     addUpdateHandler("#submitbutton");
-    
-  $('#addemail').click(function() {
       
-      newEmail = cloneElement($("#primaryemailaddress > tbody > tr"));
+    $("input[type=text]").submit(function() {
+        
+    });
 
-      newEmail.find('.formlabels').remove();
-      newEmail.find('.formbuttons').html("<span class='emailremovers buttons clickable'><img src='/images/squareicons/remove.png' /></span>");
-      newEmail.find('input,select').change(function() {
-          markChangedFields($(this));
-      });
-      newEmail.find('input,select').val('');
-
-      if(additionalEmailCounter == 0) {
-          $("<td rowspan=" + additionalEmailCounter + " class='formlabels'><label>Additional emails</label></td>").insertBefore(newEmail.find("td:first"));
-      } else {
-          $("#additionalemailaddresses > tbody > tr > .formlabels").attr('rowspan', additionalEmailCounter + 1);
-      }
-      additionalEmailCounter++;
-      
-      newEmail.find('.emailremovers').click(function() {
-          removeEmail($(this));
-          return false;
-      });
-
-      newEmail.appendTo("#additionalemailaddresses");
-      newEmail.slideDown();
-      
-      return false;   // stop page refresh
-  });
-  
-  // Turn the form validation on
+    // Turn the form validation on
 //   $("#submitForm").validate();
 
 //   // Add map handlers
 //   $('.addMap').click(addNewMap);
 //   $('.hideMap').click(hideTheMap);
 //   $('.showMap').click(showTheMap);
+
+    
 });

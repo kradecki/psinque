@@ -122,12 +122,12 @@ class ProfileHandler(MasterHandler):
             'userProfile': userProfile,
             'primaryEmail': primaryEmail,
             'additionalEmails': additionalEmails,
-            #'anyAdditionalEmails': anyAdditionalEmails,
             'emailTypes': emailTypes,
             #'addresses': addresses,
             #'addressTypes': addressTypes,
         })
-            
+    
+                             
     #****************************
     # AJAX methods
     # 
