@@ -125,10 +125,10 @@ function addRemoveEmailHandler(where) {
         if(!psinqueAjaxSafeguard())  // another query in progress
             return false;
 
-        tableRow = removeButton.parent().parent();
+        tableRow = $(this).parent().parent();
         emailKey = tableRow.find(".emailkeys").val();
         if(emailKey) {
-            psinqueRemovePermit(emailKey, function() {
+            psinqueRemoveEmail(emailKey, function() {
                 removeEmailEntry(tableRow);
             });
         } else {

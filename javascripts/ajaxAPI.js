@@ -19,7 +19,7 @@ psinqueAPI_addPermit        = psinqueAPI_permits + "addpermit"
 //------------------------------
 // My Card
 
-function psinqueRemovePermit(emailKey, successFunction) {
+function psinqueRemoveEmail(emailKey, successFunction) {
     psinqueAJAX(psinqueAPI_removeEmail, {
                     key: emailKey,
                 }, function() {
