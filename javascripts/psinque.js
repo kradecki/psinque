@@ -1,11 +1,13 @@
 
 
 function cloneElement(oldElement) {
+    
     newElement = oldElement.clone();  // clone an existing address field group
 
     // Clean all the input values:
     newElement.find("input,select").val('');
     newElement.hide();
+    psinqueSetMarkingOnChange(newElement.find('input,select'));
 
     return newElement;
 }
@@ -25,13 +27,13 @@ function stopLogoAnimation() {
 }
 
 function markChangedFields(where) {
-    if($(where).css("color", "#de5d35").size() == 0)
-        $(where).find("input,select").css("color", "#de5d35");
+    $(where).css("color", "#de5d35");
+    $(where).find("input,select").css("color", "inherit");
 }
 
 function unmarkChangedFields(where) {
-    if($(where).css("color", "#000").size() == 0)
-        $(where).find("input,select").css("color", "#000");
+    $(where).css("color", "#000");
+    $(where).find("input,select").css("color", "inherit");
 }
 
 function unmarkAllFields() {
@@ -61,12 +63,15 @@ function initializeCheckboxes() {
     });
 }
 
-$(document).ready(function() {
-    
-    $("input").change(function() {
-//         $(this).css("color", "#de5d35");
+function psinqueSetMarkingOnChange(where) {
+    $(where).change(function() {
         markChangedFields(this);
     });
+}
+
+$(document).ready(function() {
     
+    psinqueSetMarkingOnChange("input,select");
     initializeCheckboxes();
+    
 });

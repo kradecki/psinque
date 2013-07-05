@@ -19,7 +19,8 @@
   <div class="tableform">
   <span id="generalinfo">
     <table>
-    <tr>
+    <tbody>
+      <tr>
         <td class="formlabels"><label>Given names</label></td>
         {% for givenName in userProfile.givenNames %}
         <td class="forminputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
@@ -27,9 +28,10 @@
         <td class="forminputs"><input type="text" id="firstname" value="" minlength="2" /></td>
         {% endfor %}
       </tr>
-      </table>
-      <table>
-      <tbody>
+    </tbody>
+    </table>
+    <table>
+    <tbody>
       <tr>
         <td class="formlabels"><label>Family names</label></td>
         {% for familyName in userProfile.familyNames %}
@@ -38,12 +40,12 @@
         <td class="forminputs"><input type="text" id="lastname" value="" minlength="2" /></td>
         {% endfor %}
       </tr>
-      </tbody>
-      </table>
-    </span>
-    <span id="emails">
-      <table id="primaryemailaddress">
-      <tbody>
+    </tbody>
+    </table>
+  </span>
+  <span id="emails">
+    <table id="primaryemailaddress">
+    <tbody>
       <tr>
         <td class="formlabels"><label>Primary email</label></td>
         <td class="forminputs">

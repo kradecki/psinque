@@ -105,34 +105,35 @@
 
 //---------------------------------------------------------
 
-function removeEmailEntry(tableRow) {
-    if(formlabel = tableRow.find(".formlabels")) {
-        if(formlabel.html() == "Additional emails") {
-            window.additionalEmailCounter--;
-            if(window.additionalEmailCounter > 0){
-                formlabel.attr("rowspan", window.additionalEmailCounter);
-                formlabel.insertBefore(tableRow.parent().find("tr:first > td:first"));
-            }
+function removeEmailEntry(tr) {
+    console.log(tr[0]);
+    if(tr.hasClass("additionalemails")) {
+        window.additionalEmailCounter--;
+        if(window.additionalEmailCounter > 0) {
+            formlabel = $("#additionalemaillabel");
+            if(formlabel.parent().is(tr))
+                formlabel.prependTo(tr.next());
+            formlabel.attr("rowspan", window.additionalEmailCounter);
         }
+        removeElementWithEffects(tr);
+    } else {
     }
-    removeElementWithEffects(tableRow);
 }
 
 function addRemoveEmailHandler(where) {
 
     $(where).click(function() {
         
-        if(!psinqueAjaxSafeguard())  // another query in progress
-            return false;
-
-        tableRow = $(this).parent().parent();
-        emailKey = tableRow.find(".emailkeys").val();
+        tr = $(this).parent().parent();
+        emailKey = tr.find(".emailkeys").val();
         if(emailKey) {
+            if(!psinqueAjaxSafeguard())  // another query in progress
+                return false;
             psinqueRemoveEmail(emailKey, function() {
-                removeEmailEntry(tableRow);
+                removeEmailEntry(tr);
             });
         } else {
-            removeEmailEntry(tableRow);
+            removeEmailEntry(tr);
         }
       
         return false;
@@ -183,30 +184,24 @@ function addAddEmailHandler(where) {
     
     $(where).click(function() {
         
-        newEmail = cloneElement($("#primaryemailaddress > tbody > tr"));
-
-        newEmail.find('.formlabels').remove();
-        newEmail.find('.formbuttons:first').remove();
-        newEmail.find('.formbuttons').html("<span class='emailremovers buttons clickable'><img src='/images/squareicons/remove.png' /></span>");
-        newEmail.find('input,select').change(function() {
-            markChangedFields($(this));
-        });
-        newEmail.find('input,select').val('');
-
-        if(window.additionalEmailCounter == 0) {
-            $("<td rowspan=" + window.additionalEmailCounter + " class='formlabels'><label>Additional emails</label></td>").insertBefore(newEmail.find("td:first"));
-        } else {
-            $("#additionalemailaddresses > tbody > tr > .formlabels").attr('rowspan', window.additionalEmailCounter + 1);
-        }
+        tr = cloneElement($("#primaryemailaddress > tbody > tr"));
         window.additionalEmailCounter++;
-        
-        newEmail.find('.emailremovers').click(function() {
-            removeEmail($(this));
-            return false;
-        });
 
-        newEmail.appendTo("#additionalemailaddresses > tbody");
-        newEmail.slideDown();
+        tr.addClass("additionalemails");
+        tr.find('.formlabels').remove();
+        tr.find('.formbuttons:first').remove();
+        tr.find('.formbuttons').html("<span class='emailremovers buttons clickable'><img src='/images/squareicons/remove.png' /></span>");
+
+        if(window.additionalEmailCounter == 1) {
+            tr.prepend($("<td rowspan='1' class='formlabels' id='additionalemaillabel'><label>Additional emails</label></td>"));
+        } else {
+            $("#additionalemaillabel").attr('rowspan', window.additionalEmailCounter);
+        }
+        
+        addRemoveEmailHandler(tr.find('.emailremovers'));
+
+        tr.appendTo("#additionalemailaddresses > tbody");
+        tr.slideDown();
         
         return false;   // stop page refresh
     });
@@ -220,9 +215,9 @@ $(document).ready(function() {
     addRemoveEmailHandler(".emailremovers");
     addUpdateHandler("#submitbutton");
       
-    $("input[type=text]").submit(function() {
-        
-    });
+//     $("input[type=text]").submit(function() {
+//         
+//     });
 
     // Turn the form validation on
 //   $("#submitForm").validate();
