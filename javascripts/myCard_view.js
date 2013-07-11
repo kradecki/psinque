@@ -106,7 +106,6 @@
 //---------------------------------------------------------
 
 function removeEmailEntry(tr) {
-    console.log(tr[0]);
     if(tr.hasClass("additionalemails")) {
         window.additionalEmailCounter--;
         if(window.additionalEmailCounter > 0) {
@@ -117,6 +116,7 @@ function removeEmailEntry(tr) {
         }
         removeElementWithEffects(tr);
     } else {
+        $("#primaryemailaddressinput").val("");
     }
 }
 
@@ -127,8 +127,6 @@ function addRemoveEmailHandler(where) {
         tr = $(this).parent().parent();
         emailKey = tr.find(".emailkeys").val();
         if(emailKey) {
-            if(!psinqueAjaxSafeguard())  // another query in progress
-                return false;
             psinqueRemoveEmail(emailKey, function() {
                 removeEmailEntry(tr);
             });
@@ -145,10 +143,7 @@ function addRemoveEmailHandler(where) {
 function addUpdateHandler(where) {
     
     $(where).click(function() {
-      
-        if(!psinqueAjaxSafeguard())  // another query in progress
-            return false;
-
+        
         psinqueUpdateGeneral($("#firstname").val(), $("#lastname").val(),
             function() {
                 unmarkChangedFields("#generalinfo");

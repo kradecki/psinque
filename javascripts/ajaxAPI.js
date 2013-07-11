@@ -16,16 +16,18 @@ psinqueAPI_setGeneralPermit = psinqueAPI_permits + "setgeneralpermit"
 psinqueAPI_setEmailPermit   = psinqueAPI_permits + "setemailpermit"
 psinqueAPI_addPermit        = psinqueAPI_permits + "addpermit"
 
+psinqueAPI_settings = "/settings/"
+psinqueAPI_generateCardDAVLogin = psinqueAPI_settings + "generatecarddavlogin"
+psinqueAPI_deleteCardDAVLogin   = psinqueAPI_settings + "deletecarddav"
+psinqueAPI_updateSettings       = psinqueAPI_settings + "updatesettings"
+
 //------------------------------
 // My Card
 
 function psinqueRemoveEmail(emailKey, successFunction) {
     psinqueAJAX(psinqueAPI_removeEmail, {
                     key: emailKey,
-                }, function() {
-                    psinqueDecreaseAJAXCounter();
-                    successFunction();
-                });
+                }, successFunction);
 }
 
 function psinqueUpdateGeneral(firstName, lastName,
@@ -89,13 +91,52 @@ function psinqueAddPermit(name, index, successFunction) {
 }
 
 //------------------------------
+// Settings
+
+function psinqueGenerateCardDAVLogin(cardDAVName, successFunction) {
+    psinqueAJAX(psinqueAPI_generateCardDAVLogin, {
+                    name: cardDAVName,
+                }, successFunction);
+}
+
+function psinqueDeleteCardDAVLogin(cardDAVKey, successFunction) {
+    psinqueAJAX(psinqueAPI_deleteCardDAVLogin, {
+                    key: cardDAVKey,
+                }, successFunction);
+}
+
+function psinqueUpdateSettings(emailNotifications,
+                               notifyStops, notifyAsks,
+                               notifyAccepts, notifyRejects,
+                               notifyRevokes,
+                               language, syncCardDAV,
+                               newsletter, successFunction) {
+    psinqueAJAX(psinqueAPI_updateSettings, {
+                    emailnotifications: emailNotifications,
+                    notifystops: notifyStops,
+                    notifyasks: notifyAsks,
+                    notifyaccepts: notifyAccepts,
+                    notifyrejects: notifyRejects,
+                    notifyrevokes: notifyRevokes,
+                    language: language,
+                    synccarddav: syncCardDAV,
+                    newsletter: newsletter,
+                }, successFunction);
+}
+
+//------------------------------
 // General AJAX
 
 window.ajaxCounter = 0;
 
 function psinqueAJAX(url, parameters, successFunction) {
+    
+    if(!psinqueAjaxSafeguard())
+        return;
+    
     psinqueIncreaseAJAXCounter();
-    $.get(url, parameters, function(data) {
+    
+    $.getJSON(url, parameters, function(data) {
         psinqueDecreaseAJAXCounter();
         if(successFunction != undefined)
             successFunction(data);
@@ -103,15 +144,12 @@ function psinqueAJAX(url, parameters, successFunction) {
 }
 
 function psinqueAjaxSafeguard() {
-    if(window.ajaxCounter == 0) {
-        startLogoAnimation();
-        return true;
-    } else
-        return false;
+    return (window.ajaxCounter == 0);
 }
 
 function psinqueIncreaseAJAXCounter() {
     window.ajaxCounter++;
+    startLogoAnimation();
 }
 
 function psinqueDecreaseAJAXCounter() {

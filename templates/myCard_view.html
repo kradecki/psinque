@@ -50,7 +50,7 @@
         <td class="formlabels"><label>Primary email</label></td>
         <td class="forminputs">
           <input type="hidden" class="emailkeys" value="{{ primaryEmail.key() }}"/>
-          <input type="text" class="emailaddresses" value="{% if primaryEmail.email != "primary@nonexistant.com" %}{{ primaryEmail.email }}{% endif %}" />
+          <input type="text" class="emailaddresses" id="primaryemailaddressinput" value="{% if primaryEmail.email != "primary@nonexistant.com" %}{{ primaryEmail.email }}{% endif %}" />
         </td>
         <td class="forminputs formextras">
           <select class="typesofemail">

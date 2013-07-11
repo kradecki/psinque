@@ -198,11 +198,19 @@ class ProfileHandler(MasterHandler):
         if userEmail is None:
             raise AjaxError("User email not found.")
         
-        for permitEmail in userEmail.permitEmails:
-            permitEmail.delete()
-        userEmail.delete()
+        if userEmail.primary:
+            
+            userEmail.email = "primary@nonexistant.com"
+            userEmail.emailType = 'private'
+            userEmail.put()
+            
+        else:
+        
+            for permitEmail in userEmail.permitEmails:
+                permitEmail.delete()
+            userEmail.delete()
 
-        self._updateAllVCards()
+            self._updateAllVCards()
 
         self.sendJsonOK()
             

@@ -64,6 +64,10 @@ a {
     text-decoration: none;
 }
 
+.hiddenelements {
+    display: none;
+}
+
 /****************************************
  * Header
  ****************************************/

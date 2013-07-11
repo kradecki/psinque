@@ -34,9 +34,7 @@
         </div>
         </td>
         <td class="forminputs">
-        <label for="newsletter">
-          Send me a newsletter
-        </label>
+        <label for="newsletter">Send me a newsletter</label>
         </td>
       </tr>
       <tr>
@@ -47,9 +45,7 @@
         </div>
         </td>
         <td class="forminputs">
-          <label for="emailnotifications">
-            Send me a email notifications
-          </label>
+          <label for="emailnotifications">Send me a email notifications</label>
         </td>
       </tr>
       <tr class="individualnotifications">
@@ -60,9 +56,7 @@
         </div>
         </td>
         <td class="forminputs">
-          <label for="notifystops">
-            When someone stops using my private data
-          </label>
+          <label for="notifystops">When someone stops using my private data</label>
         </td>
       </tr>
       <tr class="individualnotifications">
@@ -73,9 +67,7 @@
         </div>
         </td>
         <td class="forminputs">
-          <label for="notifyasks">
-            When someone asks for my private data
-          </label>
+          <label for="notifyasks">When someone asks for my private data</label>
         </td>
       </tr>
       <tr class="individualnotifications">
@@ -86,9 +78,7 @@
         </div>
         </td>
         <td class="forminputs">
-          <label for="notifyaccepts">
-            When my request for private data has been accepted 
-          </label>
+          <label for="notifyaccepts">When my request for private data has been accepted </label>
         </td>
       </tr>
       <tr class="individualnotifications">
@@ -99,9 +89,7 @@
         </div>
         </td>
         <td class="forminputs">
-          <label for="notifyrejects">
-            When my request for private data has been rejected
-          </label>
+          <label for="notifyrejects">When my request for private data has been rejected</label>
         </td>
       </tr>
       <tr class="individualnotifications">
@@ -112,9 +100,7 @@
         </div>
         </td>
         <td class="forminputs">
-          <label for="notifyrevokes">
-            When permission to use private data is revoked
-          </label>
+          <label for="notifyrevokes">When permission to use private data is revoked</label>
         </td>
       </tr>
       </tbody>
@@ -135,43 +121,48 @@
         </div>
         </td>
         <td class="forminputs">
-          <label for="synccarddav">
-            Allow CardDAV psinquing
-          </label>
+          <label for="synccarddav">Allow CardDAV psinquing</label>
         </td>
       </tr>
       </tbody>
       </table>
     </span>    
-    <span id="carddavlogins" >
-      <table>
+    <span id="carddav" >
+      <table id="carddavlogins">
       <tbody>
-      <tr>
-      <td rowspan="{{ carddavLogins|count + 1 }}" class="formlabels"><label>CardDAV devices</label></td>
-      <td class="forminputs">
-        <input type="text" id="newcarddavname" value="" placeholder="Type a name for your device">
-      </td>
-      <td class="forminputs formbuttons">
-        <a href="" id="generatecarddav">
-          <img src="/images/squareicons/add.png" />
-        </a>
-      </td>
-      </tr>
       {% for login in carddavLogins %}
-      <tr>
-      <td class="forminputs">
-        <label>
-        {{ login.name }}
-        <input type="hidden" class="carddavkeys" value="{{ login.key() }}">
-        </label>
-      </td>
-      <td class="forminputs formbuttons">
-        <a href="" class="removecarddav">
-          <img src="/images/squareicons/remove.png" />
-        </a>
-      </td>
+      <tr class="carddavlogins">
+        {% if loop.first -%}
+        <td rowspan="{{ carddavLogins|count + 2 }}" class="formlabels" id="carddavlabel"><label>CardDAV devices</label></td>
+        {%- endif %} 
+        <td class="forminputs">
+            <input type="hidden" class="carddavkeys" value="{{ login.key() }}">
+            <label class="carddavnames">{{ login.name }}</label>
+        </td>
+        <td class="forminputs formbuttons">
+            <span class="buttons clickable carddavremovers">
+              <img src="/images/squareicons/remove.png" />
+            </span>
+        </td>
       </tr>
       {% endfor %}
+      <tr id="newcarddav">
+        {% if carddavLogins|count == 0 %}
+        <td rowspan="{{ carddavLogins|count + 2 }}" class="formlabels" id="carddavlabel"><label>CardDAV devices</label></td>
+        {% endif %}
+        <td class="forminputs">
+            <input type="text" id="newcarddavname" value="" placeholder="Type a name for your device">
+        </td>
+        <td class="forminputs formbuttons">
+            <span class="buttons clickable" id="generatecarddav">
+              <img src="/images/squareicons/add.png" />
+            </span>
+        </td>
+      </tr>
+      <tr class="hiddenelements">
+        <td class="forminputs" id="carddavlogin"></td>
+        <td class="forminputs formbuttons"></td>
+      </tr>
       </tbody>
       </table>
     </span>
@@ -180,9 +171,9 @@
       <tr>
         <td class="formlabels"><label>Save changes</label></td>
         <td class="forminputs formbuttons">
-          <a href="" id="submitbutton">
+          <span class="buttons clickable" id="submitbutton">
             <img src="/images/squareicons/save.png" />
-          </a>
+          </span>
         </td>
         <td><br style="clear:both;"/></td>
       </tr>

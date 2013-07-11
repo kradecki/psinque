@@ -103,6 +103,7 @@ class Settings(MasterHandler):
         cardDAVLogin.put()
         
         self.sendJsonOK({
+            "key": str(cardDAVLogin.key()),
             "username": generatedUsername,
             "password": generatedPassword,
         })

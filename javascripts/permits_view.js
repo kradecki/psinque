@@ -3,9 +3,6 @@ function addRemovePermitHandler(where) {
     
     $(where).click(function() {
         
-        if(!psinqueAjaxSafeguard())  // another query in progress
-            return false;
-
         permitIndex = $(this).attr('data-psinque-index');
         permitKey = $("#permitkey" + permitIndex).val();
         permit = $("#permitform" + permitIndex);
@@ -15,7 +12,6 @@ function addRemovePermitHandler(where) {
                 permit.prev().remove();
                 permit.remove();
                 recreateAccordeon();
-                stopLogoAnimation();
             });
         });
         
@@ -27,9 +23,6 @@ function addUpdatePermitHandler(where) {
     
     $(where).click(function(url) {
         
-        if(!psinqueAjaxSafeguard())  // another query in progress
-            return false;
-
         permitIndex = $(this).attr('data-psinque-index');
         permitForm = $("#permitform" + permitIndex);
         
@@ -63,9 +56,6 @@ function addUpdatePermitHandler(where) {
 function addAddPermitHandler(where) {
     
     $(where).click(function() {
-        
-        if(!psinqueAjaxSafeguard())  // another query in progress
-            return false;
         
         permitName = $("#newpermitname").val();
         if(permitName != "") {
