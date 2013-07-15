@@ -1,0 +1,188 @@
+
+/****************************************
+ * General
+ ****************************************/
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    line-height: 100%;
+    background-color: #fff;
+}
+
+div#contentwrapper {
+    width: 100%;
+/*     padding-top: 75px; */
+/*     padding-bottom: 52px; */
+}
+
+div#content {
+    width: 1180px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #d8d4cb;
+}
+
+div.outerwrappers {
+    left: 0;
+    width: 100%;
+}
+
+a {
+    color: #000;
+    text-decoration: none;
+}
+
+.hiddenelements {
+    display: none;
+}
+
+/****************************************
+ * Header
+ ****************************************/
+
+div#headerwrapper {
+    top: 0;
+    height: 75px;
+    background-color: #f0f0e0;
+}
+
+div#header {
+    position: relative;
+    width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    height: 75px;
+    text-align: left;
+}
+
+div#header img {
+    float: left;
+}
+
+div#header ul {
+    list-style: none;
+    float: left;
+}
+
+div#header li {
+    float: left;
+}
+
+div#header li a {
+    color: #fff;
+    font-size: inherit;
+    text-decoration: none;
+    display: block;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 125px;
+    text-align: center;
+}
+
+div#header li a:hover {
+    background: url(/images/underline.png) left bottom no-repeat;
+}
+
+div#header li a.active {
+    font-weight: 800;
+    background: url(/images/underline.png) left bottom no-repeat;
+}
+
+div#header table {
+    width: 100%;
+    height: 75px;
+}
+
+div#header td#logographics {
+  padding-left: 12px;
+/*   padding-top: 9px; */
+  width: 50px;
+}
+
+div#header td#logotext {
+  width: 200px;
+}
+
+div#header td#topicons {
+  width: 160px;
+/*   text-align: left; */
+  padding-right: 21px;
+  text-color: #fff;
+}
+
+div#header td#topicons img {
+  margin-left: 12px;
+}
+
+#animatedlogo {
+    display: none;
+}
+
+/****************************************
+ * Two or one column layout
+ ****************************************/
+
+div#images {
+    float: left;
+    width: 275px;
+    padding: 10px;
+}
+
+div#mycard {
+    float: left;
+    width: 862px;
+    padding: 10px;
+}
+
+div.onecolumn {
+/*     float: left; */
+/*     padding-left: 167px; */
+    width: 862px;
+    padding: 0;
+    margin: 0 auto;
+}
+
+/****************************************
+ * Footer
+ ****************************************/
+
+div#footerwrapper {
+    bottom: 0;
+    height: 35px;
+    text-align: center;
+    border-top: 2px solid #000;
+    padding-top: 15px;
+}
+
+div#footer {
+    width: 957px;
+    position: relative;
+    margin: 0 auto;
+}
+
+div#footer table {
+    margin: 0;
+    width: 100%;
+    font-size: 11px;
+}
+
+div#footer td#copyright {
+    width: 250px;
+    text-align: left;
+}
+
+div#footer td#faq {
+    width: 457px;
+    text-align: center;
+}
+
+td#faq a {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+div#footer td#numalab {
+    width: 250px;
+    text-align: right;
+}

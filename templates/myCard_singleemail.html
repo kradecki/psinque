@@ -1,21 +1,29 @@
       <tr class="additionalemails">
         {% if loopfirst %}
-        <td rowspan="{{ additionalEmailsCount }}" class="formlabels" id="additionalemaillabel"><label>Additional emails</label></td>
+        <td rowspan="{{ emailCount }}" class="formlabels" id="additionalemaillabel"><label>{{ tablelabel }}</label></td>
         {% endif %}
         <td class="forminputs">
-          <input type="hidden" class="emailkeys" value="{{ email.key() }}"/>
-          <input type="text" class="emailaddresses" value="{{ email.email }}" />
+          <input type="hidden" class="emailkeys" value="{{ emailkey }}"/>
+          <input type="text" class="emailaddresses" value="{% if primaryEmail.email != "primary@nonexistant.com" %}{{ emailaddresses }}{% endif %}" placeholder="john@doe.com" />
         </td>
         <td class="forminputs formextras">
-          <select class="typesofemail">
+          <select class="typesofemail" data-template="#dropdown">
           {% for emailTypeCode, emailTypeName in emailTypes.items() %}
-            <option value="{{ emailTypeCode }}" {% if emailTypeCode == email.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
+            <option value="{{ emailTypeCode }}" {% if emailTypeCode == emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
           {% endfor %}
           </select>
         </td>
+        {% if not loopfirst %}
         <td class="forminputs formbuttons">
           <span class="emailremovers buttons clickable">
             <img src="/images/squareicons/remove.png" />
           </span>
         </td>
+        {% elif tablelabel != "Primary email" %}
+        <td class="forminputs formbuttons">
+          <span class="buttons clickable" id="addemail">
+            <img src="/images/squareicons/add.png" />
+          </span>
+        </td>
+        {% endif %}
       </tr>

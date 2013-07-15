@@ -69,7 +69,21 @@ function psinqueSetMarkingOnChange(where) {
     });
 }
 
+var contentHeight;
+
+function Resize() {
+    currentWindowHeight = $(document).height();                                
+    if (contentHeight < currentWindowHeight - 150) {
+        $('#content').css('height', (currentWindowHeight - 150) + "px");   
+    }
+}       
 $(document).ready(function() {
+    
+    contentHeight = $('#content').height();
+    Resize();
+    $(window).resize(Resize);
+    
+    $('select').dropdown();
     
     psinqueSetMarkingOnChange("input,select");
     initializeCheckboxes();

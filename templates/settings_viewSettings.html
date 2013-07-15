@@ -12,7 +12,7 @@
       <tr>
         <td class="formlabels"><label>Preferred language</label></td>
         <td class="forminputs">
-          <select id="language">
+          <select id="language" data-template="#dropdown">
             {% for languageCode, languageName in availableLanguages.iteritems() %}
             <option {% if languageCode == userSettings.preferredLanguage %} selected {% endif %} value="{{ languageCode }}">{{ languageName }}</option>
             {% endfor %}

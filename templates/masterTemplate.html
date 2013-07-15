@@ -7,19 +7,36 @@
     <link rel="shortcut icon" href="/favicon_57.png" sizes="57x57" type="image/png">
     <link rel="shortcut icon" href="/favicon_128.ico" sizes="128x128" type="image/png">
     <link rel="shortcut icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
-    <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto:300&subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600&subset=latin,latin-ext,cyrillic-ext,greek,cyrillic,vietnamese,greek-ext' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="/stylesheets/psinque.css" />
-    {% block stylesheets %}
-    {% endblock %}
+    <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/psinqueUI.css" />
+    {% block stylesheets -%}
+    {%- endblock %}
     <script type="text/javascript" src="/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="/javascripts/doT.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-dropdown-dot.min.js"></script>
     <script type="text/javascript" src="/javascripts/psinque.js"></script>
     <script type="text/javascript" src="/javascripts/ajaxAPI.js"></script>
-    {% block javascripts -%}
+    {% raw -%}
+    <script id="dropdown-selected" type="text/x-dot-template">
+      {{=it.label}}<i>&darr;</i>
+    </script>
+    <script id="dropdown" type="text/x-dot-template">
+      <div class="dropdown" tabindex="1">
+      <div class="selected">{{=it.selected.label}}</div>
+        <ul>
+          {{~it.items :item:index}}
+          <li data-index="{{=index}}">{{=item.label}}</li>
+          {{~}}
+        </ul>
+      </div>
+    </script>
+    {%- endraw %}
+    {%- block javascripts -%}
     {%- endblock %}
 </head>
 <body>
-  <div id="uberwrapper">
   <div id="headerwrapper" class="outerwrappers">
     <div id="header">
       <table>
@@ -40,8 +57,8 @@
           </ul>
         </td>
         <td id="topicons">
-          <a href="/settings/view"><img src="/images/squareicons/settings.png"/></a>
-          <a href="{{ loginurl }}"><img src="/images/squareicons/logout.png"/></a>
+          <a href="/settings/view">Settings</a>
+          <a href="{{ loginurl }}">Sign out</a>
         </td>
       </tr>
       </tbody>
@@ -75,6 +92,5 @@
       <tbody>
       <table>
     </div>
-  </div>
   </div>
 </body>

@@ -46,45 +46,40 @@
   <span id="emails">
     <table id="primaryemailaddress">
     <tbody>
-      <tr>
-        <td class="formlabels"><label>Primary email</label></td>
-        <td class="forminputs">
-          <input type="hidden" class="emailkeys" value="{{ primaryEmail.key() }}"/>
-          <input type="text" class="emailaddresses" id="primaryemailaddressinput" value="{% if primaryEmail.email != "primary@nonexistant.com" %}{{ primaryEmail.email }}{% endif %}" />
-        </td>
-        <td class="forminputs formextras">
-          <select class="typesofemail">
-          {% for emailTypeCode, emailTypeName in emailTypes.items() %}
-            <option value="{{ emailTypeCode }}" {% if emailTypeCode == primaryEmail.emailType %}selected="selected"{% endif %}>{{ emailTypeName }}</option>
-          {% endfor %}
-          </select>
-        </td>
-        <td class="forminputs formbuttons">
-          <span class="buttons clickable" id="addemail">
-            <img src="/images/squareicons/add.png" />
-          </span>
-        </td>
-        <td class="forminputs formbuttons">
-          <span class="emailremovers buttons clickable">
-            <img src="/images/squareicons/remove.png" />
-          </span>
-        </td>
-      </tr>
-      </tbody>
-      </table>
-      <table id="additionalemailaddresses">
-      <tbody>
-      {% for email in additionalEmails %}
-      {% set additionalEmailsCount = additionalEmails|count %}
-      {% set loopfirst = loop.first %}
+      {% set tablelabel = "Primary email" %}
+      {% set emailCount = 1 %}
+      {% set loopfirst = True %}
+      {% set emailkey = primaryEmail.key() %}
+      {% set emailaddress = primaryEmail.email %}
+      {% set emailtype = primaryEmail.emailType %}
       {% include "templates/myCard_singleemail.html" %}
+    </tbody>
+    </table>
+    <table id="additionalemailaddresses">
+    <tbody>
+      {% for email in additionalEmails %}
+        {% set tablelabel = "Additional emails" %}
+        {% set emailCount = additionalEmails|count %}
+        {% set loopfirst = loop.first %}
+        {% set emailkey = email.key() %}
+        {% set emailaddress = email.email %}
+        {% set emailtype = email.emailType %}
+        {% include "templates/myCard_singleemail.html" %}
+      {% else %}
+        {% set tablelabel = "Additional emails" %}
+        {% set emailCount = 1 %}
+        {% set loopfirst = True %}
+        {% set emailkey = "" %}
+        {% set emailaddress = "" %}
+        {% set emailtype = "Private" %}
+        {% include "templates/myCard_singleemail.html" %}
       {% endfor %}
-      </tbody>
-      </table>
-    </span>
-    <span>
-      <table>
-      <tbody>
+    </tbody>
+    </table>
+  </span>
+  <span>
+    <table>
+    <tbody>
       <tr>
         <td class="formlabels"><label>Save changes</label></td>
         <td class="forminputs formbuttons">
