@@ -1,4 +1,5 @@
 {% extends "templates/masterTemplate.html" %}
+{% import "templates/psinqueUI.html" as ui %}
 {% block title %}My Card{% endblock %}
 {% block javascripts %}
     <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
@@ -18,30 +19,16 @@
   <div id="mycard">
   <div class="tableform">
   <span id="generalinfo">
-    <table>
-    <tbody>
-      <tr>
-        <td class="formlabels"><label>Given names</label></td>
-        {% for givenName in userProfile.givenNames %}
-        <td class="forminputs"><input type="text" id="firstname" value="{{ givenName }}" minlength="2" /></td>
-        {% else %}
-        <td class="forminputs"><input type="text" id="firstname" value="" minlength="2" /></td>
-        {% endfor %}
-      </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-      <tr>
-        <td class="formlabels"><label>Family names</label></td>
-        {% for familyName in userProfile.familyNames %}
-        <td class="forminputs"><input type="text" id="lastname" value="{{ familyName }}" minlength="2" /></td>
-        {% else %}
-        <td class="forminputs"><input type="text" id="lastname" value="" minlength="2" /></td>
-        {% endfor %}
-      </tr>
-    </tbody>
-    </table>
+    {{ ui.singletextinput("Given names", "firstname", userProfile.givenNames|join(" ")) }}
+    {{ ui.singletextinput("Family names", "lastname", userProfile.familyNames|join(" ")) }}
+    {{ ui.multipletextinput("Nicknames", "nickname", [], "Motherfucker") }}
+    {{ ui.begintable("Birthday") }}
+      {{ ui.dropdown("birthdays", range(1, 31+1)) }}
+      {{ ui.dropdown("birthmonths", months) }}
+      {{ ui.dropdown("birthyears", range(1900, 2013+1)) }}
+        <td class="forminputs sublabel">Gender:</td>
+      {{ ui.dropdown("gender", ['undisclosed', 'female', 'male']) }}
+    {{ ui.endtable() }}
   </span>
   <span id="emails">
     <table id="primaryemailaddress">
@@ -78,20 +65,11 @@
     </table>
   </span>
   <span>
-    <table>
-    <tbody>
-      <tr>
-        <td class="formlabels"><label>Save changes</label></td>
-        <td class="forminputs formbuttons">
-          <span id="submitbutton" class="buttons clickable">
-            <img src="/images/squareicons/save.png" />
-          </span>
-        </td>
+    {{ ui.begintable("Save changes") }}
+      {{ ui.savebutton("submitbutton") }}
         <td><br style="clear:both;"/></td>
-      </tr>
-      </tbody>
-      </table>
-    </span>
+    {{ ui.endtable() }}
+  </span>
 <!--    <legend>Physical addresses</legend>
     {% for address in addresses %}
     <p id="address{{ address.nr }}">

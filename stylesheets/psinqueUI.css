@@ -192,3 +192,7 @@ div.tableform img, span.buttons {
 div.tableform span.buttons {
     cursor: pointer;
 }
+
+div.tableform .sublabel {
+    text-align: right;
+}

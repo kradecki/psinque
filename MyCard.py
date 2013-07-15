@@ -123,6 +123,7 @@ class ProfileHandler(MasterHandler):
             'primaryEmail': primaryEmail,
             'additionalEmails': additionalEmails,
             'emailTypes': emailTypes,
+            'months': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             #'addresses': addresses,
             #'addressTypes': addressTypes,
         })
