@@ -1,4 +1,5 @@
 {% extends "templates/masterTemplate.html" %}
+{% import "templates/ui.html" as ui %}
 {% block title %}Permits{% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="/stylesheets/permits_view.css" />
@@ -19,25 +20,10 @@
   {% include "templates/permits_singlepermit.html" %}
   {% endfor %}
   <span id="newpermit">
-    <div class="tableform">
-      <table>
-      <tbody>
-        <tr>
-        <td class="formlabels">
-          <label>New permit</label>
-        </td>
-        <td class="forminputs">
-          <input type="text" id="newpermitname" placeholder="Please type name of your new permit" />
-        </td>
-        <td class="forminputs formbuttons">
-          <span href="" id="addbutton" class="buttons clickable">
-            <img src="/images/squareicons/add.png" />
-          </span>
-        </td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+    <span class="tableform">
+    {{ ui.singletextinputwithbutton("New permit", "newpermitname", "Please type name of your new permit") }}
+    Dupa
+    </span>
   </span>
   </div>
   </div>

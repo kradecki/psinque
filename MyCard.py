@@ -107,7 +107,7 @@ class ProfileHandler(MasterHandler):
         if firstLogin:  # no user profile registered yet, so create a new one
           userProfile = self._createNewProfile()
 
-        #userAddresses = userProfile.addresses.fetch(100)
+        userAddresses = userProfile.addresses.fetch(limit = 1000)
         #addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
         #if len(addresses) == 0:
             #addresses = [{'nr': 1, 'value': None}]
@@ -124,8 +124,8 @@ class ProfileHandler(MasterHandler):
             'additionalEmails': additionalEmails,
             'emailTypes': emailTypes,
             'months': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            #'addresses': addresses,
-            #'addressTypes': addressTypes,
+            'addresses': userAddresses,
+            'addressTypes': addressTypes,
         })
         
                              

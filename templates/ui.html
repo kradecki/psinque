@@ -1,0 +1,104 @@
+<!-- ********************************************************
+     * Single UI elements -->
+     
+{% macro begintable(tablelabel, rowspan=1) -%}
+  <table>
+  <tbody>
+    <tr>
+    <td class="formlabels"　rowspan={{ rowspan }}>
+      <label>{{ tablelabel }}</label>
+    </td>
+{%- endmacro %}
+
+{% macro endtable() -%}
+    </tr>
+  </tbody>
+  </table>
+{%- endmacro %}
+
+{% macro button(id, action, class="") -%}
+  <td class="forminputs formbuttons">
+    <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}">
+    <img src="/images/squareicons/{{ action }}.png" />
+    </span>
+  </td>
+{%- endmacro %}
+
+{% macro addbutton(id) -%}
+  {{ button(id, "add") }}
+{%- endmacro %}
+
+{% macro removebutton(id, class="") -%}
+  {{ button(id, "remove", class) }}
+{%- endmacro %}
+
+{% macro savebutton(id) -%}
+  {{ button(id, "save") }}
+{%- endmacro %}
+
+{% macro dropdown(items, selected, id="", class="") -%}
+  <td class="forminputs">
+    <select id="{{ id }}" class="{{ class }}" data-template="#dropdown">
+    {% for item in items %}
+      <option value="{{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
+    {% endfor %}
+    </select>
+  </td>
+{%- endmacro %}
+
+{% macro checkbox(id, checked, text) -%}
+  <td class="forminputs formbuttons">
+    <span class="checkboxwrapper">
+      <input type="checkbox" id="{{ id }}" {% if checked %}checked="checked"{% endif %}">
+      <div class="checkboxdiv"></div>
+    </span>
+  </td>
+  <td class="forminputs">
+    <label for="{{ id }}">{{ text }}</label>
+  </td>
+{%- endmacro %}
+
+{% macro textinput(value, class="", placeholder="", keyvalue="", keyclass="") -%}
+  <td class="forminputs">
+    {% if keyvalue %}
+    <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}"/>
+    {% endif %}
+    <input type="text" class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" />
+  </td>
+{%- endmacro %}
+
+<!-- ********************************************************
+     * Whole tables -->
+     
+{% macro singletextinput(tablelabel, inputid, value="") -%}
+  {{ begintable(tablelabel) }}
+    <td class="forminputs">
+      <input type="text" id="{{ inputid }}" value="{{ value }}" minlength="2" />
+    </td>
+  {{ endtable() }}
+{%- endmacro %}
+
+{% macro singletextinputwithbutton(tablelabel, inputid, placeholder="") -%}
+  {{ begintable(tablelabel) }}
+    <td class="forminputs">
+      <input type="text" id="{{ inputid }}" placeholder="{{ placeholder }}" minlength="2" />
+    </td>
+    {{ addbutton(inputid) }}
+  {{ endtable() }}
+{%- endmacro %}
+
+{% macro multipletextinput(tablelabel, inputid, values, placeholder="") -%}
+  {{ begintable(tablelabel, values|count + 1) }}
+    {% for value in values %}
+      <td class="forminputs">
+        <input type="text" id="{{ inputid }}{{ loop.index }}" value="{{ value }}" minlength="2" />
+      </td>
+      {{ removebutton(inputid) }}
+    </tr>
+    {% endfor %}
+    <td class="forminputs">
+      <input type="text" id="new{{ inputid }}" value="" placeholder="{{ placeholder }}" minlength="2" />
+    </td>
+    {{ addbutton(inputid) }}
+  {{ endtable() }}
+{%- endmacro %}

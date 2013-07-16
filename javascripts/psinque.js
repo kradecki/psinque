@@ -71,7 +71,12 @@ function psinqueSetMarkingOnChange(where) {
 
 var contentHeight;
 
-function Resize() {
+function updateContentHeight() {
+    contentHeight = $('#content').height();
+    resizeContent();
+}
+
+function resizeContent() {
     currentWindowHeight = $(document).height();                                
     if (contentHeight < currentWindowHeight - 150) {
         $('#content').css('height', (currentWindowHeight - 150) + "px");   
@@ -79,9 +84,8 @@ function Resize() {
 }       
 $(document).ready(function() {
     
-    contentHeight = $('#content').height();
-    Resize();
-    $(window).resize(Resize);
+    updateContentHeight();
+    $(window).resize(resizeContent);
     
     $('select').dropdown();
     

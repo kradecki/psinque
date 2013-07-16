@@ -10,7 +10,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600&subset=latin,latin-ext,cyrillic-ext,greek,cyrillic,vietnamese,greek-ext' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css" />
-    <link rel="stylesheet" type="text/css" href="/stylesheets/psinqueUI.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/ui.css" />
     {% block stylesheets -%}
     {%- endblock %}
     <script type="text/javascript" src="/javascripts/jquery.js"></script>
@@ -20,7 +20,7 @@
     <script type="text/javascript" src="/javascripts/ajaxAPI.js"></script>
     {% raw -%}
     <script id="dropdown-selected" type="text/x-dot-template">
-      {{=it.label}}<i>&darr;</i>
+      {{=it.label}}<i>✔</i>
     </script>
     <script id="dropdown" type="text/x-dot-template">
       <div class="dropdown" tabindex="1">
@@ -77,7 +77,7 @@
       <tbody>
       <tr>
       <td id="copyright">
-        &copy; Copyright 2013 <a href="http://psinque.com/">Psinque sp. z o.o.</a>.
+        &copy; Copyright 2013 <a href="http://psinque.com/">Psinque sp. z o.o.</a>
       </td>
       <td id="faq">
         <a href="/">About Psinque</a>

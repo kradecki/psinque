@@ -1,11 +1,12 @@
 {% extends "templates/masterTemplate.html" %}
+{% import "templates/ui.html" as ui %}
 {% block title %}Settings{% endblock %}
 {% block javascripts %}
     <script type="text/javascript" src="/javascripts/settings_view.js"></script>
 {% endblock %}
 {% block content %}
-    <div class="onecolumn">
-    <div class="tableform">
+  <div class="onecolumn">
+  <span class="tableform">
     <span id="languagesettings">
       <table>
       <tbody>
@@ -23,109 +24,32 @@
       </table>
     </span>
     <span id="notificationsetting">
-      <table>
-      <tbody>
-      <tr>
-        <td rowspan="7" class="formlabels"><label>Notifications</label></td>
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="newsletter" {% if userSettings.notifyNewsletter %}checked="checked"{% endif %}">
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-        <label for="newsletter">Send me a newsletter</label>
-        </td>
+      {{ ui.begintable("Notifications", 7) }}
+        {{ ui.checkbox("newsletter", userSettings.notifyNewsletter, "Send me a newsletter") }}
       </tr>
       <tr>
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="emailnotifications" {% if userSettings.notifyEmails %}checked="checked"{% endif %}">
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-          <label for="emailnotifications">Send me a email notifications</label>
-        </td>
+        {{ ui.checkbox("emailnotifications", userSettings.notifyEmails, "Send me a email notifications") }}
       </tr>
       <tr class="individualnotifications">
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="notifystops" {% if userSettings.notifyStopsUsingMyPrivateData %}checked="checked"{% endif %}>
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-          <label for="notifystops">When someone stops using my private data</label>
-        </td>
+        {{ checkbox("notifystops", userSettings.notifyStopsUsingMyPrivateData, "When someone stops using my private data") }}
       </tr>
       <tr class="individualnotifications">
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="notifyasks" {% if userSettings.notifyAsksForPrivateData %}checked="checked"{% endif %}>
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-          <label for="notifyasks">When someone asks for my private data</label>
-        </td>
+        {{ ui.checkbox("notifyasks", userSettings.notifyAsksForPrivateData, "When someone asks for my private data") }}
       </tr>
       <tr class="individualnotifications">
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="notifyaccepts" {% if userSettings.notifyAllowsMePrivateData %}checked="checked"{% endif %}>
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-          <label for="notifyaccepts">When my request for private data has been accepted </label>
-        </td>
+        {{ ui.checkbox("notifyaccepts", userSettings.notifyAllowsMePrivateData, "When my request for private data has been accepted") }}
       </tr>
       <tr class="individualnotifications">
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="notifyrejects" {% if userSettings.notifyDisallowsMePrivateData %}checked="checked"{% endif %}>
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-          <label for="notifyrejects">When my request for private data has been rejected</label>
-        </td>
+        {{ ui.checkbox("notifyrejects", userSettings.notifyDisallowsMePrivateData, "When my request for private data has been rejected") }}
       </tr>
       <tr class="individualnotifications">
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="notifyrevokes" {% if userSettings.notifyRequestDecision %}checked="checked"{% endif %}>
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-          <label for="notifyrevokes">When permission to use private data is revoked</label>
-        </td>
-      </tr>
-      </tbody>
-      </table>
+        {{ ui.checkbox("notifyrevokes", userSettings.notifyRequestDecision, "When permission to use private data is revoked") }}
+      {{ ui.endtable() }}
     </span>
     <span id="notificationsetting">
-      <table>
-      <tbody>
-<!--      <p>
-    <input type="checkbox" name="syncgoogle" {% if syncWithGoogle %}checked="checked"{% endif %}">Psinque with my Google account
-    </p>-->
-      <tr>
-        <td class="formlabels"><label>Synchronization</label></td>
-        <td class="forminputs formbuttons">
-        <div class="checkboxwrapper">
-          <input type="checkbox" id="synccarddav" {% if userSettings.cardDAVenabled %}checked="checked"{% endif %}">
-          <div class="checkboxdiv"></div>
-        </div>
-        </td>
-        <td class="forminputs">
-          <label for="synccarddav">Allow CardDAV psinquing</label>
-        </td>
-      </tr>
-      </tbody>
-      </table>
+      {{ ui.begintable("Synchronization", 1) }}
+        {{ ui.checkbox("synccarddav", userSettings.cardDAVenabled, "Allow CardDAV psinquing") }}
+      {{ ui.endtable() }}
     </span>    
     <span id="carddav" >
       <table id="carddavlogins">
@@ -136,14 +60,10 @@
         <td rowspan="{{ carddavLogins|count + 2 }}" class="formlabels" id="carddavlabel"><label>CardDAV devices</label></td>
         {%- endif %} 
         <td class="forminputs">
-            <input type="hidden" class="carddavkeys" value="{{ login.key() }}">
-            <label class="carddavnames">{{ login.name }}</label>
+          <input type="hidden" class="carddavkeys" value="{{ login.key() }}">
+          <label class="carddavnames">{{ login.name }}</label>
         </td>
-        <td class="forminputs formbuttons">
-            <span class="buttons clickable carddavremovers">
-              <img src="/images/squareicons/remove.png" />
-            </span>
-        </td>
+        {{ ui.removebutton("carddav" + loop.index, "carddavremovers") }}
       </tr>
       {% endfor %}
       <tr id="newcarddav">
@@ -179,6 +99,6 @@
       </tr>
     </tbody>
     </table>
-    </div>
-    </div>
+  </span>
+  </div>
 {% endblock %}

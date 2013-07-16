@@ -1,5 +1,5 @@
 {% extends "templates/masterTemplate.html" %}
-{% import "templates/psinqueUI.html" as ui %}
+{% import "templates/ui.html" as ui %}
 {% block title %}My Card{% endblock %}
 {% block javascripts %}
     <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
@@ -17,17 +17,17 @@
     <img src="/images/linustorvalds.jpg" />
   </div>
   <div id="mycard">
-  <div class="tableform">
+  <span class="tableform">
   <span id="generalinfo">
     {{ ui.singletextinput("Given names", "firstname", userProfile.givenNames|join(" ")) }}
     {{ ui.singletextinput("Family names", "lastname", userProfile.familyNames|join(" ")) }}
-    {{ ui.multipletextinput("Nicknames", "nickname", [], "Motherfucker") }}
+    {{ ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") }}
     {{ ui.begintable("Birthday") }}
-      {{ ui.dropdown("birthdays", range(1, 31+1)) }}
-      {{ ui.dropdown("birthmonths", months) }}
-      {{ ui.dropdown("birthyears", range(1900, 2013+1)) }}
+      {{ ui.dropdown(range(1, 31+1), "", "birthdays") }}
+      {{ ui.dropdown(months, "", "birthmonths") }}
+      {{ ui.dropdown(range(1900, 2013+1), "", "birthyears") }}
         <td class="forminputs sublabel">Gender:</td>
-      {{ ui.dropdown("gender", ['undisclosed', 'female', 'male']) }}
+      {{ ui.dropdown(['undisclosed', 'female', 'male'], "", "gender") }}
     {{ ui.endtable() }}
   </span>
   <span id="emails">
@@ -64,52 +64,37 @@
     </tbody>
     </table>
   </span>
+  <span id="addresses">
+    <table>
+    <tbody>
+    {% for address in addresses %}
+      {% set loopFirst = loop.first %}
+      {% set addressCount = addresses|count %}
+      {% set addressKey = address.key() %}
+      {% set address = address.address %}
+      {% set addressType = address.addressType %}
+      {% set city = address.city %}
+      {% set postalCode = address.postalCode %}
+      {% include "templates/myCard_singleaddress.html" %}
+    {% else %}
+      {% set loopFirst = True %}
+      {% set addressCount = 1 %}
+      {% set addressKey = None %}
+      {% set address = "" %}
+      {% set addressType = "" %}
+      {% set city = "" %}
+      {% set postalCode = "" %}
+      {% include "templates/myCard_singleaddress.html" %}
+    {% endfor %}
+    </tbody>
+    </table>
+  </span>
   <span>
     {{ ui.begintable("Save changes") }}
       {{ ui.savebutton("submitbutton") }}
-        <td><br style="clear:both;"/></td>
+      <td><br style="clear:both;"/></td>
     {{ ui.endtable() }}
   </span>
-<!--    <legend>Physical addresses</legend>
-    {% for address in addresses %}
-    <p id="address{{ address.nr }}">
-    <label>Address:</label>
-    <input type="text" name="address{{ address.nr }}" value="{{ address.value.address }}" class="required" />
-    <select name="typeofAddress{{ address.nr }}">
-    {% for addressTypeCode, addressTypeName in addressTypes.iteritems() %}
-        {% if addressTypeCode == address.value.addressType %}
-        <option value="{{ addressTypeCode }}" selected="selected">{{ addressTypeName }}</option>
-        {% else %}
-        <option value="{{ addressTypeCode }}">{{ addressTypeName }}</option>
-        {% endif %}
-    {% endfor %}
-    </select>
-    <br />
-    <label>Postal code:</label>
-    <input type="text" name="postal{{ address.nr }}" value="{{ address.value.postalCode }}" /><br />
-    <label>City/town/village:</label>
-    <input type="text" name="city{{ address.nr }}" value="{{ address.value.city }}" /><br />
-
-    {% if address.value.location %}
-    <span class="hiddenCoordinates">
-        <label>Longitude:</label>
-        <input type="text" name="long{{ address.nr }}" id="long{{ address.nr }}" value="{{ address.value.location.lon }}" readonly="readonly" /><br />
-        <label>Latitude:</label>
-        <input type="text" name="lat{{ address.nr }}" id="lat{{ address.nr }}" value="{{ address.value.location.lat }}" readonly="readonly" /><br />
-    </span>
-    {% endif %}
-
-    <a href="" class="addMap">Find coordinates</a>
-    <a href="" class="hideMap">Hide the map</a>
-    <a href="" class="showMap">Show the map</a>
-    {% if address.nr != 1 %}
-        | <a href="" id="remover{{ address.nr }}" class="removers">Remove</a>
-    {% endif %}
-    </p>
-    {% endfor %}
-    <p id="addAddress"><a href="">Add address</a></p> -->
-<!--     <div id="bottonButton"><input type="button" id="submitButton" value="Apply"/></div> -->
-  </div>
   </div>
   <br style="clear:both;"/>
 {% endblock %}

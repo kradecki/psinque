@@ -97,6 +97,7 @@ function recreateAccordeon() {
         heightStyle: "content",
         active: active,
     });
+//     updateContentHeight();
 }
 
 function updateDisplayName(permitIndex) {
@@ -131,7 +132,7 @@ $(document).ready(function() {
 
     addUpdatePermitHandler(".updatebuttons");
     addRemovePermitHandler(".removebuttons");
-    addAddPermitHandler("#addbutton");
+    addAddPermitHandler("#addnewpermitname");
 
     $("input[type=checkbox]").change(function() {
         updateDisplayName($(this).attr("data-psinque-index"));

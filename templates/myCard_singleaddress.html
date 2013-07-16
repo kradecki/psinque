@@ -1,0 +1,25 @@
+      <tr>
+        {% if loopFirst %}
+        <td rowspan="{{ addressCount * 2 }}" class="formlabels" id="addresseslabel">
+          <label>Physical addresses</label>
+        </td>
+        {% endif %}
+        {{ ui.textinput(address, "addresses", "Address", addressKey, "addresskeys") }}
+        {{ ui.dropdown(addressTypes, addressType, "", "typesofaddress") }}
+        {% if not loopfirst %}
+          {{ ui.removebutton("address", "addressremovers") }}
+        {% else %}
+          {{ ui.addbutton("address") }}
+        {% endif %}
+      </tr>
+      <tr>
+        {{ ui.textinput(city, "cities", "City") }}
+        {{ ui.textinput(postalCode, "postalcodes", "Postal code") }}
+        {{ ui.button("map", "localize") }}
+      </tr>
+<!--    <span class="hiddenCoordinates">
+        <label>Longitude:</label>
+        <input type="text" name="long address.nr " id="long address.nr " value=" address.value.location.lon " readonly="readonly" /><br />
+        <label>Latitude:</label>
+        <input type="text" name="lat address.nr " id="lat address.nr " value=" address.value.location.lat " readonly="readonly" /><br />
+    </span>-->
