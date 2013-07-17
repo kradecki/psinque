@@ -27,7 +27,7 @@ class PermitsHandler(MasterHandler):
             
             permits = Permit.all().ancestor(self.userProfile)
             
-            self.sendContent('templates/permits_view.html',
+            self.sendContent('templates/Permits.html',
                             activeEntry = "Permits",
                             templateVariables = {
                 'userProfile': self.userProfile,

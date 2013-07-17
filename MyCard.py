@@ -115,7 +115,7 @@ class ProfileHandler(MasterHandler):
         primaryEmail = userProfile.emails.filter("primary =", True).get()
         additionalEmails = userProfile.emails.filter("primary =", False).fetch(limit = 1000)
             
-        self.sendContent('templates/myCard_view.html',
+        self.sendContent('templates/MyCard.html',
                          activeEntry = "My card",
                          templateVariables = {
             'firstlogin': firstLogin,

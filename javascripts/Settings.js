@@ -37,8 +37,8 @@ function addGenerateCardDAVHandler(where) {
                 window.cardDAVCounter++;
                 
                 cardDAVLogin = $("#carddavlogin");
-                cardDAVLogin.html("Username: " + data.username +
-                             "</br>Password: " + data.password);
+                cardDAVLogin.html("<b>Username</b>: " + data.username +
+                             "</br><b>Password</b>: " + data.password);
                 showElementWithEffects(cardDAVLogin.parent());
 
                 changeLabelHeight("#carddavlabel", +1);
@@ -136,8 +136,8 @@ $(document).ready(function() {
         }
     });
 
-    addGenerateCardDAVHandler("#generatecarddav");
+    addGenerateCardDAVHandler("#addcarddav");
     addRemoveCardDAVHandler(".carddavremovers");
-    addSaveSettingsHandler("#submitbutton");
+    addSaveSettingsHandler("#savebutton");
     
 });

@@ -208,7 +208,7 @@ $(document).ready(function() {
 
     addAddEmailHandler("#addemail");
     addRemoveEmailHandler(".emailremovers");
-    addUpdateHandler("#submitbutton");
+    addUpdateHandler("#savebutton");
       
 //     $("input[type=text]").submit(function() {
 //         

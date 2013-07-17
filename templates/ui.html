@@ -1,19 +1,22 @@
 <!-- ********************************************************
      * Single UI elements -->
      
-{% macro begintable(tablelabel, rowspan=1) -%}
-  <table>
-  <tbody>
-    <tr>
-    <td class="formlabels"　rowspan={{ rowspan }}>
-      <label>{{ tablelabel }}</label>
-    </td>
+{% macro begintable(tablelabel, rowspan=1, tableid="", rowclass="") -%}
+  <table id="{{ tableid }}"><tbody>
+  <tr class="{{ rowclass }}">
+  <td class="formlabels" rowspan="{{ rowspan }}"><label>{{ tablelabel }}</label></td>
 {%- endmacro %}
 
 {% macro endtable() -%}
-    </tr>
-  </tbody>
-  </table>
+  </tr></tbody></table>
+{%- endmacro %}
+
+{% macro newrow(class="") -%}
+  </tr><tr class="{{ class }}">
+{%- endmacro %}
+
+{% macro spacer() -%}
+  <td><br style="clear:both;"/></td>
 {%- endmacro %}
 
 {% macro button(id, action, class="") -%}
@@ -33,7 +36,7 @@
 {%- endmacro %}
 
 {% macro savebutton(id) -%}
-  {{ button(id, "save") }}
+  {{ button("button", "save") }}
 {%- endmacro %}
 
 {% macro dropdown(items, selected, id="", class="") -%}
@@ -43,6 +46,25 @@
       <option value="{{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
     {% endfor %}
     </select>
+  </td>
+{%- endmacro %}
+
+{% macro dropdown2(items, selected, id="", class="") -%}
+  <td class="forminputs">
+    <select id="{{ id }}" class="{{ class }}" data-template="#dropdown">
+    {% for itemCode, itemName in items.iteritems() %}
+      <option value="{{ itemCode }}" {% if itemCode == selected %}selected="selected"{% endif %}>{{ itemName }}</option>
+    {% endfor %}
+    </select>
+  </td>
+{%- endmacro %}
+
+{% macro textlabel(text, class="", keyvalue="", keyclass="") -%}
+  <td class="forminputs">
+    {% if keyvalue %}
+    <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}">
+    {% endif %}
+    <label class="{{ class }}">{{ text }}</label>
   </td>
 {%- endmacro %}
 
