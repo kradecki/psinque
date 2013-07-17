@@ -16,11 +16,15 @@
   <div class="onecolumn">
     <div id="permitlist">
       {% for permit in permits %}
-      {% set permitIndex = loop.index %}
-      {% include "templates/Permits_Permit.html" %}
+        {% set permitIndex = loop.index %}
+        {% include "templates/Permits_Permit.html" %}
       {% endfor %}
       {{ ui.beginform("newpermit") }}
-        {{ ui.singletextinputwithbutton("New permit", "newpermitname", "Please type name of your new permit") }}
+        {{ ui.begintable() }}
+          {{ ui.tablelabel("New permit") }}
+          {{ ui.textinput("", "newpermitname", "Please type name of your new permit") }}
+          {{ ui.createbutton("permit") }}
+        {{ ui.endtable() }}
       {{ ui.endform() }}
     </div>
   </div>

@@ -84,10 +84,10 @@ function psinqueSetEmailPermit(permitKey, canView, successFunction) {
 }
 
 function psinqueAddPermit(name, index, successFunction) {
-    psinqueAJAX(psinqueAPI_addPermit, {
-                    name: name,
-                    index: index,
-                }, successFunction);
+    psinqueAJAX_HTML(psinqueAPI_addPermit, {
+                         name: name,
+                         index: index,
+                     }, successFunction);
 }
 
 //------------------------------
@@ -95,13 +95,13 @@ function psinqueAddPermit(name, index, successFunction) {
 
 function psinqueGenerateCardDAVLogin(cardDAVName, successFunction) {
     psinqueAJAX(psinqueAPI_generateCardDAVLogin, {
-                    name: cardDAVName,
+                   name: cardDAVName,
                 }, successFunction);
 }
 
 function psinqueDeleteCardDAVLogin(cardDAVKey, successFunction) {
     psinqueAJAX(psinqueAPI_deleteCardDAVLogin, {
-                    key: cardDAVKey,
+                   key: cardDAVKey,
                 }, successFunction);
 }
 
@@ -146,6 +146,19 @@ function psinqueAJAX(url, parameters, successFunction) {
     });
 }
 
+function psinqueAJAX_HTML(url, parameters, successFunction) {
+    
+    if(!psinqueAjaxSafeguard())
+        return;
+    
+    psinqueIncreaseAJAXCounter();
+    
+    $.get(url, parameters, function(data) {
+        psinqueDecreaseAJAXCounter();
+        successFunction(data);
+    }, "html");
+}
+
 function psinqueAjaxSafeguard() {
     return (window.ajaxCounter == 0);
 }
@@ -165,10 +178,11 @@ function psinqueDecreaseAJAXCounter() {
 
 $(document).ready(function() {
     
-    $(document).ajaxError(function() {
+    $(document).ajaxError(function(event, jqXHR, settings, exception) {
         stopLogoAnimation();
         window.ajaxCounter = 0;
-        alert("Uknown error occured while performing operation.");
+        alert("Uknown error occured while performing operation: " + exception);
+        console.log(jqXHR.responseText);
     });
     
 });

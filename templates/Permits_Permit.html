@@ -1,120 +1,47 @@
-  <h3>
-    {%- if permit.name == "Public" %}
-    <img src="/images/squareicons/public.png" />
-    {% else %}
-    <img src="/images/squareicons/private.png" />
-    {% endif -%}
-    {{ permit.name }}
-    <img src="/images/downarrow.png" class="headerarrows downarrows" />
-    <img src="/images/uparrow.png" class="headerarrows uparrows" />
-  </h3>
-  <span class="tableform" id="permitform{{ permitIndex }}">
-    <input type="hidden" id="permitkey{{ permitIndex }}" value="{{ permit.key() }}" />
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="givennames{{ permitIndex }}" {% if permit.canViewFirstNames %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general names"/>
-        <div class="checkboxdiv"></div>
-        <label for="givennames{{ permitIndex }}" class="clickable">First names</label>
-      </td>
-      <td class="forminputs">
-        <label class="generallabels">{{ userProfile.givenNames|join(" ") }}</label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="familynames{{ permitIndex }}" {% if permit.canViewLastNames %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general names"/>
-        <div class="checkboxdiv"></div>
-        <label for="familynames{{ permitIndex }}" class="clickable">Last names</label>
-      </td>
-      <td class="forminputs">
-        <label class="generallabels">{{ userProfile.familyNames|join(" ") }}</label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="birthday{{ permitIndex }}" {% if permit.canViewBirthday %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general"/>
-        <div class="checkboxdiv"></div>
-        <label for="birthday{{ permitIndex }}" class="clickable">Birthday</label>
-      </td>
-      <td class="forminputs">
-        <label class="generallabels">{{ userProfile.birthDay }}</label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="gender{{ permitIndex }}" {% if permit.canViewGender %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" class="general"/>
-        <div class="checkboxdiv"></div>
-        <label for="gender{{ permitIndex }}" class="clickable">Gender</label>
-      </td>
-      <td class="forminputs">
-        <label class="generallabels">{{ userProfile.gender }}</label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    {% for permitEmail in permit.permitEmails %}
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <input type="checkbox" id="email{{ permitIndex }}_{{ loop.index }}" {% if permitEmail.canView %}checked="checked"{% endif %} data-psinque-index="{{ permitIndex }}" data-psinque-subindex="{{ loop.index }}" class="email" name="{{ permitEmail.key() }}" />
-        <div class="checkboxdiv"></div>
-        <label for="email{{ permitIndex }}_{{ loop.index }}" class="clickable">E-mail</label>
-      </td>
-      <td class="forminputs">
-        <label id="emailaddress{{ permitIndex }}_{{ loop.index }}">{{ permitEmail.userEmail.email }}</label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    {% endfor %}
-    <table>
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <label>Displayed name</label>
-      <td class="forminputs">
-      <label id="displayname{{ permitIndex }}">{{ permit.displayName }}</label>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-      <tbody>
-      <tr>
-        <td class="formlabels"><label>Save changes</label></td>
-        <td class="forminputs formbuttons">
-          <span data-psinque-index="{{ permitIndex }}" class="updatebuttons buttons clickable">
-            <img src="/images/squareicons/save.png" />
-          </span>
-        </td>
-        <td><br style="clear:both;"/></td>
-       </tr>
-       {% if permit.name != "Public" and permit.name != "Default" -%}
-       <tr>
-        <td class="formlabels"><label>Remove</label></td>
-        <td class="forminputs formbuttons">
-          <span data-psinque-index="{{ permitIndex }}" class="removebuttons buttons clickable">
-            <img src="/images/squareicons/remove.png" />
-          </span>
-        </td>
-        <td><br style="clear:both;"/></td>
-       </tr>
-       {%- endif %}
-    </tbody>
-    </table>
-  </span>
+{% import "templates/ui.html" as ui -%}
+<h3>
+  {%- if permit.name == "Public" %}
+  <img src="/images/squareicons/public.png" alt="public" />
+  {% else %}
+  <img src="/images/squareicons/private.png" alt="private" />
+  {% endif -%}
+  {{ permit.name }}
+  <img src="/images/downarrow.png" class="headerarrows downarrows" alt="" />
+  <img src="/images/uparrow.png" class="headerarrows uparrows" alt="" />
+</h3>
+{{ ui.beginform("permitform" ~ permitIndex) }}
+  <input type="hidden" id="permitkey{{ permitIndex }}" value="{{ permit.key() }}" />
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("First names", "givennames", permit.canViewFirstNames, permitIndex, "general names", userProfile.givenNames|join(" ")) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("Last names", "familynames", permit.canViewLastNames, permitIndex, "general names", userProfile.familyNames|join(" ")) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("Birthday", "birthday", permit.canViewBirthday, permitIndex, "general", userProfile.birthDay) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("Gender", "gender", permit.canViewGender, permitIndex, "general", userProfile.gender) }}
+  {{ ui.endtable() }}
+  {% for permitEmail in permit.permitEmails %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("E-mail", "email" ~ loop.index, permit.canViewGender, permitIndex, "general", permitEmail.userEmail.email) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Displayed name") }}
+    {{ ui.textlabel(permit.displayName, "", displayname ~ permitIndex) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Save changes") }}
+    {{ ui.savebutton("updatebuttons", permitIndex) }}
+    {{ ui.spacer() }}
+  {{ ui.endtable() }}
+  {% if permit.name != "Public" and permit.name != "Default" -%}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Remove") }}
+      {{ ui.removebutton("permit", "removebuttons", permitIndex) }}
+      {{ ui.spacer() }}
+    {{ ui.endtable() }}
+  {%- endif %}
+{{ ui.endform() }}

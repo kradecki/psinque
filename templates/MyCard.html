@@ -18,18 +18,21 @@
   </div>
   <div id="mycard">
     {{ ui.beginform() }}
-      {{ ui.begintable("Given names", 2) }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Given names", 2) }}
         {{ ui.textinput(userProfile.givenNames|join(" "), "firstname", "Native spelling") }}
         {{ ui.newrow() }}
         {{ ui.textinput("", "firstroman", "Romanization") }}
       {{ ui.endtable() }}
-      {{ ui.begintable("Family names", 2) }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Family names", 2) }}
         {{ ui.textinput(userProfile.familyNames|join(" "), "lastname", "Native spelling") }}
         {{ ui.newrow() }}
         {{ ui.textinput("", "lastroman", "Romanization") }}
       {{ ui.endtable() }}
       {{ ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") }}
-      {{ ui.begintable("Birthday") }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Birthday") }}
         {{ ui.dropdown(range(1, 31+1), "", "birthdays") }}
         {{ ui.dropdown(months, "", "birthmonths") }}
         {{ ui.dropdown(range(1900, 2013+1), "", "birthyears") }}
@@ -91,7 +94,8 @@
       {% endfor %}
       </tbody>
       </table>
-      {{ ui.begintable("Save changes") }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Save changes") }}
         {{ ui.savebutton() }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}

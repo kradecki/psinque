@@ -96,7 +96,7 @@ class PermitsHandler(MasterHandler):
         newPermit.put()
         logging.info("New permit created, key = " + str(newPermit.key()))
 
-        self.sendContent('templates/permits_singlepermit.html',
+        self.sendContent('templates/Permits_Permit.html',
                          activeEntry = "Permits",
                          templateVariables = {
                 'permit': newPermit,

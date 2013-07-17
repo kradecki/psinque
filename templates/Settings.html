@@ -7,14 +7,17 @@
 {% block content %}
   <div class="onecolumn">
     {{ ui.beginform("settings") }}
-      {{ ui.begintable("Preferred language") }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Preferred language") }}
         {{ ui.dropdown2(availableLanguages, userSettings.preferredLanguage, "language") }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
-      {{ ui.begintable("Newsletter") }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Newsletter") }}
         {{ ui.checkbox("newsletter", userSettings.notifyNewsletter, "Send me a newsletter") }}
       {{ ui.endtable() }}
-      {{ ui.begintable("Notifications", 6) }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Notifications", 6) }}
         {{ ui.checkbox("emailnotifications", userSettings.notifyEmails, "Send me email notifications") }}
         {{ ui.newrow("individualnotifications") }}
         {{ ui.checkbox("notifystops", userSettings.notifyStopsUsingMyPrivateData, "When someone stops using my private data") }}
@@ -27,16 +30,18 @@
         {{ ui.newrow("individualnotifications") }}
         {{ ui.checkbox("notifyrevokes", userSettings.notifyRequestDecision, "When permission to use private data is revoked") }}
       {{ ui.endtable() }}
-      {{ ui.begintable("Synchronization", 1) }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Synchronization") }}
         {{ ui.checkbox("synccarddav", userSettings.cardDAVenabled, "Allow CardDAV psinquing") }}
       {{ ui.endtable() }}
       {% if carddavLogins|count == 0 %}
-        {{ ui.begintable("CardDAV devices", 2, "carddav", "newcarddav", "carddavlabel") }}
+        {{ ui.begintable("carddav", "newcarddav") }}
       {% else %}
-        {{ ui.begintable("CardDAV devices", carddavLogins|count + 2, "carddav", "carddavlogins", "carddavlabel") }}
+        {{ ui.begintable("carddav", "carddavlogins") }}
       {% endif %}
+        {{ ui.tablelabel("CardDAV devices", carddavLogins|count + 2, "carddavlabel") }}
       {% for login in carddavLogins %}
-        {{ ui.textlabel(login.name, "carddavnames", login.key(), "carddavkeys") }}
+        {{ ui.textlabel(login.name, "carddavnames", "", login.key(), "carddavkeys") }}
         {{ ui.removebutton("carddav" ~ loop.index, "carddavremovers") }}
         {% if loop.last %}
           {{ ui.newrow("newcarddav") }}
@@ -50,7 +55,8 @@
         <td class="forminputs" id="carddavlogin"></td>
         <td class="forminputs formbuttons"></td>
       {{ ui.endtable() }}
-      {{ ui.begintable("Save changes") }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Save changes") }}
         {{ ui.savebutton() }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
