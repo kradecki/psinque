@@ -79,7 +79,7 @@ class MasterHandler(webapp2.RequestHandler):
             try:
                 actionFunction = getattr(self, actionName)
             except AttributeError as e:
-                logging.error("MasterHandler: Action method not found.")
+                logging.error("Action method not found:")
                 logging.error(e)
                 self.error404()
                 return
@@ -87,6 +87,8 @@ class MasterHandler(webapp2.RequestHandler):
             try:
                 actionFunction()
             except AjaxError as e:
+                logging.error("AjaxError:")
+                logging.error(e)
                 self.sendJsonError(e.value)
 
 

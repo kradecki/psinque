@@ -6,55 +6,54 @@
 {% endblock %}
 {% block content %}
   <div class="onecolumn">
-    <span class="tableform">
-      <span id="languagesettings">
-        {{ ui.begintable("Preferred language") }}
-          {{ ui.dropdown2(availableLanguages, userSettings.preferredLanguage, "language") }}
-          {{ ui.spacer() }}
-        {{ ui.endtable() }}
-      </span>
-      <span id="notificationsetting">
-        {{ ui.begintable("Notifications", 7) }}
-          {{ ui.checkbox("newsletter", userSettings.notifyNewsletter, "Send me a newsletter") }}
-        {{ ui.newrow() }}
-          {{ ui.checkbox("emailnotifications", userSettings.notifyEmails, "Send me a email notifications") }}
-        {% if userSettings.notifyEmails %}
-          {{ ui.newrow("individualnotifications") }}
-            {{ ui.checkbox("notifystops", userSettings.notifyStopsUsingMyPrivateData, "When someone stops using my private data") }}
-          {{ ui.newrow("individualnotifications") }}
-            {{ ui.checkbox("notifyasks", userSettings.notifyAsksForPrivateData, "When someone asks for my private data") }}
-          {{ ui.newrow("individualnotifications") }}
-            {{ ui.checkbox("notifyaccepts", userSettings.notifyAllowsMePrivateData, "When my request for private data has been accepted") }}
-          {{ ui.newrow("individualnotifications") }}
-            {{ ui.checkbox("notifyrejects", userSettings.notifyDisallowsMePrivateData, "When my request for private data has been rejected") }}
-          {{ ui.newrow("individualnotifications") }}
-            {{ ui.checkbox("notifyrevokes", userSettings.notifyRequestDecision, "When permission to use private data is revoked") }}
-        {% endif %}
-        {{ ui.endtable() }}
-      </span>
-      <span id="notificationsetting">
-        {{ ui.begintable("Synchronization", 1) }}
-          {{ ui.checkbox("synccarddav", userSettings.cardDAVenabled, "Allow CardDAV psinquing") }}
-        {{ ui.endtable() }}
-      </span>    
-      <span id="carddav" >
-        {{ ui.begintable("CardDAV devices", carddavLogins|count + 2, "carddavlogins", "carddavlogins") }}
-        {% for login in carddavLogins %}
-          {{ ui.textlabel(login.name, "carddavnames", login.key(), carddavkeys) }}
-          {{ ui.removebutton("carddav" + loop.index, "carddavremovers") }}
+    {{ ui.beginform("settings") }}
+      {{ ui.begintable("Preferred language") }}
+        {{ ui.dropdown2(availableLanguages, userSettings.preferredLanguage, "language") }}
+        {{ ui.spacer() }}
+      {{ ui.endtable() }}
+      {{ ui.begintable("Newsletter") }}
+        {{ ui.checkbox("newsletter", userSettings.notifyNewsletter, "Send me a newsletter") }}
+      {{ ui.endtable() }}
+      {{ ui.begintable("Notifications", 6) }}
+        {{ ui.checkbox("emailnotifications", userSettings.notifyEmails, "Send me email notifications") }}
+        {{ ui.newrow("individualnotifications") }}
+        {{ ui.checkbox("notifystops", userSettings.notifyStopsUsingMyPrivateData, "When someone stops using my private data") }}
+        {{ ui.newrow("individualnotifications") }}
+        {{ ui.checkbox("notifyasks", userSettings.notifyAsksForPrivateData, "When someone asks for my private data") }}
+        {{ ui.newrow("individualnotifications") }}
+        {{ ui.checkbox("notifyaccepts", userSettings.notifyAllowsMePrivateData, "When my request for private data has been accepted") }}
+        {{ ui.newrow("individualnotifications") }}
+        {{ ui.checkbox("notifyrejects", userSettings.notifyDisallowsMePrivateData, "When my request for private data has been rejected") }}
+        {{ ui.newrow("individualnotifications") }}
+        {{ ui.checkbox("notifyrevokes", userSettings.notifyRequestDecision, "When permission to use private data is revoked") }}
+      {{ ui.endtable() }}
+      {{ ui.begintable("Synchronization", 1) }}
+        {{ ui.checkbox("synccarddav", userSettings.cardDAVenabled, "Allow CardDAV psinquing") }}
+      {{ ui.endtable() }}
+      {% if carddavLogins|count == 0 %}
+        {{ ui.begintable("CardDAV devices", 2, "carddav", "newcarddav", "carddavlabel") }}
+      {% else %}
+        {{ ui.begintable("CardDAV devices", carddavLogins|count + 2, "carddav", "carddavlogins", "carddavlabel") }}
+      {% endif %}
+      {% for login in carddavLogins %}
+        {{ ui.textlabel(login.name, "carddavnames", login.key(), "carddavkeys") }}
+        {{ ui.removebutton("carddav" ~ loop.index, "carddavremovers") }}
+        {% if loop.last %}
+          {{ ui.newrow("newcarddav") }}
+        {% else %}
           {{ ui.newrow() }}
-        {% endfor %}
-        {{ ui.textinput("", "", "Type a name for your device") }}
-        {{ ui.addbutton("carddav") }}
-        {{ ui.newrow("hiddenelements") }}
-          <td class="forminputs" id="carddavlogin"></td>
-          <td class="forminputs formbuttons"></td>
-        {{ ui.endtable() }}
-      </span>
+        {% endif %}
+      {% endfor %}
+      {{ ui.textinput("", "newcarddavname", "Type a name for your device") }}
+      {{ ui.createbutton("carddav") }}
+      {{ ui.newrow("hiddenelements") }}
+        <td class="forminputs" id="carddavlogin"></td>
+        <td class="forminputs formbuttons"></td>
+      {{ ui.endtable() }}
       {{ ui.begintable("Save changes") }}
         {{ ui.savebutton() }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
-    </span>
+    {{ ui.endform() }}
   </div>
 {% endblock %}

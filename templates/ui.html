@@ -1,10 +1,18 @@
 <!-- ********************************************************
-     * Single UI elements -->
+     * Form definitions -->
      
-{% macro begintable(tablelabel, rowspan=1, tableid="", rowclass="") -%}
+{% macro beginform(id="") -%}
+  <span class="tableform" id="{{ id }}">
+{%- endmacro %}
+
+{% macro endform() -%}
+  </span>
+{%- endmacro %}
+
+{% macro begintable(tablelabel, rowspan=1, tableid="", rowclass="", labelid="") -%}
   <table id="{{ tableid }}"><tbody>
   <tr class="{{ rowclass }}">
-  <td class="formlabels" rowspan="{{ rowspan }}"><label>{{ tablelabel }}</label></td>
+  <td class="formlabels" rowspan="{{ rowspan }}" id="{{ labelid }}"><label>{{ tablelabel }}</label></td>
 {%- endmacro %}
 
 {% macro endtable() -%}
@@ -15,6 +23,9 @@
   </tr><tr class="{{ class }}">
 {%- endmacro %}
 
+<!-- ********************************************************
+     * Single UI elements -->
+     
 {% macro spacer() -%}
   <td><br style="clear:both;"/></td>
 {%- endmacro %}
@@ -29,6 +40,10 @@
 
 {% macro addbutton(id) -%}
   {{ button(id, "add") }}
+{%- endmacro %}
+
+{% macro createbutton(id) -%}
+  {{ button(id, "create") }}
 {%- endmacro %}
 
 {% macro removebutton(id, class="") -%}
@@ -80,12 +95,12 @@
   </td>
 {%- endmacro %}
 
-{% macro textinput(value, class="", placeholder="", keyvalue="", keyclass="") -%}
+{% macro textinput(value, id="", placeholder="", keyvalue="", keyclass="") -%}
   <td class="forminputs">
     {% if keyvalue %}
     <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}"/>
     {% endif %}
-    <input type="text" class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" />
+    <input type="text" id="{{ id }}" value="{{ value }}" placeholder="{{ placeholder }}" />
   </td>
 {%- endmacro %}
 

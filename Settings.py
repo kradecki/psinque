@@ -87,7 +87,7 @@ class Settings(MasterHandler):
         
         
     def generatecarddavlogin(self):
-        
+              
         carddavName = self.getRequiredParameter("name")
         
         while True:

@@ -1,30 +1,27 @@
-{% extends "templates/masterTemplate.html" %}
+{% extends "templates/master.html" %}
 {% import "templates/ui.html" as ui %}
 {% block title %}Permits{% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="/stylesheets/Permits.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/Permits.css" />
 {% endblock %}
 {% block javascripts %}
-    <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
-    <script type="text/javascript" src="/javascripts/Permits.js"></script>
-    <script type="text/javascript">
-      window.givenNames = "{{ userProfile.givenNames|join(" ") }}";
-      window.familyNames = "{{ userProfile.familyNames|join(" ") }}";
-    </script>
+  <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+  <script type="text/javascript" src="/javascripts/Permits.js"></script>
+  <script type="text/javascript">
+    window.givenNames = "{{ userProfile.givenNames|join(" ") }}";
+    window.familyNames = "{{ userProfile.familyNames|join(" ") }}";
+  </script>
 {% endblock %}
 {% block content %}
   <div class="onecolumn">
-  <div id="permitlist">
-  {% for permit in permits %}
-  {% set permitIndex = loop.index %}
-  {% include "templates/permits_singlepermit.html" %}
-  {% endfor %}
-  <span id="newpermit">
-    <span class="tableform">
-    {{ ui.singletextinputwithbutton("New permit", "newpermitname", "Please type name of your new permit") }}
-    Dupa
-    </span>
-  </span>
-  </div>
+    <div id="permitlist">
+      {% for permit in permits %}
+      {% set permitIndex = loop.index %}
+      {% include "templates/Permits_Permit.html" %}
+      {% endfor %}
+      {{ ui.beginform("newpermit") }}
+        {{ ui.singletextinputwithbutton("New permit", "newpermitname", "Please type name of your new permit") }}
+      {{ ui.endform() }}
+    </div>
   </div>
 {% endblock %}

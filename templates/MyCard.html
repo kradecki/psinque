@@ -1,13 +1,13 @@
-{% extends "templates/masterTemplate.html" %}
+{% extends "templates/master.html" %}
 {% import "templates/ui.html" as ui %}
 {% block title %}My Card{% endblock %}
 {% block javascripts %}
 <!--     <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script> -->
     <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script> -->
-    <script type="text/javascript" src="/javascripts/MyCard.js"></script>
-    <script type="text/javascript">
-        var additionalEmailCounter = {{ additionalEmails|count }};
-    </script>
+  <script type="text/javascript" src="/javascripts/MyCard.js"></script>
+  <script type="text/javascript">
+      var additionalEmailCounter = {{ additionalEmails|count }};
+  </script>
 {% endblock %}
 {% block content %}
   {% if firstlogin %}
@@ -17,10 +17,17 @@
     <img src="/images/linustorvalds.jpg" />
   </div>
   <div id="mycard">
-    <span class="tableform">
-    <span id="generalinfo">
-      {{ ui.singletextinput("Given names", "firstname", userProfile.givenNames|join(" ")) }}
-      {{ ui.singletextinput("Family names", "lastname", userProfile.familyNames|join(" ")) }}
+    {{ ui.beginform() }}
+      {{ ui.begintable("Given names", 2) }}
+        {{ ui.textinput(userProfile.givenNames|join(" "), "firstname", "Native spelling") }}
+        {{ ui.newrow() }}
+        {{ ui.textinput("", "firstroman", "Romanization") }}
+      {{ ui.endtable() }}
+      {{ ui.begintable("Family names", 2) }}
+        {{ ui.textinput(userProfile.familyNames|join(" "), "lastname", "Native spelling") }}
+        {{ ui.newrow() }}
+        {{ ui.textinput("", "lastroman", "Romanization") }}
+      {{ ui.endtable() }}
       {{ ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") }}
       {{ ui.begintable("Birthday") }}
         {{ ui.dropdown(range(1, 31+1), "", "birthdays") }}
@@ -29,8 +36,6 @@
           <td class="forminputs sublabel">Gender:</td>
         {{ ui.dropdown(['undisclosed', 'female', 'male'], "", "gender") }}
       {{ ui.endtable() }}
-    </span>
-    <span id="emails">
       <table id="primaryemailaddress">
       <tbody>
         {% set tablelabel = "Primary email" %}
@@ -39,7 +44,7 @@
         {% set emailkey = primaryEmail.key() %}
         {% set emailaddress = primaryEmail.email %}
         {% set emailtype = primaryEmail.emailType %}
-        {% include "templates/myCard_singleemail.html" %}
+        {% include "templates/MyCard_Email.html" %}
       </tbody>
       </table>
       <table id="additionalemailaddresses">
@@ -51,7 +56,7 @@
           {% set emailkey = email.key() %}
           {% set emailaddress = email.email %}
           {% set emailtype = email.emailType %}
-          {% include "templates/myCard_singleemail.html" %}
+          {% include "templates/MyCard_Email.html" %}
         {% else %}
           {% set tablelabel = "Additional emails" %}
           {% set emailCount = 1 %}
@@ -59,12 +64,10 @@
           {% set emailkey = "" %}
           {% set emailaddress = "" %}
           {% set emailtype = "Private" %}
-          {% include "templates/myCard_singleemail.html" %}
+          {% include "templates/MyCard_Email.html" %}
         {% endfor %}
       </tbody>
       </table>
-    </span>
-    <span id="addresses">
       <table>
       <tbody>
       {% for address in addresses %}
@@ -75,7 +78,7 @@
         {% set addressType = address.addressType %}
         {% set city = address.city %}
         {% set postalCode = address.postalCode %}
-        {% include "templates/myCard_singleaddress.html" %}
+        {% include "templates/MyCard_Address.html" %}
       {% else %}
         {% set loopFirst = True %}
         {% set addressCount = 1 %}
@@ -84,17 +87,15 @@
         {% set addressType = "" %}
         {% set city = "" %}
         {% set postalCode = "" %}
-        {% include "templates/myCard_singleaddress.html" %}
+        {% include "templates/MyCard_Address.html" %}
       {% endfor %}
       </tbody>
       </table>
-    </span>
-    <span>
       {{ ui.begintable("Save changes") }}
         {{ ui.savebutton() }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
-    </span>
+    {{ ui.endform() }}
   </div>
   <br style="clear:both;"/>
 {% endblock %}

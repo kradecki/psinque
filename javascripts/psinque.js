@@ -28,12 +28,12 @@ function stopLogoAnimation() {
 
 function markChangedFields(where) {
     $(where).css("color", "#de5d35");
-    $(where).find("input,select").css("color", "inherit");
+    $(where).find("input,select").css("color", "#de5d35");
 }
 
 function unmarkChangedFields(where) {
-    $(where).css("color", "#000");
-    $(where).find("input,select").css("color", "inherit");
+    $(where).css("color", "inherit");
+    $(where).find("input,select,label").css("color", "inherit");
 }
 
 function unmarkAllFields() {
@@ -80,6 +80,8 @@ function resizeContent() {
     currentWindowHeight = $(document).height();                                
     if (contentHeight < currentWindowHeight - 150) {
         $('#content').css('height', (currentWindowHeight - 150) + "px");   
+    } else {
+        $('#content').css('height', '');
     }
 }       
 $(document).ready(function() {

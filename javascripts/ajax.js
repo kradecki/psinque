@@ -138,8 +138,11 @@ function psinqueAJAX(url, parameters, successFunction) {
     
     $.getJSON(url, parameters, function(data) {
         psinqueDecreaseAJAXCounter();
-        if(successFunction != undefined)
+        if(data["status"] != 0) {
+            alert("An error occured while performing operation: " + data["message"]);
+        } else if(successFunction != undefined) {
             successFunction(data);
+        }
     });
 }
 
