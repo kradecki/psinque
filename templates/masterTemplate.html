@@ -37,7 +37,7 @@
     {%- endblock %}
 </head>
 <body>
-  <div id="headerwrapper" class="outerwrappers">
+  <div id="headerwrapper" class="wrappers">
     <div id="header">
       <table>
       <tbody>
@@ -65,13 +65,13 @@
       </table>
     </div>
   </div>
-  <div id="contentwrapper">
+  <div id="contentwrapper" class="wrappers">
     {% block abovecontent %}{% endblock %}
     <div id="content">
       {% block content %}{% endblock %}
     </div>
   </div>
-  <div id="footerwrapper" class="outerwrappers">
+  <div id="footerwrapper" class="wrappers">
     <div id="footer">
       <table>
       <tbody>

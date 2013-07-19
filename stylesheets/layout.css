@@ -4,28 +4,9 @@
  ****************************************/
 
 body {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 18px;
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
     line-height: 100%;
-    background-color: #fff;
-}
-
-div#contentwrapper {
-    width: 100%;
-/*     padding-top: 75px; */
-/*     padding-bottom: 52px; */
-}
-
-div#content {
-    width: 1180px;
-    margin: 0 auto;
-    padding: 10px;
-    background-color: #d8d4cb;
-}
-
-div.outerwrappers {
-    left: 0;
-    width: 100%;
 }
 
 a {
@@ -37,24 +18,77 @@ a {
     display: none;
 }
 
+
 /****************************************
- * Header
+ * Layout
  ****************************************/
 
+div.wrappers {
+    width: 100%;
+}
+
+div#contentwrapper {
+    background-color: #d8d4cb;
+}
+
+div#content {
+    width: 960px;
+    margin: 0 auto;
+    padding: 0;
+}
+
 div#headerwrapper {
-    top: 0;
-    height: 75px;
-    background-color: #404040;
+    height: 60px;
+    background-color: #ECE8DF;
+    border-bottom: 1px solid #404040;
 }
 
 div#header {
     position: relative;
-    width: 1200px;
+    width: 960px;
     margin: 0 auto;
     padding: 0;
     height: 75px;
     text-align: left;
 }
+
+div#footerwrapper {
+    height: 60px;
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid #404040;
+}
+
+div#footer {
+    width: 960px;
+    position: relative;
+    margin: 0 auto;
+}
+
+div#images {
+    float: left;
+    width: 230px;
+    padding: 20px;
+    padding-right: 0px;
+}
+
+div#mycard {
+    float: left;
+    width: 690px;
+    padding: 10px;
+}
+
+div.onecolumn {
+/*     float: left; */
+/*     padding-left: 167px; */
+    width: 710px;
+    padding: 0;
+    margin: 0 auto;
+}
+
+/****************************************
+ * Header
+ ****************************************/
 
 div#header img {
     float: left;
@@ -120,46 +154,8 @@ div#header td#topicons img {
 }
 
 /****************************************
- * Two or one column layout
- ****************************************/
-
-div#images {
-    float: left;
-    width: 275px;
-    padding: 10px;
-}
-
-div#mycard {
-    float: left;
-    width: 862px;
-    padding: 10px;
-}
-
-div.onecolumn {
-/*     float: left; */
-/*     padding-left: 167px; */
-    width: 862px;
-    padding: 0;
-    margin: 0 auto;
-}
-
-/****************************************
  * Footer
  ****************************************/
-
-div#footerwrapper {
-    bottom: 0;
-    height: 35px;
-    text-align: center;
-    border-top: 2px solid #000;
-    padding-top: 15px;
-}
-
-div#footer {
-    width: 957px;
-    position: relative;
-    margin: 0 auto;
-}
 
 div#footer table {
     margin: 0;
