@@ -132,7 +132,7 @@ $(document).ready(function() {
 
     addUpdatePermitHandler(".updatebuttons");
     addRemovePermitHandler(".removebuttons");
-    addAddPermitHandler("#addnewpermitname");
+    addAddPermitHandler("#createpermit");
 
     $("input[type=checkbox]").change(function() {
         updateDisplayName($(this).attr("data-psinque-index"));
@@ -145,6 +145,7 @@ $(document).ready(function() {
     // jQuery UI
     $("#permitlist").accordion({
         heightStyle: "content",
+        activate: function( event, ui ) { updateContentHeight(); },
     });
     
 });

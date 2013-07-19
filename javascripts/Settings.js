@@ -7,16 +7,16 @@ function changeLabelHeight(where, howMuch) {
 
 function cardDAVHTML(key, name) {
     return "<tr class='carddavlogins'> \
-        <td class='forminputs'> \
-            <input type='hidden' class='carddavkeys' value='" + key + "'> \
-            <label class='carddavnames'>" + name + "</label> \
-        </td> \
-        <td class='forminputs formbuttons'> \
-            <span class='buttons clickable' class='carddavremovers'> \
-              <img src='/images/squareicons/remove.png' /> \
-            </span> \
-        </td> \
-      </tr>"
+              <td class='forminputs'> \
+                  <input type='hidden' class='carddavkeys' value='" + key + "'> \
+                  <label class='carddavnames'>" + name + "</label> \
+              </td> \
+              <td class='forminputs formbuttons'> \
+                  <span class='buttons clickable carddavremovers'> \
+                    <img src='/images/squareicons/remove.png' /> \
+                  </span> \
+              </td> \
+            </tr>"
 }
 
 function addGenerateCardDAVHandler(where) {
@@ -37,14 +37,16 @@ function addGenerateCardDAVHandler(where) {
                 window.cardDAVCounter++;
                 
                 cardDAVLogin = $("#carddavlogin");
-                cardDAVLogin.html("Username: " + data.username +
-                             "</br>Password: " + data.password);
+                cardDAVLogin.html("<b>Username</b>: " + data.username +
+                             "</br><b>Password</b>: " + data.password);
                 showElementWithEffects(cardDAVLogin.parent());
 
                 changeLabelHeight("#carddavlabel", +1);
                 newRow = $(cardDAVHTML(data.key, cardDAVName))
-                newRow.insertBefore("#newcarddav");
+                newRow.insertBefore(".newcarddav");
+                console.log(newRow);
                 addRemoveCardDAVHandler(newRow.find(".carddavremovers"));
+                updateContentHeight();
                 
                 $("#newcarddavname").val("");
 
@@ -63,7 +65,6 @@ function addRemoveCardDAVHandler(where) {
     
     $(where).click(function() {
         
-        console.log("Click");
         cardDAVInfo = $(this).parent().parent();
         cardDAVKey = cardDAVInfo.find(".carddavkeys").val();
         
@@ -72,8 +73,8 @@ function addRemoveCardDAVHandler(where) {
             window.cardDAVCounter--;
             
             changeLabelHeight("#carddavlabel", -1);
-            if(window.cardDAVCounter == 0) {
-                $("carddavlabel").prependTo("#newcarddav");
+            if(cardDAVInfo.find("#carddavlabel")) {
+                $("#carddavlabel").prependTo(cardDAVInfo.next());
             }
 
             labelCell = $("#carddav > tbody > tr > .tableformlabels")
@@ -101,7 +102,7 @@ function addSaveSettingsHandler(where) {
                               $("#synccarddav").is(":checked"),
                               $("#newsletter").is(":checked"),
             function() {
-                unmarkChangedFields("#tableform");
+                unmarkChangedFields("#settings");
             });
 
         return false;
@@ -117,9 +118,10 @@ $(document).ready(function() {
     }
     
     $("input[type=checkbox]").change(function() {
-        markChangedFields($(this).parent().parent().next());
+        markChangedFields($(this).parent().parent().next().children());
     });
     
+    // Hiding the CardDAV logins
     $("#synccarddav").click(function() {
         if($(this).is(':checked')) {
             showElementWithEffects($("#carddav"));
@@ -127,7 +129,11 @@ $(document).ready(function() {
             hideElementWithEffects($("#carddav"));
         }
     });
-        
+    
+    // Hiding the individual email notifications
+    if(!$("#emailnotifications").is(":checked"))
+      $(".individualnotifications").hide();
+    
     $("#emailnotifications").click(function() {
         if($(this).is(":checked")) {
             showElementWithEffects($(".individualnotifications"));
@@ -136,8 +142,8 @@ $(document).ready(function() {
         }
     });
 
-    addGenerateCardDAVHandler("#generatecarddav");
+    addGenerateCardDAVHandler("#createcarddav");
     addRemoveCardDAVHandler(".carddavremovers");
-    addSaveSettingsHandler("#submitbutton");
+    addSaveSettingsHandler("#savebutton");
     
 });

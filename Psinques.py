@@ -205,7 +205,7 @@ class PsinquesHandler(MasterHandler):
             else:
                 isThereMore = False
                     
-            self.sendContent('templates/psinques_view.html',
+            self.sendContent('templates/Psinques.html',
                             activeEntry = "Psinques",
                             templateVariables = {
                 'offset': offset,

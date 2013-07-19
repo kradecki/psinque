@@ -49,7 +49,7 @@ class Settings(MasterHandler):
                                          ancestor(self.userProfile). \
                                          fetch(1000)
             
-            self.sendContent('templates/settings_viewSettings.html',
+            self.sendContent('templates/Settings.html',
                             activeEntry = "",
                             templateVariables = {
                 'userSettings': userSettings,
@@ -87,7 +87,7 @@ class Settings(MasterHandler):
         
         
     def generatecarddavlogin(self):
-        
+              
         carddavName = self.getRequiredParameter("name")
         
         while True:

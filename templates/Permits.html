@@ -1,0 +1,31 @@
+{% extends "templates/master.html" %}
+{% import "templates/ui.html" as ui %}
+{% block title %}Permits{% endblock %}
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/stylesheets/Permits.css" />
+{% endblock %}
+{% block javascripts %}
+  <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+  <script type="text/javascript" src="/javascripts/Permits.js"></script>
+  <script type="text/javascript">
+    window.givenNames = "{{ userProfile.givenNames|join(" ") }}";
+    window.familyNames = "{{ userProfile.familyNames|join(" ") }}";
+  </script>
+{% endblock %}
+{% block content %}
+  <div class="onecolumn">
+    <div id="permitlist">
+      {% for permit in permits %}
+        {% set permitIndex = loop.index %}
+        {% include "templates/Permits_Permit.html" %}
+      {% endfor %}
+      {{ ui.beginform("newpermit") }}
+        {{ ui.begintable() }}
+          {{ ui.tablelabel("New permit") }}
+          {{ ui.textinput("", "newpermitname", "Please type name of your new permit") }}
+          {{ ui.createbutton("permit") }}
+        {{ ui.endtable() }}
+      {{ ui.endform() }}
+    </div>
+  </div>
+{% endblock %}
