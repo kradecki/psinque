@@ -41,13 +41,8 @@
 
 {% macro button(id, action, class="", index="") -%}
   <td class="forminputs formbuttons">
-<<<<<<< HEAD
-    <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}">
-    <img src="/images/button_{{ action }}.png" />
-=======
     <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}{{ index }}"{% if index %} data-psinque-index="{{ index }}"{% endif %}>
-      <img src="/images/squareicons/{{ action }}.png" alt="{{ action }}"/>
->>>>>>> f882abb04467459e7dadcb4fbf3cd17f40513a6a
+    <img src="/images/button_{{ action }}.png" alt="{{ action }}" />
     </span>
   </td>
 {%- endmacro %}

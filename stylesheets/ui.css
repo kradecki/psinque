@@ -28,8 +28,8 @@ input[type="checkbox"]:checked + div {
     position: relative;
     outline: none;
     background: url(/images/select_arrow.png) no-repeat bottom #fff;
-    height: 37px;
-    padding-top: 13px;
+    height: 32px;
+    padding-top: 8px;
     padding-left: 5px;
     max-width: 200px;
 }
@@ -137,7 +137,7 @@ div.tableform td.formlabels {
 
 div.tableform td.formlabels label {
     display: block;
-    padding-top: 17px;
+    padding-top: 12px;
     background-color: #404040;
 }
 
