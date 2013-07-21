@@ -1,13 +1,15 @@
 {% extends "templates/master.html" %}
 {% import "templates/ui.html" as ui %}
 {% block title %}My Card{% endblock %}
-{% block javascripts %}
-<!--     <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script> -->
-    <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script> -->
-  <script type="text/javascript" src="/javascripts/MyCard.js"></script>
+{% block inlinescripts %}
   <script type="text/javascript">
       var additionalEmailCounter = {{ additionalEmails|count }};
   </script>
+{% endblock %}
+{% block externalscripts %}
+<!--     <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script> -->
+    <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script> -->
+  <script type="text/javascript" src="/javascripts/MyCard.js"></script>
 {% endblock %}
 {% block content %}
   {% if firstlogin %}
