@@ -41,19 +41,19 @@ function unmarkAllFields() {
 }
 
 function removeElementWithEffects(element) {
-//   element.slideUp('fast', function() {
-    element.remove();
-//   });
+    element.slideUp('fast', function() {
+        element.remove();
+    });
 }
 
 function hideElementWithEffects(element) {
-//   element.slideUp('fast');
-    element.hide();
+    element.slideUp('fast');
+//     element.hide();
 }
 
 function showElementWithEffects(element) {
-//   element.slideDown('fast');
-    element.show();
+    element.slideDown('fast');
+//     element.show();
 }
 
 function initializeCheckboxes() {
@@ -69,25 +69,7 @@ function psinqueSetMarkingOnChange(where) {
     });
 }
 
-var contentHeight;
-
-function updateContentHeight() {
-    contentHeight = $('#content').height();
-    resizeContent();
-}
-
-function resizeContent() {
-    currentWindowHeight = $(document).height();                                
-    if (contentHeight < currentWindowHeight - 180) {
-        $('#content').css('height', (currentWindowHeight - 180) + "px");   
-    } else {
-        $('#content').css('height', '');
-    }
-}       
 $(document).ready(function() {
-    
-    updateContentHeight();
-    $(window).resize(resizeContent);
     
     $('select').dropdown();
     

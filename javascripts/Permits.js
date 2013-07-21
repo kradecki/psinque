@@ -97,7 +97,6 @@ function recreateAccordeon() {
         heightStyle: "content",
         active: active,
     });
-//     updateContentHeight();
 }
 
 function updateDisplayName(permitIndex) {
@@ -145,7 +144,6 @@ $(document).ready(function() {
     // jQuery UI
     $("#permitlist").accordion({
         heightStyle: "content",
-        activate: function( event, ui ) { updateContentHeight(); },
     });
     
 });

@@ -3,10 +3,13 @@
  * General definitions
  ****************************************/
 
+html, body { height: 100%; }
+
 body {
     font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 16px;
     line-height: 100%;
+    background-color: #d8d4cb;
 }
 
 a {
@@ -22,18 +25,15 @@ a {
  * Layout
  ****************************************/
 
+div#uberwrapper {
+    height: auto !important;
+    min-height: 100%;
+    height: 100%;
+    position: relative; /* Required to absolutely position the footer */
+}
+
 div.wrappers {
     width: 100%;
-}
-
-div#contentwrapper {
-    background-color: #d8d4cb;
-}
-
-div#content {
-    width: 920px;
-    margin: 0 auto;
-    padding: 20px;
 }
 
 div#headerwrapper {
@@ -42,27 +42,41 @@ div#headerwrapper {
     border-bottom: 1px solid #404040;
 }
 
+div#contentwrapper {
+    padding-bottom: 40px;
+    background-color: #d8d4cb;
+}
+
+div#footerwrapper {
+    height: 39px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding-top: 15px;
+    border-top: 1px solid #404040;
+    background: #fff;
+}
+
 div#header {
-    position: relative;
     width: 960px;
     margin: 0 auto;
     padding: 0;
 }
 
-div#footerwrapper {
-    height: 44px;
-    text-align: center;
-    padding-top: 15px;
-    border-top: 1px solid #404040;
+div#content {
+    width: 920px;
+    margin: 0 auto;
+    padding: 20px;
+    height: 100%;
 }
 
 div#footer {
-    position: relative;
     width: 960px;
     margin: 0 auto;
 }
 
-div#images {
+div#photos {
     float: left;
     width: 230px;
 }
