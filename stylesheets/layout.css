@@ -1,6 +1,6 @@
 
 /****************************************
- * General
+ * General definitions
  ****************************************/
 
 body {
@@ -82,8 +82,26 @@ div.onecolumn {
  * Header
  ****************************************/
 
-div#header img {
-    float: left;
+div#header table {
+    width: 100%;
+    height: 59px;
+}
+
+div#header td {
+    padding: 0;
+}
+
+div#header td#logographics {
+    padding-left: 29px;
+    width: 49px;
+}
+
+div#header td#logotext {
+    width: 132px;
+}
+
+div#header #animatedlogo {
+    display: none;
 }
 
 div#header ul {
@@ -124,29 +142,7 @@ div#header li a.active {
     background: #d9d4cc;
 }
 
-div#header table {
-    width: 100%;
-    height: 59px;
-}
-
-div#header td {
-    padding: 0;
-}
-
-div#header td#logographics {
-    padding-left: 29px;
-    width: 49px;
-}
-
-div#header td#logotext {
-    width: 132px;
-}
-
-div#header #animatedlogo {
-    display: none;
-}
-
-div#header td#topicons {
+div#header td#extras {
     width: 300px;
     padding-right: 0px;
 }
