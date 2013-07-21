@@ -13,7 +13,7 @@ function cardDAVHTML(key, name) {
               </td> \
               <td class='forminputs formbuttons'> \
                   <span class='buttons clickable carddavremovers'> \
-                    <img src='/images/squareicons/remove.png' /> \
+                    <img src='/images/remove.png' /> \
                   </span> \
               </td> \
             </tr>"
