@@ -130,7 +130,9 @@ function psinqueUpdateSettings(emailNotifications,
 window.ajaxCounter = 0;
 
 function psinqueAJAX(url, parameters, successFunction) {
-    
+  
+    console.log("AJAX");
+  
     if(!psinqueAjaxSafeguard())
         return;
     

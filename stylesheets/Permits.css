@@ -2,14 +2,16 @@
 div#permitlist h3 {
     background-color: #404040;
     width: 700px;
-    height: 40px;
+    height: 30px;
     color: #fff;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-bottom: 0px;
+    padding: 5px;
     margin: 0;
     margin-bottom: 10px;
-    text-align: left;
+    font-size: 16px;
+}
+
+div#permitlist h3 label {
+  margin-top: 10px;
 }
 
 div#permitlist .ui-accordion-header-active img.downarrows {
@@ -32,13 +34,10 @@ div#permitlist h3 img {
     vertical-align: middle;
     display: inline-block;
     margin: 0;
-    margin-right: 5px;
-    margin-left: 5px;
 }
 
 div#permitlist h3 img.headerarrows {
     float: right;
-    margin-top: 10px;
 }
 
 div#permitlist h3 img.downarrows {

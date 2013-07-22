@@ -1,18 +1,18 @@
-      <tr class="additionalemails">
-        {% if loopfirst %}
-        <td rowspan="{{ emailCount }}" class="formlabels" id="additionalemaillabel">
-          <label>{{ tablelabel }}</label>
-        </td>
-        {% endif %}
-        {% if emailaddress != "primary@nonexistant.com" %}
-          {{ ui.textinput(emailaddress, "emailaddresses", "john@doe.com", emailkey, "emailkeys") }}
-        {% else %}
-          {{ ui.textinput("", "emailaddresses", "john@doe.com", emailkey, "emailkeys") }}
-        {% endif %}
-        {{ ui.dropdown(emailTypes, emailtype, "", "typesofemail") }}
-        {% if not loopfirst %}
-          {{ ui.removebutton("email", "emailremovers") }}
-        {% elif tablelabel != "Primary email" %}
-          {{ ui.addbutton("email") }}
-        {% endif %}
-      </tr>
+<tr class="additionalemails">
+  {% if loopfirst %}
+  <td rowspan="{{ emailCount }}" class="formlabels" id="additionalemaillabel">
+    <label>{{ tablelabel }}</label>
+  </td>
+  {% endif %}
+  {% if emailaddress != "primary@nonexistant.com" %}
+    {{ ui.textinput(emailaddress, "e.g., john@doe.com", "", "emailaddresses", emailkey, "emailkeys") }}
+  {% else %}
+    {{ ui.textinput("", "e.g., john@doe.com", "", "emailaddresses", emailkey, "emailkeys") }}
+  {% endif %}
+  {{ ui.dropdown(emailTypes, emailtype, "", "typesofemail") }}
+  {% if not loopfirst %}
+    {{ ui.removebutton("email", "emailremovers") }}
+  {% elif tablelabel != "Primary email" %}
+    {{ ui.addbutton("email") }}
+  {% endif %}
+</tr>

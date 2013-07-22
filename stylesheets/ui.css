@@ -169,7 +169,8 @@ div.tableform td.formextras {
     width: 120px;
 }
 
-div.tableform td.forminputs input[type=text],label {
+div.tableform td.forminputs input[type=text],
+div.tableform td.forminputs label {
     background-color: #fff;
     border: 0;
     font: inherit;

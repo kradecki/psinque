@@ -9,7 +9,7 @@ function checkTools {
 
 function updateJQuery {
   echo "Updating jQuery..."
-  cd jquery
+  cd ../jquery
   git pull    # update the repo
   npm install # install the jQuery dependencies
   grunt       # build jQuery

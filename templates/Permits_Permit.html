@@ -1,13 +1,13 @@
 {% import "templates/ui.html" as ui -%}
 <h3>
   {%- if permit.name == "Public" %}
-  <img src="/images/squareicons/public.png" alt="public" />
+  <img src="/images/icon_public.png" alt="public" />
   {% else %}
-  <img src="/images/squareicons/private.png" alt="private" />
+  <img src="/images/icon_private.png" alt="private" />
   {% endif -%}
-  {{ permit.name }}
-  <img src="/images/downarrow.png" class="headerarrows downarrows" alt="" />
-  <img src="/images/uparrow.png" class="headerarrows uparrows" alt="" />
+  <label>{{ permit.name }}</label>
+  <img src="/images/icon_down.png" class="headerarrows downarrows" alt="" />
+  <img src="/images/icon_up.png" class="headerarrows uparrows" alt="" />
 </h3>
 {{ ui.beginform("permitform" ~ permitIndex) }}
   <input type="hidden" id="permitkey{{ permitIndex }}" value="{{ permit.key() }}" />

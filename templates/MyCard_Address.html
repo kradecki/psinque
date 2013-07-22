@@ -4,7 +4,7 @@
           <label>Physical addresses</label>
         </td>
         {% endif %}
-        {{ ui.textinput(address, "addresses", "Address", addressKey, "addresskeys") }}
+        {{ ui.textinput(address, "Address", "", "addresses", addressKey, "addresskeys") }}
         {{ ui.dropdown(addressTypes, addressType, "", "typesofaddress") }}
         {% if not loopfirst %}
           {{ ui.removebutton("address", "addressremovers") }}
@@ -13,8 +13,8 @@
         {% endif %}
       </tr>
       <tr>
-        {{ ui.textinput(city, "cities", "City") }}
-        {{ ui.textinput(postalCode, "postalcodes", "Postal code") }}
+        {{ ui.textinput(city, "City", "", "cities") }}
+        {{ ui.textinput(postalCode, "Postal code", "", "postalcodes") }}
         {{ ui.button("map", "localize") }}
       </tr>
 <!--    <span class="hiddenCoordinates">

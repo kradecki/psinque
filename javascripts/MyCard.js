@@ -221,6 +221,5 @@ $(document).ready(function() {
 //   $('.addMap').click(addNewMap);
 //   $('.hideMap').click(hideTheMap);
 //   $('.showMap').click(showTheMap);
-
     
 });

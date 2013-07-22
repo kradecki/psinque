@@ -115,12 +115,12 @@
   </td>
 {%- endmacro %}
 
-{% macro textinput(value, id="", placeholder="", keyvalue="", keyclass="") -%}
+{% macro textinput(value, placeholder="", id="", class="", keyvalue="", keyclass="") -%}
   <td class="forminputs">
     {% if keyvalue %}
     <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}"/>
     {% endif %}
-    <input type="text" id="{{ id }}" value="{{ value }}" placeholder="{{ placeholder }}" />
+    <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
   </td>
 {%- endmacro %}
 

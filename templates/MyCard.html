@@ -22,15 +22,15 @@
     {{ ui.beginform() }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Given names", 2) }}
-        {{ ui.textinput(userProfile.givenNames|join(" "), "firstname", "Native spelling") }}
+        {{ ui.textinput(userProfile.givenNames|join(" "), "Native spelling", "firstname") }}
         {{ ui.newrow() }}
-        {{ ui.textinput("", "firstroman", "Romanization") }}
+        {{ ui.textinput("", "Romanization", "firstroman") }}
       {{ ui.endtable() }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Family names", 2) }}
-        {{ ui.textinput(userProfile.familyNames|join(" "), "lastname", "Native spelling") }}
+        {{ ui.textinput(userProfile.familyNames|join(" "), "Native spelling", "lastname") }}
         {{ ui.newrow() }}
-        {{ ui.textinput("", "lastroman", "Romanization") }}
+        {{ ui.textinput("", "Romanization", "lastroman") }}
       {{ ui.endtable() }}
       {{ ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") }}
       {{ ui.begintable() }}
