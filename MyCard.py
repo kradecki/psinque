@@ -21,62 +21,62 @@ class ProfileHandler(MasterHandler):
 
     #****************************
     # Private methods
-    # 
+    #
 
     def _updateAllVCards(self):
-        
+
         for permit in Permit.all().ancestor(self.userProfile):
             permit.generateVCard()
             permit.put()
 
 
     def _createNewPermit(self, userProfile, permitName, userEmail):
-        
+
         permit = Permit(parent = userProfile,
                         name = permitName)
         permit.put()
 
-        permitEmail = PermitEmail(parent = permit, 
+        permitEmail = PermitEmail(parent = permit,
                                   userEmail = userEmail)
         permitEmail.put()
-        
+
         permit.generateVCard()
         permit.put()
-        
+
         logging.info("New permit created, key = " + str(permit.key()))
-        
+
         return permit
-    
-    
+
+
     def _createNewGroup(self, userProfile, groupName):
-        
+
         group = Group(parent = userProfile,
                       name = groupName)
         group.put()
-        
+
         #logging.info("New group created, key = " + str(group.key()))
 
         return group
 
 
     def _createNewProfile(self):
-        
+
         # Create an empty profile
         userProfile = UserProfile(user = self.user)
         userProfile.put()  # save the new (and empty) profile in the Datastore in order to obtain its key
-        
+
         # User settings
         userSettings = UserSettings(parent = userProfile)
         userSettings.put()
         userProfile.userSettings = userSettings
-        
+
         # Primary email address (needed for notifications, etc.)
         userEmail = UserEmail(parent = userProfile,
                               email = "primary@nonexistant.com",
                               emailType = 'private',
                               primary = True)
         userEmail.put()
-                
+
         userProfile.defaultGroup = self._createNewGroup(userProfile,
                                                         'Default')
 
@@ -87,18 +87,18 @@ class ProfileHandler(MasterHandler):
         userProfile.publicPermit = self._createNewPermit(userProfile,
                                                           'Public',
                                                           userEmail)
-        
+
         # Save the updated user profile
         userProfile.put()
-        
+
         logging.info("New profile created")
         return userProfile
-    
-        
+
+
     #****************************
     # Views
-    # 
-    
+    #
+
     def view(self):   # form for editing details
 
         userProfile = UserProfile.all().filter("user =", self.user).get()
@@ -114,7 +114,7 @@ class ProfileHandler(MasterHandler):
 
         primaryEmail = userProfile.emails.filter("primary =", True).get()
         additionalEmails = userProfile.emails.filter("primary =", False).fetch(limit = 1000)
-            
+
         self.sendContent('templates/MyCard.html',
                          activeEntry = "My card",
                          templateVariables = {
@@ -127,86 +127,94 @@ class ProfileHandler(MasterHandler):
             'addresses': userAddresses,
             'addressTypes': addressTypes,
         })
-        
-                             
+
+
     #****************************
     # AJAX methods
-    # 
-    
-    def updategeneral(self):
-        
-        firstname = self.getRequiredParameter('firstname')
-        lastname = self.getRequiredParameter('lastname')
+    #
 
-        self.userProfile.givenNames = [ firstname ]
-        self.userProfile.familyNames = [ lastname ]
+    def updategeneral(self):
+
+        firstNames = self.getRequiredParameter('givennames')
+        firstNamesRomanization = self.getRequiredParameter('givenroman')
+        lastNames = self.getRequiredParameter('familynames')
+        lastNamesRomanization = self.getRequiredParameter('familyroman')
+        companyName = self.getRequiredParameter('companyname')
+        companyNameRomanization = self.getRequiredParameter('companyroman')
+
+        self.userProfile.givenNames = givenNames
+        self.userProfile.givenNamesRomanization = givenNamesRomanization
+        self.userProfile.familyNames = familyNames
+        self.userProfile.familyNamesRomanization = familyNamesRomanization
+        self.userProfile.companyName = companyName
+        self.userProfile.companyNameRomanization = companyNameRomanization
         self.userProfile.put()
-        
+
         self._updateAllVCards()
-        
+
         self.sendJsonOK()
-    
-    
+
+
     def addemail(self):
-        
+
         email = self.getRequiredParameter('email')
         emailType = self.getRequiredParameter('type')
-        
+
         # Check if this email has already been registered:
         existingEmail = UserEmail.all(keys_only = True). \
                                   filter("email =", email). \
                                   get()
         if not existingEmail is None:
             raise AjaxError("Email is already registered in the system")
-        
+
         userEmail = UserEmail(parent = self.userProfile,
                               email = email,
                               emailType = emailType)
         userEmail.put()
-        
+
         # Add permissions for this email in every outgoing group
         for permit in self.userProfile.permits:
             permitEmail = PermitEmail(parent = permit,
                                       userEmail = userEmail)
             permitEmail.put()
-            
+
         self._updateAllVCards()
 
         self.sendJsonOK({'key': str(userEmail.key())})
 
 
     def updateemail(self):
-        
+
         emailKey = self.getRequiredParameter('key')
         email = self.getRequiredParameter('email')
         emailType = self.getRequiredParameter('type')
-        
+
         userEmail = UserEmail.get(emailKey)
         userEmail.email = email
         userEmail.emailType = emailType
         userEmail.put()
-        
+
         self._updateAllVCards()
 
         self.sendJsonOK()
 
 
     def removeemail(self):
-        
+
         emailKey = self.getRequiredParameter('key')
-            
+
         userEmail = UserEmail.get(emailKey)
         if userEmail is None:
             raise AjaxError("User email not found.")
-        
+
         if userEmail.primary:
-            
+
             userEmail.email = "primary@nonexistant.com"
             userEmail.emailType = 'private'
             userEmail.put()
-            
+
         else:
-        
+
             for permitEmail in userEmail.permitEmails:
                 permitEmail.delete()
             userEmail.delete()
@@ -214,45 +222,45 @@ class ProfileHandler(MasterHandler):
             self._updateAllVCards()
 
         self.sendJsonOK()
-            
-            
+
+
     def addim(self):
         self.sendJsonError("Unimplemented")
-            
-            
+
+
     def updateim(self):
         self.sendJsonError("Unimplemented")
-            
-            
+
+
     def removeim(self):
         self.sendJsonError("Unimplemented")
 
 
     def addwww(self):
         self.sendJsonError("Unimplemented")
-            
-            
+
+
     def updatewww(self):
         self.sendJsonError("Unimplemented")
-            
-            
+
+
     def removewww(self):
         self.sendJsonError("Unimplemented")
 
 
     def addphone(self):
         self.sendJsonError("Unimplemented")
-            
-            
+
+
     def updatephone(self):
         self.sendJsonError("Unimplemented")
-            
-            
+
+
     def removephone(self):
         self.sendJsonError("Unimplemented")
-            
+
 #-----------------------------------------------------------------------------
-                                                
+
 class UploadPhoto(MasterHandler):
     def get(self):
         MasterHandler.sendTopTemplate(self, activeEntry = "My card")

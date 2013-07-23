@@ -149,6 +149,10 @@ div.tableform td.forminputs {
     padding-left: 12px;
 }
 
+div.tableform td.smallinput {
+    width: 100px;
+}
+
 div.tableform td.formbuttons {
     text-align: right;
     padding-right: 0px;

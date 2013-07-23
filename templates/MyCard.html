@@ -1,6 +1,9 @@
 {% extends "templates/master.html" %}
 {% import "templates/ui.html" as ui %}
 {% block title %}My Card{% endblock %}
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/stylesheets/MyCard.css" />
+{% endblock %}
 {% block inlinescripts %}
   <script type="text/javascript">
       var additionalEmailCounter = {{ additionalEmails|count }};
@@ -8,8 +11,8 @@
 {% endblock %}
 {% block externalscripts %}
 <!--     <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script> -->
-    <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script> -->
-  <script type="text/javascript" src="/javascripts/MyCard.js"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
+    <script type="text/javascript" src="/javascripts/MyCard.js"></script>
 {% endblock %}
 {% block content %}
   {% if firstlogin %}
@@ -22,15 +25,21 @@
     {{ ui.beginform() }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Given names", 2) }}
-        {{ ui.textinput(userProfile.givenNames|join(" "), "Native spelling", "firstname") }}
+        {{ ui.textinput(userProfile.givenNames, "Native spelling", "givennames") }}
         {{ ui.newrow() }}
-        {{ ui.textinput("", "Romanization", "firstroman") }}
+        {{ ui.textinput(userProfile.givenNamesRomanization, "Romanization", "givenroman") }}
       {{ ui.endtable() }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Family names", 2) }}
-        {{ ui.textinput(userProfile.familyNames|join(" "), "Native spelling", "lastname") }}
+        {{ ui.textinput(userProfile.familyNames, "Native spelling", "familynames") }}
         {{ ui.newrow() }}
-        {{ ui.textinput("", "Romanization", "lastroman") }}
+        {{ ui.textinput(userProfile.familyNamesRomanization, "Romanization", "familyroman") }}
+      {{ ui.endtable() }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Company name", 2) }}
+        {{ ui.textinput(userProfile.companyName, "Native spelling", "companyname") }}
+        {{ ui.newrow() }}
+        {{ ui.textinput(userProfile.companyNameRomanization, "Romanization", "companyroman") }}
       {{ ui.endtable() }}
       {{ ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") }}
       {{ ui.begintable() }}
@@ -77,19 +86,23 @@
       <tbody>
       {% for address in addresses %}
         {% set loopFirst = loop.first %}
+        {% set loopIndex = loop.index %}
         {% set addressCount = addresses|count %}
         {% set addressKey = address.key() %}
         {% set address = address.address %}
         {% set addressType = address.addressType %}
+        {% set addressLocation = address.location %}
         {% set city = address.city %}
         {% set postalCode = address.postalCode %}
         {% include "templates/MyCard_Address.html" %}
       {% else %}
         {% set loopFirst = True %}
+        {% set loopIndex = 1 %}
         {% set addressCount = 1 %}
         {% set addressKey = None %}
         {% set address = "" %}
         {% set addressType = "" %}
+        {% set addressLocation = None %}
         {% set city = "" %}
         {% set postalCode = "" %}
         {% include "templates/MyCard_Address.html" %}

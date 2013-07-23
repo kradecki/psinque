@@ -130,8 +130,12 @@ class UserProfile(db.Model):
 
     user = db.UserProperty()
 
-    givenNames = db.StringListProperty()
-    familyNames = db.StringListProperty()
+    givenNames = db.StringProperty()
+    givenNamesRomanization = db.StringProperty()
+    
+    familyNames = db.StringProperty()
+    familyNamesRomanization = db.StringProperty()
+    
     pseudonyms = db.StringListProperty()
     companyName = db.StringProperty()
 

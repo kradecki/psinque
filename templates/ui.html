@@ -63,8 +63,8 @@
   {{ button("button", "save", class, index) }}
 {%- endmacro %}
 
-{% macro dropdown(items, selected, id="", class="") -%}
-  <td class="forminputs">
+{% macro dropdown(items, selected, id="", class="", tdclass="") -%}
+  <td class="forminputs{% if tdclass %} {{ tdclass }}{% endif %}">
     <select id="{{ id }}"{% if class %} class="{{ class }}"{% endif %} data-template="#dropdown">
     {% for item in items %}
       <option value="{{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>

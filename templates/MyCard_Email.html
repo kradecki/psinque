@@ -9,7 +9,7 @@
   {% else %}
     {{ ui.textinput("", "e.g., john@doe.com", "", "emailaddresses", emailkey, "emailkeys") }}
   {% endif %}
-  {{ ui.dropdown(emailTypes, emailtype, "", "typesofemail") }}
+  {{ ui.dropdown(emailTypes, emailtype, "", "typesofemail", "smallinput") }}
   {% if not loopfirst %}
     {{ ui.removebutton("email", "emailremovers") }}
   {% elif tablelabel != "Primary email" %}

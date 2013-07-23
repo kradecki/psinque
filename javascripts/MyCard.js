@@ -1,107 +1,75 @@
 
-// // Global Google Map variables
-// var geocoder;
-// var maps = [];
-// var addressMarkers;
-// var currentAddressPositions = [];
-// 
-// function initializeGoogleMap(mapIdNr) {
-//   currentAddressPositon = new google.maps.LatLng(-34.397, 150.644);
-//   geocoder = new google.maps.Geocoder();
-//   var mapOptions = {
-//     center: currentAddressPositon,
-//     zoom: 12,
-//     mapTypeId: google.maps.MapTypeId.ROADMAP
-//   };
-//   maps[mapIdNr-1] = new google.maps.Map(document.getElementById("map_canvas" + mapIdNr), mapOptions);
-// }
-// 
-// function codeAddress(address, mapIdNr) {
-//   geocoder.geocode( { 'address': address }, function(results, status) {
-//     if (status == google.maps.GeocoderStatus.OK) {
-//       currentAddressPositions[mapIdNr-1] = results[0].geometry.location;
-//       maps[mapIdNr-1].setCenter(currentAddressPositions[mapIdNr-1]);
-//       addressMarker = new google.maps.Marker({
-//         map: maps[mapIdNr-1],
-//         position: currentAddressPositions[mapIdNr-1],
-//         draggable: true
-//       });
-// 
-//       updateAddressCoordinates(mapIdNr);
-// 
-//       addressMarker.position_changed = function() {
-//         currentAddressPositions[mapIdNr-1] = addressMarker.getPosition();
-//         updateAddressCoordinates(mapIdNr);
-//       };
-//     } else {
-//       alert("Geocode was not successful for the following reason: " + status);
-//     }
-//   });
-// }
+// Global Google Map variables
+var geocoder;
+var maps = [];
+var currentAddressPositions = [];
 
-// function updateAddressCoordinates(mapIdNr) {
-//   // Copy the coordinates into appropriate input fields
-//   $("#long" + mapIdNr).val(currentAddressPositions[mapIdNr-1].Xa);
-//   $("#lat" + mapIdNr).val(currentAddressPositions[mapIdNr-1].Ya);
-// }
-// 
-// function addNewMap() {
-//   mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
-//   $(this).parent().append('<br /><div class="mapCanvas" id="map_canvas' + mapIdNr + '"></div>');
-// 
-//   initializeGoogleMap(mapIdNr);
-//   fullAddress = $(this).siblings("input").map(function() { return $(this).val(); }).get().join(", ")  // join all fields for the query
-//   console.log(fullAddress);  //TODO: The above also joins the empty longitude and latitude fields...
-//   codeAddress(fullAddress, mapIdNr);
-// 
-//   $(this).hide();
-//   $(this).next().show();
-// 
-//   return false;
-// }
+function initializeGoogleMap(mapNr) {
+  
+    currentAddressPositon = new google.maps.LatLng(-34.397, 150.644);
+    
+    var mapOptions = {
+        center: currentAddressPositon,
+        zoom: 12,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    
+    maps[mapNr-1] = new google.maps.Map(document.getElementById("googlemap" + mapNr), mapOptions);
+    
+}
 
-// function hideTheMap() {
-//   mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
-//   $("#map_canvas" + mapIdNr).slideUp();
-//   $(this).hide();
-//   $(this).next().show();
-//   return false;
-// }
-// 
-// function showTheMap() {
-//   mapIdNr = parseInt($(this).parent()[0].id.match("[0-9]+"));
-//   $("#map_canvas" + mapIdNr).slideDown();
-//   $(this).hide();
-//   $(this).prev().show();
-//   return false;
-// }
+function codeAddress(address, mapNr) {
+  
+    geocoder.geocode( { 'address': address }, function(results, status) {
+      
+        if (status == google.maps.GeocoderStatus.OK) {
+          
+            currentAddressPositions[mapNr-1] = results[0].geometry.location;
+            maps[mapNr-1].setCenter(currentAddressPositions[mapNr-1]);
+            addressMarker = new google.maps.Marker({
+                map: maps[mapNr-1],
+                position: currentAddressPositions[mapNr-1],
+                draggable: true
+            });
 
-//   $('#addAddress').click(function() {
-//     newAddress = cloneElement("address", addressCounter++, addressCounter+1);
-//     newAddress.insertBefore("#addAddress"); // insert hidden
-// 
-//     // Handle the google map
-//     newAddress.find("div").remove();        // remove the google map too
-//     newAddress.find(".showMap").hide();
-//     newAddress.find(".hideMap").hide();
-//     newAddress.find(".addMap").show();
-//     newAddress.find(".addMap").click(addNewMap);
-//     newAddress.find(".hideMap").click(hideTheMap);
-//     newAddress.find(".showMap").click(showTheMap);
-// 
-//     // Add a handle to remove this address
-//     if(addressCounter == 2)  // we cloned the first address, so we need to add a 'remove' link
-//       newAddress.append(' | <a href="" id="remover' + addressCounter + '" class="removers">Remove</a>')
-//     newAddress.find('#remover' + addressCounter).click(function() {
-//       removeElementWithEffects($(this).parent());
-//       return false;
-//     });
-// 
-//     // Show the new address fields
-//     newAddress.slideDown();
-// 
-//     return false;   // stop page refresh
-//   });
+            updateAddressCoordinates(mapNr);
+
+            addressMarker.position_changed = function() {
+                currentAddressPositions[mapNr-1] = addressMarker.getPosition();
+                updateAddressCoordinates(mapNr);
+            };
+            
+        } else {
+          
+            alert("Geocode was not successful for the following reason: " + status);
+        }
+    });
+}
+
+function updateAddressCoordinates(mapNr) {
+  
+    // Copy the coordinates into appropriate input fields
+    $("#long" + mapNr).val(currentAddressPositions[mapNr-1].jb);
+    $("#lat" + mapNr).val(currentAddressPositions[mapNr-1].kb);
+  
+}
+
+function addLocalizerHandler(where) {
+  
+    $(where).click(function() {
+      
+        mapNr = $(this).attr("data-psinque-index");
+
+        initializeGoogleMap(mapNr);
+        fullAddress = $("#city" + mapNr).val() + ", " + $("#address" + mapNr).val();
+        codeAddress(fullAddress, mapNr);
+
+        $("#googlemap" + mapNr).parent().parent().show();
+
+        return false;
+
+    });
+}
 
 //---------------------------------------------------------
 
@@ -143,6 +111,8 @@ function addRemoveEmailHandler(where) {
 function addUpdateHandler(where) {
     
     $(where).click(function() {
+      
+        psinqueAjaxTransactionStart();
         
         psinqueUpdateGeneral($("#firstname").val(), $("#lastname").val(),
             function() {
@@ -150,8 +120,12 @@ function addUpdateHandler(where) {
             });
         
         $(".emailaddresses").each(function() {  // then run the AJAX queries
+          
             emailinput = $(this);
             emailAddress = emailinput.val();
+            if(emailAddress == "")
+                return;
+            
             td = emailinput.parent();
             typeOfEmail = td.next().find(".typesofemail").val();
             emailKey = td.find(".emailkeys").val();
@@ -168,6 +142,8 @@ function addUpdateHandler(where) {
                 });
             }
         });
+
+        psinqueAjaxTransactionStop();
         
         return false;
     });
@@ -210,16 +186,11 @@ $(document).ready(function() {
     addRemoveEmailHandler(".emailremovers");
     addUpdateHandler("#savebutton");
       
-//     $("input[type=text]").submit(function() {
-//         
-//     });
-
     // Turn the form validation on
 //   $("#submitForm").validate();
 
-//   // Add map handlers
-//   $('.addMap').click(addNewMap);
-//   $('.hideMap').click(hideTheMap);
-//   $('.showMap').click(showTheMap);
+    // Add map handlers
+    geocoder = new google.maps.Geocoder();
+    addLocalizerHandler(".localizers");
     
 });

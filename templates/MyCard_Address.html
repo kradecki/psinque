@@ -1,25 +1,24 @@
-      <tr>
-        {% if loopFirst %}
-        <td rowspan="{{ addressCount * 2 }}" class="formlabels" id="addresseslabel">
-          <label>Physical addresses</label>
-        </td>
-        {% endif %}
-        {{ ui.textinput(address, "Address", "", "addresses", addressKey, "addresskeys") }}
-        {{ ui.dropdown(addressTypes, addressType, "", "typesofaddress") }}
-        {% if not loopfirst %}
-          {{ ui.removebutton("address", "addressremovers") }}
-        {% else %}
-          {{ ui.addbutton("address") }}
-        {% endif %}
-      </tr>
-      <tr>
-        {{ ui.textinput(city, "City", "", "cities") }}
-        {{ ui.textinput(postalCode, "Postal code", "", "postalcodes") }}
-        {{ ui.button("map", "localize") }}
-      </tr>
-<!--    <span class="hiddenCoordinates">
-        <label>Longitude:</label>
-        <input type="text" name="long address.nr " id="long address.nr " value=" address.value.location.lon " readonly="readonly" /><br />
-        <label>Latitude:</label>
-        <input type="text" name="lat address.nr " id="lat address.nr " value=" address.value.location.lat " readonly="readonly" /><br />
-    </span>-->
+<tr>
+  {% if loopFirst %}
+  <td rowspan="{{ addressCount * 3 }}" class="formlabels" id="addresseslabel">
+    <label>Physical addresses</label>
+  </td>
+  {% endif %}
+  {{ ui.textinput(address, "Address", "address" ~ loopIndex, "addresses", addressKey, "addresskeys") }}
+  {{ ui.dropdown(addressTypes, addressType, "", "typesofaddress", "smallinput") }}
+  {% if not loopfirst %}
+    {{ ui.removebutton("address", "addressremovers") }}
+  {% else %}
+    {{ ui.addbutton("address") }}
+  {% endif %}
+{{ ui.newrow() }}
+  {{ ui.textinput(city, "City", "city" ~ loopIndex, "cities") }}
+  {{ ui.textinput(postalCode, "Postal code", "", "postalcodes") }}
+  {{ ui.button("map", "localize", "localizers", loopIndex) }}
+{{ ui.newrow("hiddenelements") }}
+  <td class="forminputs">
+    <div class="googlemaps" id="googlemap{{ loopIndex }}"></div>
+    <input type="hidden" id="long{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lon }}"{% endif %} readonly="readonly" />
+    <input type="hidden" id="lat{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lat }}"{% endif %} readonly="readonly" />
+  </td>
+</tr>

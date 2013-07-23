@@ -127,13 +127,20 @@ function psinqueUpdateSettings(emailNotifications,
 //------------------------------
 // General AJAX
 
+window.ajaxTransaction = false;
 window.ajaxCounter = 0;
+
+function psinqueAjaxTransactionStart() {
+    window.ajaxTransaction = true;
+}
+
+function psinqueAjaxTransactionStop() {
+    window.ajaxTransaction = false;
+}
 
 function psinqueAJAX(url, parameters, successFunction) {
   
-    console.log("AJAX");
-  
-    if(!psinqueAjaxSafeguard())
+    if((!window.ajaxTransaction) && (window.ajaxCounter != 0))
         return;
     
     psinqueIncreaseAJAXCounter();
@@ -159,10 +166,6 @@ function psinqueAJAX_HTML(url, parameters, successFunction) {
         psinqueDecreaseAJAXCounter();
         successFunction(data);
     }, "html");
-}
-
-function psinqueAjaxSafeguard() {
-    return (window.ajaxCounter == 0);
 }
 
 function psinqueIncreaseAJAXCounter() {
