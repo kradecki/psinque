@@ -16,7 +16,7 @@
   {{ ui.textinput(postalCode, "Postal code", "", "postalcodes") }}
   {{ ui.button("map", "localize", "localizers", loopIndex) }}
 {{ ui.newrow("hiddenelements") }}
-  <td class="forminputs">
+  <td class="forminputs" colspan="2">
     <div class="googlemaps" id="googlemap{{ loopIndex }}"></div>
     <input type="hidden" id="long{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lon }}"{% endif %} readonly="readonly" />
     <input type="hidden" id="lat{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lat }}"{% endif %} readonly="readonly" />

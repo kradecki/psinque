@@ -6,7 +6,9 @@
 {% endblock %}
 {% block inlinescripts %}
   <script type="text/javascript">
-      var additionalEmailCounter = {{ additionalEmails|count }};
+    var additionalEmailCounter = {{ additionalEmails|count }};
+    if(additionalEmailCounter == 0)
+        additionalEmailCounter = 1;
   </script>
 {% endblock %}
 {% block externalscripts %}
@@ -79,6 +81,44 @@
           {% set emailaddress = "" %}
           {% set emailtype = "Private" %}
           {% include "templates/MyCard_Email.html" %}
+        {% endfor %}
+      </tbody>
+      </table>
+      <table>
+      <tbody>
+        {% for im in ims %}
+          {% set imCount = ims|count %}
+          {% set loopfirst = loop.first %}
+          {% set imKey = im.key() %}
+          {% set imAddress = im.im %}
+          {% set imType = im.imType %}
+          {% include "templates/MyCard_IM.html" %}
+        {% else %}
+          {% set imCount = 1 %}
+          {% set loopfirst = True %}
+          {% set imKey = "" %}
+          {% set imAddress = "" %}
+          {% set imType = "Private" %}
+          {% include "templates/MyCard_IM.html" %}
+        {% endfor %}
+      </tbody>
+      </table>
+      <table>
+      <tbody>
+        {% for www in wwws %}
+          {% set wwwCount = wwws|count %}
+          {% set loopfirst = loop.first %}
+          {% set wwwKey = www.key() %}
+          {% set wwwAddress = www.www %}
+          {% set wwwType = www.wwwType %}
+          {% include "templates/MyCard_WWW.html" %}
+        {% else %}
+          {% set wwwCount = 1 %}
+          {% set loopfirst = True %}
+          {% set wwwKey = "" %}
+          {% set wwwAddress = "" %}
+          {% set wwwType = "private homepage" %}
+          {% include "templates/MyCard_WWW.html" %}
         {% endfor %}
       </tbody>
       </table>

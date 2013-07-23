@@ -9,9 +9,9 @@ from google.appengine.api import users
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-from DataModels import UserProfile, UserEmail, UserSettings, Group
+from DataModels import UserProfile, UserSettings, Group, UserEmail
 from DataModels import Permit, PermitEmail
-from DataModels import emailTypes, addressTypes
+from DataModels import emailTypes, addressTypes, imTypes, wwwTypes
 
 from MasterHandler import MasterHandler, AjaxError
 
@@ -112,6 +112,9 @@ class ProfileHandler(MasterHandler):
         #if len(addresses) == 0:
             #addresses = [{'nr': 1, 'value': None}]
 
+        ims  = userProfile.ims.fetch(limit = 1000)
+        webpages = userProfile.webpages.fetch(limit = 1000)
+
         primaryEmail = userProfile.emails.filter("primary =", True).get()
         additionalEmails = userProfile.emails.filter("primary =", False).fetch(limit = 1000)
 
@@ -126,6 +129,10 @@ class ProfileHandler(MasterHandler):
             'months': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             'addresses': userAddresses,
             'addressTypes': addressTypes,
+            'ims': ims,
+            'imTypes': imTypes,
+            'wwws': webpages,
+            'wwwTypes': wwwTypes,
         })
 
 

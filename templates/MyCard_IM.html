@@ -1,0 +1,14 @@
+<tr>
+  {% if loopfirst %}
+  <td rowspan="{{ imCount }}" class="formlabels" id="imlabel">
+    <label>IMs</label>
+  </td>
+  {% endif %}
+  {{ ui.textinput(imAddress, "", "", "ims", imKey, "imkeys") }}
+  {{ ui.dropdown(imTypes, imType, "", "imtypes", "smallinput") }}
+  {% if not loopfirst %}
+    {{ ui.removebutton("im", "imremovers") }}
+  {% else %}
+    {{ ui.addbutton("im") }}
+  {% endif %}
+</tr>

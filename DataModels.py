@@ -8,6 +8,16 @@ import vCard
 from datetime import datetime
 import md5
 
+
+genders    = ["male", "female", "undisclosed"]
+phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
+wwwTypes   = ["private homepage", "business homepage", "facebook", "myspace", "other"]
+
+addressTypes = {'home': 'Home', 'work': 'Work'}
+emailTypes   = {'private': 'Private', 'work': 'Work'}
+imTypes      = emailTypes
+
+
 #-----------------------------------------------------------------------------
 
 class Permit(db.Model):
@@ -15,8 +25,8 @@ class Permit(db.Model):
     name = db.StringProperty()
     public = db.BooleanProperty(default = False)
 
-    canViewFirstNames = db.BooleanProperty(default = True)
-    canViewLastNames = db.BooleanProperty(default = True)
+    canViewGivenNames = db.BooleanProperty(default = True)
+    canViewFamilyNames = db.BooleanProperty(default = True)
     canViewBirthday = db.BooleanProperty(default = False)
     canViewGender = db.BooleanProperty(default = False)
 
@@ -31,26 +41,26 @@ class Permit(db.Model):
     def permitEmails(self):
         return PermitEmail.all().ancestor(self)
     
-    def _getFirstNames(self, userProfile):
-        if self.canViewFirstNames:
+    def _getGivenNames(self, userProfile):
+        if self.canViewGivenNames:
             return userProfile.givenNames
         else:
-            return []
+            return ""
     
-    def _getLastNames(self, userProfile):
-        if self.canViewLastNames:
+    def _getFamilyNames(self, userProfile):
+        if self.canViewFamilyNames:
             return userProfile.familyNames
         else:
-            return []
+            return ""
     
-    def _updateDisplayName(self, firstNames, lastNames):
+    def _updateDisplayName(self, givenNames, familyNames):
         displayName = u""
-        if len(firstNames) > 0:
-            displayName = displayName + u" ".join(firstNames)
-        if len(lastNames) > 0:
+        if givenNames != u"":
+            displayName = displayName + givenNames
+        if familyNames != u"":
             if displayName != u"":
                 displayName = displayName + u" "
-            displayName = displayName + u" ".join(lastNames)
+            displayName = displayName + familyNames
         self.displayName = displayName
         if self.displayName == u"":
             for permitEmail in self.permitEmails:
@@ -64,10 +74,9 @@ class Permit(db.Model):
         userProfile = self.parent()
         newVCard = vCard.VCard()
 
-        firstNames = self._getFirstNames(userProfile)
-        lastNames = self._getLastNames(userProfile)
-        newVCard.addNames(u", ".join(firstNames),
-                          u", ".join(lastNames))
+        givenNames = self._getGivenNames(userProfile)
+        familyNames = self._getFamilyNames(userProfile)
+        newVCard.addNames(givenNames, familyNames)
 
         for email in userProfile.emails:
             permitEmail = email.permitEmails.get()
@@ -121,10 +130,44 @@ class UserSettings(db.Model):
 
 #-----------------------------------------------------------------------------
 
-genders    = ["male", "female"]
-phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
-addressTypes = {'home': 'Home', 'work': 'Work'}
-emailTypes   = {'private': 'Private', 'work': 'Work'}
+class UserAddress(db.Model):
+    address = db.PostalAddressProperty()
+    city = db.StringProperty()
+    postalCode = db.StringProperty()
+    addressType = db.StringProperty(choices = addressTypes.keys())
+    location = db.GeoPtProperty()
+
+#-----------------------------------------------------------------------------
+
+class UserEmail(db.Model):
+    email = db.EmailProperty()
+    emailType = db.StringProperty(choices = emailTypes.keys())
+    primary = db.BooleanProperty(default = False)
+
+#-----------------------------------------------------------------------------
+
+class UserIM(db.Model):
+    im = db.IMProperty()
+    imType = db.StringProperty(choices = imTypes.keys())
+
+#-----------------------------------------------------------------------------
+
+class UserPhoneNumber(db.Model):
+    phone = db.PhoneNumberProperty(required = True)
+    phoneType = db.StringProperty(choices = phoneTypes)
+
+#-----------------------------------------------------------------------------
+
+class UserWebpage(db.Model):
+    address = db.StringProperty()
+    webpageType = db.StringProperty(choices = wwwTypes)
+
+#-----------------------------------------------------------------------------
+
+#class UserPhoto(db.Model):
+  #photograph = blobstore.BlobReferenceProperty()
+
+#-----------------------------------------------------------------------------
 
 class UserProfile(db.Model):
 
@@ -163,12 +206,16 @@ class UserProfile(db.Model):
         return UserAddress.all().ancestor(self)
     
     @property
+    def ims(self):
+        return UserIM.all().ancestor(self)
+    
+    @property
+    def webpages(self):
+        return UserWebpage.all().ancestor(self)
+    
+    @property
     def permits(self):
         return Permit.all().ancestor(self)
-
-#class UserPhoto(db.Model):
-  #user = db.ReferenceProperty(UserProfile, collection_name = "photos")
-  #photograph = blobstore.BlobReferenceProperty()
 
 #-----------------------------------------------------------------------------
 
@@ -213,39 +260,6 @@ class Contact(db.Model):
             return self.incoming.displayName
         return self.friendsContact.permit.displayName
   
-#-----------------------------------------------------------------------------
-
-class UserAddress(db.Model):
-    address = db.PostalAddressProperty()
-    city = db.StringProperty()
-    postalCode = db.StringProperty()
-    addressType = db.StringProperty(choices = addressTypes.keys())
-    location = db.GeoPtProperty()
-
-#-----------------------------------------------------------------------------
-
-class UserEmail(db.Model):
-    email = db.EmailProperty()
-    emailType = db.StringProperty(choices = emailTypes.keys())
-    primary = db.BooleanProperty(default = False)
-
-#-----------------------------------------------------------------------------
-
-class UserIM(db.Model):
-    im = db.IMProperty()
-
-#-----------------------------------------------------------------------------
-
-class UserPhoneNumber(db.Model):
-    phone = db.PhoneNumberProperty(required = True)
-    phoneType = db.StringProperty(choices = phoneTypes)
-
-#-----------------------------------------------------------------------------
-
-class UserWebpage(db.Model):
-    address = db.StringProperty()
-    webpageType = db.StringProperty(choices = ["private homepage", "business homepage", "facebook", "myspace", "other"])
-
 #-----------------------------------------------------------------------------
 
 class PermitEmail(db.Model):
