@@ -10,9 +10,13 @@ class VCard():
 
     def addNames(self, givenNames,
                        familyNames,
-                       additionalNames = "",
-                       honorificPrefixes = "",
-                       honorificSuffixes = ""):
+                       additionalNames = u"",
+                       honorificPrefixes = u"",
+                       honorificSuffixes = u""):
+        
+        logging.info("addNames")
+        logging.info(givenNames)
+        logging.info(familyNames)
         
         self.vcardTest += u"N:" + \
                           familyNames + u";" + \
@@ -23,15 +27,15 @@ class VCard():
                  
         self.vcardTest += u"FN:"
         
-        if honorificPrefixes != "":
+        if honorificPrefixes != u"":
             self.vcardTest += honorificPrefixes + u" "
                 
         self.vcardTest += givenNames + u" " + familyNames
 
-        if additionalNames != "":
+        if additionalNames != u"":
             self.vcardTest += u" " + additionalNames
 
-        if honorificSuffixes != "":
+        if honorificSuffixes != u"":
             self.vcardTest += u", "+ honorificSuffixes
             
         self.vcardTest += u"\n"

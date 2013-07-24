@@ -91,7 +91,7 @@ class Permit(db.Model):
             self.vcardMTime = str(datetime.date(datetime.now())) + "." + str(datetime.time(datetime.now()))
             self.vcardMD5 = md5.new(self.vcard.encode('utf8')).hexdigest()
             
-        self._updateDisplayName(firstNames, lastNames)
+        self._updateDisplayName(givenNames, familyNames)
 
 
 #-----------------------------------------------------------------------------
@@ -173,14 +173,14 @@ class UserProfile(db.Model):
 
     user = db.UserProperty()
 
-    givenNames = db.StringProperty()
-    givenNamesRomanization = db.StringProperty()
+    givenNames = db.StringProperty(default = u"")
+    givenNamesRomanization = db.StringProperty(default = u"")
     
-    familyNames = db.StringProperty()
-    familyNamesRomanization = db.StringProperty()
+    familyNames = db.StringProperty(default = u"")
+    familyNamesRomanization = db.StringProperty(default = u"")
     
     pseudonyms = db.StringListProperty()
-    companyName = db.StringProperty()
+    companyName = db.StringProperty(default = u"")
 
     gender = db.StringProperty(choices = genders)
 
