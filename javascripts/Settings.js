@@ -140,4 +140,7 @@ $(document).ready(function() {
     addRemoveCardDAVHandler(".carddavremovers");
     addSaveSettingsHandler("#savebutton");
     
+    // React to pressing the Enter key
+    uiAddEnterAction("#newcarddavname", "#createcarddav")
+
 });

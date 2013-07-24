@@ -181,5 +181,8 @@ $(document).ready(function() {
 
     // A handler to save all profile data
     addUpdateHandler("#savebutton");
-          
+    
+    // React to pressing the Enter key
+    uiAddEnterAction("input[type=text]", "#savebutton");
+    
 });

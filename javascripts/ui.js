@@ -85,3 +85,14 @@ function uiAddAddHandler(prefix, removeAjax) {
     });
 
 }
+
+function uiAddEnterAction(where, trigger) {
+  
+    $(where).keyup(function(event) {
+      
+      if(event.keyCode == 13) {
+          $(trigger).click();
+      }
+      
+    });
+}
