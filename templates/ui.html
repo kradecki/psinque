@@ -115,14 +115,19 @@
   </td>
 {%- endmacro %}
 
-{% macro textinput(value, placeholder="", id="", class="", keyvalue="", keyclass="") -%}
+{% macro textinput(value, placeholder="", id="", class="") -%}
   <td class="forminputs">
-    {% if keyvalue %}
-    <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}"/>
-    {% endif %}
     <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
   </td>
 {%- endmacro %}
+
+{% macro textinputwithkey(value, placeholder="", id="", class="", keyvalue="", keyclass="") -%}
+  <td class="forminputs">
+    <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}"/>
+    <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
+  </td>
+{%- endmacro %}
+
 
 <!-- ********************************************************
      * Whole tables -->
@@ -150,22 +155,25 @@
   </table>
 {%- endmacro %}
 
-{% macro multipletextinputwithtypes(items, itemTypes, tableLabel, prefix="") -%}
-  <table>
+{% macro multipletextinputwithtypes(items, itemTypes, privacyTypes, tableLabel, prefix) -%}
+  <table id="{{ prefix ~ 'stable' }}">
     <tbody>
       {% for item in items %}
         {% set loopFirst = loop.first %}
         {% set itemCount = items|count %}
         {% set itemKey = item.key() %}
-        {% set itemValue = item.value %}
-        {% set itemType = item.type %}
+        {% set itemValue = item.itemValue %}
+        {% set itemType = item.itemType %}
+        {% set privacyType = item.privacyType %}
         {% include "templates/MyCard_TextItem.html" %}
       {% else %}
         {% set loopFirst = True %}
         {% set itemCount = 1 %}
         {% set itemKey = "" %}
         {% set itemValue = "" %}
-        {% set itemType = "Private" %}
+        {% set itemType = itemTypes[0] %}
+        {% set privacyType = "Home" %}
+        {% set privacyTypes = privacyTypes %}
         {% include "templates/MyCard_TextItem.html" %}
       {% endfor %}
     </tbody>

@@ -4,6 +4,7 @@ import os
 import logging
 import urllib
 import webapp2
+import datetime
 
 from google.appengine.api import users
 from google.appengine.ext import blobstore
@@ -11,7 +12,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 
 from DataModels import UserProfile, UserSettings, Group, UserEmail
 from DataModels import Permit, PermitEmail
-from DataModels import emailTypes, addressTypes, imTypes, wwwTypes, phoneTypes
+from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames
 
 from MasterHandler import MasterHandler, AjaxError
 
@@ -72,8 +73,8 @@ class ProfileHandler(MasterHandler):
 
         # Primary email address (needed for notifications, etc.)
         userEmail = UserEmail(parent = userProfile,
-                              email = "primary@nonexistant.com",
-                              emailType = 'private',
+                              itemValue = "primary@nonexistant.com",
+                              privacyType = 'Home',
                               primary = True)
         userEmail.put()
 
@@ -108,10 +109,6 @@ class ProfileHandler(MasterHandler):
           userProfile = self._createNewProfile()
 
         userAddresses = userProfile.addresses.fetch(limit = 1000)
-        #addresses = map(lambda x: {'nr': str(x+1), 'value': userAddresses[x]}, range(0, len(userAddresses)))
-        #if len(addresses) == 0:
-            #addresses = [{'nr': 1, 'value': None}]
-
         ims  = userProfile.ims.fetch(limit = 1000)
         webpages = userProfile.webpages.fetch(limit = 1000)
 
@@ -124,17 +121,17 @@ class ProfileHandler(MasterHandler):
                          templateVariables = {
             'firstlogin': firstLogin,
             'userProfile': userProfile,
+            'months': monthNames,
             'primaryEmail': primaryEmail,
             'additionalEmails': additionalEmails,
-            'emailTypes': emailTypes,
-            'months': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            'addresses': userAddresses,
-            'addressTypes': addressTypes,
-            'ims': ims,
-            'imTypes': imTypes,
-            'wwws': webpages,
-            'wwwTypes': wwwTypes,
             'phones': phones,
+            'ims': ims,
+            'wwws': webpages,
+            'addresses': userAddresses,
+            'genders': genders,
+            'privacyTypes': privacyTypes,
+            'imTypes': imTypes,
+            'wwwTypes': wwwTypes,
             'phoneTypes': phoneTypes,
         })
 
@@ -145,19 +142,28 @@ class ProfileHandler(MasterHandler):
 
     def updategeneral(self):
 
-        givenNames = self.getRequiredParameter('givennames')
-        givenNamesRomanization = self.getRequiredParameter('givenroman')
-        familyNames = self.getRequiredParameter('familynames')
-        familyNamesRomanization = self.getRequiredParameter('familyroman')
-        companyName = self.getRequiredParameter('company')
-        companyNameRomanization = self.getRequiredParameter('companyroman')
+        try:
+            birthday   = int(self.getRequiredParameter('day'))
+            birthyear  = int(self.getRequiredParameter('year'))
+        except ValueError as e:
+            raise AjaxError("Invalid integer number: " + str(e))
 
-        self.userProfile.givenNames = givenNames
-        self.userProfile.givenNamesRomanization = givenNamesRomanization
-        self.userProfile.familyNames = familyNames
-        self.userProfile.familyNamesRomanization = familyNamesRomanization
-        self.userProfile.companyName = companyName
-        self.userProfile.companyNameRomanization = companyNameRomanization
+        birthmonth = self.getRequiredParameter('month')
+        
+        try:
+            birthmonth = monthNames.index(birthmonth) + 1
+        except ValueError:
+            raise AjaxError("Invalid month name: " + birthmonth)
+
+        self.userProfile.givenNames = self.getRequiredParameter('givennames')
+        self.userProfile.givenNamesRomanization = self.getRequiredParameter('givenroman')
+        self.userProfile.familyNames = self.getRequiredParameter('familynames')
+        self.userProfile.familyNamesRomanization = self.getRequiredParameter('familyroman')
+        self.userProfile.companyName = self.getRequiredParameter('company')
+        self.userProfile.companyNameRomanization = self.getRequiredParameter('companyroman')        
+        self.userProfile.birthDate = datetime.date(birthyear, birthmonth, birthday)
+        self.userProfile.gender = self.getRequiredParameter('gender')
+        
         self.userProfile.put()
 
         self._updateAllVCards()
@@ -168,7 +174,8 @@ class ProfileHandler(MasterHandler):
     def addemail(self):
 
         email = self.getRequiredParameter('email')
-        emailType = self.getRequiredParameter('type')
+        privacyType = self.getRequiredParameter('privacy')
+        isPrimary = self.getRequiredBoolParameter('primary')
 
         # Check if this email has already been registered:
         existingEmail = UserEmail.all(keys_only = True). \
@@ -178,8 +185,9 @@ class ProfileHandler(MasterHandler):
             raise AjaxError("Email is already registered in the system")
 
         userEmail = UserEmail(parent = self.userProfile,
-                              email = email,
-                              emailType = emailType)
+                              itemValue = email,
+                              privacyType = privacyType,
+                              primary = isPrimary)
         userEmail.put()
 
         # Add permissions for this email in every outgoing group
@@ -197,11 +205,11 @@ class ProfileHandler(MasterHandler):
 
         emailKey = self.getRequiredParameter('key')
         email = self.getRequiredParameter('email')
-        emailType = self.getRequiredParameter('type')
+        privacyType = self.getRequiredParameter('privacy')
 
         userEmail = UserEmail.get(emailKey)
-        userEmail.email = email
-        userEmail.emailType = emailType
+        userEmail.itemValue = email
+        userEmail.privacyType = privacyType
         userEmail.put()
 
         self._updateAllVCards()
@@ -219,8 +227,8 @@ class ProfileHandler(MasterHandler):
 
         if userEmail.primary:
 
-            userEmail.email = "primary@nonexistant.com"
-            userEmail.emailType = 'private'
+            userEmail.itemValue = "primary@nonexistant.com"
+            userEmail.privacyType = 'Home'
             userEmail.put()
 
         else:

@@ -73,39 +73,68 @@ function addLocalizerHandler(where) {
 
 //---------------------------------------------------------
 
-function removeEmailEntry(tr) {
-//     if(tr.hasClass("additionalemails")) {
-//         if(window.additionalEmailCounter > 1) {
-//             window.additionalEmailCounter--;
-            tr.slideUp('fast', function() {
-                uiChangeLabelHeight("#additionalemaillabel", -1);
-                tr.remove();
-            });
-//         }
-//     } else {
-//         $("#primaryemailaddressinput").val("");
-//     }
+function updateEmail(input) {
+  
+    emailAddress = input.val();
+    
+    if(emailAddress == "")
+        return;
+
+    if(input.hasClass("primary")) {
+        isPrimary = true;
+    } else if(input.hasClass("additional")) {
+        isPrimary = false;
+    } else {
+        return;
+    }
+    
+    td = input.parent();
+    typeOfEmail = td.next().find(".typesofemail").val();
+    emailKey = td.find(".additionalemailkeys");
+    if(emailKey.val()) {
+        psinqueUpdateEmail(emailKey.val(), emailAddress, typeOfEmail, function() {
+            unmarkChangedFields(td);
+            unmarkChangedFields(td.next());
+        });
+    } else {
+        psinqueAddEmail(emailAddress, typeOfEmail, isPrimary, function(data) {
+            emailKey.val(data["key"]);  // save the key for further queries
+            unmarkChangedFields(td);
+            unmarkChangedFields(td.next());
+        });
+    }
 }
 
-function addRemoveEmailHandler(where) {
+function updateItem(input, prefix, updateFunction, addFunction) {
+  
+    itemValue = input.val();
+    
+    if(itemValue == "")
+        return;
 
-    $(where).click(function() {
-        
-        tr = $(this).parent().parent();
-        emailKey = tr.find(".emailkeys").val();
-        if(emailKey) {
-            psinqueRemoveEmail(emailKey, function() {
-                removeEmailEntry(tr);
-            });
-        } else {
-            removeEmailEntry(tr);
-        }
-      
-        return false;
-    });
+    td = input.parent();
+    privacytd = td.next();
+    typetd = privacytd.next();
+    privacyType = privacytd.find("." + prefix + "privacytypes").val();
+    itemType    = typetd.find("." + prefix + "types").val();
+    
+    console.log(privacyType);
+    console.log(itemType);
+    
+    itemKey = td.find("." + prefix + "keys");
+    if(itemKey.val()) {
+        updateFunction(itemKey.val(), itemValue, privacyType, itemType, function() {
+            unmarkChangedFields(td);
+            unmarkChangedFields(td.next());
+        });
+    } else {
+        addFunction(itemValue, privacyType, itemType, function(data) {
+            itemKey.val(data["key"]);  // save the key for further queries
+            unmarkChangedFields(td);
+            unmarkChangedFields(td.next());
+        });
+    }
 }
-
-//---------------------------------------------------------
 
 function addUpdateHandler(where) {
     
@@ -113,39 +142,19 @@ function addUpdateHandler(where) {
       
         psinqueAjaxTransactionStart();
         
-        psinqueUpdateGeneral($("#givennames").val(),
-                             $("#givenroman").val(),
-                             $("#familynames").val(),
-                             $("#familyroman").val(),
-                             $("#companyname").val(),
-                             $("#companyroman").val(),
+        psinqueUpdateGeneral($("#givennames").val(),  $("#givenroman").val(),
+                             $("#familynames").val(), $("#familyroman").val(),
+                             $("#companyname").val(), $("#companyroman").val(),
+                             $("#birthdays").val(),   $("#birthmonths").val(), 
+                             $("#birthyears").val(),  $("#gender").val(), 
             function() {
                 unmarkChangedFields("#generalinfo");
             });
         
-        $(".emailaddresses").each(function() {  // then run the AJAX queries
-          
-            emailinput = $(this);
-            emailAddress = emailinput.val();
-            if(emailAddress == "")
-                return;
-            
-            td = emailinput.parent();
-            typeOfEmail = td.next().find(".typesofemail").val();
-            emailKey = td.find(".emailkeys").val();
-            if(emailKey) {
-                psinqueUpdateEmail(emailKey, emailAddress, typeOfEmail, function() {
-                    unmarkChangedFields(td);
-                    unmarkChangedFields(td.next());
-                });
-            } else {
-                psinqueAddEmail(emailAddress, typeOfEmail, function(data) {
-                    td.find(".emailkeys").val(data["key"]);  // save the key for further queries
-                    unmarkChangedFields(td);
-                    unmarkChangedFields(td.next());
-                });
-            }
-        });
+        $(".emailaddresses").each(function() { updateEmail($(this)); });
+        $(".phones").each(function() { updateItem($(this), "phone", psinqueUpdatePhone, psinqueAddPhone); });
+        $(".ims").each(function() { updateItem($(this), "im", psinqueUpdateIM, psinqueAddIM); });
+        $(".wwws").each(function() { updateItem($(this), "www", psinqueUpdateWWW, psinqueAddWWW); });
 
         psinqueAjaxTransactionStop();
         
@@ -155,48 +164,22 @@ function addUpdateHandler(where) {
 
 //---------------------------------------------------------
 
-function addAddEmailHandler(where) {
-    
-    $(where).click(function() {
-        
-        tr = cloneElement($("#primaryemailaddress > tbody > tr"));
-        tr.addClass("additionalemails");
-        tr.find('.formlabels').remove();
-
-        // Resize the table label
-        uiChangeLabelHeight("#additionalemaillabel", +1)
-        
-        // Add a remove button
-        tr.append("<td class='forminputs formbuttons'><span class='emailremovers buttons clickable'><img src='/images/button_remove.png' /></span></td>");
-        addRemoveEmailHandler(tr.find('.emailremovers'));
-
-        // Show the new row
-        tr.appendTo("#additionalemailaddresses > tbody");
-        tr.slideDown();
-
-        // Re-create the dropdown
-        tr.find('.dropdown').remove();
-        tr.find('select').dropdown();
-
-        window.additionalEmailCounter++;
-        
-        return false;   // stop page refresh
-    });
-}
-
-//---------------------------------------------------------
-
 $(document).ready(function() {
 
-    addAddEmailHandler("#addemail");
-    addRemoveEmailHandler(".emailremovers");
-    addUpdateHandler("#savebutton");
-      
-    // Turn the form validation on
-//   $("#submitForm").validate();
-
-    // Add map handlers
+    // Handlers for adding new fields
+    uiAddAddHandler("additionalemail", psinqueRemoveEmail);
+    uiAddAddHandler("phone", psinqueRemovePhone);
+    uiAddAddHandler("im", psinqueRemoveIM);
+    uiAddAddHandler("www", psinqueRemoveWWW);
+    
+    // Handlers for removing fields
+    uiAddRemoverHandler(".emailremovers", "additionalemail", psinqueRemoveEmail);
+    
+    // Google map handlers
     geocoder = new google.maps.Geocoder();
     addLocalizerHandler(".localizers");
-    
+
+    // A handler to save all profile data
+    addUpdateHandler("#savebutton");
+          
 });

@@ -4,8 +4,8 @@
     <label>Physical addresses</label>
   </td>
   {% endif %}
-  {{ ui.textinput(address, "Address", "address" ~ loopIndex, "addresses", addressKey, "addresskeys") }}
-  {{ ui.dropdown(addressTypes, addressType, "", "typesofaddress", "smallinput") }}
+  {{ ui.textinputwithkey(address, "Address", "address" ~ loopIndex, "addresses", addressKey, "addresskeys") }}
+  {{ ui.dropdown(privacyTypes, privacyType, "", "typesofaddress", "smallinput") }}
   {% if not loopfirst %}
     {{ ui.removebutton("address", "addressremovers") }}
   {% else %}

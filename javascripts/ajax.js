@@ -5,18 +5,40 @@
 //*******************************************************************
 
 psinqueAPI_mycard = "/mycard/"
-psinqueAPI_removeEmail   = psinqueAPI_mycard + "removeemail"
-psinqueAPI_updateGeneral = psinqueAPI_mycard + "updategeneral"
-psinqueAPI_updateEmail   = psinqueAPI_mycard + "updateemail"
+
 psinqueAPI_addEmail      = psinqueAPI_mycard + "addemail"
+psinqueAPI_addPhone      = psinqueAPI_mycard + "addphone"
+psinqueAPI_addIM         = psinqueAPI_mycard + "addim"
+psinqueAPI_addWWW        = psinqueAPI_mycard + "addwww"
+psinqueAPI_addAddress    = psinqueAPI_mycard + "addaddress"
+
+psinqueAPI_removeEmail   = psinqueAPI_mycard + "removeemail"
+psinqueAPI_removePhone   = psinqueAPI_mycard + "removephone"
+psinqueAPI_removeIM      = psinqueAPI_mycard + "removeim"
+psinqueAPI_removeWWW     = psinqueAPI_mycard + "removewww"
+psinqueAPI_removeAddress = psinqueAPI_mycard + "removeaddress"
+
+psinqueAPI_updateEmail   = psinqueAPI_mycard + "updateemail"
+psinqueAPI_updatePhone   = psinqueAPI_mycard + "updatephone"
+psinqueAPI_updateIM      = psinqueAPI_mycard + "updateim"
+psinqueAPI_updateWWW     = psinqueAPI_mycard + "updatewww"
+psinqueAPI_updateAddress = psinqueAPI_mycard + "updateaddress"
+
+psinqueAPI_updateGeneral = psinqueAPI_mycard + "updategeneral"
+
+//------------------------------
 
 psinqueAPI_permits = "/permits/"
+
 psinqueAPI_removePermit     = psinqueAPI_permits + "removepermit"
 psinqueAPI_setGeneralPermit = psinqueAPI_permits + "setgeneralpermit"
 psinqueAPI_setEmailPermit   = psinqueAPI_permits + "setemailpermit"
 psinqueAPI_addPermit        = psinqueAPI_permits + "addpermit"
 
+//------------------------------
+
 psinqueAPI_settings = "/settings/"
+
 psinqueAPI_generateCardDAVLogin = psinqueAPI_settings + "generatecarddavlogin"
 psinqueAPI_deleteCardDAVLogin   = psinqueAPI_settings + "deletecarddav"
 psinqueAPI_updateSettings       = psinqueAPI_settings + "updatesettings"
@@ -24,15 +46,127 @@ psinqueAPI_updateSettings       = psinqueAPI_settings + "updatesettings"
 //------------------------------
 // My Card
 
-function psinqueRemoveEmail(emailKey, successFunction) {
-    psinqueAJAX(psinqueAPI_removeEmail, {
-                    key: emailKey,
+function psinqueAddEmail(emailAddress, privacyType, isPrimary, successFunction) {
+    psinqueAJAX(psinqueAPI_addEmail, {
+                    email: emailAddress,
+                    privacy: privacyType,
+                    primary: isPrimary,
+                }, successFunction);
+}
+
+function psinqueAddPhone(phoneNumber, privacyType, phoneType, successFunction) {
+    psinqueAJAX(psinqueAPI_addPhone, {
+                    phone: phoneNumber,
+                    privacy: privacyType,
+                    type: phoneType,
+                }, successFunction);
+}
+
+function psinqueAddIM(imLogin, privacyType, imType, successFunction) {
+    psinqueAJAX(psinqueAPI_addIM, {
+                    im: imLogin,
+                    privacy: privacyType,
+                    type: imType,
+                }, successFunction);
+}
+
+function psinqueAddWWW(wwwAddress, privacyType, wwwType, successFunction) {
+    psinqueAJAX(psinqueAPI_addIM, {
+                    www: wwwAddress,
+                    privacy: privacyType,
+                    type: wwwType,
+                }, successFunction);
+}
+
+function psinqueAddAddress(address, city, postalCode,
+                           privacyType, longitude, latitude,
+                           successFunction) {
+    psinqueAJAX(psinqueAPI_addIM, {
+                    address: address,
+                    city: city,
+                    postal: postalCode,
+                    privacy: privacyType,
+                    long: longitude,
+                    lat: latitude,
+                }, successFunction);
+}
+
+function psinqueRemoveEmail(key, successFunction) {
+    psinqueRemove(psinqueAPI_removeEmail, key, successFunction);
+}
+
+function psinqueRemovePhone(key, successFunction) {
+    psinqueRemove(psinqueAPI_removePhone, key, successFunction);
+}
+
+function psinqueRemoveIM(key, successFunction) {
+    psinqueRemove(psinqueAPI_removeIM, key, successFunction);
+}
+
+function psinqueRemoveWWW(key, successFunction) {
+    psinqueRemove(psinqueAPI_removeWWW, key, successFunction);
+}
+
+function psinqueRemoveAddress(key, successFunction) {
+    psinqueRemove(psinqueAPI_removeAddress, key, successFunction);
+}
+
+function psinqueUpdateEmail(key, emailAddress, privacyType,
+                            successFunction) {
+    psinqueAJAX(psinqueAPI_updateEmail, {
+                    key: key,
+                    email: emailAddress,
+                    privacy: privacyType,
+                }, successFunction);
+}
+
+function psinqueUpdatePhone(key, phoneNumber, privacyType,
+                            phoneType, successFunction) {
+    psinqueAJAX(psinqueAPI_updatePhone, {
+                    key: key,
+                    phone: phoneNumber,
+                    privacy: privacyType,
+                    type: phoneType,
+                }, successFunction);
+}
+
+function psinqueUpdateIM(key, imLogin, privacyType,
+                         imType, successFunction) {
+    psinqueAJAX(psinqueAPI_updateIM, {
+                    key: key,
+                    im: imLogin,
+                    privacy: privacyType,
+                    type: imType,
+                }, successFunction);
+}
+
+function psinqueUpdateWWW(key, wwwAddress, privacyType,
+                          wwwType, successFunction) {
+    psinqueAJAX(psinqueAPI_updateIM, {
+                    key: key,
+                    www: wwwAddress,
+                    privacy: privacyType,
+                    type: wwwType,
+                }, successFunction);
+}
+
+function psinqueUpdateAddress(key, address, city, postalCode,
+                              privacyType, longitude, latitude, successFunction) {
+    psinqueAJAX(psinqueAPI_updateIM, {
+                    key: key,
+                    address: address,
+                    city: city,
+                    postal: postalCode,
+                    privacy: privacyType,
+                    long: longitude,
+                    lat: latitude,
                 }, successFunction);
 }
 
 function psinqueUpdateGeneral(givenNames, givenNamesRomanization,
                               familyNames, familyNamesRomanization,
                               companyName, companyNameRomanization,
+                              birthday, birthmonth, birthyear, gender,
                               successFunction) {
     psinqueAJAX(psinqueAPI_updateGeneral, {
                     givennames: givenNames,
@@ -41,23 +175,10 @@ function psinqueUpdateGeneral(givenNames, givenNamesRomanization,
                     familyroman: familyNamesRomanization,
                     company: companyName,
                     companyroman: companyNameRomanization,
-                }, successFunction);
-}
-
-function psinqueUpdateEmail(emailKey, emailAddress, typeOfEmail,
-                            successFunction) {
-    psinqueAJAX(psinqueAPI_updateEmail, {
-                    key: emailKey,
-                    email: emailAddress,
-                    type: typeOfEmail,
-                }, successFunction);
-}
-
-function psinqueAddEmail(emailAddress, typeOfEmail,
-                         successFunction) {
-    psinqueAJAX(psinqueAPI_addEmail, {
-                    email: emailAddress,
-                    type: typeOfEmail,
+                    day: birthday,
+                    month: birthmonth,
+                    year: birthyear,
+                    gender: gender,
                 }, successFunction);
 }
 
@@ -65,9 +186,7 @@ function psinqueAddEmail(emailAddress, typeOfEmail,
 // Permits
 
 function psinqueRemovePermit(permitKey, successFunction) {
-    psinqueAJAX(psinqueAPI_removePermit, {
-                    key: permitKey,
-                }, successFunction);
+    psinqueRemove(psinqueAPI_removePermit, permitKey, successFunction);
 }
 
 function psinqueSetGeneralPermit(permitKey, canViewFirstNames,
@@ -106,11 +225,9 @@ function psinqueGenerateCardDAVLogin(cardDAVName, successFunction) {
 }
 
 function psinqueDeleteCardDAVLogin(cardDAVKey, successFunction) {
-    psinqueAJAX(psinqueAPI_deleteCardDAVLogin, {
-                   key: cardDAVKey,
-                }, successFunction);
+    psinqueRemove(psinqueAPI_deleteCardDAVLogin, cardDAVKey, successFunction);
 }
-
+    
 function psinqueUpdateSettings(emailNotifications,
                                notifyStops, notifyAsks,
                                notifyAccepts, notifyRejects,
@@ -132,9 +249,6 @@ function psinqueUpdateSettings(emailNotifications,
 
 //------------------------------
 // General AJAX
-
-window.ajaxTransaction = false;
-window.ajaxCounter = 0;
 
 function psinqueAjaxTransactionStart() {
     window.ajaxTransaction = true;
@@ -186,6 +300,17 @@ function psinqueDecreaseAJAXCounter() {
         unmarkChangedFields();
     }
 }
+
+function psinqueRemove(url, key, successFunction) {
+    psinqueAJAX(url, {
+                    key: key,
+                }, successFunction);
+}
+
+//------------------------------
+
+window.ajaxTransaction = false;
+window.ajaxCounter = 0;
 
 $(document).ready(function() {
     

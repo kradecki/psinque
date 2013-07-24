@@ -8,15 +8,20 @@
     <label>{{ tablelabel }}</label>
   </td>
   {% endif %}
-  {% if emailaddress != "primary@nonexistant.com" %}
-    {{ ui.textinput(emailaddress, "e.g., john@doe.com", "", "emailaddresses", emailkey, "emailkeys") }}
+  {% if tablelabel == "Primary email" %}
+    {% set inputclass = "primary emailaddresses" %}
   {% else %}
-    {{ ui.textinput("", "e.g., john@doe.com", "", "emailaddresses", emailkey, "emailkeys") }}
+    {% set inputclass = "additional emailaddresses" %}
   {% endif %}
-  {{ ui.dropdown(emailTypes, emailtype, "", "typesofemail", "smallinput") }}
+  {% if emailaddress != "primary@nonexistant.com" %}
+    {{ ui.textinputwithkey(emailaddress, "e.g., john@doe.com", "", inputclass, emailkey, "additionalemailkeys") }}
+  {% else %}
+    {{ ui.textinputwithkey("", "e.g., john@doe.com", "", inputclass, emailkey, "additionalemailkeys") }}
+  {% endif %}
+  {{ ui.dropdown(privacyTypes, privacyType, "", "typesofemail", "smallinput") }}
   {% if not loopfirst %}
     {{ ui.removebutton("email", "emailremovers") }}
   {% elif tablelabel != "Primary email" %}
-    {{ ui.addbutton("email") }}
+    {{ ui.addbutton("additionalemail") }}
   {% endif %}
 </tr>

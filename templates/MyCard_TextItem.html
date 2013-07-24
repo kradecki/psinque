@@ -5,8 +5,9 @@
       <label>{{ tableLabel }}</label>
     </td>
   {% endif %}
-  {{ ui.textinput(itemValue, "", "", prefix ~ "s", itemKey, prefix ~ "keys") }}
-  {{ ui.dropdown(itemTypes, itemType, "", "", "smallinput") }}
+  {{ ui.textinputwithkey(itemValue, "", "", prefix ~ "s", itemKey, prefix ~ "keys") }}
+  {{ ui.dropdown(privacyTypes, privacyType, "", prefix ~ "privacytypes", "smallinput") }}
+  {{ ui.dropdown(itemTypes, itemType, "", prefix ~ "types", "smallinput") }}
   {% if not loopFirst %}
     {{ ui.removebutton(prefix, prefix ~ "removers") }}
   {% else %}

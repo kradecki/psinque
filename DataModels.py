@@ -8,15 +8,22 @@ import vCard
 from datetime import datetime
 import md5
 
+#-----------------------------------------------------------------------------
 
-genders    = ["male", "female", "undisclosed"]
-phoneTypes = ["home landline", "work landline", "private cellphone", "work cellphone", "home fax", "work fax", "other"]
-wwwTypes   = ["private", "www"]
+genders      = ["Male", "Female", "Undisclosed"]
+privacyTypes = ['Home', 'Work']
+phoneTypes   = ["Landline", "Cellphone", "Fax", "Other"]
+wwwTypes     = ["Personal", "Company", "MySpace", "Facebook"]
+imTypes      = ["Skype", "Google Talk", "Gadu-gadu"]
 
-addressTypes = {'home': 'Home', 'work': 'Work'}
-emailTypes   = {'private': 'Private', 'work': 'Work'}
-imTypes      = emailTypes
+monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+availableLanguages = {
+    'en': u'English',
+    'pl': u'Polski',
+    'de': u'Deutsch',
+    'jp': u'日本語',
+}
 
 #-----------------------------------------------------------------------------
 
@@ -36,10 +43,12 @@ class Permit(db.Model):
     vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
     
     displayName = db.StringProperty()
-    
+
+
     @property
     def permitEmails(self):
         return PermitEmail.all().ancestor(self)
+    
     
     def _getGivenNames(self, userProfile):
         if self.canViewGivenNames:
@@ -47,11 +56,13 @@ class Permit(db.Model):
         else:
             return ""
     
+    
     def _getFamilyNames(self, userProfile):
         if self.canViewFamilyNames:
             return userProfile.familyNames
         else:
             return ""
+    
     
     def _updateDisplayName(self, givenNames, familyNames):
         displayName = u""
@@ -67,6 +78,7 @@ class Permit(db.Model):
                 if permitEmail.canView:
                     self.displayName = permitEmail.userEmail.email
                     return
+    
     
     def generateVCard(self):
         
@@ -103,13 +115,6 @@ class Group(db.Model):
 
 #-----------------------------------------------------------------------------
 
-availableLanguages = {
-    'en': u'English',
-    'pl': u'Polski',
-    'de': u'Deutsch',
-    'jp': u'日本語',
-}
-
 class UserSettings(db.Model):
     '''
     User settings other than those stored in the UserProfile.
@@ -134,33 +139,36 @@ class UserAddress(db.Model):
     address = db.PostalAddressProperty()
     city = db.StringProperty()
     postalCode = db.StringProperty()
-    addressType = db.StringProperty(choices = addressTypes.keys())
+    privacyType = db.StringProperty(choices = privacyTypes)
     location = db.GeoPtProperty()
 
 #-----------------------------------------------------------------------------
 
 class UserEmail(db.Model):
-    email = db.EmailProperty()
-    emailType = db.StringProperty(choices = emailTypes.keys())
+    itemValue = db.EmailProperty()
+    privacyType = db.StringProperty(choices = privacyTypes)
     primary = db.BooleanProperty(default = False)
 
 #-----------------------------------------------------------------------------
 
 class UserIM(db.Model):
-    im = db.IMProperty()
-    imType = db.StringProperty(choices = imTypes.keys())
+    itemValue = db.IMProperty()
+    itemType = db.StringProperty(choices = imTypes)
+    privacyType = db.StringProperty(choices = privacyTypes)
 
 #-----------------------------------------------------------------------------
 
 class UserPhoneNumber(db.Model):
-    phone = db.PhoneNumberProperty(required = True)
-    phoneType = db.StringProperty(choices = phoneTypes)
+    itemValue = db.PhoneNumberProperty(required = True)
+    itemType = db.StringProperty(choices = phoneTypes)
+    privacyType = db.StringProperty(choices = privacyTypes)
 
 #-----------------------------------------------------------------------------
 
 class UserWebpage(db.Model):
-    address = db.StringProperty()
-    webpageType = db.StringProperty(choices = wwwTypes)
+    itemValue = db.StringProperty()
+    itemType = db.StringProperty(choices = wwwTypes)
+    privacyType = db.StringProperty(choices = privacyTypes)
 
 #-----------------------------------------------------------------------------
 
@@ -186,7 +194,7 @@ class UserProfile(db.Model):
 
     gender = db.StringProperty(choices = genders)
 
-    birthDay = db.DateProperty()  
+    birthDate = db.DateProperty()  
 
     publicEnabled = db.BooleanProperty(default = False)
 

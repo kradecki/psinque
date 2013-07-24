@@ -143,7 +143,7 @@ class MasterHandler(webapp2.RequestHandler):
             val = {"true": True, "false": False}[val]
             return val
         except KeyError:
-            raise AjaxError("Unknown permission value: " + val);
+            raise AjaxError("Unknown Boolean value: " + val);
     
         
     def sendJsonOK(self, additionalValues = {}):

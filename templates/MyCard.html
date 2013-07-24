@@ -12,7 +12,6 @@
   </script>
 {% endblock %}
 {% block externalscripts %}
-<!--     <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script> -->
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
     <script type="text/javascript" src="/javascripts/MyCard.js"></script>
 {% endblock %}
@@ -43,14 +42,14 @@
         {{ ui.newrow() }}
         {{ ui.textinput(userProfile.companyNameRomanization, "Romanization", "companyroman") }}
       {{ ui.endtable() }}
-      {{ ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") }}
+<!--       ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") -->
       {{ ui.begintable() }}
         {{ ui.tablelabel("Birthday") }}
-        {{ ui.dropdown(range(1, 31+1), "", "birthdays") }}
-        {{ ui.dropdown(months, "", "birthmonths") }}
-        {{ ui.dropdown(range(1900, 2013+1), "", "birthyears") }}
+        {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays") }}
+        {{ ui.dropdown(months, months[userProfile.birthDate.month-1], "birthmonths") }}
+        {{ ui.dropdown(range(1900, 2013+1), userProfile.birthDate.year, "birthyears") }}
           <td class="forminputs sublabel">Gender:</td>
-        {{ ui.dropdown(['undisclosed', 'female', 'male'], "", "gender") }}
+        {{ ui.dropdown(genders, userProfile.gender, "gender") }}
       {{ ui.endtable() }}
       <table id="primaryemailaddress">
       <tbody>
@@ -58,20 +57,20 @@
         {% set emailCount = 1 %}
         {% set loopfirst = True %}
         {% set emailkey = primaryEmail.key() %}
-        {% set emailaddress = primaryEmail.email %}
-        {% set emailtype = primaryEmail.emailType %}
+        {% set emailaddress = primaryEmail.itemValue %}
+        {% set privacyType = primaryEmail.privacyType %}
         {% include "templates/MyCard_Email.html" %}
       </tbody>
       </table>
-      <table id="additionalemailaddresses">
+      <table id="additionalemailstable">
       <tbody>
         {% for email in additionalEmails %}
           {% set tablelabel = "Additional emails" %}
           {% set emailCount = additionalEmails|count %}
           {% set loopfirst = loop.first %}
           {% set emailkey = email.key() %}
-          {% set emailaddress = email.email %}
-          {% set emailtype = email.emailType %}
+          {% set emailaddress = email.itemValue %}
+          {% set privacyType = email.privacyType %}
           {% include "templates/MyCard_Email.html" %}
         {% else %}
           {% set tablelabel = "Additional emails" %}
@@ -79,14 +78,14 @@
           {% set loopfirst = True %}
           {% set emailkey = "" %}
           {% set emailaddress = "" %}
-          {% set emailtype = "Private" %}
+          {% set privacyType = "Home" %}
           {% include "templates/MyCard_Email.html" %}
         {% endfor %}
       </tbody>
       </table>
-      {{ ui.multipletextinputwithtypes(phones, phoneTypes, "Phone numbers", "phone") }}
-      {{ ui.multipletextinputwithtypes(ims, imTypes, "IM", "im") }}
-      {{ ui.multipletextinputwithtypes(wwws, wwwTypes, "WWW", "www") }}
+      {{ ui.multipletextinputwithtypes(phones, phoneTypes, privacyTypes, "Phone numbers", "phone") }}
+      {{ ui.multipletextinputwithtypes(ims, imTypes, privacyTypes, "IM", "im") }}
+      {{ ui.multipletextinputwithtypes(wwws, wwwTypes, privacyTypes, "WWW", "www") }}
       <table>
         <tbody>
           {% for address in addresses %}
@@ -95,7 +94,7 @@
             {% set addressCount = addresses|count %}
             {% set addressKey = address.key() %}
             {% set address = address.address %}
-            {% set addressType = address.addressType %}
+            {% set privacyType = address.privacyType %}
             {% set addressLocation = address.location %}
             {% set city = address.city %}
             {% set postalCode = address.postalCode %}
@@ -106,7 +105,7 @@
             {% set addressCount = 1 %}
             {% set addressKey = None %}
             {% set address = "" %}
-            {% set addressType = "" %}
+            {% set privacyType = "" %}
             {% set addressLocation = None %}
             {% set city = "" %}
             {% set postalCode = "" %}
