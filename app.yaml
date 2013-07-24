@@ -50,8 +50,8 @@ handlers:
   script: Settings.app
 
 # Static pages
-# - url: /about
-#   script: StaticPages.app
+- url: /static/([^/]+)
+  script: StaticPages.app
   
 # Static files
 - url: /javascripts

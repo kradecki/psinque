@@ -187,12 +187,16 @@ class MasterHandler(webapp2.RequestHandler):
                 if entry.title == activeEntry:
                     entry.entryclass = "active"  # mark menu item as active
 
-        template = jinja_environment.get_template(templateName)
-        self.response.out.write(template.render(
-            dict(templateVariables.items() +
+        if templateVariables:
+            allTemplateVariables = dict(templateVariables.items() +
                  self.getUserVariables().items() +
                  {'menuentries': menuentries}.items())
-        ))
+        else:
+            allTemplateVariables = dict(self.getUserVariables().items() +
+                 {'menuentries': menuentries}.items())
+
+        template = jinja_environment.get_template(templateName)
+        self.response.out.write(template.render(allTemplateVariables))
 
 
     def getUserVariables(self):
@@ -218,13 +222,6 @@ class MasterHandler(webapp2.RequestHandler):
         #else:
             #self.LANGUAGE_CODE = userProfile.preferredLanguage
             #logging.error("Changed language to " + settings.LANGUAGE_CODE)
-
-
-    def render(self, activeEntry, templateName, templateVariables = None):
-        
-        self.sendTopTemplate(activeEntry = activeEntry)
-        self.sendContent(templateName, templateVariables)
-        self.sendBottomTemplate()
         
         
     def error404(self):
@@ -233,23 +230,3 @@ class MasterHandler(webapp2.RequestHandler):
         template = jinja_environment.get_template('templates/notFound.html')
         self.response.out.write(template.render(requestName = self.request.uri))
 
-#-----------------------------------------------------------------------------
-
-class StaticMasterHandler(MasterHandler):
-    '''
-    A simple class for handling static pages.
-    '''
-    templateName = ""
-    activeEntry  = ""
-
-    def __init__(self, templateName, activeEntry = ""):
-        self.templateName = templateName
-        self.activeEntry  = activeEntry
-        super(StaticMasterHandler, self).__init__()
-        
-    def get(self):
-        MasterHandler.safeGuard()
-        MasterHandler.sendTopTemplate(activeEntry = self.activeEntry)
-        template = jinja_environment.get_template(self.templateName)
-        self.response.out.write(template.render(None))
-        MasterHandler.sendBottomTemplate()
