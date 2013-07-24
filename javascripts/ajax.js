@@ -30,11 +30,17 @@ function psinqueRemoveEmail(emailKey, successFunction) {
                 }, successFunction);
 }
 
-function psinqueUpdateGeneral(firstName, lastName,
+function psinqueUpdateGeneral(givenNames, givenNamesRomanization,
+                              familyNames, familyNamesRomanization,
+                              companyName, companyNameRomanization,
                               successFunction) {
     psinqueAJAX(psinqueAPI_updateGeneral, {
-                    firstname: firstName,
-                    lastname: lastName,
+                    givennames: givenNames,
+                    givenroman: givenNamesRomanization,
+                    familynames: familyNames,
+                    familyroman: familyNamesRomanization,
+                    company: companyName,
+                    companyroman: companyNameRomanization,
                 }, successFunction);
 }
 

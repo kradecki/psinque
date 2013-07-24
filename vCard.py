@@ -14,10 +14,6 @@ class VCard():
                        honorificPrefixes = u"",
                        honorificSuffixes = u""):
         
-        logging.info("addNames")
-        logging.info(givenNames)
-        logging.info(familyNames)
-        
         self.vcardTest += u"N:" + \
                           familyNames + u";" + \
                           givenNames + u";" + \

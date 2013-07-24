@@ -10,8 +10,8 @@ import md5
 
 
 genders    = ["male", "female", "undisclosed"]
-phoneTypes = ["home landline", "private cellphone", "work cellphone", "work landline", "home fax", "work fax", "other"]
-wwwTypes   = ["private homepage", "business homepage", "facebook", "myspace", "other"]
+phoneTypes = ["home landline", "work landline", "private cellphone", "work cellphone", "home fax", "work fax", "other"]
+wwwTypes   = ["private", "www"]
 
 addressTypes = {'home': 'Home', 'work': 'Work'}
 emailTypes   = {'private': 'Private', 'work': 'Work'}
@@ -180,7 +180,9 @@ class UserProfile(db.Model):
     familyNamesRomanization = db.StringProperty(default = u"")
     
     pseudonyms = db.StringListProperty()
+    
     companyName = db.StringProperty(default = u"")
+    companyNameRomanization = db.StringProperty(default = u"")
 
     gender = db.StringProperty(choices = genders)
 
@@ -212,6 +214,10 @@ class UserProfile(db.Model):
     @property
     def webpages(self):
         return UserWebpage.all().ancestor(self)
+    
+    @property
+    def phones(self):
+        return UserPhoneNumber.all().ancestor(self)
     
     @property
     def permits(self):

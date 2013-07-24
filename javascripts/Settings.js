@@ -1,10 +1,4 @@
 
-function changeLabelHeight(where, howMuch) {
-    tableLabel = $(where);
-    currentHeight = parseInt(tableLabel.attr("rowspan"));
-    tableLabel.attr("rowspan", currentHeight + howMuch);
-}
-
 function cardDAVHTML(key, name) {
     return "<tr class='carddavlogins'> \
               <td class='forminputs'> \
@@ -41,7 +35,7 @@ function addGenerateCardDAVHandler(where) {
                              "</br><b>Password</b>: " + data.password);
                 showElementWithEffects(cardDAVLogin.parent());
 
-                changeLabelHeight("#carddavlabel", +1);
+                uiChangeLabelHeight("#carddavlabel", +1);
                 newRow = $(cardDAVHTML(data.key, cardDAVName))
                 newRow.insertBefore(".newcarddav");
                 console.log(newRow);
@@ -72,7 +66,7 @@ function addRemoveCardDAVHandler(where) {
 
             window.cardDAVCounter--;
             
-            changeLabelHeight("#carddavlabel", -1);
+            uiChangeLabelHeight("#carddavlabel", -1);
             if(cardDAVInfo.find("#carddavlabel")) {
                 $("#carddavlabel").prependTo(cardDAVInfo.next());
             }

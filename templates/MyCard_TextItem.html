@@ -1,0 +1,15 @@
+{% import "templates/ui.html" as ui %}
+<tr>
+  {% if loopFirst %}
+    <td rowspan="{{ itemCount }}" class="formlabels" id="{{ prefix ~ 'label' }}">
+      <label>{{ tableLabel }}</label>
+    </td>
+  {% endif %}
+  {{ ui.textinput(itemValue, "", "", prefix ~ "s", itemKey, prefix ~ "keys") }}
+  {{ ui.dropdown(itemTypes, itemType, "", "", "smallinput") }}
+  {% if not loopFirst %}
+    {{ ui.removebutton(prefix, prefix ~ "removers") }}
+  {% else %}
+    {{ ui.addbutton(prefix) }}
+  {% endif %}
+</tr>

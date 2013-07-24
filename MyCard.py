@@ -11,7 +11,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 
 from DataModels import UserProfile, UserSettings, Group, UserEmail
 from DataModels import Permit, PermitEmail
-from DataModels import emailTypes, addressTypes, imTypes, wwwTypes
+from DataModels import emailTypes, addressTypes, imTypes, wwwTypes, phoneTypes
 
 from MasterHandler import MasterHandler, AjaxError
 
@@ -117,6 +117,7 @@ class ProfileHandler(MasterHandler):
 
         primaryEmail = userProfile.emails.filter("primary =", True).get()
         additionalEmails = userProfile.emails.filter("primary =", False).fetch(limit = 1000)
+        phones = userProfile.phones.filter("primary =", False).fetch(limit = 1000)
 
         self.sendContent('templates/MyCard.html',
                          activeEntry = "My card",
@@ -133,6 +134,8 @@ class ProfileHandler(MasterHandler):
             'imTypes': imTypes,
             'wwws': webpages,
             'wwwTypes': wwwTypes,
+            'phones': phones,
+            'phoneTypes': phoneTypes,
         })
 
 
@@ -142,11 +145,11 @@ class ProfileHandler(MasterHandler):
 
     def updategeneral(self):
 
-        firstNames = self.getRequiredParameter('givennames')
-        firstNamesRomanization = self.getRequiredParameter('givenroman')
-        lastNames = self.getRequiredParameter('familynames')
-        lastNamesRomanization = self.getRequiredParameter('familyroman')
-        companyName = self.getRequiredParameter('companyname')
+        givenNames = self.getRequiredParameter('givennames')
+        givenNamesRomanization = self.getRequiredParameter('givenroman')
+        familyNames = self.getRequiredParameter('familynames')
+        familyNamesRomanization = self.getRequiredParameter('familyroman')
+        companyName = self.getRequiredParameter('company')
         companyNameRomanization = self.getRequiredParameter('companyroman')
 
         self.userProfile.givenNames = givenNames

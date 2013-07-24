@@ -127,38 +127,47 @@
 <!-- ********************************************************
      * Whole tables -->
      
-{% macro singletextinput(label, inputid, value="") -%}
-  {{ begintable() }}
-  {{ tablelabel(label) }}
-    <td class="forminputs">
-      <input type="text" id="{{ inputid }}" value="{{ value }}" minlength="2" />
-    </td>
-  {{ endtable() }}
-{%- endmacro %}
-
-{% macro singletextinputwithbutton(tablelabel, inputid, placeholder="") -%}
-  {{ begintable() }}
-  {{ tablelabel(label) }}
-    <td class="forminputs">
-      <input type="text" id="{{ inputid }}" placeholder="{{ placeholder }}" minlength="2" />
-    </td>
-    {{ addbutton(inputid) }}
-  {{ endtable() }}
-{%- endmacro %}
-
 {% macro multipletextinput(label, inputid, values, placeholder="") -%}
-  {{ begintable() }}
-  {{ tablelabel(label, values|count + 1) }}
-    {% for value in values %}
-      <td class="forminputs">
-        <input type="text" id="{{ inputid }}{{ loop.index }}" value="{{ value }}" minlength="2" />
-      </td>
-      {{ removebutton(inputid) }}
-    </tr>
-    {% endfor %}
-    <td class="forminputs">
-      <input type="text" id="new{{ inputid }}" value="" placeholder="{{ placeholder }}" minlength="2" />
-    </td>
-    {{ addbutton(inputid) }}
-  {{ endtable() }}
+  <table>
+    <tbody>
+      {{ tablelabel(label, values|count + 1) }}
+      {% for value in values %}
+        <tr>
+          {{ textinput(value, placeholder, inputid ~ loop.index) }}
+          {% if loop.first %}
+            {{ addbutton(inputid) }}
+          {% else %}
+            {{ removebutton(inputid) }}
+          {% endif %}
+        </tr>
+      {% else %}
+        <tr>
+          {{ textinput(value, placeholder, inputid ~ "1") }}
+          {{ addbutton(inputid) }}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{%- endmacro %}
+
+{% macro multipletextinputwithtypes(items, itemTypes, tableLabel, prefix="") -%}
+  <table>
+    <tbody>
+      {% for item in items %}
+        {% set loopFirst = loop.first %}
+        {% set itemCount = items|count %}
+        {% set itemKey = item.key() %}
+        {% set itemValue = item.value %}
+        {% set itemType = item.type %}
+        {% include "templates/MyCard_TextItem.html" %}
+      {% else %}
+        {% set loopFirst = True %}
+        {% set itemCount = 1 %}
+        {% set itemKey = "" %}
+        {% set itemValue = "" %}
+        {% set itemType = "Private" %}
+        {% include "templates/MyCard_TextItem.html" %}
+      {% endfor %}
+    </tbody>
+  </table>
 {%- endmacro %}

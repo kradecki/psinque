@@ -84,70 +84,35 @@
         {% endfor %}
       </tbody>
       </table>
+      {{ ui.multipletextinputwithtypes(phones, phoneTypes, "Phone numbers", "phone") }}
+      {{ ui.multipletextinputwithtypes(ims, imTypes, "IM", "im") }}
+      {{ ui.multipletextinputwithtypes(wwws, wwwTypes, "WWW", "www") }}
       <table>
-      <tbody>
-        {% for im in ims %}
-          {% set imCount = ims|count %}
-          {% set loopfirst = loop.first %}
-          {% set imKey = im.key() %}
-          {% set imAddress = im.im %}
-          {% set imType = im.imType %}
-          {% include "templates/MyCard_IM.html" %}
-        {% else %}
-          {% set imCount = 1 %}
-          {% set loopfirst = True %}
-          {% set imKey = "" %}
-          {% set imAddress = "" %}
-          {% set imType = "Private" %}
-          {% include "templates/MyCard_IM.html" %}
-        {% endfor %}
-      </tbody>
-      </table>
-      <table>
-      <tbody>
-        {% for www in wwws %}
-          {% set wwwCount = wwws|count %}
-          {% set loopfirst = loop.first %}
-          {% set wwwKey = www.key() %}
-          {% set wwwAddress = www.www %}
-          {% set wwwType = www.wwwType %}
-          {% include "templates/MyCard_WWW.html" %}
-        {% else %}
-          {% set wwwCount = 1 %}
-          {% set loopfirst = True %}
-          {% set wwwKey = "" %}
-          {% set wwwAddress = "" %}
-          {% set wwwType = "private homepage" %}
-          {% include "templates/MyCard_WWW.html" %}
-        {% endfor %}
-      </tbody>
-      </table>
-      <table>
-      <tbody>
-      {% for address in addresses %}
-        {% set loopFirst = loop.first %}
-        {% set loopIndex = loop.index %}
-        {% set addressCount = addresses|count %}
-        {% set addressKey = address.key() %}
-        {% set address = address.address %}
-        {% set addressType = address.addressType %}
-        {% set addressLocation = address.location %}
-        {% set city = address.city %}
-        {% set postalCode = address.postalCode %}
-        {% include "templates/MyCard_Address.html" %}
-      {% else %}
-        {% set loopFirst = True %}
-        {% set loopIndex = 1 %}
-        {% set addressCount = 1 %}
-        {% set addressKey = None %}
-        {% set address = "" %}
-        {% set addressType = "" %}
-        {% set addressLocation = None %}
-        {% set city = "" %}
-        {% set postalCode = "" %}
-        {% include "templates/MyCard_Address.html" %}
-      {% endfor %}
-      </tbody>
+        <tbody>
+          {% for address in addresses %}
+            {% set loopFirst = loop.first %}
+            {% set loopIndex = loop.index %}
+            {% set addressCount = addresses|count %}
+            {% set addressKey = address.key() %}
+            {% set address = address.address %}
+            {% set addressType = address.addressType %}
+            {% set addressLocation = address.location %}
+            {% set city = address.city %}
+            {% set postalCode = address.postalCode %}
+            {% include "templates/MyCard_Address.html" %}
+          {% else %}
+            {% set loopFirst = True %}
+            {% set loopIndex = 1 %}
+            {% set addressCount = 1 %}
+            {% set addressKey = None %}
+            {% set address = "" %}
+            {% set addressType = "" %}
+            {% set addressLocation = None %}
+            {% set city = "" %}
+            {% set postalCode = "" %}
+            {% include "templates/MyCard_Address.html" %}
+          {% endfor %}
+        </tbody>
       </table>
       {{ ui.begintable() }}
         {{ ui.tablelabel("Save changes") }}

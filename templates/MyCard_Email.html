@@ -1,6 +1,10 @@
 <tr class="additionalemails">
   {% if loopfirst %}
-  <td rowspan="{{ emailCount }}" class="formlabels" id="additionalemaillabel">
+    {% if tablelabel == "Primary email" %}
+      <td rowspan="{{ emailCount }}" class="formlabels" id="primaryemaillabel">
+    {% else %}
+      <td rowspan="{{ emailCount }}" class="formlabels" id="additionalemaillabel">
+    {% endif %}
     <label>{{ tablelabel }}</label>
   </td>
   {% endif %}

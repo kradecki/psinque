@@ -1,5 +1,4 @@
 
-
 function cloneElement(oldElement) {
     
     newElement = oldElement.clone();  // clone an existing address field group

@@ -74,18 +74,17 @@ function addLocalizerHandler(where) {
 //---------------------------------------------------------
 
 function removeEmailEntry(tr) {
-    if(tr.hasClass("additionalemails")) {
-        window.additionalEmailCounter--;
-        if(window.additionalEmailCounter > 0) {
-            formlabel = $("#additionalemaillabel");
-            if(formlabel.parent().is(tr))
-                formlabel.prependTo(tr.next());
-            formlabel.attr("rowspan", window.additionalEmailCounter);
-        }
-        removeElementWithEffects(tr);
-    } else {
-        $("#primaryemailaddressinput").val("");
-    }
+//     if(tr.hasClass("additionalemails")) {
+//         if(window.additionalEmailCounter > 1) {
+//             window.additionalEmailCounter--;
+            tr.slideUp('fast', function() {
+                uiChangeLabelHeight("#additionalemaillabel", -1);
+                tr.remove();
+            });
+//         }
+//     } else {
+//         $("#primaryemailaddressinput").val("");
+//     }
 }
 
 function addRemoveEmailHandler(where) {
@@ -114,7 +113,12 @@ function addUpdateHandler(where) {
       
         psinqueAjaxTransactionStart();
         
-        psinqueUpdateGeneral($("#firstname").val(), $("#lastname").val(),
+        psinqueUpdateGeneral($("#givennames").val(),
+                             $("#givenroman").val(),
+                             $("#familynames").val(),
+                             $("#familyroman").val(),
+                             $("#companyname").val(),
+                             $("#companyroman").val(),
             function() {
                 unmarkChangedFields("#generalinfo");
             });
@@ -156,23 +160,25 @@ function addAddEmailHandler(where) {
     $(where).click(function() {
         
         tr = cloneElement($("#primaryemailaddress > tbody > tr"));
-        window.additionalEmailCounter++;
-
         tr.addClass("additionalemails");
         tr.find('.formlabels').remove();
-        tr.find('.formbuttons:first').remove();
-        tr.find('.formbuttons').html("<span class='emailremovers buttons clickable'><img src='/images/squareicons/remove.png' /></span>");
 
-        if(window.additionalEmailCounter == 1) {
-            tr.prepend($("<td rowspan='1' class='formlabels' id='additionalemaillabel'><label>Additional emails</label></td>"));
-        } else {
-            $("#additionalemaillabel").attr('rowspan', window.additionalEmailCounter);
-        }
+        // Resize the table label
+        uiChangeLabelHeight("#additionalemaillabel", +1)
         
+        // Add a remove button
+        tr.append("<td class='forminputs formbuttons'><span class='emailremovers buttons clickable'><img src='/images/button_remove.png' /></span></td>");
         addRemoveEmailHandler(tr.find('.emailremovers'));
 
+        // Show the new row
         tr.appendTo("#additionalemailaddresses > tbody");
         tr.slideDown();
+
+        // Re-create the dropdown
+        tr.find('.dropdown').remove();
+        tr.find('select').dropdown();
+
+        window.additionalEmailCounter++;
         
         return false;   // stop page refresh
     });
