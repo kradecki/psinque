@@ -21,6 +21,31 @@ class StaticPageHandler(MasterHandler):
       
         self.sendContent('templates/AboutUs.html')
 
+
+    def investors(self):
+      
+        self.sendContent('templates/Investors.html')
+
+
+    def privacy(self):
+      
+        self.sendContent('templates/Privacy.html')
+
+
+    def terms(self):
+      
+        self.sendContent('templates/Terms.html')
+
+
+    def mobile(self):
+      
+        self.sendContent('templates/Mobile.html')
+
+
+    def support(self):
+      
+        self.sendContent('templates/Support.html')
+
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
