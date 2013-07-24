@@ -46,6 +46,7 @@ class StaticPageHandler(MasterHandler):
       
         self.sendContent('templates/Support.html')
 
+
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([

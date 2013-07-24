@@ -5,7 +5,7 @@ from google.appengine.ext import db
 import logging
 
 import vCard
-from datetime import datetime
+import datetime
 import md5
 
 #-----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ class Permit(db.Model):
         if newVCard != self.vcard:
             logging.info("Updating vCard")
             self.vcard = newVCard
-            self.vcardMTime = str(datetime.date(datetime.now())) + "." + str(datetime.time(datetime.now()))
+            self.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
             self.vcardMD5 = md5.new(self.vcard.encode('utf8')).hexdigest()
             
         self._updateDisplayName(givenNames, familyNames)
@@ -194,7 +194,7 @@ class UserProfile(db.Model):
 
     gender = db.StringProperty(choices = genders)
 
-    birthDate = db.DateProperty()  
+    birthDate = db.DateProperty(default = datetime.date(1900, 1, 1))  
 
     publicEnabled = db.BooleanProperty(default = False)
 
