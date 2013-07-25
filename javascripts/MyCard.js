@@ -118,9 +118,6 @@ function updateItem(input, prefix, updateFunction, addFunction) {
     privacyType = privacytd.find("." + prefix + "privacytypes").val();
     itemType    = typetd.find("." + prefix + "types").val();
     
-    console.log(privacyType);
-    console.log(itemType);
-    
     itemKey = td.find("." + prefix + "keys");
     if(itemKey.val()) {
         updateFunction(itemKey.val(), itemValue, privacyType, itemType, function() {
@@ -174,6 +171,9 @@ $(document).ready(function() {
     
     // Handlers for removing fields
     uiAddRemoverHandler(".emailremovers", "additionalemail", psinqueRemoveEmail);
+    uiAddRemoverHandler(".imremovers", "im", psinqueRemoveIM);
+    uiAddRemoverHandler(".phoneremovers", "phone", psinqueRemovePhone);
+    uiAddRemoverHandler(".wwwremovers", "www", psinqueRemoveWWW);
     
     // Google map handlers
     geocoder = new google.maps.Geocoder();

@@ -76,8 +76,6 @@ function uiAddAddHandler(prefix, removeAjax) {
 
     $("#add" + prefix).click(function() {
       
-        console.log("Adding " + prefix);
-      
         tr = uiAddNewTableRow(prefix, removeAjax);
         tr.slideDown();
         

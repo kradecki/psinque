@@ -57,7 +57,7 @@ class PermitsHandler(MasterHandler):
         for contact in contacts:
             contact.permit = defaultPermit
 
-        # Remove all children
+        # Remove all children individual permits
         permitEmails = PermitEmail.all().ancestor(permit)
         for permitEmail in permitEmails:
             permitEmail.delete()

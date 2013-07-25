@@ -1,4 +1,5 @@
 build
+gitstats
 *.py[cod]
 *.py~
 *.kate-swp

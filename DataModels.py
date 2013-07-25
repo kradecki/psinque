@@ -14,9 +14,16 @@ genders      = ["Male", "Female", "Undisclosed"]
 privacyTypes = ['Home', 'Work']
 phoneTypes   = ["Landline", "Cellphone", "Fax", "Other"]
 wwwTypes     = ["Personal", "Company", "MySpace", "Facebook"]
-imTypes      = ["Skype", "Google Talk", "Gadu-gadu"]
 
 monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+imTypes = {
+    'Google Talk': 'http://talk.google.com/',
+    'Skype': 'http://www.skype.com/',
+    'Gadu-gadu': 'http://gadu-gadu.pl/',
+    'MSN Messanger': 'http://messenger.msn.com/',
+    'Yahoo! Messanger': 'http://messenger.yahoo.com/',
+}
 
 availableLanguages = {
     'en': u'English',
@@ -47,6 +54,26 @@ class Permit(db.Model):
 
     @property
     def permitEmails(self):
+        return PermitEmail.all().ancestor(self)
+    
+    
+    @property
+    def permitIMs(self):
+        return PermitEmail.all().ancestor(self)
+    
+    
+    @property
+    def permitWWWs(self):
+        return PermitEmail.all().ancestor(self)
+    
+    
+    @property
+    def permitPhones(self):
+        return PermitEmail.all().ancestor(self)
+    
+    
+    @property
+    def permitAddresses(self):
         return PermitEmail.all().ancestor(self)
     
     
@@ -91,7 +118,7 @@ class Permit(db.Model):
         newVCard.addNames(givenNames, familyNames)
 
         for email in userProfile.emails:
-            permitEmail = email.permitEmails.get()
+            permitEmail = email.individualPermits.get()
             if permitEmail.canView:
                 newVCard.addEmail(email.email, email.emailType)
         
@@ -138,6 +165,7 @@ class UserSettings(db.Model):
 class UserAddress(db.Model):
     address = db.PostalAddressProperty()
     city = db.StringProperty()
+    countryCode = db.StringProperty()
     postalCode = db.StringProperty()
     privacyType = db.StringProperty(choices = privacyTypes)
     location = db.GeoPtProperty()
@@ -153,7 +181,6 @@ class UserEmail(db.Model):
 
 class UserIM(db.Model):
     itemValue = db.IMProperty()
-    itemType = db.StringProperty(choices = imTypes)
     privacyType = db.StringProperty(choices = privacyTypes)
 
 #-----------------------------------------------------------------------------
@@ -278,7 +305,31 @@ class Contact(db.Model):
 
 class PermitEmail(db.Model):
     userEmail = db.ReferenceProperty(UserEmail,
-                                     collection_name = "permitEmails")
+                                     collection_name = "individualPermits")
+    canView = db.BooleanProperty(default = False)
+
+
+class PermitIM(db.Model):
+    userIM = db.ReferenceProperty(UserIM,
+                                  collection_name = "individualPermits")
+    canView = db.BooleanProperty(default = False)
+
+
+class PermitWebpage(db.Model):
+    userWebpage = db.ReferenceProperty(UserWebpage,
+                                       collection_name = "individualPermits")
+    canView = db.BooleanProperty(default = False)
+
+
+class PermitPhoneNumber(db.Model):
+    userPhoneNumber = db.ReferenceProperty(UserPhoneNumber,
+                                           collection_name = "individualPermits")
+    canView = db.BooleanProperty(default = False)
+
+
+class PermitAddress(db.Model):
+    userAddress = db.ReferenceProperty(UserAddress,
+                                       collection_name = "individualPermits")
     canView = db.BooleanProperty(default = False)
 
 

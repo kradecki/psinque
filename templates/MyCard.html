@@ -47,7 +47,7 @@
         {{ ui.tablelabel("Birthday") }}
         {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays") }}
         {{ ui.dropdown(months, months[userProfile.birthDate.month-1], "birthmonths") }}
-        {{ ui.dropdown(range(1900, 2013+1), userProfile.birthDate.year, "birthyears") }}
+        {{ ui.dropdown(range(2013, 1899, -1), userProfile.birthDate.year, "birthyears") }}
           <td class="forminputs sublabel">Gender:</td>
         {{ ui.dropdown(genders, userProfile.gender, "gender") }}
       {{ ui.endtable() }}
@@ -84,7 +84,31 @@
       </tbody>
       </table>
       {{ ui.multipletextinputwithtypes(phones, phoneTypes, privacyTypes, "Phone numbers", "phone") }}
-      {{ ui.multipletextinputwithtypes(ims, imTypes, privacyTypes, "IM", "im") }}
+      <table id="imstable">
+        <tbody>
+          {% set tableLabel = "IM" %}
+          {% set prefix = "im" %}
+          {% set itemTypes = imTypes %}
+          {% for item in ims %}
+            {% set loopFirst = loop.first %}
+            {% set itemCount = ims|count %}
+            {% set itemKey = item.key() %}
+            {% set itemValue = item.itemValue.address %}
+            {% set itemType = item.itemValue.protocol %}
+            {% set privacyType = item.privacyType %}
+            {% include "templates/MyCard_TextItem.html" %}
+          {% else %}
+            {% set loopFirst = True %}
+            {% set itemCount = 1 %}
+            {% set itemKey = "" %}
+            {% set itemValue = "" %}
+            {% set itemType = itemTypes[0] %}
+            {% set privacyType = "Home" %}
+            {% set privacyTypes = privacyTypes %}
+            {% include "templates/MyCard_TextItem.html" %}
+          {% endfor %}
+        </tbody>
+      </table>
       {{ ui.multipletextinputwithtypes(wwws, wwwTypes, privacyTypes, "WWW", "www") }}
       <table>
         <tbody>

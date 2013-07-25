@@ -7,11 +7,13 @@ import webapp2
 import datetime
 
 from google.appengine.api import users
+from google.appengine.ext import db
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-from DataModels import UserProfile, UserSettings, Group, UserEmail
-from DataModels import Permit, PermitEmail
+from DataModels import UserProfile, UserSettings, Group
+from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress
+from DataModels import Permit, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
 from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames
 
 from MasterHandler import MasterHandler, AjaxError
@@ -96,6 +98,42 @@ class ProfileHandler(MasterHandler):
         return userProfile
 
 
+    def _getItemByKey(self, itemClass):
+
+        key = self.getRequiredParameter('key')
+
+        item = itemClass.get(key)
+        if item is None:
+            raise AjaxError("Profile item not found.")
+          
+        return item
+      
+    
+    def _checkNewItemByName(self, itemClass, itemValueName):
+
+        itemValue = self.getRequiredParameter(itemValueName)
+
+        # Check if this email has already been registered:
+        existingItem = itemClass.all(keys_only = True). \
+                                 filter(itemValueName + " =", itemValue). \
+                                 get()
+        if not existingItem is None:
+            raise AjaxError(itemValueName + ": " + itemValue + " already registered in the system")
+          
+        return itemValue
+
+
+    def _removeItem(self, itemClass):
+      
+        item = self._getItemByKey(itemClass)
+        
+        for individualPermit in item.individualPermits:
+            individualPermit.delete()
+        item.delete()
+
+        self._updateAllVCards()
+          
+
     #****************************
     # Views
     #
@@ -108,26 +146,18 @@ class ProfileHandler(MasterHandler):
         if firstLogin:  # no user profile registered yet, so create a new one
           userProfile = self._createNewProfile()
 
-        userAddresses = userProfile.addresses.fetch(limit = 1000)
-        ims  = userProfile.ims.fetch(limit = 1000)
-        webpages = userProfile.webpages.fetch(limit = 1000)
-
-        primaryEmail = userProfile.emails.filter("primary =", True).get()
-        additionalEmails = userProfile.emails.filter("primary =", False).fetch(limit = 1000)
-        phones = userProfile.phones.filter("primary =", False).fetch(limit = 1000)
-
         self.sendContent('templates/MyCard.html',
                          activeEntry = "My card",
                          templateVariables = {
             'firstlogin': firstLogin,
             'userProfile': userProfile,
             'months': monthNames,
-            'primaryEmail': primaryEmail,
-            'additionalEmails': additionalEmails,
-            'phones': phones,
-            'ims': ims,
-            'wwws': webpages,
-            'addresses': userAddresses,
+            'primaryEmail': userProfile.emails.filter("primary =", True).get(),
+            'additionalEmails': userProfile.emails.filter("primary =", False).fetch(limit = 1000),
+            'phones': userProfile.phones.fetch(limit = 1000),
+            'ims': userProfile.ims.fetch(limit = 1000),
+            'wwws': userProfile.webpages.fetch(limit = 1000),
+            'addresses': userProfile.addresses.fetch(limit = 1000),
             'genders': genders,
             'privacyTypes': privacyTypes,
             'imTypes': imTypes,
@@ -156,11 +186,11 @@ class ProfileHandler(MasterHandler):
             raise AjaxError("Invalid month name: " + birthmonth)
 
         self.userProfile.givenNames = self.getRequiredParameter('givennames')
-        self.userProfile.givenNamesRomanization = self.getRequiredParameter('givenroman')
+        self.userProfile.givenNamesRomanization = self.request.get('givenroman')
         self.userProfile.familyNames = self.getRequiredParameter('familynames')
-        self.userProfile.familyNamesRomanization = self.getRequiredParameter('familyroman')
-        self.userProfile.companyName = self.getRequiredParameter('company')
-        self.userProfile.companyNameRomanization = self.getRequiredParameter('companyroman')        
+        self.userProfile.familyNamesRomanization = self.request.get('familyroman')
+        self.userProfile.companyName = self.request.get('company')
+        self.userProfile.companyNameRomanization = self.request.get('companyroman')        
         self.userProfile.birthDate = datetime.date(birthyear, birthmonth, birthday)
         self.userProfile.gender = self.getRequiredParameter('gender')
         
@@ -173,21 +203,10 @@ class ProfileHandler(MasterHandler):
 
     def addemail(self):
 
-        email = self.getRequiredParameter('email')
-        privacyType = self.getRequiredParameter('privacy')
-        isPrimary = self.getRequiredBoolParameter('primary')
-
-        # Check if this email has already been registered:
-        existingEmail = UserEmail.all(keys_only = True). \
-                                  filter("email =", email). \
-                                  get()
-        if not existingEmail is None:
-            raise AjaxError("Email is already registered in the system")
-
         userEmail = UserEmail(parent = self.userProfile,
-                              itemValue = email,
-                              privacyType = privacyType,
-                              primary = isPrimary)
+                              itemValue = self._checkNewItemByName(UserEmail, 'email'),
+                              privacyType = self.getRequiredParameter('privacy'),
+                              primary = self.getRequiredBoolParameter('primary'))
         userEmail.put()
 
         # Add permissions for this email in every outgoing group
@@ -203,13 +222,9 @@ class ProfileHandler(MasterHandler):
 
     def updateemail(self):
 
-        emailKey = self.getRequiredParameter('key')
-        email = self.getRequiredParameter('email')
-        privacyType = self.getRequiredParameter('privacy')
-
-        userEmail = UserEmail.get(emailKey)
-        userEmail.itemValue = email
-        userEmail.privacyType = privacyType
+        userEmail = self._getItemByKey(UserEmail)
+        userEmail.itemValue = self.getRequiredParameter('email')
+        userEmail.privacyType = self.getRequiredParameter('privacy')
         userEmail.put()
 
         self._updateAllVCards()
@@ -219,13 +234,9 @@ class ProfileHandler(MasterHandler):
 
     def removeemail(self):
 
-        emailKey = self.getRequiredParameter('key')
+        userEmail = self._getItemByKey(UserEmail)
 
-        userEmail = UserEmail.get(emailKey)
-        if userEmail is None:
-            raise AjaxError("User email not found.")
-
-        if userEmail.primary:
+        if userEmail.primary:   # you cannot remove the primary email
 
             userEmail.itemValue = "primary@nonexistant.com"
             userEmail.privacyType = 'Home'
@@ -233,7 +244,7 @@ class ProfileHandler(MasterHandler):
 
         else:
 
-            for permitEmail in userEmail.permitEmails:
+            for permitEmail in userEmail.individualPermits:
                 permitEmail.delete()
             userEmail.delete()
 
@@ -243,39 +254,165 @@ class ProfileHandler(MasterHandler):
 
 
     def addim(self):
-        self.sendJsonError("Unimplemented")
+
+        userIM = UserIM(parent = self.userProfile,
+                        itemValue = db.IM(self.getRequiredParameter('type'),
+                                          self.getRequiredParameter('im')),
+                        privacyType = self.getRequiredParameter('privacy'))
+        userIM.put()
+
+        # Add permissions for this email in every outgoing group
+        for permit in self.userProfile.permits:
+            permitIM = PermitIM(parent = permit,
+                                userIM = userIM)
+            permitIM.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK({'key': str(userIM.key())})
 
 
     def updateim(self):
-        self.sendJsonError("Unimplemented")
+
+        userIM = self._getItemByKey(UserIM)
+        userIM.itemValue = db.IM(self.getRequiredParameter('type'),
+                                 self.getRequiredParameter('im'))
+        userIM.privacyType = self.getRequiredParameter('privacy')
+        userIM.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK()
 
 
     def removeim(self):
-        self.sendJsonError("Unimplemented")
+
+        self._removeItem(UserIM)
+        self.sendJsonOK()
 
 
     def addwww(self):
-        self.sendJsonError("Unimplemented")
+
+        userWebpage = UserWebpage(parent = self.userProfile,
+                                  itemValue = self.getRequiredParameter('www'),
+                                  privacyType = self.getRequiredParameter('privacy'),
+                                  itemType = self.getRequiredParameter('type'))
+        userWebpage.put()
+
+        # Add permissions for this email in every outgoing group
+        for permit in self.userProfile.permits:
+            permitWebpage = PermitWebpage(parent = permit,
+                                          userWebpage = userWebpage)
+            permitWebpage.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK({'key': str(userWebpage.key())})
 
 
     def updatewww(self):
-        self.sendJsonError("Unimplemented")
+
+        userWebpage = self._getItemByKey(UserWebpage)
+        userWebpage.itemValue = self.getRequiredParameter('www')
+        userWebpage.itemType = self.getRequiredParameter('type')
+        userWebpage.privacyType = self.getRequiredParameter('privacy')
+        userWebpage.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK()
 
 
     def removewww(self):
-        self.sendJsonError("Unimplemented")
+
+        self._removeItem(UserWebpage)
+        self.sendJsonOK()
 
 
     def addphone(self):
-        self.sendJsonError("Unimplemented")
+
+        userPhone = UserPhoneNumber(parent = self.userProfile,
+                                    itemValue = self._checkNewItemByName(UserPhoneNumber, 'phone'),
+                                    privacyType = self.getRequiredParameter('privacy'),
+                                    itemType = self.getRequiredParameter('type'))
+        userPhone.put()
+
+        # Add permissions for this email in every outgoing group
+        for permit in self.userProfile.permits:
+            permitPhone = PermitPhoneNumber(parent = permit,
+                                            userPhone = userPhone)
+            permitPhone.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK({'key': str(userPhone.key())})
 
 
     def updatephone(self):
-        self.sendJsonError("Unimplemented")
+
+        userPhone = self._getItemByKey(UserPhoneNumber)
+        userPhone.itemValue = self.getRequiredParameter('phone')
+        userPhone.itemType = self.getRequiredParameter('type')
+        userPhone.privacyType = self.getRequiredParameter('privacy')
+        userPhone.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK()
 
 
     def removephone(self):
-        self.sendJsonError("Unimplemented")
+ 
+        self._removeItem(UserPhoneNumber)
+        self.sendJsonOK()
+
+
+    def addaddress(self):
+
+        userAddress = UserAddress(parent = self.userProfile,
+                                  address = self.getRequiredParameter('address'),
+                                  city = self.getRequiredParameter('city'),
+                                  countryCode = self.getRequiredParameter('country'),
+                                  postalCode = self.request.get('postal'),
+                                  privacyType = self.getRequiredParameter('privacy'),
+                                  location = db.GeoPt(self.getRequiredParameter('lat'),
+                                                      self.getRequiredParameter('lon')))
+        userAddress.put()
+
+        # Add permissions for this email in every outgoing group
+        for permit in self.userProfile.permits:
+            permitAddress = PermitAddress(parent = permit,
+                                          userAddress = userAddress)
+            permitAddress.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK({'key': str(userAddress.key())})
+
+
+    def updateaddress(self):
+
+        userAddress = self._getItemByKey(UserAddress)
+        userAddress.itemValue = self.getRequiredParameter('address')
+        userAddress.city = self.getRequiredParameter('city')
+        userAddress.postalCode = self.request.get('postal')
+        userAddress.countryCode = self.getRequiredParameter('country')
+        userAddress.itemType = self.getRequiredParameter('type')
+        userAddress.privacyType = self.getRequiredParameter('privacy')
+        userAddress.location = db.GeoPt(self.getRequiredParameter('lat'),
+                                        self.getRequiredParameter('lon'))
+        userAddress.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK()
+
+
+    def removeaddress(self):
+ 
+        self._removeItem(UserAddress)
+        self.sendJsonOK()
+        
 
 #-----------------------------------------------------------------------------
 

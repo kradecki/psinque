@@ -66,19 +66,15 @@
 {% macro dropdown(items, selected, id="", class="", tdclass="") -%}
   <td class="forminputs{% if tdclass %} {{ tdclass }}{% endif %}">
     <select id="{{ id }}"{% if class %} class="{{ class }}"{% endif %} data-template="#dropdown">
-    {% for item in items %}
-      <option value="{{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
-    {% endfor %}
-    </select>
-  </td>
-{%- endmacro %}
-
-{% macro dropdown2(items, selected, id="", class="") -%}
-  <td class="forminputs">
-    <select id="{{ id }}" class="{{ class }}" data-template="#dropdown">
-    {% for itemCode, itemName in items.iteritems() %}
-      <option value="{{ itemCode }}" {% if itemCode == selected %}selected="selected"{% endif %}>{{ itemName }}</option>
-    {% endfor %}
+    {% if items is mapping %}
+      {% for itemCode, itemName in items.iteritems() %}
+        <option value="{{ itemName }}" {% if itemName == selected %}selected="selected"{% endif %}>{{ itemCode }}</option>
+      {% endfor %}
+    {% else %}
+      {% for item in items %}
+        <option value="{{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
+      {% endfor %}
+    {% endif %}
     </select>
   </td>
 {%- endmacro %}
@@ -121,8 +117,8 @@
   </td>
 {%- endmacro %}
 
-{% macro textinputwithkey(value, placeholder="", id="", class="", keyvalue="", keyclass="") -%}
-  <td class="forminputs">
+{% macro textinputwithkey(value, placeholder="", id="", class="", keyvalue="", keyclass="", colspan="") -%}
+  <td class="forminputs"{% if colspan %} colspan="{{ colspan }}"{% endif %}>
     <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}"/>
     <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
   </td>

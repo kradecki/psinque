@@ -86,7 +86,7 @@ function psinqueAddAddress(address, city, postalCode,
                     city: city,
                     postal: postalCode,
                     privacy: privacyType,
-                    long: longitude,
+                    lon: longitude,
                     lat: latitude,
                 }, successFunction);
 }
@@ -150,15 +150,16 @@ function psinqueUpdateWWW(key, wwwAddress, privacyType,
                 }, successFunction);
 }
 
-function psinqueUpdateAddress(key, address, city, postalCode,
+function psinqueUpdateAddress(key, address, city, postalCode, country,
                               privacyType, longitude, latitude, successFunction) {
     psinqueAJAX(psinqueAPI_updateIM, {
                     key: key,
                     address: address,
                     city: city,
                     postal: postalCode,
+                    country: country,
                     privacy: privacyType,
-                    long: longitude,
+                    lon: longitude,
                     lat: latitude,
                 }, successFunction);
 }
@@ -281,7 +282,7 @@ function psinqueAJAX_HTML(url, parameters, successFunction) {
         return;
     
     psinqueIncreaseAJAXCounter();
-    
+
     $.get(url, parameters, function(data) {
         psinqueDecreaseAJAXCounter();
         successFunction(data);
@@ -316,9 +317,9 @@ $(document).ready(function() {
     
     $(document).ajaxError(function(event, jqXHR, settings, exception) {
         stopLogoAnimation();
-        window.ajaxCounter = 0;
+//         window.ajaxCounter = 0;
         alert("Uknown error occured while performing operation: " + exception);
-        console.log(jqXHR.responseText);
+        console.log(settings);
     });
     
 });
