@@ -169,6 +169,7 @@ class UserAddress(db.Model):
     postalCode = db.StringProperty()
     privacyType = db.StringProperty(choices = privacyTypes)
     location = db.GeoPtProperty()
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------
 
@@ -176,12 +177,14 @@ class UserEmail(db.Model):
     itemValue = db.EmailProperty()
     privacyType = db.StringProperty(choices = privacyTypes)
     primary = db.BooleanProperty(default = False)
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------
 
 class UserIM(db.Model):
     itemValue = db.IMProperty()
     privacyType = db.StringProperty(choices = privacyTypes)
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------
 
@@ -189,6 +192,7 @@ class UserPhoneNumber(db.Model):
     itemValue = db.PhoneNumberProperty(required = True)
     itemType = db.StringProperty(choices = phoneTypes)
     privacyType = db.StringProperty(choices = privacyTypes)
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------
 
@@ -196,6 +200,7 @@ class UserWebpage(db.Model):
     itemValue = db.StringProperty()
     itemType = db.StringProperty(choices = wwwTypes)
     privacyType = db.StringProperty(choices = privacyTypes)
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------
 
