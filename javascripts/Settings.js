@@ -7,7 +7,7 @@ function cardDAVHTML(key, name) {
               </td> \
               <td class='forminputs formbuttons'> \
                   <span class='buttons clickable carddavremovers'> \
-                    <img src='/images/remove.png' /> \
+                    <img src='/images/button_remove.png' /> \
                   </span> \
               </td> \
             </tr>"
@@ -40,8 +40,8 @@ function addGenerateCardDAVHandler(where) {
                 newRow.insertBefore(".newcarddav");
                 console.log(newRow);
                 addRemoveCardDAVHandler(newRow.find(".carddavremovers"));
-                updateContentHeight();
                 
+                // Clear the new CardDAV name input 
                 $("#newcarddavname").val("");
 
                 if(window.cardDAVCounter == 1) {
@@ -59,23 +59,13 @@ function addRemoveCardDAVHandler(where) {
     
     $(where).click(function() {
         
-        cardDAVInfo = $(this).parent().parent();
-        cardDAVKey = cardDAVInfo.find(".carddavkeys").val();
+        tr = $(this).parent().parent();
+
+        cardDAVKey = tr.find(".carddavkeys").val();
         
         psinqueDeleteCardDAVLogin(cardDAVKey, function() {
-
             window.cardDAVCounter--;
-            
-            uiChangeLabelHeight("#carddavlabel", -1);
-            if(cardDAVInfo.find("#carddavlabel")) {
-                $("#carddavlabel").prependTo(cardDAVInfo.next());
-            }
-
-            labelCell = $("#carddav > tbody > tr > .tableformlabels")
-            loginCount = parseInt(labelCell.attr('rowspan'));
-            labelCell.attr('rowspan', loginCount - 1);
-            removeElementWithEffects(cardDAVInfo);
-            
+            uiRemoveTableRow(tr, "carddav");
         });
         
         return false;
@@ -117,6 +107,7 @@ $(document).ready(function() {
     
     // Hiding the CardDAV logins
     $("#synccarddav").click(function() {
+        console.log("Click");
         if($(this).is(':checked')) {
             showElementWithEffects($("#carddav"));
         } else {

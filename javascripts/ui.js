@@ -12,16 +12,24 @@ function uiCloneElement(oldElement) {
 }
 
 function uiChangeLabelHeight(where, howMuch) {
+  
     tableLabel = $(where);
     currentHeight = parseInt(tableLabel.attr("rowspan"));
     tableLabel.attr("rowspan", currentHeight + howMuch);
+    
 }
 
-function uiRemoveTableRow(tr, tablelabel) {
+function uiRemoveTableRow(tr, prefix) {
+  
     tr.slideUp('fast', function() {
-        uiChangeLabelHeight(tablelabel, -1);
+        labelid = "#" + prefix + "label";
+        if(tr.find(labelid).length > 0) {
+            $(labelid).prependTo(tr.next());
+        }
+        uiChangeLabelHeight(labelid, -1);
         tr.remove();
     });
+    
 }
 
 function uiAddNewTableRow(prefix, removeAjax) {
@@ -61,10 +69,10 @@ function uiAddRemoverHandler(where, prefix, removeAjax) {
         itemKey = tr.find("." + prefix + "keys").val();
         if(itemKey) {
             removeAjax(itemKey, function() {
-                uiRemoveTableRow(tr, "#" + prefix + "label");
+                uiRemoveTableRow(tr, prefix);
             });
         } else {
-            uiRemoveTableRow(tr, "#" + prefix + "label");
+            uiRemoveTableRow(tr, prefix);
         }
       
         return false;

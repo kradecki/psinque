@@ -148,12 +148,14 @@ class MasterHandler(webapp2.RequestHandler):
         
     def sendJsonOK(self, additionalValues = {}):
         
+        self.response.headers['Content-Type'] = "application/json"
         self.response.out.write(json.dumps(dict({"status": 0}.items() +
                                                 additionalValues.items())))
 
 
     def sendJsonError(self, msg):
         
+        self.response.headers['Content-Type'] = "application/json"
         self.response.out.write(json.dumps({"status": 1,
                                             "message": msg}))
 

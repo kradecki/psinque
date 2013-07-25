@@ -26,10 +26,10 @@ imTypes = {
 }
 
 availableLanguages = {
-    'en': u'English',
-    'pl': u'Polski',
-    'de': u'Deutsch',
-    'jp': u'日本語',
+    u'English': 'en',
+    u'Polski': 'pl',
+    u'Deutsch': 'de',
+    u'日本語': 'jp',
 }
 
 #-----------------------------------------------------------------------------
@@ -146,8 +146,8 @@ class UserSettings(db.Model):
     '''
     User settings other than those stored in the UserProfile.
     '''
-    preferredLanguage = db.StringProperty(choices = availableLanguages.keys(),
-                                            default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
+    preferredLanguage = db.StringProperty(choices = availableLanguages.values(),
+                                          default = 'en')  # availableLanguages.keys()[0] is 'de', they seem to be sorted alphabetically
     notifyNewsletter = db.BooleanProperty(default = False)   # I _never_ ask for newsletters, so why force it on the users?
     
     notifyEmails = db.BooleanProperty(default = True)

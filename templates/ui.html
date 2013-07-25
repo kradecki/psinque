@@ -91,7 +91,7 @@
 {% macro checkbox(id, checked, text) -%}
   <td class="forminputs formbuttons">
     <span class="checkboxwrapper">
-      <input type="checkbox" id="{{ id }}" {% if checked %}checked="checked"{% endif %}">
+      <input type="checkbox" id="{{ id }}" {% if checked %}checked="checked"{% endif %} />
       <div class="checkboxdiv"></div>
     </span>
   </td>

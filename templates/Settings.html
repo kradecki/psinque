@@ -9,7 +9,7 @@
     {{ ui.beginform("settings") }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Preferred language") }}
-        {{ ui.dropdown2(availableLanguages, userSettings.preferredLanguage, "language") }}
+        {{ ui.dropdown(availableLanguages, userSettings.preferredLanguage, "language") }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
       {{ ui.begintable() }}
@@ -46,7 +46,7 @@
         {% if loop.last %}
           {{ ui.newrow("newcarddav") }}
         {% else %}
-          {{ ui.newrow() }}
+          {{ ui.newrow("carddavlogins") }}
         {% endif %}
       {% endfor %}
       {{ ui.textinput("", "Type a name for your device", "newcarddavname") }}

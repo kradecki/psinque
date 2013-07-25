@@ -56,9 +56,10 @@ function showElementWithEffects(element) {
 }
 
 function initializeCheckboxes() {
-    $("input[type=checkbox] + div").unbind('click').bind('click', function() {
+    $("input[type=checkbox] + div").bind('click', function() {
         checkBox = $(this).prev();
-        checkBox.prop("checked", !checkBox.prop("checked"));
+//         checkBox.prop("checked", !checkBox.prop("checked"));
+        checkBox.click();
     });
 }
 
