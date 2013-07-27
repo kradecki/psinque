@@ -101,16 +101,20 @@ function recreateAccordeon() {
 
 function updateDisplayName(permitIndex) {
     
+    console.log("Updating " + permitIndex);
     displayName = "";
+    console.log(displayName);
     
-    if($("#givennames" + permitIndex).is(":checked"))
+    if($("#givennames_" + permitIndex).is(":checked"))
         displayName += window.givenNames;
+    console.log(displayName);
     
-    if($("#familynames" + permitIndex).is(":checked")) {
+    if($("#familynames_" + permitIndex).is(":checked")) {
         if(displayName.length > 0)
             displayName += " ";
         displayName += window.familyNames;
     }
+    console.log(displayName);
     
     if(displayName.length == 0) {
         emailPermits = $("#permitform" + permitIndex).find(".email");
@@ -121,7 +125,8 @@ function updateDisplayName(permitIndex) {
             }
         }
     }
-     
+    console.log(displayName);
+    
     $("#displayname" + permitIndex).html(displayName);
 }
 

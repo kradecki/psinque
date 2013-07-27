@@ -84,7 +84,7 @@
     {% if keyvalue %}
     <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}">
     {% endif %}
-    <label class="{{ class }}">{{ text }}</label>
+    <label {% if class %}class="{{ class }}"{% endif %} {% if id %}id="{{ id }}"{% endif %}>{{ text }}</label>
   </td>
 {%- endmacro %}
 

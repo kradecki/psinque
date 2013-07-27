@@ -15,8 +15,38 @@ indexes:
   properties:
   - name: creationTime
 
+- kind: Permit
+  ancestor: yes
+  properties:
+  - name: creationTime
+
+- kind: UserAddress
+  ancestor: yes
+  properties:
+  - name: creationTime
+    direction: desc
+
 - kind: UserEmail
   ancestor: yes
   properties:
   - name: primary
+  - name: creationTime
+    direction: desc
+
+- kind: UserIM
+  ancestor: yes
+  properties:
+  - name: creationTime
+    direction: desc
+
+- kind: UserPhoneNumber
+  ancestor: yes
+  properties:
+  - name: creationTime
+    direction: desc
+
+- kind: UserWebpage
+  ancestor: yes
+  properties:
+  - name: creationTime
     direction: desc

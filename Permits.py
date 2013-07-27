@@ -15,7 +15,10 @@ class PermitsHandler(MasterHandler):
     # 
     
     def _getPermitByName(self, permitName):
-        return Permit.all().ancestor(self.userProfile).filter("name =", permitName).get()
+        return Permit.all(). \
+                      ancestor(self.userProfile). \
+                      filter("name =", permitName). \
+                      get()
 
     #****************************
     # Views
@@ -25,13 +28,13 @@ class PermitsHandler(MasterHandler):
         
         if self.getUserProfile():
             
-            permits = Permit.all().ancestor(self.userProfile)
-            
             self.sendContent('templates/Permits.html',
                             activeEntry = "Permits",
                             templateVariables = {
                 'userProfile': self.userProfile,
-                'permits': permits,
+                'permits': Permit.all(). \
+                                  ancestor(self.userProfile). \
+                                  order("creationTime"),
             })
 
 

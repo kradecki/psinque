@@ -154,7 +154,7 @@ class ProfileHandler(MasterHandler):
             'months': monthNames,
             'primaryEmail': userProfile.emails.filter("primary =", True).get(),
             'additionalEmails': userProfile.emails.filter("primary =", False).order('-creationTime').fetch(limit = 1000),
-            'phones': userProfile.phones.order('-creationTime').(fetch(limit = 1000),
+            'phones': userProfile.phones.order('-creationTime').fetch(limit = 1000),
             'ims': userProfile.ims.order('-creationTime').fetch(limit = 1000),
             'wwws': userProfile.webpages.order('-creationTime').fetch(limit = 1000),
             'addresses': userProfile.addresses.order('-creationTime').fetch(limit = 1000),

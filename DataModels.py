@@ -51,26 +51,23 @@ class Permit(db.Model):
     
     displayName = db.StringProperty()
 
+    creationTime = db.DateTimeProperty(auto_now = True)
 
     @property
     def permitEmails(self):
         return PermitEmail.all().ancestor(self)
     
-    
     @property
     def permitIMs(self):
         return PermitEmail.all().ancestor(self)
-    
     
     @property
     def permitWWWs(self):
         return PermitEmail.all().ancestor(self)
     
-    
     @property
     def permitPhones(self):
         return PermitEmail.all().ancestor(self)
-    
     
     @property
     def permitAddresses(self):

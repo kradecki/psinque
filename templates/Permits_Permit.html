@@ -12,13 +12,13 @@
 {{ ui.beginform("permitform" ~ permitIndex) }}
   <input type="hidden" id="permitkey{{ permitIndex }}" value="{{ permit.key() }}" />
   {{ ui.begintable() }}
-    {{ ui.labelcheckbox("First names", "givennames", permit.canViewFirstNames, permitIndex, "general names", userProfile.givenNames|join(" ")) }}
+    {{ ui.labelcheckbox("Given names", "givennames", permit.canViewGivenNames, permitIndex, "general names", userProfile.givenNames) }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
-    {{ ui.labelcheckbox("Last names", "familynames", permit.canViewLastNames, permitIndex, "general names", userProfile.familyNames|join(" ")) }}
+    {{ ui.labelcheckbox("Family names", "familynames", permit.canViewFamilyNames, permitIndex, "general names", userProfile.familyNames) }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
-    {{ ui.labelcheckbox("Birthday", "birthday", permit.canViewBirthday, permitIndex, "general", userProfile.birthDay) }}
+    {{ ui.labelcheckbox("Birthday", "birthday", permit.canViewBirthday, permitIndex, "general", userProfile.birthDate) }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Gender", "gender", permit.canViewGender, permitIndex, "general", userProfile.gender) }}
@@ -30,7 +30,7 @@
   {% endfor %}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Displayed name") }}
-    {{ ui.textlabel(permit.displayName, "", displayname ~ permitIndex) }}
+    {{ ui.textlabel(permit.displayName, "", "displayname" ~ permitIndex) }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Save changes") }}

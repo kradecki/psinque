@@ -6,8 +6,8 @@
 {% endblock %}
 {% block inlinescripts %}
   <script type="text/javascript">
-    window.givenNames = "{{ userProfile.givenNames|join(" ") }}";
-    window.familyNames = "{{ userProfile.familyNames|join(" ") }}";
+    window.givenNames = "{{ userProfile.givenNames }}";
+    window.familyNames = "{{ userProfile.familyNames }}";
   </script>
 {% endblock %}
 {% block externalscripts %}
