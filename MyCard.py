@@ -340,7 +340,7 @@ class ProfileHandler(MasterHandler):
         # Add permissions for this email in every outgoing group
         for permit in self.userProfile.permits:
             permitPhone = PermitPhoneNumber(parent = permit,
-                                            userPhone = userPhone)
+                                            userPhoneNumber = userPhone)
             permitPhone.put()
 
         self._updateAllVCards()

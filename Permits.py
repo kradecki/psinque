@@ -4,7 +4,7 @@ import logging
 import webapp2
 
 from MasterHandler import MasterHandler, AjaxError
-from DataModels import Permit, PermitEmail, Contact
+from DataModels import Permit, Contact, IndividualPermit, PermitEmail
 
 #-----------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ class PermitsHandler(MasterHandler):
                 'userProfile': self.userProfile,
                 'permits': Permit.all(). \
                                   ancestor(self.userProfile). \
-                                  order("creationTime"),
+                                  order("name"),
             })
 
 
@@ -55,7 +55,9 @@ class PermitsHandler(MasterHandler):
             raise AjaxError("Cannot remove the default private permit")
 
         # Get all contacts that use this permit and assign them the default permit
-        contacts = Contact.all().ancestor(self.userProfile).filter("permit =", permit)
+        contacts = Contact.all(). \
+                           ancestor(self.userProfile). \
+                           filter("permit =", permit)
         defaultPermit = self._getPermitByName("Default")
         for contact in contacts:
             contact.permit = defaultPermit
@@ -131,30 +133,32 @@ class PermitsHandler(MasterHandler):
 
         self.sendJsonOK()
             
-    def setemailpermit(self):
-
-        pkey = self.getRequiredParameter('key')
-        canView = self.getRequiredBoolParameter('canview')
-        
-        permitEmail = PermitEmail.get(pkey)
-        if permitEmail is None:
-            raise AjaxError("Email permit not found.")
-        
-        permitEmail.canView = canView
-        permitEmail.put()
-               
-        permitEmail.parent().generateVCard()
-        permitEmail.parent().put()
-        
-        self.sendJsonOK()
-        
-        
+            
     def enablepublic(self):
         
         publicEnabled = self.getRequiredBoolParameter("enable")
         
         self.userProfile.publicEnabled = publicEnabled
 
+
+    def setindividualpermit(self):
+
+        itemKey = self.getRequiredParameter('key')
+        canView = self.getRequiredBoolParameter('canview')
+        
+        individualPermit = IndividualPermit.get(itemKey)
+        if individualPermit is None:
+            raise AjaxError("Individual permit not found.")
+        
+        individualPermit.canView = canView
+        individualPermit.put()
+               
+        individualPermit.parent().generateVCard()
+        individualPermit.parent().put()
+        
+        self.sendJsonOK()
+        
+        
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([

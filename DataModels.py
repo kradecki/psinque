@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from google.appengine.ext import db
-
 import logging
 
 import vCard
 import datetime
 import md5
+
+from google.appengine.ext import db
+from google.appengine.ext.db import polymodel
 
 #-----------------------------------------------------------------------------
 
@@ -51,27 +52,25 @@ class Permit(db.Model):
     
     displayName = db.StringProperty()
 
-    creationTime = db.DateTimeProperty(auto_now = True)
-
     @property
     def permitEmails(self):
         return PermitEmail.all().ancestor(self)
     
     @property
     def permitIMs(self):
-        return PermitEmail.all().ancestor(self)
+        return PermitIM.all().ancestor(self)
     
     @property
     def permitWWWs(self):
-        return PermitEmail.all().ancestor(self)
+        return PermitWebpage.all().ancestor(self)
     
     @property
     def permitPhones(self):
-        return PermitEmail.all().ancestor(self)
+        return PermitPhoneNumber.all().ancestor(self)
     
     @property
     def permitAddresses(self):
-        return PermitEmail.all().ancestor(self)
+        return PermitAddress.all().ancestor(self)
     
     
     def _getGivenNames(self, userProfile):
@@ -117,7 +116,7 @@ class Permit(db.Model):
         for email in userProfile.emails:
             permitEmail = email.individualPermits.get()
             if permitEmail.canView:
-                newVCard.addEmail(email.email, email.emailType)
+                newVCard.addEmail(email.itemValue, email.privacyType)
         
         newVCard = db.Text(newVCard.serialize())
         
@@ -170,17 +169,9 @@ class UserAddress(db.Model):
     
     @property
     def itemValue(self):
-      
-        value = self.address
-        if value != u"" and (self.postalCode != u"" or self.city != u""):
-            value += ", "
-        value += self.postalCode
-        if value != u"" and self.city != u"":
-            value += u" " + self.city
-        if value != u"" and self.country != u"":
-            value += u" " + self.city
-            
-        return value
+        return u", ".join([self.address,
+                           u" ".join([self.postalCode, self.city]),
+                           self.country])
 
 #-----------------------------------------------------------------------------
 
@@ -319,34 +310,32 @@ class Contact(db.Model):
   
 #-----------------------------------------------------------------------------
 
-class PermitEmail(db.Model):
+class IndividualPermit(polymodel.PolyModel):
+    canView = db.BooleanProperty(default = False)
+
+class PermitEmail(IndividualPermit):
     userEmail = db.ReferenceProperty(UserEmail,
                                      collection_name = "individualPermits")
-    canView = db.BooleanProperty(default = False)
 
 
-class PermitIM(db.Model):
+class PermitIM(IndividualPermit):
     userIM = db.ReferenceProperty(UserIM,
                                   collection_name = "individualPermits")
-    canView = db.BooleanProperty(default = False)
 
 
-class PermitWebpage(db.Model):
+class PermitWebpage(IndividualPermit):
     userWebpage = db.ReferenceProperty(UserWebpage,
                                        collection_name = "individualPermits")
-    canView = db.BooleanProperty(default = False)
 
 
-class PermitPhoneNumber(db.Model):
+class PermitPhoneNumber(IndividualPermit):
     userPhoneNumber = db.ReferenceProperty(UserPhoneNumber,
                                            collection_name = "individualPermits")
-    canView = db.BooleanProperty(default = False)
 
 
-class PermitAddress(db.Model):
+class PermitAddress(IndividualPermit):
     userAddress = db.ReferenceProperty(UserAddress,
                                        collection_name = "individualPermits")
-    canView = db.BooleanProperty(default = False)
 
 
 #-----------------------------------------------------------------------------

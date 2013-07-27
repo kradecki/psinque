@@ -26,10 +26,12 @@ function addUpdatePermitHandler(where) {
         permitIndex = $(this).attr('data-psinque-index');
         permitForm = $("#permitform" + permitIndex);
         
+        psinqueAjaxTransactionStart();
+        
         // Update the general permits
         psinqueSetGeneralPermit($("#permitkey" + permitIndex).val(),
-            $("#firstnames" + permitIndex).is(':checked'),
-            $("#lastnames" + permitIndex).is(':checked'),
+            $("#givennames" + permitIndex).is(':checked'),
+            $("#familynames" + permitIndex).is(':checked'),
             $("#birthday" + permitIndex).is(':checked'),
             $("#gender" + permitIndex).is(':checked'),
         function() {
@@ -39,15 +41,17 @@ function addUpdatePermitHandler(where) {
         // Update all the other permits
         permitForm.find("input").each(function() {
             input = $(this);
-            if((input.attr("type") == "checkbox") && (input.attr("class") == "email")) {
-                emailIndex = input.attr("data-psinque-subindex");
-                psinqueSetEmailPermit(input.attr("name"), input.is(':checked'),
+            parentrow = input.parent().parent();
+            itemIndex = input.attr("data-psinque-subindex");
+            if(input.attr("type") == "checkbox" && (input.hasClass("individual"))) {               
+                psinqueSetIndividualPermit(input.attr("name"), input.is(':checked'),
                     function() {
-                        unmarkChangedFields($("#emailaddress" + permitIndex + "_" + emailIndex));
-                    }
-                );
+                        unmarkChangedFields(parentrow);
+                    });
             }
         });
+        
+        psinqueAjaxTransactionStop();
 
         return false;
     });
@@ -101,20 +105,16 @@ function recreateAccordeon() {
 
 function updateDisplayName(permitIndex) {
     
-    console.log("Updating " + permitIndex);
     displayName = "";
-    console.log(displayName);
     
     if($("#givennames_" + permitIndex).is(":checked"))
         displayName += window.givenNames;
-    console.log(displayName);
     
     if($("#familynames_" + permitIndex).is(":checked")) {
         if(displayName.length > 0)
             displayName += " ";
         displayName += window.familyNames;
     }
-    console.log(displayName);
     
     if(displayName.length == 0) {
         emailPermits = $("#permitform" + permitIndex).find(".email");
@@ -125,7 +125,6 @@ function updateDisplayName(permitIndex) {
             }
         }
     }
-    console.log(displayName);
     
     $("#displayname" + permitIndex).html(displayName);
 }

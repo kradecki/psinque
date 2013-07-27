@@ -20,6 +20,11 @@ indexes:
   properties:
   - name: creationTime
 
+- kind: Permit
+  ancestor: yes
+  properties:
+  - name: name
+
 - kind: UserAddress
   ancestor: yes
   properties:
@@ -31,6 +36,12 @@ indexes:
   properties:
   - name: primary
   - name: creationTime
+    direction: desc
+
+- kind: UserEmail
+  ancestor: yes
+  properties:
+  - name: primary
     direction: desc
 
 - kind: UserIM

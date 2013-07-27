@@ -30,10 +30,10 @@ psinqueAPI_updateGeneral = psinqueAPI_mycard + "updategeneral"
 
 psinqueAPI_permits = "/permits/"
 
-psinqueAPI_removePermit     = psinqueAPI_permits + "removepermit"
-psinqueAPI_setGeneralPermit = psinqueAPI_permits + "setgeneralpermit"
-psinqueAPI_setEmailPermit   = psinqueAPI_permits + "setemailpermit"
-psinqueAPI_addPermit        = psinqueAPI_permits + "addpermit"
+psinqueAPI_addPermit           = psinqueAPI_permits + "addpermit"
+psinqueAPI_removePermit        = psinqueAPI_permits + "removepermit"
+psinqueAPI_setGeneralPermit    = psinqueAPI_permits + "setgeneralpermit"
+psinqueAPI_setIndividualPermit = psinqueAPI_permits + "setindividualpermit"
 
 //------------------------------
 
@@ -186,6 +186,13 @@ function psinqueUpdateGeneral(givenNames, givenNamesRomanization,
 //------------------------------
 // Permits
 
+function psinqueAddPermit(name, index, successFunction) {
+    psinqueAJAX_HTML(psinqueAPI_addPermit, {
+                         name: name,
+                         index: index,
+                     }, successFunction);
+}
+
 function psinqueRemovePermit(permitKey, successFunction) {
     psinqueRemove(psinqueAPI_removePermit, permitKey, successFunction);
 }
@@ -202,18 +209,11 @@ function psinqueSetGeneralPermit(permitKey, canViewFirstNames,
                 }, successFunction);
 }
 
-function psinqueSetEmailPermit(permitKey, canView, successFunction) {
-    psinqueAJAX(psinqueAPI_setEmailPermit, {
+function psinqueSetIndividualPermit(permitKey, canView, successFunction) {
+    psinqueAJAX(psinqueAPI_setIndividualPermit, {
                     key: permitKey,
                     canview: canView,
                 }, successFunction);
-}
-
-function psinqueAddPermit(name, index, successFunction) {
-    psinqueAJAX_HTML(psinqueAPI_addPermit, {
-                         name: name,
-                         index: index,
-                     }, successFunction);
 }
 
 //------------------------------
