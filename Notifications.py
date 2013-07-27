@@ -3,6 +3,8 @@
 from google.appengine.api import mail
 from google.appengine.api import users
 
+from DataModels import Notification
+
 def getPrimaryEmail(userProfile):
     
     return userProfile.emails.filter("primary =", True).get().email
@@ -10,27 +12,31 @@ def getPrimaryEmail(userProfile):
 
 def createAcceptUrl(psinque):
     
-    return "http://psinque.appspot.com/psinques/acceptpsinque?key=" + str(psinque.key())
+    return "http://www.psinque.com/psinques/acceptpsinque?key=" + str(psinque.key())
 
 
 def createRejectUrl(psinque):
     
-    return "http://psinque.appspot.com/psinques/rejectpsinque?key=" + str(psinque.key())
+    return "http://www.psinque.com/psinques/rejectpsinque?key=" + str(psinque.key())
 
 
-def sendNotification(psinque, subject, body):
+def sendNotification(fromUser, subject, body, shorttext = u""):
     
-    message = mail.EmailMessage(sender="Psinque notifications <noreply@psinque.appspotmail.com>",
-                                subject=subject)
-    fromUser = psinque.fromUser
+    message = mail.EmailMessage(sender = "Psinque notifications <noreply@psinque.appspotmail.com>",
+                                subject = subject)
     message.to = getPrimaryEmail(fromUser)
     message.html = body
     message.send()
+    
+    if shorttext != u"":
+      onpageNotification = Notification(parent = fromUser,
+                                        text = shorttext)
+      onpageNotification.put()
 
 
 def notifyPendingPsinque(psinque):
     
-    sendNotification(psinque, 
+    sendNotification(psinque.fromUser, 
                      "You have a new pending psinque request",
                      u"""Dear %s:
 
@@ -45,7 +51,8 @@ The Psinque Team
 """ % (u" ".join(psinque.fromUser.givenNames),
        psinque.parent().parent().defaultPermit.displayName,
        createRejectUrl(psinque),
-       createAcceptUrl(psinque)))
+       createAcceptUrl(psinque)),
+                     u"You have a pending psinque request from ...")
 
     
 def notifyStoppedUsingPrivateData(psinque):
@@ -60,7 +67,7 @@ def notifyDowngradedPsinque(psinque):
 
 def notifyStoppedUsingPrivateData(psinque):
     
-    sendNotification(psinque, 
+    sendNotification(psinque.fromUser, 
                      "%s has stopped using your private data" % psinque.fromUser.fullName,
                      u"""Dear %s:
 
@@ -73,7 +80,7 @@ The Psinque Team
     
 def notifyDowngradedPsinque(psinque):
     
-    sendNotification(psinque, 
+    sendNotification(psinque.fromUser, 
                      "Your access to private data has been revoked",
                      u"""Dear %s:
 
@@ -86,7 +93,7 @@ The Psinque Team
 
 def notifyAcceptedRequest(psinque):
     
-    sendNotification(psinque, 
+    sendNotification(psinque.fromUser, 
                      "Your request for sharing private contact data has been accepted",
                      u"""Dear %s:
 
@@ -99,7 +106,7 @@ The Psinque Team
     
 def notifyRejectedRequest(psinque):
     
-    sendNotification(psinque, 
+    sendNotification(psinque.fromUser, 
                      "Your request for sharing private contact data has been rejected",
                      u"""Dear %s:
 
