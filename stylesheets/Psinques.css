@@ -6,12 +6,10 @@ div.aboveconent {
 }
 
 div.abovecontentcolumn {
-    width: 1200px;
+    width: 100%;
     margin: 0 auto;
     padding: 0;
-/*     position: relative; */
     background-color: #404040;
-    border-top: 3px solid #e35c33;
 }
 
 div#pendings {
@@ -20,44 +18,16 @@ div#pendings {
 }
 
 div#searchbox {
-    width: 862px;
-    height: 70px;
+    width: 710px;
     margin: 0 auto;
-    background-color: #404040;
-    color: white;
-    padding-top: 5px;
-    text-align: left;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
-div#searchbox table, tbody, tr {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-div#searchbox td {
-    height: 50px;
-}
-
-div#searchbox td.formbuttons, td.formextras {
-    margin: 0;
-    margin-right: 10px;
-}
-
-div#searchbox select {
-    width: 220px;
-}
-
-div#searchbox td.forminputs {
-    width: 100%;
-}
-
-div#searchbox td.forminputs input[type=text] {
-    width: 100%;
-    height: 50px;
-    background-color: #fff;
-    border: none;
-    padding: 5px;
+div#searchbox tr {
+    border-bottom: none;
 }
 
 div.contact {

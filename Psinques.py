@@ -214,7 +214,7 @@ class PsinquesHandler(MasterHandler):
                 'nextCursor': contactQuery.cursor(),
                 'contacts': contacts,
                 'pendings': pendingList,
-                'groups': Group.all().ancestor(self.userProfile),
+                'groups': [x.name for x in Group.all().ancestor(self.userProfile)],
                 'permits': Permit.all().ancestor(self.userProfile).filter("public =", False),
             })
 

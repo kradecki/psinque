@@ -97,13 +97,11 @@ class Settings(MasterHandler):
                 break
 
         generatedPassword = self._generateRandomSequence(16)
-        salt = self._generateRandomSequence(2)
         
         cardDAVLogin = CardDAVLogin(parent = self.userProfile,
                                     name = carddavName,
                                     generatedUsername = generatedUsername,
-                                    generatedPassword = psinqueMD5(generatedPassword, salt)
-                                    salt = salt)
+                                    generatedPassword = generatedPassword)
         cardDAVLogin.put()
         
         self.sendJsonOK({
