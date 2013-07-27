@@ -148,9 +148,9 @@ class UserSettings(db.Model):
 
 class UserAddress(db.Model):
     address = db.PostalAddressProperty()
-    city = db.StringProperty()
-    countryCode = db.StringProperty()
-    postalCode = db.StringProperty()
+    city = db.StringProperty(default = "")
+    country = db.StringProperty(default = "")
+    postalCode = db.StringProperty(default = "")
     privacyType = db.StringProperty(choices = privacyTypes)
     location = db.GeoPtProperty()
     creationTime = db.DateTimeProperty(auto_now = True)

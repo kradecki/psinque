@@ -71,20 +71,21 @@ function psinqueAddIM(imLogin, privacyType, imType, successFunction) {
 }
 
 function psinqueAddWWW(wwwAddress, privacyType, wwwType, successFunction) {
-    psinqueAJAX(psinqueAPI_addIM, {
+    psinqueAJAX(psinqueAPI_addWWW, {
                     www: wwwAddress,
                     privacy: privacyType,
                     type: wwwType,
                 }, successFunction);
 }
 
-function psinqueAddAddress(address, city, postalCode,
+function psinqueAddAddress(address, city, postalCode, country,
                            privacyType, longitude, latitude,
                            successFunction) {
-    psinqueAJAX(psinqueAPI_addIM, {
+    psinqueAJAX(psinqueAPI_addAddress, {
                     address: address,
                     city: city,
                     postal: postalCode,
+                    country: country,
                     privacy: privacyType,
                     lon: longitude,
                     lat: latitude,
@@ -142,7 +143,7 @@ function psinqueUpdateIM(key, imLogin, privacyType,
 
 function psinqueUpdateWWW(key, wwwAddress, privacyType,
                           wwwType, successFunction) {
-    psinqueAJAX(psinqueAPI_updateIM, {
+    psinqueAJAX(psinqueAPI_updateWWW, {
                     key: key,
                     www: wwwAddress,
                     privacy: privacyType,
@@ -152,7 +153,7 @@ function psinqueUpdateWWW(key, wwwAddress, privacyType,
 
 function psinqueUpdateAddress(key, address, city, postalCode, country,
                               privacyType, longitude, latitude, successFunction) {
-    psinqueAJAX(psinqueAPI_updateIM, {
+    psinqueAJAX(psinqueAPI_updateAddress, {
                     key: key,
                     address: address,
                     city: city,

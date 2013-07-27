@@ -367,14 +367,20 @@ class ProfileHandler(MasterHandler):
 
     def addaddress(self):
 
+        longitude = self.request.get("lon")
+        latitude  = self.request.get("lat")
+        if longitude != "" and latitude != "":
+            location = db.GeoPt(latitude, longitude)
+        else:
+            location = None
+
         userAddress = UserAddress(parent = self.userProfile,
                                   address = self.getRequiredParameter('address'),
                                   city = self.getRequiredParameter('city'),
                                   countryCode = self.getRequiredParameter('country'),
                                   postalCode = self.request.get('postal'),
                                   privacyType = self.getRequiredParameter('privacy'),
-                                  location = db.GeoPt(self.getRequiredParameter('lat'),
-                                                      self.getRequiredParameter('lon')))
+                                  location = location)
         userAddress.put()
 
         # Add permissions for this email in every outgoing group
@@ -390,15 +396,20 @@ class ProfileHandler(MasterHandler):
 
     def updateaddress(self):
 
+        longitude = self.request.get("lon")
+        latitude  = self.request.get("lat")
+        if longitude != "" and latitude != "":
+            location = db.GeoPt(latitude, longitude)
+        else:
+            location = None
+
         userAddress = self._getItemByKey(UserAddress)
-        userAddress.itemValue = self.getRequiredParameter('address')
+        userAddress.address = self.getRequiredParameter('address')
         userAddress.city = self.getRequiredParameter('city')
         userAddress.postalCode = self.request.get('postal')
-        userAddress.countryCode = self.getRequiredParameter('country')
-        userAddress.itemType = self.getRequiredParameter('type')
+        userAddress.country = self.getRequiredParameter('country')
         userAddress.privacyType = self.getRequiredParameter('privacy')
-        userAddress.location = db.GeoPt(self.getRequiredParameter('lat'),
-                                        self.getRequiredParameter('lon'))
+        userAddress.location = location
         userAddress.put()
 
         self._updateAllVCards()
