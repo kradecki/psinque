@@ -9,8 +9,8 @@ class PsinqueDomainController(object):
     
     def __init__(self, userMap = None):
         
-        self.userMap = userMap
-        self.userPassword = u""
+        #self.userMap = userMap
+        #self.userPassword = [u"", u""]
     
     
     def __repr__(self):
@@ -38,18 +38,18 @@ class PsinqueDomainController(object):
         Returns True if this username is valid for the realm, False otherwise.
         Used for digest authentication.
         """
-        if realmname != "carddav":
-            return False
+        #if realmname != "carddav":
+            #return False
         
-        if self.userPassword is None:  # user has not generated password
-            return False
+        #if self.userPassword is None:  # user has not generated password
+            #return False
         
-        if self.userPassword == u"":   # we haven't checked the user yet
+        #if self.userPassword[0] == u"":   # we haven't checked the user yet
 
-            self.userPassword = CardDAV.getCardDAVLogin(username)
+            #self.userPassword = CardDAV.getCardDAVLogin(username)
 
-            if self.userPassword is None:
-                return False
+            #if self.userPassword is None:
+                #return False
             
         return True
    
@@ -59,25 +59,27 @@ class PsinqueDomainController(object):
         Return the password for the given username for the realm.
         Used for digest authentication.
         """
-        if self.userPassword is None:  # user has not generated password
-            return None
-        if self.userPassword == u"":   # we haven't checked the user yet
-            self.userPassword = CardDAV.getCardDAVLogin(username)
-        return self.userPassword.generatedPassword
+        #if self.userPassword is None:  # user has not generated password
+            #return None
+        carddav_password = CardDAV.getCardDAVLogin(username)
+        if carddav_password is None:
+            return [ u"", u"" ]
+        else:
+            return [ carddav_password.password, carddav_password.salt ]
     
     
-    def authDomainUser(self, realmname, username, password, environ):
-        """
-        Returns True if this username/password pair is valid for the realm, 
-        False otherwise. Used for basic authentication.
-        """
-        if realmname != "carddav":
-            return False
-        if self.userPassword is None:  # user has not generated password
-            return False
-        if self.userPassword == u"":   # we haven't checked the user yet
-            self.userPassword = CardDAV.getCardDAVLogin(username)
-            if self.userPassword is None:
-                return False
-        return self.userPassword == password
+    #def authDomainUser(self, realmname, username, password, environ):
+        #"""
+        #Returns True if this username/password pair is valid for the realm, 
+        #False otherwise. Used for basic authentication.
+        #"""
+        #if realmname != "carddav":
+            #return False
+        #if self.userPassword is None:  # user has not generated password
+            #return False
+        #if self.userPassword == u"":   # we haven't checked the user yet
+            #self.userPassword = CardDAV.getCardDAVLogin(username)
+            #if self.userPassword is None:
+                #return False
+        #return self.userPassword == password
 

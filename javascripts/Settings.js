@@ -107,7 +107,6 @@ $(document).ready(function() {
     
     // Hiding the CardDAV logins
     $("#synccarddav").click(function() {
-        console.log("Click");
         if($(this).is(':checked')) {
             showElementWithEffects($("#carddav"));
         } else {

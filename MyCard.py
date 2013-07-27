@@ -11,7 +11,7 @@ from google.appengine.ext import db
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-from DataModels import UserProfile, UserSettings, Group
+from DataModels import UserProfile, UserSettings, Group, generateVCard
 from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress
 from DataModels import Permit, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
 from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames
@@ -29,8 +29,7 @@ class ProfileHandler(MasterHandler):
     def _updateAllVCards(self):
 
         for permit in Permit.all().ancestor(self.userProfile):
-            permit.generateVCard()
-            permit.put()
+            generateVCard(permit)
 
 
     def _createNewPermit(self, userProfile, permitName, userEmail):
@@ -43,8 +42,7 @@ class ProfileHandler(MasterHandler):
                                   userEmail = userEmail)
         permitEmail.put()
 
-        permit.generateVCard()
-        permit.put()
+        generateVCard(permit)
 
         logging.info("New permit created, key = " + str(permit.key()))
 

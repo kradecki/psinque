@@ -326,7 +326,7 @@ class HTTPAuthenticator(object):
         if not isinvalidreq:
             req_password = self._domaincontroller.getRealmUserPassword(realmname, req_username, environ)
 
-            req_method = environ["REQUEST_METHOD"]
+            req_method = self.md5kd(salt, environ["REQUEST_METHOD"])
             
             required_digest = self.computeDigestResponse(req_username, realmname, req_password, req_method, req_uri, req_nonce, req_cnonce, req_qop, req_nc)
             

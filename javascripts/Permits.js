@@ -30,10 +30,10 @@ function addUpdatePermitHandler(where) {
         
         // Update the general permits
         psinqueSetGeneralPermit($("#permitkey" + permitIndex).val(),
-            $("#givennames" + permitIndex).is(':checked'),
-            $("#familynames" + permitIndex).is(':checked'),
-            $("#birthday" + permitIndex).is(':checked'),
-            $("#gender" + permitIndex).is(':checked'),
+            $("#givennames_" + permitIndex).is(':checked'),
+            $("#familynames_" + permitIndex).is(':checked'),
+            $("#birthday_" + permitIndex).is(':checked'),
+            $("#gender_" + permitIndex).is(':checked'),
         function() {
             unmarkChangedFields(permitForm.find(".generallabels"));    
         });
@@ -139,6 +139,7 @@ $(document).ready(function() {
 
     $("input[type=checkbox]").change(function() {
         updateDisplayName($(this).attr("data-psinque-index"));
+        console.log($(this).is(":checked"));
     });
 
     $("input[type=checkbox]").change(function() {

@@ -4,7 +4,8 @@ import logging
 import webapp2
 
 from MasterHandler import MasterHandler, AjaxError
-from DataModels import Permit, Contact, IndividualPermit, PermitEmail
+from DataModels import Permit, Contact, generateVCard
+from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress
 
 #-----------------------------------------------------------------------------
 
@@ -63,9 +64,9 @@ class PermitsHandler(MasterHandler):
             contact.permit = defaultPermit
 
         # Remove all children individual permits
-        permitEmails = PermitEmail.all().ancestor(permit)
-        for permitEmail in permitEmails:
-            permitEmail.delete()
+        individualPermits = IndividualPermit.all().ancestor(permit)
+        for individualPermit in individualPermits:
+            individualPermit.delete()
         permit.delete()  # and the permit itself
 
         self.sendJsonOK()
@@ -91,15 +92,34 @@ class PermitsHandler(MasterHandler):
         newPermit = Permit(parent = self.userProfile,
                            name = permitName)
         newPermit.put()
+        
         for email in self.userProfile.emails:
             permitEmail = PermitEmail(parent = newPermit,
                                       userEmail = email)
             permitEmail.put()
+            
+        for im in self.userProfile.ims:
+            permitIM = PermitIM(parent = newPermit,
+                                userIM = im)
+            permitIM.put()
+            
+        for www in self.userProfile.webpages:
+            permitWebpage = PermitWebpage(parent = newPermit,
+                                          userWebpage = www)
+            permitWebpage.put()
+            
+        for phone in self.userProfile.phones:
+            permitPhoneNumber = PermitPhoneNumber(parent = newPermit,
+                                                  userPhoneNumber = phone)
+            permitPhoneNumber.put()
+            
+        for address in self.userProfile.addresses:
+            permitAddress = PermitAddress(parent = newPermit,
+                                          userAddress = address)
+            permitAddress.put()
         
         # Generate the Permit's vCard and eTag:
-        newPermit.generateVCard()
-        newPermit.put()
-        logging.info("New permit created, key = " + str(newPermit.key()))
+        generateVCard(newPermit)
 
         self.sendContent('templates/Permits_Permit.html',
                          activeEntry = "Permits",
@@ -112,24 +132,17 @@ class PermitsHandler(MasterHandler):
     
     def setgeneralpermit(self):
 
-        pkey = self.getRequiredParameter('key')
-
-        canViewFirstNames = self.getRequiredBoolParameter('firstnames')
-        canViewLastNames = self.getRequiredBoolParameter('lastnames')
-        canViewBirthday = self.getRequiredBoolParameter('birthday')
-        canViewGender = self.getRequiredBoolParameter('gender')
-        
-        permit = Permit.get(pkey)
+        permit = Permit.get(self.getRequiredParameter('key'))
         if permit is None:
             raise AjaxError("Permit not found.")
-        
-        permit.canViewFirstNames = canViewFirstNames
-        permit.canViewLastNames = canViewLastNames
-        permit.canViewBirthday = canViewBirthday
-        permit.canViewGender = canViewGender
-        permit.put()  # it doesn't work without this line, don't ask me why
-        permit.generateVCard()
+
+        permit.canViewGivenNames = self.getRequiredBoolParameter('givennames')
+        permit.canViewFamilyNames = self.getRequiredBoolParameter('familynames')
+        permit.canViewBirthday = self.getRequiredBoolParameter('birthday')
+        permit.canViewGender = self.getRequiredBoolParameter('gender')
         permit.put()
+
+        generateVCard(permit)
 
         self.sendJsonOK()
             
@@ -153,8 +166,7 @@ class PermitsHandler(MasterHandler):
         individualPermit.canView = canView
         individualPermit.put()
                
-        individualPermit.parent().generateVCard()
-        individualPermit.parent().put()
+        generateVCard(individualPermit.parent())
         
         self.sendJsonOK()
         

@@ -11,6 +11,7 @@ from google.appengine.api import users
 from MasterHandler import MasterHandler, AjaxError
 from DataModels import UserSettings, CardDAVLogin
 from DataModels import availableLanguages
+from Security import psinqueMD5
 
 #-----------------------------------------------------------------------------
 # Request handler
@@ -96,10 +97,13 @@ class Settings(MasterHandler):
                 break
 
         generatedPassword = self._generateRandomSequence(16)
+        salt = self._generateRandomSequence(2)
+        
         cardDAVLogin = CardDAVLogin(parent = self.userProfile,
                                     name = carddavName,
                                     generatedUsername = generatedUsername,
-                                    generatedPassword = generatedPassword)
+                                    generatedPassword = psinqueMD5(generatedPassword, salt)
+                                    salt = salt)
         cardDAVLogin.put()
         
         self.sendJsonOK({

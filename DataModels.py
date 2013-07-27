@@ -35,6 +35,50 @@ availableLanguages = {
 
 #-----------------------------------------------------------------------------
 
+def generateVCard(permit):
+    
+    logging.info("Generating vCard")
+    userProfile = permit.parent()
+    logging.info(permit.canViewBirthday)
+
+    newVCard = vCard.VCard()
+
+    if(permit.canViewGivenNames):
+        givenNames = userProfile.givenNames
+    else:
+        givenNames = u""
+        
+    if(permit.canViewFamilyNames):
+        familyNames = userProfile.familyNames
+    else:
+        familyNames = u""
+        
+    newVCard.addNames(givenNames, familyNames)
+
+    for email in userProfile.emails:
+        permitEmail = email.individualPermits.get()
+        if permitEmail.canView:
+            newVCard.addEmail(email.itemValue, email.privacyType)
+    
+    newVCard = db.Text(newVCard.serialize())
+    
+    if newVCard != permit.vcard:
+        logging.info("Updating vCard")
+        logging.info(newVCard)
+        permit.vcard = newVCard
+        permit.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
+        permit.vcardMD5 = md5.new(permit.vcard.encode('utf8')).hexdigest()
+        
+    permit.displayName = u" ".join([givenNames, familyNames])
+    if permit.displayName == u"":
+        for permitEmail in permit.permitEmails:
+            if permitEmail.canView:
+                permit.displayName = permitEmail.userEmail.email
+                break
+    
+    permit.put()
+
+
 class Permit(db.Model):
     
     name = db.StringProperty()
@@ -71,62 +115,6 @@ class Permit(db.Model):
     @property
     def permitAddresses(self):
         return PermitAddress.all().ancestor(self)
-    
-    
-    def _getGivenNames(self, userProfile):
-        if self.canViewGivenNames:
-            return userProfile.givenNames
-        else:
-            return ""
-    
-    
-    def _getFamilyNames(self, userProfile):
-        if self.canViewFamilyNames:
-            return userProfile.familyNames
-        else:
-            return ""
-    
-    
-    def _updateDisplayName(self, givenNames, familyNames):
-        displayName = u""
-        if givenNames != u"":
-            displayName = displayName + givenNames
-        if familyNames != u"":
-            if displayName != u"":
-                displayName = displayName + u" "
-            displayName = displayName + familyNames
-        self.displayName = displayName
-        if self.displayName == u"":
-            for permitEmail in self.permitEmails:
-                if permitEmail.canView:
-                    self.displayName = permitEmail.userEmail.email
-                    return
-    
-    
-    def generateVCard(self):
-        
-        logging.info("Generating vCard")
-        userProfile = self.parent()
-        newVCard = vCard.VCard()
-
-        givenNames = self._getGivenNames(userProfile)
-        familyNames = self._getFamilyNames(userProfile)
-        newVCard.addNames(givenNames, familyNames)
-
-        for email in userProfile.emails:
-            permitEmail = email.individualPermits.get()
-            if permitEmail.canView:
-                newVCard.addEmail(email.itemValue, email.privacyType)
-        
-        newVCard = db.Text(newVCard.serialize())
-        
-        if newVCard != self.vcard:
-            logging.info("Updating vCard")
-            self.vcard = newVCard
-            self.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
-            self.vcardMD5 = md5.new(self.vcard.encode('utf8')).hexdigest()
-            
-        self._updateDisplayName(givenNames, familyNames)
 
 
 #-----------------------------------------------------------------------------
@@ -310,6 +298,11 @@ class Contact(db.Model):
   
 #-----------------------------------------------------------------------------
 
+class Notification(db.Model):
+    text = db.StringProperty()
+
+#-----------------------------------------------------------------------------
+
 class IndividualPermit(polymodel.PolyModel):
     canView = db.BooleanProperty(default = False)
 
@@ -344,5 +337,6 @@ class CardDAVLogin(db.Model):
     name = db.StringProperty()
     generatedUsername = db.StringProperty()
     generatedPassword = db.StringProperty()
+    salt = db.StringProperty()
 
 #-----------------------------------------------------------------------------

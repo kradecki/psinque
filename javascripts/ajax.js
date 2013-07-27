@@ -197,13 +197,13 @@ function psinqueRemovePermit(permitKey, successFunction) {
     psinqueRemove(psinqueAPI_removePermit, permitKey, successFunction);
 }
 
-function psinqueSetGeneralPermit(permitKey, canViewFirstNames,
-                                 canViewLastNames, canViewBirthday,
+function psinqueSetGeneralPermit(permitKey, canViewGivenNames,
+                                 canViewFamilyNames, canViewBirthday,
                                  canViewGender, successFunction) {
     psinqueAJAX(psinqueAPI_setGeneralPermit, {
                     key: permitKey,
-                    firstnames: canViewFirstNames,
-                    lastnames: canViewLastNames,
+                    givennames: canViewGivenNames,
+                    familynames: canViewFamilyNames,
                     birthday: canViewBirthday,
                     gender: canViewGender,
                 }, successFunction);
@@ -278,7 +278,7 @@ function psinqueAJAX(url, parameters, successFunction) {
 
 function psinqueAJAX_HTML(url, parameters, successFunction) {
     
-    if(!psinqueAjaxSafeguard())
+    if((!window.ajaxTransaction) && (window.ajaxCounter != 0))
         return;
     
     psinqueIncreaseAJAXCounter();
