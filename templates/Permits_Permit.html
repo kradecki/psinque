@@ -25,7 +25,27 @@
   {{ ui.endtable() }}
   {% for permitEmail in permit.permitEmails %}
     {{ ui.begintable() }}
-      {{ ui.labelcheckbox("E-mail", "email" ~ loop.index, permit.canViewGender, permitIndex, "general", permitEmail.userEmail.email) }}
+      {{ ui.labelcheckbox("E-mail", "email" ~ loop.index, permitEmail.canView, permitIndex, "general", permitEmail.userEmail.itemValue) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitIM in permit.permitIMs %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("IM", "im" ~ loop.index, permitIM.canView, permitIndex, "general", permitIM.userIM.itemValue) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitPhone in permit.permitPhones %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Phone", "phone" ~ loop.index, permitPhone.canView, permitIndex, "general", permitPhone.userPhone.itemValue) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitWWW in permit.permitWWWs %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("WWW", "www" ~ loop.index, permitWWW.canView, permitIndex, "general", permitWWW.userWWW.itemValue) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitAddress in permit.permitAddresses %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Address", "address" ~ loop.index, permitAddress.canView, permitIndex, "general", permitAddress.userAddres.address ~ ", " ~ permitAddress.userAddres.city) }}
     {{ ui.endtable() }}
   {% endfor %}
   {{ ui.begintable() }}

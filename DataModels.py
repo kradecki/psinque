@@ -167,6 +167,20 @@ class UserAddress(db.Model):
     privacyType = db.StringProperty(choices = privacyTypes)
     location = db.GeoPtProperty()
     creationTime = db.DateTimeProperty(auto_now = True)
+    
+    @property
+    def itemValue(self):
+      
+        value = self.address
+        if value != u"" and (self.postalCode != u"" or self.city != u""):
+            value += ", "
+        value += self.postalCode
+        if value != u"" and self.city != u"":
+            value += u" " + self.city
+        if value != u"" and self.country != u"":
+            value += u" " + self.city
+            
+        return value
 
 #-----------------------------------------------------------------------------
 
