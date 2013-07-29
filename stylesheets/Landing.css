@@ -1,0 +1,28 @@
+
+div.singlecolumn {
+    float: left;
+    padding-top: 45px;
+}
+
+div#leftside {
+    width: 442px;
+    padding-right: 15px;
+}
+
+div#rightside {
+    width: 445px;
+    border-left: 2px solid #404040;
+    padding-left: 15px;
+}
+
+div.tableform td.forminputs input[type=text] {
+    background-color: #d9d4cc;
+}
+
+div.tableform tr {
+    border-bottom: 12px solid #fff;
+}
+
+div.tableform td.formlabels {
+    width: 165px;
+}

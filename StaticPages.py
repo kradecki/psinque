@@ -2,6 +2,8 @@
 
 import webapp2
 
+from google.appengine.api import users
+
 from MasterHandler import StaticHandler
 
 #-----------------------------------------------------------------------------
@@ -11,6 +13,13 @@ class StaticPageHandler(StaticHandler):
     #****************************
     # Views
     #
+
+    def landing(self):
+      
+        self.sendContent('templates/Landing.html', {
+            'loginurl': users.create_login_url("/mycard/view")
+        })
+
 
     def faq(self):
       

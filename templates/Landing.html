@@ -1,0 +1,39 @@
+{% extends "templates/static.html" %}
+{% import "templates/ui.html" as ui %}
+{% block title %}Landing{% endblock %}
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/stylesheets/Landing.css" />
+{% endblock %}
+{% block content %}
+<div id="leftside" class="singlecolumn">
+  <a href={{ loginurl }}>Log in with OpenID.</a>
+</div>
+<div id="rightside" class="singlecolumn">
+  {{ ui.beginform() }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Given names") }}
+      {{ ui.textinput("", "", "givennames") }}
+    {{ ui.endtable() }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Family names") }}
+      {{ ui.textinput("", "", "familynames") }}
+    {{ ui.endtable() }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("E-mail") }}
+      {{ ui.textinput("", "", "email") }}
+    {{ ui.endtable() }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Password") }}
+      {{ ui.textinput("", "", "password") }}
+    {{ ui.endtable() }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Repeat password") }}
+      {{ ui.textinput("", "", "repeatpass") }}
+    {{ ui.endtable() }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Terms") }}
+      {{ ui.checkbox("emailnotifications", False, "I agree to psinque terms") }}
+    {{ ui.endtable() }}
+  {{ ui.endform() }}
+</div>
+{% endblock %}

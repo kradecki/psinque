@@ -16,3 +16,9 @@ body {
 div#contentwrapper {
     background-color: #fff;
 }
+
+div#biglogo {
+    text-align: center;
+    height: 180px;
+    padding-top: 70px;
+}

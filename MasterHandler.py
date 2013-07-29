@@ -99,7 +99,7 @@ class MasterHandler(webapp2.RequestHandler):
         '''
         self.user = users.get_current_user()
         if not self.user:  # user not logged in
-            self.redirect("/login")
+            self.redirect("/static/landing")
             return False
         return True
     

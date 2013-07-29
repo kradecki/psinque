@@ -24,10 +24,13 @@ handlers:
 - url: /
   script: StartPage.app    # checks if the user is logged in and redirects
   secure: optional
-- url: /login
-  script: StartPage.app    # user not logged in
 
-# User profile viewing and editing
+# Static pages
+- url: /static/([^/]+)
+  script: StaticPages.app
+  secure: optional
+
+# My Card
 - url: /mycard/([^/]+)
   script: MyCard.app
 - url: /uploadphoto
@@ -49,10 +52,6 @@ handlers:
 - url: /settings/([^/]+)
   script: Settings.app
 
-# Static pages
-- url: /static/([^/]+)
-  script: StaticPages.app
-  
 # Static files
 - url: /javascripts
   static_dir: javascripts
