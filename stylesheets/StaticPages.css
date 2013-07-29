@@ -7,3 +7,12 @@ p {
     font-size: 18px;
     line-height: 120%;
 }
+
+body {
+    background-color: #fff;
+    color: #404040;
+}
+
+div#contentwrapper {
+    background-color: #fff;
+}

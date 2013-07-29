@@ -2,11 +2,11 @@
 
 import webapp2
 
-from MasterHandler import MasterHandler
+from MasterHandler import StaticHandler
 
 #-----------------------------------------------------------------------------
 
-class StaticPageHandler(MasterHandler):
+class StaticPageHandler(StaticHandler):
 
     #****************************
     # Views

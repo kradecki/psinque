@@ -232,3 +232,36 @@ class MasterHandler(webapp2.RequestHandler):
         template = jinja_environment.get_template('templates/notFound.html')
         self.response.out.write(template.render(requestName = self.request.uri))
 
+
+#-----------------------------------------------------------------------------
+
+class StaticHandler(webapp2.RequestHandler):
+    '''
+    The base class for all static Psinque request handlers.
+    '''
+
+    def get(self, actionName):
+
+        try:
+            actionFunction = getattr(self, actionName)
+        except AttributeError as e:
+            logging.error("Action method not found:")
+            logging.error(e)
+            self.error404()
+            return
+
+        actionFunction()
+
+
+    def sendContent(self, templateName, templateVariables = {}):
+        
+        template = jinja_environment.get_template(templateName)
+        self.response.out.write(template.render(templateVariables))
+        
+        
+    def error404(self):
+        
+        self.error(404)
+        template = jinja_environment.get_template('templates/notFound.html')
+        self.response.out.write(template.render(requestName = self.request.uri))
+
