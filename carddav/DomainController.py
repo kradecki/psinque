@@ -1,6 +1,7 @@
 
 import os.path
 import logging
+import md5
 
 import CardDAV
 
@@ -38,21 +39,8 @@ class PsinqueDomainController(object):
         Returns True if this username is valid for the realm, False otherwise.
         Used for digest authentication.
         """
-        #if realmname != "carddav":
-            #return False
-        
-        #if self.userPassword is None:  # user has not generated password
-            #return False
-        
-        #if self.userPassword[0] == u"":   # we haven't checked the user yet
-
-            #self.userPassword = CardDAV.getCardDAVLogin(username)
-
-            #if self.userPassword is None:
-                #return False
-            
-        return True
-   
+        return (realmname == "carddav")
+           
     
     def getRealmUserPassword(self, realmname, username, environ):
         """
@@ -68,18 +56,20 @@ class PsinqueDomainController(object):
             return [ carddav_password.password, carddav_password.salt ]
     
     
-    #def authDomainUser(self, realmname, username, password, environ):
-        #"""
-        #Returns True if this username/password pair is valid for the realm, 
-        #False otherwise. Used for basic authentication.
-        #"""
-        #if realmname != "carddav":
-            #return False
-        #if self.userPassword is None:  # user has not generated password
-            #return False
-        #if self.userPassword == u"":   # we haven't checked the user yet
-            #self.userPassword = CardDAV.getCardDAVLogin(username)
-            #if self.userPassword is None:
-                #return False
-        #return self.userPassword == password
+    def authDomainUser(self, realmname, username, password, environ):
+        """
+        Returns True if this username/password pair is valid for the realm, 
+        False otherwise. Used for basic authentication.
+        """
+        if realmname != "carddav":
+            return False
+
+        userPassword = CardDAV.getCardDAVLogin(username)
+        
+        if userPassword is None:
+            return False
+          
+        passwordHash = md5.new(userPassword.salt + password).hexdigest()
+          
+        return (userPassword.generatedPasswordHash == passwordHash)
 

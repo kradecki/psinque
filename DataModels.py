@@ -336,7 +336,7 @@ class PermitAddress(IndividualPermit):
 class CardDAVLogin(db.Model):
     name = db.StringProperty()
     generatedUsername = db.StringProperty()
-    generatedPassword = db.StringProperty()
+    generatedPasswordHash = db.StringProperty()
     salt = db.StringProperty()
 
 #-----------------------------------------------------------------------------
