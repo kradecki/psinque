@@ -6,10 +6,28 @@
 {% endblock %}
 {% block content %}
 <div id="leftside" class="singlecolumn">
-  <a href={{ loginurl }}>Log in with OpenID.</a>
+  {{ ui.beginform() }}
+    {{ ui.begintable() }}
+      <tr>
+        <td class="bigdarklabel">Using OpenID</td>
+      </tr>
+    {{ ui.endtable() }}
+    {{ ui.begintable() }}
+      <td class="forminputs formbuttons darkbutton">
+        <img src="/images/icon_link.png" alt="Link" />
+      </td>
+      {{ ui.textinput("", "OpenID link") }}
+    {{ ui.endtable() }}
+  {{ ui.endform() }}
+  <a href={{ loginurl }}>Log in with Google Accounts.</a>
 </div>
 <div id="rightside" class="singlecolumn">
   {{ ui.beginform() }}
+    {{ ui.begintable() }}
+      <tr>
+        <td class="bigdarklabel">Using native login</td>
+      </tr>
+    {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Given names") }}
       {{ ui.textinput("", "", "givennames") }}
@@ -24,16 +42,22 @@
     {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Password") }}
-      {{ ui.textinput("", "", "password") }}
+      {{ ui.passwordinput("password") }}
     {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Repeat password") }}
-      {{ ui.textinput("", "", "repeatpass") }}
+      {{ ui.passwordinput("repeatpass") }}
     {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Terms") }}
       {{ ui.checkbox("emailnotifications", False, "I agree to psinque terms") }}
     {{ ui.endtable() }}
   {{ ui.endform() }}
+</div>
+<div id="tagline">
+  <div id="bigcard">
+    <img src="/images/bigcard.png" alt="" />
+  </div>
+  <div id="slogan">Be in charge of your business card.</div>
 </div>
 {% endblock %}

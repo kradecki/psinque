@@ -117,6 +117,12 @@
   </td>
 {%- endmacro %}
 
+{% macro passwordinput(id="", class="") -%}
+  <td class="forminputs">
+    <input type="password" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} />
+  </td>
+{%- endmacro %}
+
 {% macro textinputwithkey(value, placeholder, id, class, index, keyvalue="", keyclass="", colspan="") -%}
   <td class="forminputs"{% if colspan %} colspan="{{ colspan }}"{% endif %}>
     <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}" id="{{ id }}key{{ index }}" />

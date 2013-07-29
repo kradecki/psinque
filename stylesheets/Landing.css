@@ -15,14 +15,58 @@ div#rightside {
     padding-left: 15px;
 }
 
-div.tableform td.forminputs input[type=text] {
-    background-color: #d9d4cc;
+div#content {
+    text-align: center;
+}
+
+div#tagline {
+    width: 650px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    display: inline-block;
+}
+
+div#bigcard {
+    display: inline-block;
+    width: 180px;
+}
+
+div#slogan {
+    display: inline-block;
+    font-size: 40px;
+    font-weight: 800;
+    font-style: italic;
+    width: 430px;
+    line-height: 130%;
+    text-align: left;
+    padding-left: 30px;
 }
 
 div.tableform tr {
     border-bottom: 12px solid #fff;
 }
 
+div.tableform td.forminputs input[type=text],
+div.tableform td.forminputs input[type=password] {
+    background-color: #d9d4cc;
+}
+
 div.tableform td.formlabels {
     width: 165px;
+}
+
+div.tableform td.darkbutton {
+    padding-left: 0px;
+}
+
+div.tableform td.bigdarklabel {
+    width: 100%;
+    background-color: #404040;
+    padding-left: 10px;
+    height: 40px;
+    width: 100%;
+    color: #fff;
+    font-weight: 800;
+    text-align: center;
 }

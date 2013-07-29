@@ -175,6 +175,7 @@ div.tableform td.formextras {
 }
 
 div.tableform td.forminputs input[type=text],
+div.tableform td.forminputs input[type=password],
 div.tableform td.forminputs label {
     background-color: #fff;
     border: 0;
@@ -200,7 +201,8 @@ div.tableform .clickable {
     cursor: pointer;
 }
 
-div.tableform img, span.buttons {
+div.tableform img,
+div.tableform span.buttons {
     display: block;
 }
 
