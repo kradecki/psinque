@@ -3,19 +3,34 @@
 var geocoder;
 var maps = [];
 var currentAddressPositions = [];
+var markers = [];
 
-function initializeGoogleMap(mapNr) {
+function initializeGoogleMap(mapNr, lat, long) {
   
-    currentAddressPositon = new google.maps.LatLng(-34.397, 150.644);
+    currentAddressPositions[mapNr-1] = new google.maps.LatLng(lat, long);
     
     var mapOptions = {
-        center: currentAddressPositon,
+        center: currentAddressPositions[mapNr-1],
         zoom: 12,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     
-    maps[mapNr-1] = new google.maps.Map(document.getElementById("googlemap" + mapNr), mapOptions);
-    
+    maps[mapNr-1] = new google.maps.Map(document.getElementById("googlemap" + mapNr), mapOptions);  
+
+    markers[mapNr-1] = new google.maps.Marker({
+        map: maps[mapNr-1],
+        position: currentAddressPositions[mapNr-1],
+        draggable: true,
+    });
+
+    markers[mapNr-1].position_changed = function() {
+        currentAddressPositions[mapNr-1] = markers[mapNr-1].getPosition();
+        updateAddressCoordinates(mapNr);
+    };
+}
+
+function updateMapMarker(mapNr) {
+  markers[mapNr-1].setPosition(currentAddressPositions[mapNr-1]);
 }
 
 function codeAddress(address, mapNr) {
@@ -25,20 +40,10 @@ function codeAddress(address, mapNr) {
         if (status == google.maps.GeocoderStatus.OK) {
           
             currentAddressPositions[mapNr-1] = results[0].geometry.location;
-            maps[mapNr-1].setCenter(currentAddressPositions[mapNr-1]);
-            addressMarker = new google.maps.Marker({
-                map: maps[mapNr-1],
-                position: currentAddressPositions[mapNr-1],
-                draggable: true
-            });
-
-            updateAddressCoordinates(mapNr);
-
-            addressMarker.position_changed = function() {
-                currentAddressPositions[mapNr-1] = addressMarker.getPosition();
-                updateAddressCoordinates(mapNr);
-            };
             
+            maps[mapNr-1].setCenter(currentAddressPositions[mapNr-1]);
+            updateMapMarker(mapNr);
+                        
         } else {
           
             alert("Geocode was not successful for the following reason: " + status);
@@ -49,8 +54,8 @@ function codeAddress(address, mapNr) {
 function updateAddressCoordinates(mapNr) {
   
     // Copy the coordinates into appropriate input fields
-    $("#long" + mapNr).val(currentAddressPositions[mapNr-1].jb);
-    $("#lat" + mapNr).val(currentAddressPositions[mapNr-1].kb);
+    $("#longitude" + mapNr).val(currentAddressPositions[mapNr-1].kb);
+    $("#latitude" + mapNr).val(currentAddressPositions[mapNr-1].jb);
   
 }
 
@@ -60,7 +65,7 @@ function addLocalizerHandler(where) {
       
         mapNr = $(this).attr("data-psinque-index");
 
-        initializeGoogleMap(mapNr);
+        initializeGoogleMap(mapNr, -34.397, 150.644);
         fullAddress = $("#city" + mapNr).val() + ", " + $("#address" + mapNr).val();
         codeAddress(fullAddress, mapNr);
 
@@ -133,6 +138,44 @@ function updateItem(input, prefix, updateFunction, addFunction) {
     }
 }
 
+function updateAddress(input) {
+  
+    address = input.val();
+    if(address == "")
+        return;
+
+    tr = input.parent().parent();
+    
+    addressNr = input.attr("data-psinque-index");
+    console.log(addressNr);
+    
+    addressKey = $("#addresskey" + addressNr);
+    city = $("#city" + addressNr).val();
+    postalCode = $("#postalcode" + addressNr).val();
+    country = $("#country" + addressNr).val();
+    privacyType = $("#addressprivacytype" + addressNr).val();
+    longitude = $("#longitude" + addressNr).val();
+    latitude = $("#latitude" + addressNr).val();
+
+    if(addressKey.val()) {
+        psinqueUpdateAddress(addressKey.val(), address, city,
+                             postalCode, country, privacyType,
+                             longitude, latitude,
+            function() {
+                unmarkChangedFields(tr);
+                unmarkChangedFields(tr.next());
+            });
+    } else {
+        psinqueAddAddress(address, city, postalCode, country,
+                          privacyType, longitude, latitude, 
+            function(data) {
+                addressKey.val(data["key"]);
+                unmarkChangedFields(tr);
+                unmarkChangedFields(tr.next());
+            });
+    }
+}
+
 function addUpdateHandler(where) {
     
     $(where).click(function() {
@@ -152,6 +195,7 @@ function addUpdateHandler(where) {
         $(".phones").each(function() { updateItem($(this), "phone", psinqueUpdatePhone, psinqueAddPhone); });
         $(".ims").each(function() { updateItem($(this), "im", psinqueUpdateIM, psinqueAddIM); });
         $(".wwws").each(function() { updateItem($(this), "www", psinqueUpdateWWW, psinqueAddWWW); });
+        $(".addresses").each(function() { updateAddress($(this)); });
 
         psinqueAjaxTransactionStop();
         
@@ -162,6 +206,10 @@ function addUpdateHandler(where) {
 //---------------------------------------------------------
 
 $(document).ready(function() {
+
+    // Count the elements
+    additionalEmailCounter = $(".additionalemails").length;
+    addressCounter = $(".adresses").length;
 
     // Handlers for adding new fields
     uiAddAddHandler("additionalemail", psinqueRemoveEmail);
@@ -178,6 +226,18 @@ $(document).ready(function() {
     // Google map handlers
     geocoder = new google.maps.Geocoder();
     addLocalizerHandler(".localizers");
+    $(".longitudes").each(function() {
+        long = $(this).val();
+        if(long != "") {
+
+            mapNr = $(this).attr("data-psinque-index");
+            lat = $("#latitude" + mapNr).val();
+            
+            initializeGoogleMap(mapNr, lat, long);
+
+            $("#googlemap" + mapNr).parent().parent().show();
+        }
+    });
 
     // A handler to save all profile data
     addUpdateHandler("#savebutton");

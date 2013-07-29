@@ -4,20 +4,13 @@
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/stylesheets/MyCard.css" />
 {% endblock %}
-{% block inlinescripts %}
-  <script type="text/javascript">
-    var additionalEmailCounter = {{ additionalEmails|count }};
-    if(additionalEmailCounter == 0)
-        additionalEmailCounter = 1;
-  </script>
-{% endblock %}
 {% block externalscripts %}
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
     <script type="text/javascript" src="/javascripts/MyCard.js"></script>
 {% endblock %}
 {% block content %}
   {% if firstlogin %}
-  <p>This is your first login, so please fill up your profile below:</p>
+  <h3>This is your first login, so please fill up your profile below.</h3>
   {% endif %}
   <div id="photos">
     <img src="/images/nophoto.png" />
@@ -53,6 +46,7 @@
       {{ ui.endtable() }}
       <table id="primaryemailaddress">
       <tbody>
+        {% set primary = True %}
         {% set tablelabel = "Primary email" %}
         {% set emailCount = 1 %}
         {% set loopfirst = True %}
@@ -65,6 +59,7 @@
       <table id="additionalemailstable">
       <tbody>
         {% for email in additionalEmails %}
+          {% set primary = False %}
           {% set tablelabel = "Additional emails" %}
           {% set emailCount = additionalEmails|count %}
           {% set loopfirst = loop.first %}
@@ -73,6 +68,7 @@
           {% set privacyType = email.privacyType %}
           {% include "templates/MyCard_Email.html" %}
         {% else %}
+          {% set primary = False %}
           {% set tablelabel = "Additional emails" %}
           {% set emailCount = 1 %}
           {% set loopfirst = True %}
@@ -91,6 +87,7 @@
           {% set itemTypes = imTypes %}
           {% for item in ims %}
             {% set loopFirst = loop.first %}
+            {% set loopIndex = loop.index %}
             {% set itemCount = ims|count %}
             {% set itemKey = item.key() %}
             {% set itemValue = item.itemValue.address %}
@@ -99,6 +96,7 @@
             {% include "templates/MyCard_TextItem.html" %}
           {% else %}
             {% set loopFirst = True %}
+            {% set loopIndex = 1 %}
             {% set itemCount = 1 %}
             {% set itemKey = "" %}
             {% set itemValue = "" %}
@@ -117,21 +115,23 @@
             {% set loopIndex = loop.index %}
             {% set addressCount = addresses|count %}
             {% set addressKey = address.key() %}
-            {% set address = address.address %}
+            {% set addressMain = address.address %}
             {% set privacyType = address.privacyType %}
             {% set addressLocation = address.location %}
             {% set city = address.city %}
+            {% set country = address.country %}
             {% set postalCode = address.postalCode %}
             {% include "templates/MyCard_Address.html" %}
           {% else %}
             {% set loopFirst = True %}
             {% set loopIndex = 1 %}
             {% set addressCount = 1 %}
-            {% set addressKey = None %}
-            {% set address = "" %}
+            {% set addressKey = "" %}
+            {% set addressMain = "" %}
             {% set privacyType = "" %}
             {% set addressLocation = None %}
             {% set city = "" %}
+            {% set country = "" %}
             {% set postalCode = "" %}
             {% include "templates/MyCard_Address.html" %}
           {% endfor %}

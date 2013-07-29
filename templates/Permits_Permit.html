@@ -45,7 +45,7 @@
   {% endfor %}
   {% for permitAddress in permit.permitAddresses %}
     {{ ui.begintable() }}
-      {{ ui.labelcheckbox("Address", "address" ~ loop.index, permitAddress.canView, permitIndex, "individual", permitAddress.userAddres.itemValue ~ ", " ~ permitAddress.userAddres.city, permitAddress.key(), loop.index) }}
+      {{ ui.labelcheckbox("Address", "address" ~ loop.index, permitAddress.canView, permitIndex, "individual", permitAddress.userAddress.itemValue, permitAddress.key(), loop.index) }}
     {{ ui.endtable() }}
   {% endfor %}
   {{ ui.begintable() }}

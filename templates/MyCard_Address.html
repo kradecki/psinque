@@ -1,11 +1,11 @@
 <tr>
   {% if loopFirst %}
-  <td rowspan="{{ addressCount * 3 }}" class="formlabels" id="addresseslabel">
-    <label>Physical addresses</label>
-  </td>
+    <td rowspan="{{ addressCount * 3 }}" class="formlabels" id="addresseslabel">
+      <label>Physical addresses</label>
+    </td>
   {% endif %}
-  {{ ui.textinputwithkey(address, "Address", "address" ~ loopIndex, "addresses", addressKey, "addresskeys", 2) }}
-  {{ ui.dropdown(privacyTypes, privacyType, "", "typesofaddress", "smallinput") }}
+  {{ ui.textinputwithkey(addressMain, "Address", "address", "addresses", loopIndex, addressKey, "addresskeys", 2) }}
+  {{ ui.dropdown(privacyTypes, privacyType, "addressprivacytype" ~ loopIndex, "", "smallinput") }}
   {% if not loopfirst %}
     {{ ui.removebutton("address", "addressremovers") }}
   {% else %}
@@ -13,13 +13,14 @@
   {% endif %}
 {{ ui.newrow() }}
   {{ ui.textinput(city, "City", "city" ~ loopIndex, "cities") }}
-  {{ ui.textinput(postalCode, "Postal code", "", "postalcodes") }}
-  {{ ui.textinput(country, "Country", "", "countries") }}
+  {{ ui.textinput(postalCode, "Postal code", "postalcode" ~ loopIndex, "postalcodes") }}
+  {{ ui.textinput(country, "Country", "country" ~ loopIndex, "countries") }}
   {{ ui.button("map", "localize", "localizers", loopIndex) }}
 {{ ui.newrow("hiddenelements") }}
-  <td class="forminputs" colspan="2">
+  <td class="forminputs" colspan="3">
     <div class="googlemaps" id="googlemap{{ loopIndex }}"></div>
-    <input type="hidden" id="long{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lon }}"{% endif %} readonly="readonly" />
-    <input type="hidden" id="lat{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lat }}"{% endif %} readonly="readonly" />
+    <input type="hidden" class="longitudes" id="longitude{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lon }}"{% endif %} readonly="readonly" data-psinque-index="{{ loopIndex }}" />
+    <input type="hidden" id="latitude{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lat }}"{% endif %} readonly="readonly" />
   </td>
+  {{ ui.removebutton("map") }}
 </tr>

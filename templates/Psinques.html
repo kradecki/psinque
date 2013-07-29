@@ -1,4 +1,5 @@
-{% extends "templates/masterTemplate.html" %}
+{% extends "templates/master.html" %}
+{% import "templates/ui.html" as ui %}
 {% block title %}Psinques{% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="/stylesheets/Psinques.css" />
@@ -8,8 +9,8 @@
 {% endblock %}
 {% block abovecontent %}
   <div class="abovecontentcolumn">
-<!--     <div class="abovecontentcolumn"> -->
-      {% if pendings|length %}
+    {% if pendings|length %}
+    <div class="onecolumn">
       <div class="tableform" id="pendings">
         <table>
         <tbody>
@@ -38,96 +39,66 @@
         </tbody>
         </table>
       </div>
-      {% endif %}
-<!--     </div> -->
-    <div id="searchbox">
-        <table>
-        <tbody>
-        <tr>
-          <td class="formbuttons">
-            <img src="/images/squareicons/incoming.png" />
-          </td>
-          <td class="formbuttons">
-            <img src="/images/squareicons/outgoing.png" />
-          </td>
-          <td class="formextras">
-            <select>
-              {% for group in groups %}
-              <option value="{{ group.name }}" >{{ group.name }}</option>
-              {% endfor %}
-            </select>
-          </td>
-          <td class="forminputs">
-            <input type="text" />
-          </td>
-        </tr>
-        </tbody>
-        </table>
     </div>
+    {% endif %}
+    <div id="searchbox" class="tableform">
+      {{ ui.begintable() }}
+        {{ ui.button("filter", "incoming_active") }}
+        {{ ui.button("filter", "outgoing_active") }}
+        {{ ui.dropdown(groups, "", "", "", "smallinput") }}
+        {{ ui.textinput("", "Filter your psinques...", "psinque_filter") }}
+      {{ ui.endtable() }}
     </div>
+  </div>
 {% endblock %}
 {% block content %}
   <div class="onecolumn">
-  <div class="tableform">
-    <table class="tableform">
-    <tbody>
-    <tr>
-      <td class="formlabels">
-        <label>New psinque</label>
-      </td>
-      <td class="forminputs">
-        <input type="text" placeholder="Type an email address to search" />
-      </td>
-      <td class="forminputs formbuttons">
-        <a href="" class="search">
-          <img src="/images/squareicons/add.png" />
-        </a>
-      </td>
-    </tr>
-    </tbody>
-    </table>
-  </div>
-<!--   <table class="contacttables"> -->
-  {% for contact in contacts %}
-  <div class="contact">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
+    {{ ui.beginform() }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("New psinque") }}
+        {{ ui.textinput("", "Type an email address of a friend", "newpsinque") }}
+        {{ ui.createbutton("psinque") }}
+      {{ ui.endtable() }}
+    {{ ui.endform() }}
+  <!--   <table class="contacttables"> -->
+    {% for contact in contacts %}
+    <div class="contact">
+      <div class="contactphoto">
+        <img src="/images/smallphoto.png" />
+      </div>
+      <div class="contactdetails">
+        <b>{{ contact.displayName }}</b></br>
+        Created {{ contact.creationTime|humanizeddatetime }}</br>
+        <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
+        <a href="" class="Removers">Remove</a>
+        | <a href="" class="privateadders">Request private data</a>
+        | <a href="" class="requesters">Request private data</a>  
+      </div>
+      <div class="psinques">
+      {% if contact.incoming.private %}
+      kłódka
+      {% endif %}
+      {% if contact.incoming.status == "established" %}
+      <img src="/images/squareicons/incoming_established.png" />
+      {% elif contact.incoming.status == "pending" %}
+      <img src="/images/squareicons/incoming_pending.png" />
+      {% else %}
+      <img src="/images/squareicons/incoming_none.png" />
+      {% endif %}
+      {% if contact.outgoing.status == "established" %}
+      <img src="/images/squareicons/outgoing_established.png" />
+      {% else %}
+      <img src="/images/squareicons/outgoing_none.png" />
+      {% endif %}
+      </div>
     </div>
-    <div class="contactdetails">
-      <b>{{ contact.displayName }}</b></br>
-      Created {{ contact.creationTime|humanizeddatetime }}</br>
-      <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
-      <a href="" class="Removers">Remove</a>
-      | <a href="" class="privateadders">Request private data</a>
-      | <a href="" class="requesters">Request private data</a>  
-    </div>
-    <div class="psinques">
-    {% if contact.incoming.private %}
-    kłódka
+    {% endfor %}
+  <!--   </table> -->
+    {% if offset > 0 %}
+    <a href="javascript: history.go(-1)">Previous page</a>
     {% endif %}
-    {% if contact.incoming.status == "established" %}
-    <img src="/images/squareicons/incoming_established.png" />
-    {% elif contact.incoming.status == "pending" %}
-    <img src="/images/squareicons/incoming_pending.png" />
-    {% else %}
-    <img src="/images/squareicons/incoming_none.png" />
+    {% if isThereMore %}
+    <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
     {% endif %}
-    {% if contact.outgoing.status == "established" %}
-    <img src="/images/squareicons/outgoing_established.png" />
-    {% else %}
-    <img src="/images/squareicons/outgoing_none.png" />
-    {% endif %}
-    </div>
-  </div>
-  {% else %}
-  You are not psinquing with anyone yet.
-  {% endfor %}
-<!--   </table> -->
-  {% if offset > 0 %}
-  <a href="javascript: history.go(-1)">Previous page</a>
-  {% endif %}
-  {% if isThereMore %}
-  <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
-  {% endif %}
   </div>
 {% endblock %}
