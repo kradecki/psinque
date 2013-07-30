@@ -74,3 +74,12 @@ div.tableform td.bigdarklabel {
     font-weight: 800;
     text-align: center;
 }
+
+.ui-tooltip {
+    padding: 8px;
+    position: absolute;
+    z-index: 9999;
+    max-width: 300px;
+    border: 1px solid #404040;
+    background-color: #fff;
+}

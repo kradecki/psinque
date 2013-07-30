@@ -117,9 +117,9 @@
   </td>
 {%- endmacro %}
 
-{% macro passwordinput(id="", class="") -%}
+{% macro passwordinput(id="", class="", hint="") -%}
   <td class="forminputs">
-    <input type="password" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} />
+    <input type="password" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} {% if hint %}title="{{ hint }}"{% endif %} />
   </td>
 {%- endmacro %}
 

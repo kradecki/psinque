@@ -16,6 +16,11 @@
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/stylesheets/Landing.css" />
 {% endblock %}
+{% block externalscripts %}
+  <script type="text/javascript" src="/javascripts/jquery.js"></script>
+  <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+  <script type="text/javascript" src="/javascripts/Landing.js"></script>
+{% endblock %}
 {% block content %}
 <div id="leftside" class="singlecolumn">
   {{ ui.beginform() }}
@@ -62,7 +67,7 @@
     {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Password") }}
-      {{ ui.passwordinput("password") }}
+      {{ ui.passwordinput("password", "", "At least 8 characters.") }}
     {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Repeat password") }}
