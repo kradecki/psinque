@@ -8,11 +8,11 @@ from MasterHandler import StaticHandler
 
 #-----------------------------------------------------------------------------
 
-directOpenIDProviders = {
-    'Google'       : 'https://www.google.com/accounts/o8/id',
-    'Yahoo!'       : 'yahoo.com',
-    'Yahoo! Japan' : 'yahoo.co.jp',
-}
+directOpenIDProviders = [
+    'https://www.google.com/accounts/o8/id',
+    'yahoo.com',
+    'yahoo.co.jp',
+]
 
 directOpenIDIconNames = ['google', 'yahoo', 'yahoo_japan']
 
@@ -27,10 +27,9 @@ class StaticPageHandler(StaticHandler):
     def landing(self):
       
         self.sendContent('templates/Landing.html', {
-            'loginurls': zip(directOpenIDProviders.keys(),
-                             [ users.create_login_url(dest_url = "/mycard/view",
-                                                      federated_identity = x)
-                             for x in directOpenIDProviders.values() ],
+            'loginurls': zip([users.create_login_url(dest_url = '/mycard/view',
+                                                     federated_identity = uri)
+                             for uri in directOpenIDProviders],
                              directOpenIDIconNames)
         })
 

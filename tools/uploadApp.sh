@@ -4,7 +4,6 @@ echo "Copying files to 'build'..."
 cp *.py build/
 cp app.yaml build/
 cp index.yaml build/
-cp -R templates build/
 cp -R static build/
 cp -R carddav build/
 cp -R dateutil build/
@@ -20,6 +19,12 @@ mkdir -p build/javascripts
 for filename in stylesheets/*.css; do
   echo " - $filename"
   yuicompressor $filename -o build/$filename
+done
+echo "Minimizing templates..."
+mkdir -p build/templates
+for filename in templates/*.html; do
+  echo " - $filename"
+  cat $filename | sed -e 's/^ *//g' | sed -e ':a;N;$!ba;s/>\n</></g' > build/$filename
 done
 echo "Uploading the app..."
 python2.7 ../google_appengine/appcfg.py update build

@@ -102,3 +102,12 @@ function uiAddEnterAction(where, trigger) {
       
     });
 }
+
+function uiInitializeCheckboxes() {
+    $("input[type=checkbox] + div").bind('click', function() {
+        checkBox = $(this).prev();
+//         checkBox.prop("checked", !checkBox.prop("checked"));
+        checkBox.click();
+    });
+}
+

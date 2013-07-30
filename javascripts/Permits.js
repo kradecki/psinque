@@ -80,7 +80,7 @@ function addAddPermitHandler(where) {
                     window.highestExistingPermitNumber++;
                     
                     recreateAccordeon();
-                    initializeCheckboxes();
+                    uiInitializeCheckboxes();
                     unmarkChangedFields("#newpermitname");
                     $("#newpermitname").val("");
                     

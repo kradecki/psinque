@@ -175,6 +175,11 @@ div.tableform td.formextras {
 }
 
 div.tableform td.forminputs input[type=text],
+div.tableform td.forminputs input[type=password] {
+    height: 40px;
+}
+
+div.tableform td.forminputs input[type=text],
 div.tableform td.forminputs input[type=password],
 div.tableform td.forminputs label {
     background-color: #fff;
@@ -192,9 +197,9 @@ div.tableform td.forminputs label {
 }
 
 div.tableform td.forminputs label {
+    height: 28px;
+    margin-top: 12px;
     display: block;
-    padding-top: 15px;
-    vertical-align: top;
 }
 
 div.tableform .clickable {

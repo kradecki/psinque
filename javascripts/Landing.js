@@ -14,6 +14,8 @@ function showRow(tr) {
 
 $(function() {
   
+  uiInitializeCheckboxes();
+  
   $(document).tooltip({
       position: {
           my: "left+20 top+5",

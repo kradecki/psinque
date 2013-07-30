@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>{% block title %}{% endblock %} - Psinque</title>
+  <title>{% block title -%}{%- endblock %} - Psinque</title>
   {% raw -%}
   <script id="dropdown-selected" type="text/x-dot-template">
     {{=it.label}}<i></i>
@@ -18,7 +18,7 @@
     </div>
   </script>
   {%- endraw %}
-  {%- block inlinescripts -%}
+  {% block inlinescripts -%}
   {%- endblock %}
   <link rel="shortcut icon" href="/favicon.ico" sizes="16x16" type="image/vnd.microsoft.icon">
   <link rel="shortcut icon" href="/favicon_57.png" sizes="57x57" type="image/png">
@@ -36,7 +36,7 @@
   <script type="text/javascript" src="/javascripts/psinque.js"></script>
   <script type="text/javascript" src="/javascripts/ajax.js"></script>
   <script type="text/javascript" src="/javascripts/ui.js"></script>
-  {%- block externalscripts -%}
+  {% block externalscripts -%}
   {%- endblock %}
 </head>
 <body>
@@ -66,7 +66,13 @@
           <td id="menu">
             <ul>
             {% for menuentry in menuentries %}
-              <li><a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">{{ menuentry.title }}</a></li>
+              <li>
+                <div>
+                  <a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">
+                    {{ menuentry.title }}
+                  </a>
+                </div>
+              </li>
             {% endfor %}
             </ul>
           </td>
@@ -82,9 +88,9 @@
       </div>
     </div>
     <div id="contentwrapper" class="wrappers">
-      {% block abovecontent %}{% endblock %}
+      {% block abovecontent -%}{%- endblock %}
       <div id="content">
-        {% block content %}{% endblock %}
+        {% block content -%}{%- endblock %}
       </div>
     </div>
     <div id="footerwrapper" class="wrappers">

@@ -1,75 +1,79 @@
 <!-- ********************************************************
      * Form definitions -->
      
-{% macro beginform(id="") -%}
-  <div class="tableform"{% if id %} id="{{ id }}"{% endif %}>
-{%- endmacro %}
+{%- macro beginform(id="") -%}
+  <div class="tableform" {% if id %}id="{{ id }}"{% endif %}>
+{%- endmacro -%}
 
-{% macro endform() -%}
+{%- macro endform() -%}
   </div>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro begintable(tableid="", rowclass="") -%}
-  <table{% if tableid %} id="{{ tableid }}"{% endif %}>
+{%- macro begintable(tableid="", rowclass="") -%}
+  <table {% if tableid %}id="{{ tableid }}"{% endif %}>
   <tbody>
-  <tr{% if rowclass %} class="{{ rowclass }}"{% endif %}>
-{%- endmacro %}
+  <tr {% if rowclass %}class="{{ rowclass }}"{% endif %}>
+{%- endmacro -%}
 
-{% macro tablelabel(tablelabel, rowspan=1, labelid="") -%}
+{%- macro tablelabel(tablelabel, rowspan=1, labelid="") -%}
   <td class="formlabels" rowspan="{{ rowspan }}">
-    <label{% if labelid %} id="{{ labelid }}"{% endif %}>{{ tablelabel }}</label>
+    <label {% if labelid %}id="{{ labelid }}"{% endif %}>{{ tablelabel }}</label>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro endtable() -%}
+{%- macro endtable() -%}
   </tr>
   </tbody>
   </table>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro newrow(class="") -%}
+{%- macro newrow(class="") -%}
   </tr>
-  <tr{% if class %} class="{{ class }}"{% endif %}>
-{%- endmacro %}
+  <tr {% if class %}class="{{ class }}"{% endif %}>
+{%- endmacro -%}
 
 <!-- ********************************************************
      * Single UI elements -->
      
-{% macro spacer() -%}
+{%- macro spacer() -%}
   <td><br style="clear:both;"/></td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro button(id, action, class="", index="") -%}
+{%- macro button(id, action, class="", index="") -%}
   <td class="forminputs formbuttons">
-    <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}{{ index }}"{% if index %} data-psinque-index="{{ index }}"{% endif %}>
+    <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}>
     <img src="/images/button_{{ action }}.png" alt="{{ action }}" />
     </span>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro addbutton(id) -%}
+{%- macro addbutton(id) -%}
   {{ button(id, "add") }}
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro createbutton(id) -%}
+{%- macro createbutton(id) -%}
   {{ button(id, "create") }}
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro removebutton(id, class="", index="") -%}
+{%- macro removebutton(id, class="", index="") -%}
   {{ button(id, "remove", class, index) }}
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro savebutton(class="", index="") -%}
+{%- macro savebutton(class="", index="") -%}
   {{ button("button", "save", class, index) }}
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro signinbutton(class="", index="") -%}
+{%- macro signinbutton(class="", index="") -%}
   {{ button("button", "signin", class, index) }}
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro dropdown(items, selected, id="", class="", tdclass="") -%}
-  <td class="forminputs{% if tdclass %} {{ tdclass }}{% endif %}">
-    <select id="{{ id }}"{% if class %} class="{{ class }}"{% endif %} data-template="#dropdown">
+{%- macro searchbutton(class="", index="") -%}
+  {{ button("button", "search", class, index) }}
+{%- endmacro -%}
+
+{%- macro dropdown(items, selected, id="", class="", tdclass="") -%}
+  <td class="forminputs {% if tdclass %}{{ tdclass }}{% endif %}">
+    <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %} data-template="#dropdown">
     {% if items is mapping %}
       {% for itemCode, itemName in items.iteritems() %}
         <option value="{{ itemName }}" {% if itemName == selected %}selected="selected"{% endif %}>{{ itemCode }}</option>
@@ -81,9 +85,9 @@
     {% endif %}
     </select>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro textlabel(text, class="", id="", keyvalue="", keyclass="") -%}
+{%- macro textlabel(text, class="", id="", keyvalue="", keyclass="") -%}
   <td class="forminputs">
     <div>
       {% if keyvalue %}
@@ -92,9 +96,9 @@
       <label {% if class %}class="{{ class }}"{% endif %} {% if id %}id="{{ id }}"{% endif %}>{{ text }}</label>
     </div>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro checkbox(id, checked, text) -%}
+{%- macro checkbox(id, checked, text) -%}
   <td class="forminputs formbuttons">
     <span class="checkboxwrapper">
       <input type="checkbox" id="{{ id }}" {% if checked %}checked="checked"{% endif %} />
@@ -102,11 +106,11 @@
     </span>
   </td>
   <td class="forminputs">
-    <label for="{{ id }}">{{ text }}</label>
+    <label for="{{ id }}" id="{{ id }}label">{{ text }}</label>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro labelcheckbox(label, idstub, checked, index, class, value, name="", subindex="") -%}
+{%- macro labelcheckbox(label, idstub, checked, index, class, value, name="", subindex="") -%}
   <td class="formlabels">
     <input type="checkbox" id="{{ idstub }}_{{ index }}" {% if checked %}checked="checked"{% endif %} data-psinque-index="{{ index }}" data-psinque-subindex="{{ subindex }}" class="{{ class }}" {% if name %}name="{{ name }}"{% endif %}/>
     <div class="checkboxdiv"></div>
@@ -115,32 +119,32 @@
   <td class="forminputs">
     <label class="generallabels">{{ value }}</label>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro textinput(value, placeholder="", id="", class="") -%}
+{%- macro textinput(value, placeholder="", id="", class="") -%}
   <td class="forminputs">
     <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro passwordinput(id="", class="", hint="") -%}
+{%- macro passwordinput(id="", class="", hint="") -%}
   <td class="forminputs">
     <input type="password" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} {% if hint %}title="{{ hint }}"{% endif %} />
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro textinputwithkey(value, placeholder, id, class, index, keyvalue="", keyclass="", colspan="") -%}
-  <td class="forminputs"{% if colspan %} colspan="{{ colspan }}"{% endif %}>
+{%- macro textinputwithkey(value, placeholder, id, class, index, keyvalue="", keyclass="", colspan="") -%}
+  <td class="forminputs" {% if colspan %}colspan="{{ colspan }}"{% endif %}>
     <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}" id="{{ id }}key{{ index }}" />
     <input type="text" id="{{ id }}{{ index }}" {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} {% if index %}data-psinque-index="{{ index }}"{% endif %}/>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 
 
 <!-- ********************************************************
      * Whole tables -->
      
-{% macro multipletextinput(label, inputid, values, placeholder="") -%}
+{%- macro multipletextinput(label, inputid, values, placeholder="") -%}
   <table>
     <tbody>
       {% for value in values %}
@@ -164,9 +168,9 @@
       {% endfor %}
     </tbody>
   </table>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro multipletextinputwithtypes(items, itemTypes, privacyTypes, tableLabel, prefix) -%}
+{%- macro multipletextinputwithtypes(items, itemTypes, privacyTypes, tableLabel, prefix) -%}
   <table id="{{ prefix ~ 'stable' }}">
     <tbody>
       {% for item in items %}
@@ -191,4 +195,4 @@
       {% endfor %}
     </tbody>
   </table>
-{%- endmacro %}
+{%- endmacro -%}

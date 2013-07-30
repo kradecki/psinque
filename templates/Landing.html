@@ -1,25 +1,23 @@
-{% import "templates/ui.html" as ui %}
-{% macro bigdarklabel(text) -%}
+{%- import "templates/ui.html" as ui -%}
+{%- macro bigdarklabel(text) -%}
   <tr>
     <td class="bigdarklabel">
       <label>{{ text }}</label>
     </td>
   </tr>
-{%- endmacro %}
-{% macro logo(logoname, loginurl) -%}
+{%- endmacro -%}
+{%- macro logo(logoname, loginurl) -%}
   <td class="forminputs formbuttons darkbutton">
     <a href={{ loginurl }} id="logo{{ logoname }}">
       <img src="/images/logo_{{ logoname }}.png" alt="{{ logoname }}" />
     </a>
   </td>
-{%- endmacro %}
+{%- endmacro -%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>Welcome to Psinque</title>
-  {%- block inlinescripts -%}
-  {%- endblock %}
   <link rel="shortcut icon" href="/favicon.ico" sizes="16x16" type="image/vnd.microsoft.icon">
   <link rel="shortcut icon" href="/favicon_57.png" sizes="57x57" type="image/png">
   <link rel="shortcut icon" href="/favicon_128.ico" sizes="128x128" type="image/png">
@@ -52,7 +50,7 @@
               {{ ui.endtable() }}
               {{ ui.begintable() }}
                 {% for logindata in loginurls %}
-                  {{ logo(logindata[2], logindata[1]) }}
+                  {{ logo(logindata[1], logindata[0]) }}
                 {% endfor %}
                 {{ ui.spacer() }}
               {{ ui.endtable() }}
@@ -111,7 +109,7 @@
               {{ ui.endtable() }}
               {{ ui.begintable() }}
                 {{ ui.tablelabel("Terms") }}
-                {{ ui.checkbox("emailnotifications", False, "I agree to psinque terms") }}
+                {{ ui.checkbox("terms", False, "I agree to <a href='/static/terms'>Psinque terms</a>") }}
               {{ ui.endtable() }}
             {{ ui.endform() }}
           </div>

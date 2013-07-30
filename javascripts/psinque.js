@@ -55,14 +55,6 @@ function showElementWithEffects(element) {
 //     element.show();
 }
 
-function initializeCheckboxes() {
-    $("input[type=checkbox] + div").bind('click', function() {
-        checkBox = $(this).prev();
-//         checkBox.prop("checked", !checkBox.prop("checked"));
-        checkBox.click();
-    });
-}
-
 function psinqueSetMarkingOnChange(where) {
     $(where).change(function() {
         markChangedFields(this);
@@ -74,6 +66,6 @@ $(document).ready(function() {
     $('select').dropdown();
     
     psinqueSetMarkingOnChange("input,select");
-    initializeCheckboxes();
+    uiInitializeCheckboxes();
     
 });

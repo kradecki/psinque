@@ -47,6 +47,7 @@ div.tableform tr {
     border-bottom: 12px solid #fff;
 }
 
+div.tableform td.formbuttons span.checkboxwrapper,
 div.tableform td.forminputs input[type=text],
 div.tableform td.forminputs input[type=password] {
     background-color: #d9d4cc;
@@ -87,4 +88,7 @@ div.tableform td.bigdarklabel label {
     border: 1px solid #404040;
     background-color: #fff;
 }
-  
+
+label#termslabel {
+    text-align: left;
+}
