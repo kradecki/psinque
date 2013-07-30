@@ -1,5 +1,17 @@
 {% extends "templates/static.html" %}
 {% import "templates/ui.html" as ui %}
+{% macro bigdarklabel(text) -%}
+  <tr>
+    <td class="bigdarklabel">{{ text }}</td>
+  </tr>
+{%- endmacro %}
+{% macro logo(logoname, loginurl) -%}
+  <td class="forminputs formbuttons darkbutton">
+    <a href={{ loginurl }}>
+      <img src="/images/logo_{{ logoname }}.png" alt="{{ logoname }}" />
+    </a>
+  </td>
+{%- endmacro %}
 {% block title %}Landing{% endblock %}
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/stylesheets/Landing.css" />
@@ -8,25 +20,33 @@
 <div id="leftside" class="singlecolumn">
   {{ ui.beginform() }}
     {{ ui.begintable() }}
-      <tr>
-        <td class="bigdarklabel">Using OpenID</td>
-      </tr>
+      {{ bigdarklabel("Sign in with OpenID") }}
     {{ ui.endtable() }}
     {{ ui.begintable() }}
-      <td class="forminputs formbuttons darkbutton">
-        <img src="/images/icon_link.png" alt="Link" />
-      </td>
-      {{ ui.textinput("", "OpenID link") }}
+      {{ logo("google", loginurl) }}
+      {{ logo("yahoo", loginurl) }}
+      {{ logo("yahoo_japan", loginurl) }}
+      {{ ui.spacer() }}
     {{ ui.endtable() }}
-  {{ ui.endform() }}
-  <a href={{ loginurl }}>Log in with Google Accounts.</a>
+    {{ ui.begintable() }}
+      <td class="formbuttons">
+        <img src="/images/icon_link.png" alt="link" />
+      </td>
+      {{ ui.textinput("", "", "openidlink") }}
+    {{ ui.endtable() }}
+    {{ ui.begintable("", "hiddenelements") }}
+      {{ ui.tablelabel("Username") }}
+      {{ ui.textinput("", "") }}
+    {{ ui.endtable() }}
+    {{ ui.begintable() }}
+      {{ bigdarklabel("Sign in with a psinque account") }}
+    {{ ui.endtable() }}
+{{ ui.endform() }}
 </div>
 <div id="rightside" class="singlecolumn">
   {{ ui.beginform() }}
     {{ ui.begintable() }}
-      <tr>
-        <td class="bigdarklabel">Using native login</td>
-      </tr>
+      {{ bigdarklabel("Sign up") }}
     {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Given names") }}

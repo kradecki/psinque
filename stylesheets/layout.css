@@ -139,7 +139,7 @@ div#header li a {
 }
 
 div#header li a:hover {
-    border: 1px solid #404040;
+    border: 1px solid #d9d4cc;
     border-bottom: none;
     width: 118px;
     padding-top: 7px;

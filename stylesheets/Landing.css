@@ -60,6 +60,10 @@ div.tableform td.darkbutton {
     padding-left: 0px;
 }
 
+div.tableform td.darkbutton img {
+    margin-right: 15px;
+}
+
 div.tableform td.bigdarklabel {
     width: 100%;
     background-color: #404040;

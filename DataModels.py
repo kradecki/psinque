@@ -202,6 +202,9 @@ class UserWebpage(db.Model):
 class UserProfile(db.Model):
 
     user = db.UserProperty()
+    username = db.StringProperty()
+    passwordHash = db.StringProperty()
+    passwordSalt = db.StringProperty()
 
     givenNames = db.StringProperty(default = u"")
     givenNamesRomanization = db.StringProperty(default = u"")
