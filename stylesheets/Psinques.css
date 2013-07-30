@@ -1,4 +1,8 @@
 
+div#header li a {
+    padding-bottom: 6px;
+}
+
 div.aboveconent {
     width: 100%;
     padding: 0;
@@ -9,7 +13,6 @@ div.abovecontentcolumn {
     width: 100%;
     margin: 0 auto;
     padding: 0;
-    background-color: #404040;
 }
 
 div#pendings {
@@ -18,12 +21,18 @@ div#pendings {
 }
 
 div#searchbox {
-    width: 710px;
+    width: 960px;
     margin: 0 auto;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 0;
     padding-right: 0;
+    background-color: #404040;
+}
+
+div#searchbox table {
+    width: 690px;
+    margin: 0 auto;
 }
 
 div#searchbox tr {
@@ -31,8 +40,8 @@ div#searchbox tr {
 }
 
 div.contact {
-    width: 842px;
-    height: 104px;
+    width: 670px;
+    height: 105px;
     background-color: #fff;
     padding: 10px;
     margin: 5px 0 5px;

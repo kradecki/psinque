@@ -197,8 +197,8 @@ div.tableform td.forminputs label {
 }
 
 div.tableform td.forminputs label {
-    height: 28px;
-    margin-top: 12px;
+    height: 40px;
+    padding-top: 12px;
     display: block;
 }
 

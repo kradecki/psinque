@@ -1,0 +1,30 @@
+<div class="contact">
+  <div class="contactphoto">
+    <img src="/images/smallphoto.png" />
+  </div>
+  <div class="contactdetails">
+    <b>{{ contact.displayName }}</b></br>
+    Created {{ contact.creationTime|humanizeddatetime }}</br>
+    <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
+    <a href="" class="Removers">Remove</a>
+    | <a href="" class="privateadders">Request private data</a>
+    | <a href="" class="requesters">Request private data</a>  
+  </div>
+  <div class="psinques">
+  {% if contact.incoming.private %}
+  kłódka
+  {% endif %}
+  {% if contact.incoming.status == "established" %}
+  <img src="/images/squareicons/incoming_established.png" />
+  {% elif contact.incoming.status == "pending" %}
+  <img src="/images/squareicons/incoming_pending.png" />
+  {% else %}
+  <img src="/images/squareicons/incoming_none.png" />
+  {% endif %}
+  {% if contact.outgoing.status == "established" %}
+  <img src="/images/squareicons/outgoing_established.png" />
+  {% else %}
+  <img src="/images/squareicons/outgoing_none.png" />
+  {% endif %}
+  </div>
+</div>
