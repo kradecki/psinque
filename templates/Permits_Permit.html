@@ -40,7 +40,7 @@
   {% endfor %}
   {% for permitWWW in permit.permitWWWs %}
     {{ ui.begintable() }}
-      {{ ui.labelcheckbox("WWW", "www" ~ loop.index, permitWWW.canView, permitIndex, "individual", permitWWW.userWWW.itemValue, permitWWW.key(), loop.index) }}
+      {{ ui.labelcheckbox("WWW", "www" ~ loop.index, permitWWW.canView, permitIndex, "individual", permitWWW.userWebpage.itemValue, permitWWW.key(), loop.index) }}
     {{ ui.endtable() }}
   {% endfor %}
   {% for permitAddress in permit.permitAddresses %}
