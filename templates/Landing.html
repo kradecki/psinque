@@ -2,12 +2,14 @@
 {% import "templates/ui.html" as ui %}
 {% macro bigdarklabel(text) -%}
   <tr>
-    <td class="bigdarklabel">{{ text }}</td>
+    <td class="bigdarklabel">
+      <label>{{ text }}</label>
+    </td>
   </tr>
 {%- endmacro %}
 {% macro logo(logoname, loginurl) -%}
   <td class="forminputs formbuttons darkbutton">
-    <a href={{ loginurl }}>
+    <a href={{ loginurl }} id="logo{{ logoname }}">
       <img src="/images/logo_{{ logoname }}.png" alt="{{ logoname }}" />
     </a>
   </td>
@@ -31,17 +33,21 @@
       {{ logo("google", loginurl) }}
       {{ logo("yahoo", loginurl) }}
       {{ logo("yahoo_japan", loginurl) }}
+      {{ logo("myspace", loginurl) }}
       {{ ui.spacer() }}
     {{ ui.endtable() }}
+    {{ ui.begintable("openidusernametable", "hiddenelements") }}
+      {{ ui.tablelabel("Username", 1, "") }}
+      {{ ui.textinput("", "", "", "") }}
+    {{ ui.endtable() }}
     {{ ui.begintable() }}
-      <td class="formbuttons">
-        <img src="/images/icon_link.png" alt="link" />
-      </td>
+      {{ ui.tablelabel("Custom link") }}
       {{ ui.textinput("", "", "openidlink") }}
     {{ ui.endtable() }}
-    {{ ui.begintable("", "hiddenelements") }}
-      {{ ui.tablelabel("Username") }}
-      {{ ui.textinput("", "") }}
+    {{ ui.begintable() }}
+      {{ ui.textlabel("") }}
+      {{ ui.spacer() }}
+      {{ bigdarklabel("Sign in") }}
     {{ ui.endtable() }}
     {{ ui.begintable() }}
       {{ bigdarklabel("Sign in with a psinque account") }}

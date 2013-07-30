@@ -171,19 +171,24 @@ div#footer table {
     font-size: 13px;
 }
 
-div#footer td#copyright {
-    width: 250px;
+div#footer td#socialmedia {
+    width: 100px;
     text-align: left;
 }
 
-div#footer td#faq {
-    width: 457px;
+td#socialmedia img {
+/*    height: 24px;
+    width: 24px;*/
+    margin-right:5px;
+}
+
+div#footer td#links {
+    width: 600px;
     text-align: center;
 }
 
-td#faq a {
-    margin-left: 5px;
-    margin-right: 5px;
+td#links a {
+    margin-left: 15px;
 }
 
 div#footer td#numalab {

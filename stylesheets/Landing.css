@@ -67,12 +67,16 @@ div.tableform td.darkbutton img {
 div.tableform td.bigdarklabel {
     width: 100%;
     background-color: #404040;
-    padding-left: 10px;
-    height: 40px;
     width: 100%;
     color: #fff;
     font-weight: 800;
     text-align: center;
+}
+
+div.tableform td.bigdarklabel label {
+    margin-top: 12px;
+    display: block;
+    height: 28px;
 }
 
 .ui-tooltip {

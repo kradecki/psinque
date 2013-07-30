@@ -15,9 +15,11 @@
   <tr{% if rowclass %} class="{{ rowclass }}"{% endif %}>
 {%- endmacro %}
 
-{% macro tablelabel(tablelabel, rowspan=1, labelid="") -%}
+{% macro tablelabel(tablelabel, rowspan=1, labelid="", hidden=False) -%}
   <td class="formlabels" rowspan="{{ rowspan }}"{% if labelid %} id="{{ labelid }}"{% endif %}>
-    <label>{{ tablelabel }}</label>
+    {% if hidden %}<div class="hiddenelements">{% endif %}
+      <label>{{ tablelabel }}</label>
+    {% if hidden %}</div>{% endif %}
   </td>
 {%- endmacro %}
 
@@ -81,10 +83,12 @@
 
 {% macro textlabel(text, class="", id="", keyvalue="", keyclass="") -%}
   <td class="forminputs">
-    {% if keyvalue %}
-    <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}">
-    {% endif %}
-    <label {% if class %}class="{{ class }}"{% endif %} {% if id %}id="{{ id }}"{% endif %}>{{ text }}</label>
+    <div>
+      {% if keyvalue %}
+        <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}">
+      {% endif %}
+      <label {% if class %}class="{{ class }}"{% endif %} {% if id %}id="{{ id }}"{% endif %}>{{ text }}</label>
+    </div>
   </td>
 {%- endmacro %}
 
@@ -111,9 +115,11 @@
   </td>
 {%- endmacro %}
 
-{% macro textinput(value, placeholder="", id="", class="") -%}
+{% macro textinput(value, placeholder="", id="", class="", hidden=False) -%}
   <td class="forminputs">
-    <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
+    {% if hidden %}<div class="hiddenelements">{% endif %}
+      <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
+    {% if hidden %}</div>{% endif %}
   </td>
 {%- endmacro %}
 
