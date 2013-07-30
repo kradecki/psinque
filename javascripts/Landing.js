@@ -21,11 +21,23 @@ $(function() {
           collision: "flipfit" 
   }});
   
+  $('#password').passStrengthify({
+      element: $('#passwordstrength'),
+      rawEntropy: true,
+      minimum: 5,
+  });
+  $("#password").keyup(function() {
+      $("tr.passwordinfo").show();
+  });
+  $("#password").blur(function() {
+      $("tr.passwordinfo").hide();
+  });
+  
   $("#logomyspace").click(function() {
     
       console.log("Click");
     
-      showRow('tr.hiddenelements');
+      showRow('tr.username');
       $("#username").html("MySpace ID")
     
       return false;

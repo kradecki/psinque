@@ -18,24 +18,15 @@
   <div id="mycard">
     {{ ui.beginform() }}
       {{ ui.begintable() }}
-        {{ ui.tablelabel("Given names", 2) }}
-        {{ ui.textinput(userProfile.givenNames, "Native spelling", "givennames") }}
-        {{ ui.newrow() }}
+        {{ ui.tablelabel("Name", 2) }}
+        {{ ui.textinput(userProfile.givenNames, "Given names", "givennames") }}
         {{ ui.textinput(userProfile.givenNamesRomanization, "Romanization", "givenroman") }}
-      {{ ui.endtable() }}
-      {{ ui.begintable() }}
-        {{ ui.tablelabel("Family names", 2) }}
-        {{ ui.textinput(userProfile.familyNames, "Native spelling", "familynames") }}
         {{ ui.newrow() }}
+        {{ ui.textinput(userProfile.familyNames, "Family names", "familynames") }}
         {{ ui.textinput(userProfile.familyNamesRomanization, "Romanization", "familyroman") }}
       {{ ui.endtable() }}
-      {{ ui.begintable() }}
-        {{ ui.tablelabel("Company name", 2) }}
-        {{ ui.textinput(userProfile.companyName, "Native spelling", "companyname") }}
-        {{ ui.newrow() }}
-        {{ ui.textinput(userProfile.companyNameRomanization, "Romanization", "companyroman") }}
-      {{ ui.endtable() }}
-<!--       ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") -->
+      {{ ui.multipletextinput("Nicknames", "nickname", [], "e.g., Big John") }}
+      {{ ui.multipletextinput("Company", "company", [], "") }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Birthday") }}
         {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays") }}

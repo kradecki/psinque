@@ -33,6 +33,7 @@
   <script type="text/javascript" src="/javascripts/ui.js"></script>
   <script type="text/javascript" src="/javascripts/jquery.js"></script>
   <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+  <script type="text/javascript" src="/javascripts/jquery.passstrength.min.js"></script>
   <script type="text/javascript" src="/javascripts/Landing.js"></script>
 </head>
 <body>
@@ -56,7 +57,7 @@
                 {{ logo("myspace", loginurl) }}
                 {{ ui.spacer() }}
               {{ ui.endtable() }}
-              {{ ui.begintable("openidusernametable", "hiddenelements") }}
+              {{ ui.begintable("openidusernametable", "hiddenelements username") }}
                 {{ ui.tablelabel("Username", 1, "username") }}
                 {{ ui.textinput("", "", "", "") }}
                 {{ ui.signinbutton() }}
@@ -75,7 +76,7 @@
               {{ ui.endtable() }}
               {{ ui.begintable() }}
                 {{ ui.tablelabel("Password") }}
-                {{ ui.passwordinput("password", "") }}
+                {{ ui.passwordinput("loginpassword", "") }}
               {{ ui.endtable() }}
           {{ ui.endform() }}
           </div>
@@ -99,6 +100,11 @@
               {{ ui.begintable() }}
                 {{ ui.tablelabel("Password") }}
                 {{ ui.passwordinput("password", "", "At least 8 characters.") }}
+                {{ ui.newrow("hiddenelements passwordinfo") }}
+                {{ ui.spacer() }}
+                <td>
+                  <div id="passwordstrength"></div>
+                </td>
               {{ ui.endtable() }}
               {{ ui.begintable() }}
                 {{ ui.tablelabel("Repeat password") }}

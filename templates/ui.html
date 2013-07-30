@@ -143,9 +143,11 @@
 {% macro multipletextinput(label, inputid, values, placeholder="") -%}
   <table>
     <tbody>
-      {{ tablelabel(label, values|count + 1) }}
       {% for value in values %}
         <tr>
+          {% if loop.first %}
+            {{ tablelabel(label, values|count) }}
+          {% endif %}
           {{ textinput(value, placeholder, inputid ~ loop.index) }}
           {% if loop.first %}
             {{ addbutton(inputid) }}
@@ -155,7 +157,8 @@
         </tr>
       {% else %}
         <tr>
-          {{ textinput(value, placeholder, inputid ~ "1") }}
+          {{ tablelabel(label, 1) }}
+          {{ textinput("", placeholder, inputid ~ "1") }}
           {{ addbutton(inputid) }}
         </tr>
       {% endfor %}

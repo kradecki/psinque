@@ -215,7 +215,6 @@ class UserProfile(db.Model):
     pseudonyms = db.StringListProperty()
     
     companyName = db.StringProperty(default = u"")
-    companyNameRomanization = db.StringProperty(default = u"")
 
     gender = db.StringProperty(choices = genders)
 
