@@ -51,10 +51,9 @@
                 {{ bigdarklabel("Sign in with OpenID") }}
               {{ ui.endtable() }}
               {{ ui.begintable() }}
-                {{ logo("google", loginurl) }}
-                {{ logo("yahoo", loginurl) }}
-                {{ logo("yahoo_japan", loginurl) }}
-                {{ logo("myspace", loginurl) }}
+                {% for logindata in loginurls %}
+                  {{ logo(logindata[2], logindata[1]) }}
+                {% endfor %}
                 {{ ui.spacer() }}
               {{ ui.endtable() }}
               {{ ui.begintable("openidusernametable", "hiddenelements username") }}
