@@ -1,4 +1,3 @@
-{% extends "templates/static.html" %}
 {% import "templates/ui.html" as ui %}
 {% macro bigdarklabel(text) -%}
   <tr>
@@ -14,81 +13,114 @@
     </a>
   </td>
 {%- endmacro %}
-{% block title %}Landing{% endblock %}
-{% block stylesheets %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Welcome to Psinque</title>
+  {%- block inlinescripts -%}
+  {%- endblock %}
+  <link rel="shortcut icon" href="/favicon.ico" sizes="16x16" type="image/vnd.microsoft.icon">
+  <link rel="shortcut icon" href="/favicon_57.png" sizes="57x57" type="image/png">
+  <link rel="shortcut icon" href="/favicon_128.ico" sizes="128x128" type="image/png">
+  <link rel="shortcut icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,600&amp;subset=latin,latin-ext,cyrillic-ext,greek,cyrillic,vietnamese,greek-ext" rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/ui.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/static.css" />
   <link rel="stylesheet" type="text/css" href="/stylesheets/Landing.css" />
-{% endblock %}
-{% block externalscripts %}
+  <script type="text/javascript" src="/javascripts/ui.js"></script>
   <script type="text/javascript" src="/javascripts/jquery.js"></script>
   <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
   <script type="text/javascript" src="/javascripts/Landing.js"></script>
-{% endblock %}
-{% block content %}
-<div id="leftside" class="singlecolumn">
-  {{ ui.beginform() }}
-    {{ ui.begintable() }}
-      {{ bigdarklabel("Sign in with OpenID") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ logo("google", loginurl) }}
-      {{ logo("yahoo", loginurl) }}
-      {{ logo("yahoo_japan", loginurl) }}
-      {{ logo("myspace", loginurl) }}
-      {{ ui.spacer() }}
-    {{ ui.endtable() }}
-    {{ ui.begintable("openidusernametable", "hiddenelements") }}
-      {{ ui.tablelabel("Username", 1, "") }}
-      {{ ui.textinput("", "", "", "") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("Custom link") }}
-      {{ ui.textinput("", "", "openidlink") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.textlabel("") }}
-      {{ ui.spacer() }}
-      {{ bigdarklabel("Sign in") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ bigdarklabel("Sign in with a psinque account") }}
-    {{ ui.endtable() }}
-{{ ui.endform() }}
-</div>
-<div id="rightside" class="singlecolumn">
-  {{ ui.beginform() }}
-    {{ ui.begintable() }}
-      {{ bigdarklabel("Sign up") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("Given names") }}
-      {{ ui.textinput("", "", "givennames") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("Family names") }}
-      {{ ui.textinput("", "", "familynames") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("E-mail") }}
-      {{ ui.textinput("", "", "email") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("Password") }}
-      {{ ui.passwordinput("password", "", "At least 8 characters.") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("Repeat password") }}
-      {{ ui.passwordinput("repeatpass") }}
-    {{ ui.endtable() }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("Terms") }}
-      {{ ui.checkbox("emailnotifications", False, "I agree to psinque terms") }}
-    {{ ui.endtable() }}
-  {{ ui.endform() }}
-</div>
-<div id="tagline">
-  <div id="bigcard">
-    <img src="/images/bigcard.png" alt="" />
+</head>
+<body>
+  <div id="uberwrapper">
+    <div id="contentwrapper" class="wrappers">
+      <div id="content">
+        <div id="biglogo">
+          <a href="/">
+            <img src="/images/biglogo.png" alt="Psinque" />
+          </a>
+        </div>
+          <div id="leftside" class="singlecolumn">
+            {{ ui.beginform() }}
+              {{ ui.begintable() }}
+                {{ bigdarklabel("Sign in with OpenID") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ logo("google", loginurl) }}
+                {{ logo("yahoo", loginurl) }}
+                {{ logo("yahoo_japan", loginurl) }}
+                {{ logo("myspace", loginurl) }}
+                {{ ui.spacer() }}
+              {{ ui.endtable() }}
+              {{ ui.begintable("openidusernametable", "hiddenelements") }}
+                {{ ui.tablelabel("Username", 1, "username") }}
+                {{ ui.textinput("", "", "", "") }}
+                {{ ui.signinbutton() }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("Custom link") }}
+                {{ ui.textinput("", "", "openidlink") }}
+                {{ ui.signinbutton() }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ bigdarklabel("Sign in with a psinque account") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("E-mail") }}
+                {{ ui.textinput("", "", "email") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("Password") }}
+                {{ ui.passwordinput("password", "") }}
+              {{ ui.endtable() }}
+          {{ ui.endform() }}
+          </div>
+          <div id="rightside" class="singlecolumn">
+            {{ ui.beginform() }}
+              {{ ui.begintable() }}
+                {{ bigdarklabel("Sign up") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("Given names") }}
+                {{ ui.textinput("", "", "givennames") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("Family names") }}
+                {{ ui.textinput("", "", "familynames") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("E-mail") }}
+                {{ ui.textinput("", "", "email") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("Password") }}
+                {{ ui.passwordinput("password", "", "At least 8 characters.") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("Repeat password") }}
+                {{ ui.passwordinput("repeatpass") }}
+              {{ ui.endtable() }}
+              {{ ui.begintable() }}
+                {{ ui.tablelabel("Terms") }}
+                {{ ui.checkbox("emailnotifications", False, "I agree to psinque terms") }}
+              {{ ui.endtable() }}
+            {{ ui.endform() }}
+          </div>
+          <div id="tagline">
+            <div id="bigcard">
+              <img src="/images/bigcard.png" alt="" />
+            </div>
+            <div id="slogan">Be in charge of your business card.</div>
+          </div>
+      </div>
+    </div>
+    <div id="footerwrapper" class="wrappers">
+      {% include "templates/footer.html" %}
+    </div>
   </div>
-  <div id="slogan">Be in charge of your business card.</div>
-</div>
-{% endblock %}
+</body>
+</html>

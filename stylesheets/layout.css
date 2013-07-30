@@ -98,20 +98,20 @@ div.onecolumn {
 
 div#header table {
     width: 100%;
-    height: 59px;
 }
 
 div#header td {
-    padding: 0;
+    vertical-align: top;
 }
 
-div#header td#logographics {
-    padding-left: 29px;
-    width: 49px;
+div#header td#logographics img {
+    margin-top: 10px;
+    margin-left: 29px;
 }
 
-div#header td#logotext {
-    width: 132px;
+div#header td#logotext img {
+    margin-top: 10px;
+    margin-left: 5px;
 }
 
 div#header #animatedlogo {
@@ -177,8 +177,6 @@ div#footer td#socialmedia {
 }
 
 td#socialmedia img {
-/*    height: 24px;
-    width: 24px;*/
     margin-right:5px;
 }
 

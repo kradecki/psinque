@@ -15,11 +15,9 @@
   <tr{% if rowclass %} class="{{ rowclass }}"{% endif %}>
 {%- endmacro %}
 
-{% macro tablelabel(tablelabel, rowspan=1, labelid="", hidden=False) -%}
-  <td class="formlabels" rowspan="{{ rowspan }}"{% if labelid %} id="{{ labelid }}"{% endif %}>
-    {% if hidden %}<div class="hiddenelements">{% endif %}
-      <label>{{ tablelabel }}</label>
-    {% if hidden %}</div>{% endif %}
+{% macro tablelabel(tablelabel, rowspan=1, labelid="") -%}
+  <td class="formlabels" rowspan="{{ rowspan }}">
+    <label{% if labelid %} id="{{ labelid }}"{% endif %}>{{ tablelabel }}</label>
   </td>
 {%- endmacro %}
 
@@ -63,6 +61,10 @@
 
 {% macro savebutton(class="", index="") -%}
   {{ button("button", "save", class, index) }}
+{%- endmacro %}
+
+{% macro signinbutton(class="", index="") -%}
+  {{ button("button", "signin", class, index) }}
 {%- endmacro %}
 
 {% macro dropdown(items, selected, id="", class="", tdclass="") -%}
@@ -115,11 +117,9 @@
   </td>
 {%- endmacro %}
 
-{% macro textinput(value, placeholder="", id="", class="", hidden=False) -%}
+{% macro textinput(value, placeholder="", id="", class="") -%}
   <td class="forminputs">
-    {% if hidden %}<div class="hiddenelements">{% endif %}
-      <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
-    {% if hidden %}</div>{% endif %}
+    <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
   </td>
 {%- endmacro %}
 

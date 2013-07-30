@@ -26,6 +26,7 @@ $(function() {
       console.log("Click");
     
       showRow('tr.hiddenelements');
+      $("#username").html("MySpace ID")
     
       return false;
   });
