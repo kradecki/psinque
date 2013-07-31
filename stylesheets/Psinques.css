@@ -44,7 +44,7 @@ div.contact {
     height: 105px;
     background-color: #fff;
     padding: 10px;
-    margin: 5px 0 5px;
+    margin: 0 auto;
 }
 
 div.contactphoto {
@@ -62,9 +62,23 @@ div.contactdetails {
 }
 
 div.psinques {
-    height: 104px;
-    width: 104px;
     float: right;
+}
+
+div.topicons {
+    position: relative;
+    top: 0;
+    right: 0;
+    text-align: right;
+}
+
+div.bottomicons {
+    position: relative;
+    right: 0;
+    height: 40px;
+    width: 144px;
+    margin-top: 24px;
+    text-align: right;
 }
 
 div.tableform td.formnopadding {
@@ -73,5 +87,6 @@ div.tableform td.formnopadding {
 
 div.psinques img {
     display: inline-block;
+    margin-left: 5px;
 }
 

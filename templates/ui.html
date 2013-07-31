@@ -121,8 +121,8 @@
   </td>
 {%- endmacro -%}
 
-{%- macro textinput(value, placeholder="", id="", class="") -%}
-  <td class="forminputs">
+{%- macro textinput(value, placeholder="", id="", class="", tdclass="") -%}
+  <td class="forminputs {% if tdclass %}{{ tdclass }}{% endif %}">
     <input type="text" {% if id %}id="{{ id }}"{% endif %} {% if class %}class="{{ class }}"{% endif %} value="{{ value }}" {% if placeholder %}placeholder="{{ placeholder }}"{% endif %} />
   </td>
 {%- endmacro -%}

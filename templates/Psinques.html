@@ -43,49 +43,42 @@
     {% endif %}
     <div id="searchbox" class="tableform">
       {{ ui.begintable() }}
-        {{ ui.button("filter", "incoming_active") }}
-        {{ ui.button("filter", "outgoing_active") }}
-        {{ ui.dropdown(groups, "", "", "", "smallinput") }}
-        {{ ui.textinput("", "Filter your psinques...", "psinque_filter") }}
+        {{ ui.textinput("", "Search for psinques", "psinque_filter", "", "formnopadding") }}
+        {{ ui.searchbutton("psinque") }}
       {{ ui.endtable() }}
     </div>
   </div>
 {% endblock %}
 {% block content %}
-  <div class="onecolumn">
-    {{ ui.beginform() }}
-      {{ ui.begintable() }}
-        {{ ui.tablelabel("New psinque") }}
-        {{ ui.textinput("", "Type an email address of a friend", "newpsinque") }}
-        {{ ui.searchbutton("psinque") }}
-      {{ ui.endtable() }}
-    {{ ui.endform() }}
-    <div class="contact">
-      <div class="contactphoto">
-        <img src="/images/smallphoto.png" />
+  <div class="contact">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>Stanisław Raczyński</b></br>
+      Psinque</br>
+      CTO
+      <input type="hidden" value="" class="ContactKeys" />
+    </div>
+    <div class="psinques">
+      <div class="topicons">
+        <img src="/images/button_remove_dark.png" />
       </div>
-      <div class="contactdetails">
-        <b>????</b></br>
-        </br>
-        <input type="hidden" value="" class="ContactKeys" />
-        <a href="" class="Removers">Remove</a>
-        | <a href="" class="privateadders">Request private data</a>
-        | <a href="" class="requesters">Request private data</a>  
-      </div>
-      <div class="psinques">
-      <img src="/images/button_incoming_inactive.png" />
-      <img src="/images/button_outgoing_inactive.png" />
+      <div class="bottomicons">
+        <img src="/images/button_private.png" />
+        <img src="/images/button_incoming_active.png" />
+        <img src="/images/button_outgoing_inactive.png" />
       </div>
     </div>
-    {% for contact in contacts %}
-      {%- include "templates/Psinques_Contact.html" -%}
-    {% endfor %}
-  <!--   </table> -->
-    {% if offset > 0 %}
-    <a href="javascript: history.go(-1)">Previous page</a>
-    {% endif %}
-    {% if isThereMore %}
-    <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
-    {% endif %}
   </div>
+  {% for contact in contacts %}
+    {%- include "templates/Psinques_Contact.html" -%}
+  {% endfor %}
+<!--   </table> -->
+  {% if offset > 0 %}
+  <a href="javascript: history.go(-1)">Previous page</a>
+  {% endif %}
+  {% if isThereMore %}
+  <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
+  {% endif %}
 {% endblock %}
