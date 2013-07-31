@@ -88,6 +88,7 @@ $(document).ready(function() {
     $(".privateadders").click(function() {
         
         contactKey = $(this).parent().find(".ContactKeys").val();
+        psinqueAddPrivate
         executeAJAX("/psinques/addprivate?key=" + contactKey,
             function() {
                 window.alert("Request sent");
@@ -103,11 +104,9 @@ $(document).ready(function() {
         
         psinqueKey = $(this).parent().prev().find(".psinquekeys").val();
         
-        executeAJAX("/psinques/acceptrequest?key=" + psinqueKey,
-            function() {
-                location.reload();
-            }
-        );
+        psinqueAcceptRequest(psinqueKey, function() {
+            location.reload();
+        });
         
         return false;
     });
@@ -117,11 +116,9 @@ $(document).ready(function() {
         
         psinqueKey = $(this).closest(".psinquekeys").val();
         
-        executeAJAX("/psinques/rejectrequest?key=" + psinqueKey,
-            function() {
-                location.reload();
-            }
-        );
+        psinqueRejectRequest(psinqueKey, function() {
+            location.reload();
+        });
         
         return false;
     });

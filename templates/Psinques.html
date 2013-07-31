@@ -41,23 +41,104 @@
       </div>
     </div>
     {% endif %}
-    <div id="searchbox" class="tableform">
-      {{ ui.begintable() }}
-        {{ ui.textinput("", "Search for psinques", "psinque_filter", "", "formnopadding") }}
-        {{ ui.searchbutton("psinque") }}
-      {{ ui.endtable() }}
-    </div>
   </div>
 {% endblock %}
 {% block content %}
-  <div class="contact">
+  {{ ui.beginform("newpsinqueform") }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("New psinque") }}
+      {{ ui.textinput("", "Type an email address to find your friend") }}
+      {{ ui.searchbutton() }}
+    {{ ui.endtable() }}
+  {{ ui.endform() }}
+  <div class="contact" id="searchresult">
     <div class="contactphoto">
       <img src="/images/smallphoto.png" />
     </div>
     <div class="contactdetails">
-      <b>Stanisław Raczyński</b></br>
-      Psinque</br>
-      CTO
+      <b>Stanisław Raczyński</b>
+      <p>CTO at Psinque</p>     
+      <input type="hidden" value="" class="ContactKeys" />
+    </div>
+    <div class="psinques">
+      <div class="topicons">
+        <img src="/images/button_add_dark.png" />
+      </div>
+    </div>
+  </div>
+    <div id="searchbox" class="tableform">
+      {{ ui.begintable() }}
+        {{ ui.textinput("", "Filter your psinques", "psinque_filter", "", "formnopadding") }}
+        {{ ui.searchbutton("psinque") }}
+      {{ ui.endtable() }}
+    </div>
+  <div class="contact" id="publiconly">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>Stanisław Raczyński</b>
+      <p>CTO at Psinque</p>     
+      <input type="hidden" value="" class="ContactKeys" />
+    </div>
+    <div class="psinques">
+      <div class="topicons">
+        <img src="/images/button_remove_dark.png" />
+      </div>
+      <div class="bottomicons">
+        <img src="/images/button_public.png" />
+        <img src="/images/button_incoming_active.png" />
+        <img src="/images/button_outgoing_inactive.png" />
+      </div>
+    </div>
+  </div>
+  <div class="contact" id="publicpending">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>Stanisław Raczyński</b>
+      <p>CTO at Psinque</p>     
+      <input type="hidden" value="" class="ContactKeys" />
+    </div>
+    <div class="psinques">
+      <div class="topicons">
+        <img src="/images/button_remove_dark.png" />
+      </div>
+      <div class="bottomicons">
+        <img src="/images/button_pending.png" />
+        <img src="/images/button_incoming_active.png" />
+        <img src="/images/button_outgoing_inactive.png" />
+      </div>
+    </div>
+  </div>
+  <div class="contact" id="publicoutgoing">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>Stanisław Raczyński</b>
+      <p>CTO at Psinque</p>     
+      <input type="hidden" value="" class="ContactKeys" />
+    </div>
+    <div class="psinques">
+      <div class="topicons">
+        <img src="/images/button_remove_dark.png" />
+      </div>
+      <div class="bottomicons">
+        <img src="/images/button_public.png" />
+        <img src="/images/button_incoming_active.png" />
+        <img src="/images/button_outgoing_active.png" />
+      </div>
+    </div>
+  </div>
+  <div class="contact" id="privateonly">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>Stanisław Raczyński</b>
+      <p>CTO at Psinque</p>     
       <input type="hidden" value="" class="ContactKeys" />
     </div>
     <div class="psinques">
@@ -68,6 +149,46 @@
         <img src="/images/button_private.png" />
         <img src="/images/button_incoming_active.png" />
         <img src="/images/button_outgoing_inactive.png" />
+      </div>
+    </div>
+  </div>
+  <div class="contact" id="privateoutgoing">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>Stanisław Raczyński</b>
+      <p>CTO at Psinque</p>     
+      <input type="hidden" value="" class="ContactKeys" />
+    </div>
+    <div class="psinques">
+      <div class="topicons">
+        <img src="/images/button_remove_dark.png" />
+      </div>
+      <div class="bottomicons">
+        <img src="/images/button_private.png" />
+        <img src="/images/button_incoming_active.png" />
+        <img src="/images/button_outgoing_active.png" />
+      </div>
+    </div>
+  </div>
+  <div class="contact" id="outgoingonly">
+    <div class="contactphoto">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactdetails">
+      <b>Stanisław Raczyński</b>
+      <p>CTO at Psinque</p>     
+      <input type="hidden" value="" class="ContactKeys" />
+    </div>
+    <div class="psinques">
+      <div class="topicons">
+        <img src="/images/button_remove_dark.png" />
+      </div>
+      <div class="bottomicons">
+        <img src="/images/button_private.png" />
+        <img src="/images/button_incoming_inactive.png" />
+        <img src="/images/button_outgoing_active.png" />
       </div>
     </div>
   </div>

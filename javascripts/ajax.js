@@ -44,6 +44,17 @@ psinqueAPI_deleteCardDAVLogin   = psinqueAPI_settings + "deletecarddav"
 psinqueAPI_updateSettings       = psinqueAPI_settings + "updatesettings"
 
 //------------------------------
+
+psinqueAPI_psinques = "/psinques/"
+
+psinqueAPI_searchEmail       = psinqueAPI_psinques + "searchemail"
+psinqueAPI_addPrivatePsinque = psinqueAPI_psinques + "addprivate"
+psinqueAPI_removeContact     = psinqueAPI_psinques + "removecontact"
+psinqueAPI_requestUpgrade    = psinqueAPI_psinques + "requestupgrade"
+psinqueAPI_acceptRequest     = psinqueAPI_psinques + "acceptrequest"
+psinqueAPI_rejectRequest     = psinqueAPI_psinques + "rejectrequest"
+
+//------------------------------
 // My Card
 
 function psinqueAddEmail(emailAddress, privacyType, isPrimary, successFunction) {
@@ -246,6 +257,42 @@ function psinqueUpdateSettings(emailNotifications,
                     language: language,
                     synccarddav: syncCardDAV,
                     newsletter: newsletter,
+                }, successFunction);
+}
+
+function psinqueSearchEmail(successFunction) {
+    psinqueAJAX(psinqueAPI_searchEmail, {
+                   : ,
+                }, successFunction);
+}
+
+function psinqueAddPrivatePsinque(successFunction) {
+    psinqueAJAX(psinqueAPI_addPrivatePsinque, {
+                   : ,
+                }, successFunction);
+}
+
+function psinqueRemoveContact(successFunction) {
+    psinqueAJAX(psinqueAPI_removeContact, {
+                   : ,
+                }, successFunction);
+}
+
+function psinqueRequestUpgrade(successFunction) {
+    psinqueAJAX(psinqueAPI_requestUpgrade, {
+                   : ,
+                }, successFunction);
+}
+
+function psinqueAcceptRequest(psinqueKey, successFunction) {
+    psinqueAJAX(psinqueAPI_acceptRequest, {
+                    key : psinqueKey,
+                }, successFunction);
+}
+
+function psinqueRejectRequest(psinqueKey, successFunction) {
+    psinqueAJAX(psinqueAPI_rejectRequest, {
+                    key : psinqueKey,
                 }, successFunction);
 }
 

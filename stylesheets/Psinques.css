@@ -45,6 +45,7 @@ div.contact {
     background-color: #fff;
     padding: 10px;
     margin: 0 auto;
+    margin-bottom: 20px;
 }
 
 div.contactphoto {
@@ -90,3 +91,7 @@ div.psinques img {
     margin-left: 5px;
 }
 
+div#newpsinqueform {
+    width: 690px;
+    margin: 0 auto;
+}
