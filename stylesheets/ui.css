@@ -1,4 +1,8 @@
 
+.clickable {
+    cursor: pointer;
+}
+
 /****************************************
  * Checkboxes
  ****************************************/
@@ -200,10 +204,6 @@ div.tableform td.forminputs label {
     height: 40px;
     padding-top: 12px;
     display: block;
-}
-
-div.tableform .clickable {
-    cursor: pointer;
 }
 
 div.tableform img,

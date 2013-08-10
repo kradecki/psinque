@@ -9,7 +9,7 @@ body {
     font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 16px;
     line-height: 100%;
-/*     background-color: #d8d4cb; */
+    background-color: #d8d4cb;
 }
 
 a {
@@ -44,7 +44,6 @@ div#headerwrapper {
 
 div#contentwrapper {
     padding-bottom: 40px;
-/*     background-color: #d8d4cb; */
 }
 
 div#footerwrapper {
@@ -69,7 +68,6 @@ div#content {
     margin: 0 auto;
     padding: 20px;
     height: 100%;
-    background-color: #d8d4cb;
 }
 
 div#footer {
@@ -135,30 +133,26 @@ div#header li a {
     padding-top: 8px;
     padding-bottom: 7px;
     width: 120px;
-    height: 20px;
+    height: 28px;
     text-align: center;
 }
 
 div#header li a:hover {
-/*     border: 1px solid #d9d4cc; */
-/*     border-bottom: none; */
-/*     width: 118px; */
-/*     padding-top: 7px; */
-/*     background: #d9d4cc; */
-    background: #404040;
-    color: #fff;
+    border: 1px solid #d9d4cc;
+    border-bottom: none; 
+    width: 118px;
+    padding-top: 7px;
+    background: #d9d4cc; 
 }
 
 div#header li a.active {
     font-weight: 800;
-/*     border: 1px solid #404040; */
-/*     border-bottom: none; */
-/*     width: 118px; */
-/*     height: 20px; */
-/*     padding-top: 7px; */
-/*     background: #d9d4cc; */
-    background: #404040;
-    color: #fff;
+    border: 1px solid #404040;
+    border-bottom: none;
+    width: 118px;
+    height: 29px;
+    padding-top: 7px;
+    background: #d9d4cc;
 }
 
 div#header td#extras {

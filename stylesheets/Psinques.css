@@ -20,66 +20,47 @@ div#pendings {
     margin-bottom: 10px;
 }
 
-div#searchbox {
-    width: 960px;
-    margin: 0 auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 0;
-    padding-right: 0;
-    background-color: #404040;
-}
-
-div#searchbox table {
-    width: 690px;
-    margin: 0 auto;
-}
-
-div#searchbox tr {
-    border-bottom: none;
-}
-
 div.contact {
     width: 670px;
-    height: 105px;
     background-color: #fff;
     padding: 10px;
     margin: 0 auto;
     margin-bottom: 20px;
 }
 
-div.contactphoto {
-    height: 104px;
-    width: 104px;
+div.shortdetails {
+    height: 40px;
+    width: 100%;
+}
+
+div.fulldetails {
+    width: 100%;
+    border-top: 1px solid #404040;
+    margin-top: 10px;
+}
+
+div.contactphoto,
+div.contactname {
     float: left;
 }
 
-div.contactdetails {
-    height: 104px;
+div.contactphoto {
+    width: 40px;
+}
+
+div.contactname {
     width: 380px;
-    float: left;
     margin-left: 10px;
     text-align: left;
 }
 
-div.psinques {
+div.contactcontrol {
     float: right;
 }
 
-div.topicons {
-    position: relative;
-    top: 0;
-    right: 0;
-    text-align: right;
-}
-
-div.bottomicons {
-    position: relative;
-    right: 0;
-    height: 40px;
-    width: 144px;
-    margin-top: 24px;
-    text-align: right;
+div.tableform {
+    width: 690px;
+    margin: 0 auto;
 }
 
 div.tableform td.formnopadding {
@@ -89,9 +70,4 @@ div.tableform td.formnopadding {
 div.psinques img {
     display: inline-block;
     margin-left: 5px;
-}
-
-div#newpsinqueform {
-    width: 690px;
-    margin: 0 auto;
 }
