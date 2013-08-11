@@ -42,6 +42,10 @@ function addAddContactHandler(where) {
             newContact = $($.trim(data));
             newContact.hide();
             newContact.prependTo("#contactlist");
+
+            addRequestPrivateHandler(newContact.find(".button_publiccontact"));
+            addRemoveContactHandler(newContact.find(".button_removecontact"));
+
             newContact.slideDown();
             
         });
