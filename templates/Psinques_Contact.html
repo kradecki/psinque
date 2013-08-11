@@ -1,7 +1,7 @@
 {% import "templates/ui.html" as ui -%}
-{%- macro tablelessbutton(id, action, class="", index="") -%}
-  <span class="buttons {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}>
-    <img src="/images/{{ action }}.png" alt="{{ action }}" />
+{%- macro tablelessbutton(id, buttonname, class="") -%}
+  <span class="buttons {{ class }}">
+    <img src="/images/{{ buttonname }}.png" alt="{{ buttonname }}" />
   </span>
 {%- endmacro -%}
 <div class="contacts">
@@ -10,7 +10,7 @@
       <img src="/images/smallphoto.png" />
     </div>
     <div class="contactnames clickable">
-      {{ contact.incoming.displayName }}
+      {{ contact.displayName }}
       <input type="hidden" value="{{ contact.key() }}" class="contactkeys" />
     </div>
     <div class="contactcontrols">
@@ -24,38 +24,50 @@
       {% else %}
         {{ tablelessbutton("contact", "icon_outgoing_inactive") }}
       {% endif %}
-      {{ tablelessbutton("contact", "button_public", "clickable") }}
-      {{ tablelessbutton("contact", "button_remove", "clickable") }}
+      {% if contact.incoming %}
+        {% if contact.status == "private" %}
+          {{ tablelessbutton("contact", "button_private") }}
+        {% elif contact.status == "pending" %}
+          {{ tablelessbutton("contact", "button_pending") }}
+        {% else %}
+          {{ tablelessbutton("contact", "button_public", "contactupgraders clickable") }}
+        {% endif %}
+      {% else %}
+        {{ tablelessbutton("contact", "button_private") }}
+      {% endif %}
+      {{ tablelessbutton("contact", "button_remove", "contactremovers clickable") }}
     </div>
   </div>
   <div class="fulldetails hiddenelements">
     <table class="contacttables"><tbody><tr>
     <td class="contactdetails">
-      {% for permit in contact.incoming.permit.permitEmails %}
-        {% if permit.canView %}
-          <p>{{ permit.userEmail.itemValue }}</p>
-        {% endif %}
-      {% endfor %}
-      {% for permit in contact.incoming.permit.permitIMs %}
-        {% if permit.canView %}
-          <p>{{ permit.userIM.itemValue }}</p>
-        {% endif %}
-      {% endfor %}
-      {% for permit in contact.incoming.permit.permitWWWs %}
-        {% if permit.canView %}
-          <p>{{ permit.userWebpage.itemValue }}</p>
-        {% endif %}
-      {% endfor %}
-      {% for permit in contact.incoming.permit.permitPhones %}
-        {% if permit.canView %}
-          <p>{{ permit.userPhoneNumber.itemValue }}</p>
-        {% endif %}
-      {% endfor %}
-      {% for permit in contact.incoming.permit.permitAddresses %}
-        {% if permit.canView %}
-          <p>{{ permit.userAddress.itemValue }}</p>
-        {% endif %}
-      {% endfor %}
+      {% if contact.incomin %}
+        {% for permit in contact.incoming.permit.permitEmails %}
+          {% if permit.canView %}
+            <p>{{ permit.userEmail.itemValue }}</p>
+          {% endif %}
+        {% endfor %}
+        {% for permit in contact.incoming.permit.permitIMs %}
+          {% if permit.canView %}
+            <p>{{ permit.userIM.itemValue }}</p>
+          {% endif %}
+        {% endfor %}
+        {% for permit in contact.incoming.permit.permitWWWs %}
+          {% if permit.canView %}
+            <p>{{ permit.userWebpage.itemValue }}</p>
+          {% endif %}
+        {% endfor %}
+        {% for permit in contact.incoming.permit.permitPhones %}
+          {% if permit.canView %}
+            <p>{{ permit.userPhoneNumber.itemValue }}</p>
+          {% endif %}
+        {% endfor %}
+        {% for permit in contact.incoming.permit.permitAddresses %}
+          {% if permit.canView %}
+            <p>{{ permit.userAddress.itemValue }}</p>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
     </td>
     <td class="groupspermits">
       <table><tbody>
@@ -64,8 +76,8 @@
           <td><b>Permit</b></td>
         </tr>
         <tr>
-          {{ ui.dropdown(groups, "", tdclass = "widedropdown") }}
-          {{ ui.dropdown(permits, "", tdclass = "widedropdown") }}
+          {{ ui.dropdown(groups, "", class = "groupselects", tdclass = "widedropdown") }}
+          {{ ui.dropdown(permits, "", class = "permitselects", tdclass = "widedropdown") }}
         <tr>
       </tbody></table>
     </td>

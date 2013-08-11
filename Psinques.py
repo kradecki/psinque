@@ -132,7 +132,9 @@ class PsinquesHandler(MasterHandler):
         # We need to share our own private data first
         if contact.permit.public:
             contact.permit = self.userProfile.defaultPermit
-            contact.put()
+
+        contact.status = "pending"
+        contact.put()
         
         newPsinque = Psinque(parent = contact,
                              private = True,
@@ -188,10 +190,8 @@ class PsinquesHandler(MasterHandler):
             
             # Pending decisions
             pendingPsinques = Psinque.all().filter("fromUser =", self.userProfile).filter("status =", "pending")
-            pendingList = []
-            for pending in pendingPsinques:
-                pendingList.append({'name': pending.parent().permit.displayName,
-                                    'key': str(pending.key())})
+            pendingList = [{'name': x.parent().permit.displayName,
+                            'key': str(x.key())} for x in pendingPsinques]
 
             # List of contacts
             contactQuery = Contact.all(). \
@@ -263,21 +263,6 @@ class PsinquesHandler(MasterHandler):
         })
 
 
-    def requestprivate(self):
-        
-        contact = self._getContact()
-        
-        existingPsinque = Psinque.all(keys_only = True). \
-                                  ancestor(contact). \
-                                  filter("private =", True). \
-                                  get()
-        if not existingPsinque is None:
-            raise AjaxError("Request has already been sent.")
-        
-        self._addRequestToUpgrade(contact, contact.friend)
-        self.sendJsonOK()
-    
-
     def addpublic(self):
                 
         friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
@@ -294,6 +279,21 @@ class PsinquesHandler(MasterHandler):
                 'contact': contact[1],
             })
 
+
+    def requestprivate(self):
+        
+        contact = self._getContact()
+        
+        existingPsinque = Psinque.all(keys_only = True). \
+                                  ancestor(contact). \
+                                  filter("private =", True). \
+                                  get()
+        if not existingPsinque is None:
+            raise AjaxError("Request has already been sent.")
+        
+        self._addRequestToUpgrade(contact, contact.friend)
+        self.sendJsonOK()
+    
 
     #def addprivate(self):
         
@@ -389,9 +389,13 @@ class PsinquesHandler(MasterHandler):
                 existingPsinque.delete()
                     
         contactIn.incoming = psinque
+        contactIn.status = "private"
+        contactIn.permit = contactIn.parent().defaultPermit
         contactIn.put()
         
         contactOut.outgoing = psinque
+        contactOut.status = "private"
+        contactOut.permit = contactOut.parent().defaultPermit
         contactOut.put()
         
         psinque.status = "established"

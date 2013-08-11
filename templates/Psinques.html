@@ -8,17 +8,22 @@
     <script type="text/javascript" src="/javascripts/Psinques.js"></script>
 {% endblock %}
 {% block content %}
+  {% if pendings|count > 0 %}
     {{ ui.beginform() }}
-      {{ ui.begintable() }}
-        {{ ui.tablelabel("Notifications", 2) }}
-        {{ ui.textlabel("<b>Krzysztof Radecki</b> has accepted your request.", "", "", "", "", 2) }}
-        {{ ui.removebutton() }}
-        {{ ui.newrow() }}
-        {{ ui.textlabel("<b>Piotr Głuchowski</b> asks for private data.") }}
-        {{ ui.checkbutton() }}
-        {{ ui.removebutton() }}
-      {{ ui.endtable() }}
+      <table><tbody>
+        {% for pending in pendings %}
+          <tr class="notifications">
+            {% if loop.first %}
+              {{ ui.tablelabel("Notifications", pendings|count, "notificationlabel") }}
+            {% endif %}
+            {{ ui.textlabel("<b>" ~ pending.name ~ "</b> asks for private data", keyvalue = pending.key, keyclass="notificationkeys") }}
+            {{ ui.checkbutton("notification", "accepters") }}
+            {{ ui.removebutton("notificatoin", "rejecters") }}
+          </tr>
+        {% endfor %}
+      </tbody></table>
     {{ ui.endform() }}
+  {% endif %}
   {{ ui.beginform("newpsinqueform") }}
     {{ ui.begintable("searchtable") }}
       {{ ui.tablelabel("New psinque", 2) }}

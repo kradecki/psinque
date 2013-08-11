@@ -267,7 +267,7 @@ function psinqueSearchEmail(email, successFunction) {
 }
 
 function psinqueAddPublicPsinque(friendsProfile, successFunction) {
-    psinqueAJAX(psinqueAPI_addPublicPsinque, {
+    psinqueAJAX_HTML(psinqueAPI_addPublicPsinque, {
                     key: friendsProfile,
                 }, successFunction);
 }

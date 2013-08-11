@@ -73,8 +73,8 @@
   {{ button("button", "search", class, index) }}
 {%- endmacro -%}
 
-{%- macro checkbutton(id) -%}
-  {{ button(id, "check") }}
+{%- macro checkbutton(id, class) -%}
+  {{ button(id, "check", class) }}
 {%- endmacro -%}
 
 {%- macro dropdown(items, selected, id="", class="", tdclass="") -%}

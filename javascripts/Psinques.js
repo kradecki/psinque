@@ -43,10 +43,10 @@ function addAddContactHandler(where) {
             newContact.hide();
             newContact.prependTo("#contactlist");
 
-            addRequestPrivateHandler(newContact.find(".button_publiccontact"));
-            addRemoveContactHandler(newContact.find(".button_removecontact"));
+            addRequestPrivateHandler(newContact.find(".contactupgraders"));
+            addRemoveContactHandler(newContact.find(".contactremovers"));
 
-            newContact.slideDown();
+            showElementWithEffects(newContact);
             
         });
     });
@@ -58,9 +58,9 @@ function addExpandContactHandler(where) {
     
     contactDetails = $(this).parent().next();
     if(contactDetails.is(":visible")) {
-        contactDetails.slideUp();
+        hideElementWithEffects(contactDetails);
     } else {
-        contactDetails.slideDown();
+        showElementWithEffects(contactDetails);
     }
   });
 }
@@ -69,13 +69,53 @@ function addRequestPrivateHandler(where) {
     
     $(where).click(function() {
         
+        contactBox = $(this).closest(".contacts");
+        contactKey = contactBox.find(".contactkeys").val();
+        
+        psinqueRequestPrivate(contactKey, function() {
+            requestButton = contactBox.find(".contactupgraders");
+            requestButton.removeClass("contactupgraders clickable");
+            requestButton.find("img").attr("src", "/images/button_pending.png");
+        });
     });
 }
 
 function addRemoveContactHandler(where) {
     
     $(where).click(function() {
+      
+        contactBox = $(this).closest(".contacts");
+        contactKey = contactBox.find(".contactkeys").val();
         
+        psinqueRemoveContact(contactKey, function() {
+            removeElementWithEffects(contactBox);
+        });
+    });
+}
+
+function addAcceptRequestHandler(where) {
+    
+    $(where).click(function() {
+      
+        notification = $(this).closest(".notifications");
+        notificationKey = notification.find(".notificationkeys").val();
+        
+        psinqueAcceptRequest(notificationKey, function() {
+            uiRemoveTableRow(notification, "notification");
+        });
+    });
+}
+
+function addRejectRequestHandler(where) {
+    
+    $(where).click(function() {
+      
+        notification = $(this).closest(".notifications");
+        notificationKey = notification.find(".notificationkeys").val();
+        
+        psinqueRejectRequest(notificationKey, function() {
+            uiRemoveTableRow(notification, "notification");
+        });
     });
 }
 
@@ -93,7 +133,17 @@ $(document).ready(function() {
     
     addExpandContactHandler(".contactnames");
     
-    addRequestPrivateHandler(".button_publiccontact");
-    addRemoveContactHandler(".button_removecontact");
+    addRequestPrivateHandler(".contactupgraders");
+    addRemoveContactHandler(".contactremovers");
+    
+    addAcceptRequestHandler(".accepters");
+    addRejectRequestHandler(".rejecters");
+
+    // React to the Enter key
+    uiAddEnterAction("input[type=text]", "#searchbutton");
+    
+    $(".permitselects").change(function() {
+        console.log("DUpa!");
+    });
     
 });

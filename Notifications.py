@@ -7,17 +7,17 @@ from DataModels import Notification
 
 def getPrimaryEmail(userProfile):
     
-    return userProfile.emails.filter("primary =", True).get().email
+    return userProfile.emails.filter("primary =", True).get().itemValue
 
 
 def createAcceptUrl(psinque):
     
-    return "http://www.psinque.com/psinques/acceptpsinque?key=" + str(psinque.key())
+    return "http://www.psinque.com/psinques/acceptrequest?key=" + str(psinque.key())
 
 
 def createRejectUrl(psinque):
     
-    return "http://www.psinque.com/psinques/rejectpsinque?key=" + str(psinque.key())
+    return "http://www.psinque.com/psinques/rejectrequest?key=" + str(psinque.key())
 
 
 def sendNotification(fromUser, subject, body, shorttext = u""):

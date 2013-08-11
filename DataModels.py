@@ -291,6 +291,9 @@ class Contact(db.Model):
                                     collection_name = "contact1")   
     outgoing = db.ReferenceProperty(Psinque,
                                     collection_name = "contact2")
+    
+    status = db.StringProperty(choices = ["public", "pending", "private"],
+                               default = "public")
 
     friend = db.ReferenceProperty(UserProfile)
     friendsContact = db.SelfReferenceProperty()

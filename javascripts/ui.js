@@ -15,8 +15,11 @@ function uiChangeLabelHeight(where, howMuch) {
   
     tableLabel = $(where);
     currentHeight = parseInt(tableLabel.attr("rowspan"));
-    tableLabel.attr("rowspan", currentHeight + howMuch);
-    
+    if(currentHeight + howMuch == 0) {
+        tableLabel.parent().parent().parent().remove();
+    } else {
+        tableLabel.attr("rowspan", currentHeight + howMuch);
+    }
 }
 
 function uiRemoveTableRow(tr, prefix) {
@@ -96,9 +99,9 @@ function uiAddEnterAction(where, trigger) {
   
     $(where).keyup(function(event) {
       
-      if(event.keyCode == 13) {
-          $(trigger).click();
-      }
+        if(event.keyCode == 13) {
+            $(trigger).click();
+        }
       
     });
 }

@@ -47,12 +47,10 @@ function removeElementWithEffects(element) {
 
 function hideElementWithEffects(element) {
     element.slideUp('fast');
-//     element.hide();
 }
 
 function showElementWithEffects(element) {
     element.slideDown('fast');
-//     element.show();
 }
 
 function psinqueSetMarkingOnChange(where) {
