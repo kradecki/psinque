@@ -132,6 +132,10 @@ div.tableform tr {
     border-bottom: 12px solid #d8d4cb;
 }
 
+div.tableform td {
+    padding: 0px;
+}
+
 div.tableform td.formlabels {
     vertical-align: text-top;
     width: 200px;

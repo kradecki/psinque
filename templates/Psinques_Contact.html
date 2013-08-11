@@ -1,30 +1,74 @@
-<div class="contact">
-  <div class="contactphoto">
-    <img src="/images/smallphoto.png" />
+{% import "templates/ui.html" as ui -%}
+{%- macro tablelessbutton(id, action, class="", index="") -%}
+  <span class="buttons {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}>
+    <img src="/images/{{ action }}.png" alt="{{ action }}" />
+  </span>
+{%- endmacro -%}
+<div class="contacts">
+  <div class="shortdetails">
+    <div class="contactphotos">
+      <img src="/images/smallphoto.png" />
+    </div>
+    <div class="contactnames clickable">
+      {{ contact.incoming.displayName }}
+      <input type="hidden" value="{{ contact.key() }}" class="contactkeys" />
+    </div>
+    <div class="contactcontrols">
+      {% if contact.incoming %}
+        {{ tablelessbutton("contact", "icon_incoming_active") }}
+      {% else %}
+        {{ tablelessbutton("contact", "icon_incoming_inactive") }}
+      {% endif %}
+      {% if contact.outgoing %}
+        {{ tablelessbutton("contact", "icon_outgoing_active") }}
+      {% else %}
+        {{ tablelessbutton("contact", "icon_outgoing_inactive") }}
+      {% endif %}
+      {{ tablelessbutton("contact", "button_public", "clickable") }}
+      {{ tablelessbutton("contact", "button_remove", "clickable") }}
+    </div>
   </div>
-  <div class="contactdetails">
-    <b>{{ contact.displayName }}</b></br>
-    Created {{ contact.creationTime|humanizeddatetime }}</br>
-    <input type="hidden" value="{{ contact.key() }}" class="ContactKeys" />
-    <a href="" class="Removers">Remove</a>
-    | <a href="" class="privateadders">Request private data</a>
-    | <a href="" class="requesters">Request private data</a>  
-  </div>
-  <div class="psinques">
-  {% if contact.incoming.private %}
-  kłódka
-  {% endif %}
-  {% if contact.incoming.status == "established" %}
-  <img src="/images/squareicons/incoming_established.png" />
-  {% elif contact.incoming.status == "pending" %}
-  <img src="/images/squareicons/incoming_pending.png" />
-  {% else %}
-  <img src="/images/squareicons/incoming_none.png" />
-  {% endif %}
-  {% if contact.outgoing.status == "established" %}
-  <img src="/images/squareicons/outgoing_established.png" />
-  {% else %}
-  <img src="/images/squareicons/outgoing_none.png" />
-  {% endif %}
+  <div class="fulldetails hiddenelements">
+    <table class="contacttables"><tbody><tr>
+    <td class="contactdetails">
+      {% for permit in contact.incoming.permit.permitEmails %}
+        {% if permit.canView %}
+          <p>{{ permit.userEmail.itemValue }}</p>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.permit.permitIMs %}
+        {% if permit.canView %}
+          <p>{{ permit.userIM.itemValue }}</p>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.permit.permitWWWs %}
+        {% if permit.canView %}
+          <p>{{ permit.userWebpage.itemValue }}</p>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.permit.permitPhones %}
+        {% if permit.canView %}
+          <p>{{ permit.userPhoneNumber.itemValue }}</p>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.permit.permitAddresses %}
+        {% if permit.canView %}
+          <p>{{ permit.userAddress.itemValue }}</p>
+        {% endif %}
+      {% endfor %}
+    </td>
+    <td class="groupspermits">
+      <table><tbody>
+        <tr>
+          <td><b>Group</b></td>
+          <td><b>Permit</b></td>
+        </tr>
+        <tr>
+          {{ ui.dropdown(groups, "", tdclass = "widedropdown") }}
+          {{ ui.dropdown(permits, "", tdclass = "widedropdown") }}
+        <tr>
+      </tbody></table>
+    </td>
+    </tr></tbody></table>
   </div>
 </div>

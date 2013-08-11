@@ -1,126 +1,95 @@
 
-displayMessage = function(msg) {
-    newElement = $('<span id="message"> ' + msg + '</span>');
-    newElement.hide();
-    newElement.insertAfter('#search');
-    newElement.fadeIn();
+function addSearchHandler(where) {
+    
+    $(where).click(function() {
+                
+        psinqueSearchEmail($("#email").val(), function(jsonResults) {
+            
+            // Remove any previous results
+            $("#searchresults").remove();
+
+            // Insert the result element into the document
+            attachedElement = window.searchResults.appendTo("#searchtable > tbody");
+            
+            // Copy the display name
+            attachedElement.find("#searchresult").html(jsonResults["displayName"])
+            
+            // Copy the key
+            attachedElement.find(".friendsprofilekeys").val(jsonResults["key"]);
+            
+            // Add a handler for the add button
+            addAddContactHandler(attachedElement.find("#addcontact"));
+            
+            // Slide down the results (using the div workaround)
+            attachedElement.find("div").slideDown();
+
+        });
+        
+        return false;
+    });
+}
+
+function addAddContactHandler(where) {
+    
+    $(where).click(function() {
+        
+        friendsProfileKey = $(this).parent().parent().prev().find(".friendsprofilekeys").val();
+        
+        psinqueAddPublicPsinque(friendsProfileKey, function(data) {
+            
+            $("#searchresults").remove();
+            
+            newContact = $($.trim(data));
+            newContact.hide();
+            newContact.prependTo("#contactlist");
+            newContact.slideDown();
+            
+        });
+    });
+}
+
+function addExpandContactHandler(where) {
+  
+  $(where).click(function() {
+    
+    contactDetails = $(this).parent().next();
+    if(contactDetails.is(":visible")) {
+        contactDetails.slideUp();
+    } else {
+        contactDetails.slideDown();
+    }
+  });
+}
+
+function addRequestPrivateHandler(where) {
+    
+    $(where).click(function() {
+        
+    });
+}
+
+function addRemoveContactHandler(where) {
+    
+    $(where).click(function() {
+        
+    });
+}
+
+function detachFromDocument(what) {
+    detachedElement = $(what).clone();
+    $(what).remove();
+    return detachedElement;
 }
 
 $(document).ready(function() {
     
-    $("#search").click(function() {
-        
-        // Remove any previous search results
-        if($('#message').length > 0)
-            $("#message").remove();
-        
-        $.ajax("/psinques/searchemail?email=" + $("#email").val()).done(function(data) {
-
-            jsonResults = $.parseJSON(data)
-            statusCode = jsonResults["status"];
-            if(statusCode == 0) {
-                
-                userKey = jsonResults["key"];
-                displayMessage('<span id="message">Add psinque: <a href="/psinques/addpublic?key=' + userKey + '">public</a> | <a href="" id="addPrivate">private (requires authorization)</a></span>');
-
-                $("#addPrivate").click(function() {
-                    
-                    $.ajax("/psinques/addprivate?key=" + userKey)
-                        .done(function(data) {
-                            $("#message").remove();
-                            addStatusCode = $.parseJSON(data)["status"];
-                            if(addStatusCode == 0) {
-                                displayMessage('Psinque request sent');
-                            } else {
-                                displayMessage('Unknown error (' + addStatusCode + ')');
-                            }
-                        })
-                        .error(function(data) {
-                            $("#message").remove();
-                            displayMessage('Server error')
-                        });
-                    
-                    return false;
-                });   
-            }
-            
-            else if(statusCode == 1) {
-                displayMessage(jsonResults["message"]);
-            }
-            
-            else {
-                displayMessage('User not found.');                
-            }
-        });
-        
-        return false;
-    });
+    // Searching for emails
+    window.searchResults = detachFromDocument("#searchresults");
+    addSearchHandler("#searchbutton");
     
+    addExpandContactHandler(".contactnames");
     
-    $(".Removers").click(function() {
-        
-        contactKey = $(this).parent().find(".ContactKeys").val();
-        executeAJAX("/psinques/removecontact?key=" + contactKey,
-            function() {
-                location.reload();
-            }
-        );
-        
-        return false;
-        
-    });
+    addRequestPrivateHandler(".button_publiccontact");
+    addRemoveContactHandler(".button_removecontact");
     
-
-    $(".requesters").click(function() {
-        
-        contactKey = $(this).parent().find(".ContactKeys").val();
-        executeAJAX("/psinques/requestupgrade?key=" + contactKey,
-            function() {
-                window.alert("Request sent");
-            }
-        );
-        
-        return false;
-        
-    });
-    
-    
-    $(".privateadders").click(function() {
-        
-        contactKey = $(this).parent().find(".ContactKeys").val();
-        psinqueAddPrivate
-        executeAJAX("/psinques/addprivate?key=" + contactKey,
-            function() {
-                window.alert("Request sent");
-            }
-        );
-        
-        return false;
-        
-    });
-    
-    
-    $(".accepters").click(function() {
-        
-        psinqueKey = $(this).parent().prev().find(".psinquekeys").val();
-        
-        psinqueAcceptRequest(psinqueKey, function() {
-            location.reload();
-        });
-        
-        return false;
-    });
-
-    
-    $(".rejecters").click(function() {
-        
-        psinqueKey = $(this).closest(".psinquekeys").val();
-        
-        psinqueRejectRequest(psinqueKey, function() {
-            location.reload();
-        });
-        
-        return false;
-    });
-
 });

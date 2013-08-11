@@ -149,23 +149,26 @@ class PsinquesHandler(MasterHandler):
                           filter("friend =", friendsProfile). \
                           get()
         if contact is None:
+            contactExisted = False
             contact = Contact(parent = self.userProfile,
                               friend = friendsProfile,
                               group = self.userProfile.defaultGroup,
                               permit = self.userProfile.publicPermit)
             contact.put()
+        else:
+            contactExisted = True
         
         newPsinque = Psinque(parent = contact,
                              fromUser = friendsProfile,
                              private = False,
-                             permit = friendsProfile.defaultPermit,
+                             permit = friendsProfile.publicPermit,
                              status = "established")
         newPsinque.put()
         
         contact.incoming = newPsinque
         contact.put()
         
-        return newPsinque
+        return [contactExisted, contact, newPsinque]
         
 
     #****************************
@@ -204,6 +207,10 @@ class PsinquesHandler(MasterHandler):
                 isThereMore = (offset + 10 < count)
             else:
                 isThereMore = False
+
+            permitList = { permit.name: permit.key() for permit in self.userProfile.permits.fetch(100) }
+                    
+            groupList = { group.name: group.key() for group in self.userProfile.groups.fetch(100) }
                     
             self.sendContent('templates/Psinques.html',
                             activeEntry = "Psinques",
@@ -214,25 +221,9 @@ class PsinquesHandler(MasterHandler):
                 'nextCursor': contactQuery.cursor(),
                 'contacts': contacts,
                 'pendings': pendingList,
-                'groups': [x.name for x in Group.all().ancestor(self.userProfile)],
-                'permits': Permit.all().ancestor(self.userProfile).filter("public =", False),
+                'groups': groupList,
+                'permits': permitList,
             })
-
-
-    #def viewdecision(self):
-        
-        #self.sendTopTemplate(self, activeEntry = "Outgoing")
-        #decisionKey = self.response.get('key')
-        #decision = PendingDecision.get(decisionKey)
-        #if decision is None:
-            #self.sendContent(self, 'templates/outgoing_error.html', {
-                #'message': "Pending decision not found. Are you sure you have not resolved it already?",
-            #})
-        #else:
-            #self.sendContent(self, 'templates/outgoing_decision.html', {
-                #'decision': decision,
-            #})
-        #self.sendBottomTemplate(self)
 
     
     #****************************
@@ -244,26 +235,35 @@ class PsinquesHandler(MasterHandler):
         # Search for the owner of the email address
         email = self.request.get('email')
         userEmail = UserEmail.all(keys_only = True). \
-                              filter("email =", email). \
+                              filter("itemValue =", email). \
                               get()
 
         if userEmail is None:
-            raise AjaxError("User not found")
+            raise AjaxError("Email not registered in Psinque.")
         
-        # Check if there already is a Psinque from that user
+        # Check if it's not my own email address
         userProfile = UserProfile.get(userEmail.parent())
-        logging.info(userProfile)
+        if userProfile.key() == self.userProfile.key():
+            raise AjaxError("It is your own email address.")
+          
+        # Check if there already is a Psinque from that user
         psinque = self._getPsinqueFrom(userProfile)
         if not psinque is None:
-            raise AjaxError("Psinque already exists")
+            raise AjaxError("You already have a psinque with this email address.")
+
+        if userProfile.publicEnabled:
+            displayName = userProfile.publicPermit.displayName
+        else:
+            displayName = "<i>Undisclosed name</i>"
         
         self.sendJsonOK({
             "key": str(userProfile.key()),
+            "displayName": displayName,
             "publicEnabled": userProfile.publicEnabled,
         })
 
 
-    def requestupgrade(self):
+    def requestprivate(self):
         
         contact = self._getContact()
         
@@ -283,47 +283,50 @@ class PsinquesHandler(MasterHandler):
         friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
 
         psinque = self._getPsinqueFrom(friendsProfile)
-        logging.info(psinque)
         if not psinque is None:
             raise AjaxError("You already have this psinque")
         
-        self._addPublicPsinque(friendsProfile)
+        contact = self._addPublicPsinque(friendsProfile)
         
-        self.redirect("/psinques/view")
+        if not contact[0]:
+            self.sendContent('templates/Psinques_Contact.html',
+                            templateVariables = {
+                'contact': contact[1],
+            })
 
 
-    def addprivate(self):
+    #def addprivate(self):
         
-        try:
-            friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
-        except KindError:
-            friendsProfile = Contact.get(self.getRequiredParameter("key")).friend
+        #try:
+            #friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
+        #except KindError:
+            #friendsProfile = Contact.get(self.getRequiredParameter("key")).friend
         
-        psinque = self._getPsinqueFrom(friendsProfile)
-        if not psinque is None:
-            if psinque.private:
-                raise AjaxError("You already have this psinque")
-            else:
-                self._addRequestToUpgrade(psinque.parent(), friendsProfile)
-        else:
-            newPsinque = self._addPublicPsinque(friendsProfile)
-            self._addRequestToUpgrade(newPsinque.parent(), friendsProfile)
+        #psinque = self._getPsinqueFrom(friendsProfile)
+        #if not psinque is None:
+            #if psinque.private:
+                #raise AjaxError("You already have this psinque")
+            #else:
+                #self._addRequestToUpgrade(psinque.parent(), friendsProfile)
+        #else:
+            #newPsinque = self._addPublicPsinque(friendsProfile)
+            #self._addRequestToUpgrade(newPsinque.parent(), friendsProfile)
         
-        self.sendJsonOK()
+        #self.sendJsonOK()
 
 
-    def removeincoming(self):
+    #def removeincoming(self):
         
-        self._removeIncoming(self._getContact())
+        #self._removeIncoming(self._getContact())
 
-        self.sendJsonOK()
+        #self.sendJsonOK()
 
 
-    def removeoutgoing(self):
+    #def removeoutgoing(self):
         
-        contact = self._getContact()       
-        self._removeOutgoing(contact)
-        self.sendJsonOK()
+        #contact = self._getContact()       
+        #self._removeOutgoing(contact)
+        #self.sendJsonOK()
 
 
     def removecontact(self):

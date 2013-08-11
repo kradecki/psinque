@@ -27,9 +27,9 @@
   </table>
 {%- endmacro -%}
 
-{%- macro newrow(class="") -%}
+{%- macro newrow(class="", id="") -%}
   </tr>
-  <tr {% if class %}class="{{ class }}"{% endif %}>
+  <tr {% if class %}class="{{ class }}"{% endif %} {% if id %}id="{{ id }}"{% endif %}>
 {%- endmacro -%}
 
 <!-- ********************************************************
@@ -39,16 +39,18 @@
   <td><br style="clear:both;"/></td>
 {%- endmacro -%}
 
-{%- macro button(id, action, class="", index="") -%}
+{%- macro button(id, action, class="", index="", divclass="") -%}
   <td class="forminputs formbuttons">
-    <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}>
-    <img src="/images/button_{{ action }}.png" alt="{{ action }}" />
-    </span>
+    <div {% if divclass %}class="{{ divclass }}"{% endif %}>
+      <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}>
+      <img src="/images/button_{{ action }}.png" alt="{{ action }}" />
+      </span>
+    </div>
   </td>
 {%- endmacro -%}
 
-{%- macro addbutton(id) -%}
-  {{ button(id, "add") }}
+{%- macro addbutton(id, divclass="") -%}
+  {{ button(id, "add", divclass=divclass) }} 
 {%- endmacro -%}
 
 {%- macro createbutton(id) -%}
@@ -71,6 +73,10 @@
   {{ button("button", "search", class, index) }}
 {%- endmacro -%}
 
+{%- macro checkbutton(id) -%}
+  {{ button(id, "check") }}
+{%- endmacro -%}
+
 {%- macro dropdown(items, selected, id="", class="", tdclass="") -%}
   <td class="forminputs {% if tdclass %}{{ tdclass }}{% endif %}">
     <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %} data-template="#dropdown">
@@ -87,9 +93,9 @@
   </td>
 {%- endmacro -%}
 
-{%- macro textlabel(text, class="", id="", keyvalue="", keyclass="") -%}
-  <td class="forminputs">
-    <div>
+{%- macro textlabel(text, class="", id="", keyvalue="", keyclass="", colspan="", divclass="") -%}
+  <td class="forminputs textlabels" {% if colspan -%}colspan="{{ colspan }}"{%- endif %}>
+    <div {% if divclass %}class="{{ divclass }}"{% endif %}>
       {% if keyvalue %}
         <input type="hidden" class="{{ keyclass }}" value="{{ keyvalue }}">
       {% endif %}

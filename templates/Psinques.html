@@ -7,199 +7,40 @@
 {% block externalscripts %}
     <script type="text/javascript" src="/javascripts/Psinques.js"></script>
 {% endblock %}
-{% block abovecontent %}
-  <div class="abovecontentcolumn">
-    {% if pendings|length %}
-    <div class="onecolumn">
-      <div class="tableform" id="pendings">
-        <table>
-        <tbody>
-          {% for pending in pendings %}
-          <tr>
-            <td class="forminputs formnopadding">
-              <label>
-              <b>{{ pending.name }}</b> wants to access your private contact data.
-              </label>
-            </td>
-            <td>
-              <input type="hidden" value="{{ pending.key }}" class="psinquekeys" />
-            </td>
-            <td class="forminputs formbuttons">
-              <a href="" class="accepters">
-                <img src="/images/squareicons/add.png" />
-              </a>
-            </td>
-            <td class="forminputs formbuttons">
-              <a href="" class="rejecters">
-                <img src="/images/squareicons/remove.png" />
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-      </div>
-    </div>
-    {% endif %}
-  </div>
-{% endblock %}
 {% block content %}
+    {{ ui.beginform() }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Notifications", 2) }}
+        {{ ui.textlabel("<b>Krzysztof Radecki</b> has accepted your request.", "", "", "", "", 2) }}
+        {{ ui.removebutton() }}
+        {{ ui.newrow() }}
+        {{ ui.textlabel("<b>Piotr Głuchowski</b> asks for private data.") }}
+        {{ ui.checkbutton() }}
+        {{ ui.removebutton() }}
+      {{ ui.endtable() }}
+    {{ ui.endform() }}
   {{ ui.beginform("newpsinqueform") }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("New psinque") }}
-      {{ ui.textinput("", "Type an email address to find your friend") }}
+    {{ ui.begintable("searchtable") }}
+      {{ ui.tablelabel("New psinque", 2) }}
+      {{ ui.textinput("", "Type an email address to find your friend", id = "email") }}
       {{ ui.searchbutton() }}
+      {{ ui.newrow(id = "searchresults") }}
+      {{ ui.textlabel("", id="searchresult", keyvalue="unknown", keyclass="friendsprofilekeys", divclass = "hiddenelements") }}
+      {{ ui.addbutton("contact", divclass = "hiddenelements") }}
     {{ ui.endtable() }}
   {{ ui.endform() }}
-  <div class="contact" id="searchresult">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
-    </div>
-    <div class="contactdetails">
-      <b>Stanisław Raczyński</b>
-      <p>CTO at Psinque</p>     
-      <input type="hidden" value="" class="ContactKeys" />
-    </div>
-    <div class="psinques">
-      <div class="topicons">
-        <img src="/images/button_add_dark.png" />
-      </div>
-    </div>
+  {{ ui.beginform("searchform") }}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Filter") }}
+      {{ ui.dropdown(groups, "") }}
+      {{ ui.textinput("", "Custom text search", "psinque_filter") }}
+      {{ ui.searchbutton("psinque") }}
+    {{ ui.endtable() }}
+  {{ ui.endform() }}
+  <div id="contactlist">
+    {% for contact in contacts %}
+      {% set contact = contact %}
+      {%- include "templates/Psinques_Contact.html" -%}
+    {% endfor %}
   </div>
-    <div id="searchbox" class="tableform">
-      {{ ui.begintable() }}
-        {{ ui.textinput("", "Filter your psinques", "psinque_filter", "", "formnopadding") }}
-        {{ ui.searchbutton("psinque") }}
-      {{ ui.endtable() }}
-    </div>
-  <div class="contact" id="publiconly">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
-    </div>
-    <div class="contactdetails">
-      <b>Stanisław Raczyński</b>
-      <p>CTO at Psinque</p>     
-      <input type="hidden" value="" class="ContactKeys" />
-    </div>
-    <div class="psinques">
-      <div class="topicons">
-        <img src="/images/button_remove_dark.png" />
-      </div>
-      <div class="bottomicons">
-        <img src="/images/button_public.png" />
-        <img src="/images/button_incoming_active.png" />
-        <img src="/images/button_outgoing_inactive.png" />
-      </div>
-    </div>
-  </div>
-  <div class="contact" id="publicpending">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
-    </div>
-    <div class="contactdetails">
-      <b>Stanisław Raczyński</b>
-      <p>CTO at Psinque</p>     
-      <input type="hidden" value="" class="ContactKeys" />
-    </div>
-    <div class="psinques">
-      <div class="topicons">
-        <img src="/images/button_remove_dark.png" />
-      </div>
-      <div class="bottomicons">
-        <img src="/images/button_pending.png" />
-        <img src="/images/button_incoming_active.png" />
-        <img src="/images/button_outgoing_inactive.png" />
-      </div>
-    </div>
-  </div>
-  <div class="contact" id="publicoutgoing">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
-    </div>
-    <div class="contactdetails">
-      <b>Stanisław Raczyński</b>
-      <p>CTO at Psinque</p>     
-      <input type="hidden" value="" class="ContactKeys" />
-    </div>
-    <div class="psinques">
-      <div class="topicons">
-        <img src="/images/button_remove_dark.png" />
-      </div>
-      <div class="bottomicons">
-        <img src="/images/button_public.png" />
-        <img src="/images/button_incoming_active.png" />
-        <img src="/images/button_outgoing_active.png" />
-      </div>
-    </div>
-  </div>
-  <div class="contact" id="privateonly">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
-    </div>
-    <div class="contactdetails">
-      <b>Stanisław Raczyński</b>
-      <p>CTO at Psinque</p>     
-      <input type="hidden" value="" class="ContactKeys" />
-    </div>
-    <div class="psinques">
-      <div class="topicons">
-        <img src="/images/button_remove_dark.png" />
-      </div>
-      <div class="bottomicons">
-        <img src="/images/button_private.png" />
-        <img src="/images/button_incoming_active.png" />
-        <img src="/images/button_outgoing_inactive.png" />
-      </div>
-    </div>
-  </div>
-  <div class="contact" id="privateoutgoing">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
-    </div>
-    <div class="contactdetails">
-      <b>Stanisław Raczyński</b>
-      <p>CTO at Psinque</p>     
-      <input type="hidden" value="" class="ContactKeys" />
-    </div>
-    <div class="psinques">
-      <div class="topicons">
-        <img src="/images/button_remove_dark.png" />
-      </div>
-      <div class="bottomicons">
-        <img src="/images/button_private.png" />
-        <img src="/images/button_incoming_active.png" />
-        <img src="/images/button_outgoing_active.png" />
-      </div>
-    </div>
-  </div>
-  <div class="contact" id="outgoingonly">
-    <div class="contactphoto">
-      <img src="/images/smallphoto.png" />
-    </div>
-    <div class="contactdetails">
-      <b>Stanisław Raczyński</b>
-      <p>CTO at Psinque</p>     
-      <input type="hidden" value="" class="ContactKeys" />
-    </div>
-    <div class="psinques">
-      <div class="topicons">
-        <img src="/images/button_remove_dark.png" />
-      </div>
-      <div class="bottomicons">
-        <img src="/images/button_private.png" />
-        <img src="/images/button_incoming_inactive.png" />
-        <img src="/images/button_outgoing_active.png" />
-      </div>
-    </div>
-  </div>
-  {% for contact in contacts %}
-    {%- include "templates/Psinques_Contact.html" -%}
-  {% endfor %}
-<!--   </table> -->
-  {% if offset > 0 %}
-  <a href="javascript: history.go(-1)">Previous page</a>
-  {% endif %}
-  {% if isThereMore %}
-  <a href="/incoming?cursor={{ nextCursor }}&offset={{ offset+10 }}">Next page</a>
-  {% endif %}
 {% endblock %}

@@ -1,26 +1,10 @@
 
-div#header li a {
-    padding-bottom: 6px;
-}
-
-div.aboveconent {
-    width: 100%;
-    padding: 0;
-    background-color: #d8d4cb;
-}
-
-div.abovecontentcolumn {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-}
-
 div#pendings {
     margin-top: 20px;
     margin-bottom: 10px;
 }
 
-div.contact {
+div.contacts {
     width: 670px;
     background-color: #fff;
     padding: 10px;
@@ -28,34 +12,58 @@ div.contact {
     margin-bottom: 20px;
 }
 
-div.shortdetails {
-    height: 40px;
+div.shortdetails,
+div.fulldetails {
     width: 100%;
 }
 
+div.shortdetails {
+    height: 40px;
+}
+
 div.fulldetails {
-    width: 100%;
     border-top: 1px solid #404040;
     margin-top: 10px;
 }
 
-div.contactphoto,
-div.contactname {
+div.contactphotos,
+div.contactnames {
     float: left;
 }
 
-div.contactphoto {
+div.contactphotos {
     width: 40px;
 }
 
-div.contactname {
+div.contactnames {
     width: 380px;
     margin-left: 10px;
     text-align: left;
 }
 
-div.contactcontrol {
+div.contactcontrols {
     float: right;
+}
+
+table.contacttables {
+    width: 620px;
+    margin-left: 50px;
+}
+
+table.contacttables td {
+    vertical-align: top;
+}
+
+td.groupspermits {
+    width: 300px;
+}
+
+td.groupspermits table {
+    text-align: center;
+}
+
+.widedropdown {
+    width: 150px;
 }
 
 div.tableform {
@@ -63,8 +71,10 @@ div.tableform {
     margin: 0 auto;
 }
 
-div.tableform td.formnopadding {
-    padding-left: 0;
+div.tableform td.forminputs label {
+    height: 100%;
+    line-height: 120%;
+    padding-bottom: 10px;
 }
 
 div.psinques img {

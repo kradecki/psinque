@@ -48,9 +48,9 @@ psinqueAPI_updateSettings       = psinqueAPI_settings + "updatesettings"
 psinqueAPI_psinques = "/psinques/"
 
 psinqueAPI_searchEmail       = psinqueAPI_psinques + "searchemail"
-psinqueAPI_addPrivatePsinque = psinqueAPI_psinques + "addprivate"
+psinqueAPI_addPublicPsinque  = psinqueAPI_psinques + "addpublic"
 psinqueAPI_removeContact     = psinqueAPI_psinques + "removecontact"
-psinqueAPI_requestUpgrade    = psinqueAPI_psinques + "requestupgrade"
+psinqueAPI_requestPrivate    = psinqueAPI_psinques + "requestprivate"
 psinqueAPI_acceptRequest     = psinqueAPI_psinques + "acceptrequest"
 psinqueAPI_rejectRequest     = psinqueAPI_psinques + "rejectrequest"
 
@@ -260,27 +260,27 @@ function psinqueUpdateSettings(emailNotifications,
                 }, successFunction);
 }
 
-function psinqueSearchEmail(successFunction) {
+function psinqueSearchEmail(email, successFunction) {
     psinqueAJAX(psinqueAPI_searchEmail, {
-                   : ,
+                    email: email,
                 }, successFunction);
 }
 
-function psinqueAddPrivatePsinque(successFunction) {
-    psinqueAJAX(psinqueAPI_addPrivatePsinque, {
-                   : ,
+function psinqueAddPublicPsinque(friendsProfile, successFunction) {
+    psinqueAJAX(psinqueAPI_addPublicPsinque, {
+                    key: friendsProfile,
                 }, successFunction);
 }
 
-function psinqueRemoveContact(successFunction) {
+function psinqueRemoveContact(contactKey, successFunction) {
     psinqueAJAX(psinqueAPI_removeContact, {
-                   : ,
+                    key: contactKey,
                 }, successFunction);
 }
 
-function psinqueRequestUpgrade(successFunction) {
-    psinqueAJAX(psinqueAPI_requestUpgrade, {
-                   : ,
+function psinqueRequestPrivate(contactKey, successFunction) {
+    psinqueAJAX(psinqueAPI_requestPrivate, {
+                    key: contactKey,
                 }, successFunction);
 }
 

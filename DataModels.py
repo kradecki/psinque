@@ -116,6 +116,10 @@ class Permit(db.Model):
     def permitAddresses(self):
         return PermitAddress.all().ancestor(self)
 
+    @property
+    def individualPermits(self):
+        return IndividualPermit.all().ancestor(self)
+
 
 #-----------------------------------------------------------------------------
 
@@ -220,7 +224,7 @@ class UserProfile(db.Model):
 
     birthDate = db.DateProperty(default = datetime.date(1900, 1, 1))  
 
-    publicEnabled = db.BooleanProperty(default = False)
+    publicEnabled = db.BooleanProperty(default = True)
 
     # Shortcuts to non-removable permits
     defaultPermit = db.ReferenceProperty(Permit,
@@ -254,6 +258,10 @@ class UserProfile(db.Model):
     @property
     def permits(self):
         return Permit.all().ancestor(self)
+
+    @property
+    def groups(self):
+        return Group.all().ancestor(self)
 
 #-----------------------------------------------------------------------------
 
