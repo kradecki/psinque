@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 mkdir -p build
 echo "Copying files to 'build'..."
 cp *.py build/
@@ -15,7 +16,7 @@ for filename in javascripts/*.js; do
   uglifyjs $filename -m -c --screw-ie8 > build/$filename
 done
 echo "Minimizing stylesheets..."
-mkdir -p build/javascripts
+mkdir -p build/stylesheets
 for filename in stylesheets/*.css; do
   echo " - $filename"
   yuicompressor $filename -o build/$filename
