@@ -90,9 +90,9 @@ config.update({
     "enable_loggers": [],
     "propsmanager": False,                    
     "locksmanager": False,
-    "acceptbasic": False,      
-    "acceptdigest": True,
-    "defaultdigest": True,    
+    "acceptbasic": True,      
+    "acceptdigest": False,
+    "defaultdigest": False,    
     "domaincontroller": domainController,
     "dir_browser": {
         "enable": False,

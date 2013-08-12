@@ -10,8 +10,7 @@ class PsinqueDomainController(object):
     
     def __init__(self, userMap = None):
         
-        #self.userMap = userMap
-        #self.userPassword = [u"", u""]
+        self.userMap = userMap
     
     
     def __repr__(self):
@@ -53,7 +52,7 @@ class PsinqueDomainController(object):
         if carddav_password is None:
             return [ u"", u"" ]
         else:
-            return [ carddav_password.password, carddav_password.salt ]
+            return [ carddav_password.generatedPasswordHash, carddav_password.salt ]
     
     
     def authDomainUser(self, realmname, username, password, environ):
@@ -70,6 +69,6 @@ class PsinqueDomainController(object):
             return False
           
         passwordHash = md5.new(userPassword.salt + password).hexdigest()
-          
+        
         return (userPassword.generatedPasswordHash == passwordHash)
 

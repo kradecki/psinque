@@ -5,6 +5,7 @@ import logging
 import webapp2
 import random
 import string
+import md5
 
 from google.appengine.api import users
 
@@ -97,11 +98,13 @@ class Settings(MasterHandler):
                 break
 
         generatedPassword = self._generateRandomSequence(16)
+        salt = self._generateRandomSequence(2)
         
         cardDAVLogin = CardDAVLogin(parent = self.userProfile,
                                     name = carddavName,
                                     generatedUsername = generatedUsername,
-                                    generatedPassword = generatedPassword)
+                                    generatedPasswordHash = md5.new(salt + generatedPassword).hexdigest(),
+                                    salt = salt)
         cardDAVLogin.put()
         
         self.sendJsonOK({
