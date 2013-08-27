@@ -75,3 +75,8 @@ handlers:
 # Error handling
 - url: /.*
   script: NotFound.app
+
+# Web crawlers
+- url: /robots.txt
+  static_files: robots.txt
+  upload: robots.txt
