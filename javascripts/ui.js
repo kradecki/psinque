@@ -11,14 +11,14 @@ function uiCloneElement(oldElement) {
     return newElement;
 }
 
-function uiChangeLabelHeight(where, howMuch) {
+function uiChangeLabelHeight(label, howMuch) {
   
-    tableLabel = $(where);
-    currentHeight = parseInt(tableLabel.attr("rowspan"));
+    tableCell = $(label).closest("td");
+    currentHeight = parseInt(tableCell.attr("rowspan"));
     if(currentHeight + howMuch == 0) {
-        tableLabel.parent().parent().parent().remove();
+        tableCell.closest("table").remove();
     } else {
-        tableLabel.attr("rowspan", currentHeight + howMuch);
+        tableCell.attr("rowspan", currentHeight + howMuch);
     }
 }
 
@@ -27,7 +27,8 @@ function uiRemoveTableRow(tr, prefix) {
     tr.slideUp('fast', function() {
         labelid = "#" + prefix + "label";
         if(tr.find(labelid).length > 0) {
-            $(labelid).prependTo(tr.next());
+//             console.log("Found label in this row");
+            $(labelid).parent().prependTo(tr.next());
         }
         uiChangeLabelHeight(labelid, -1);
         tr.remove();

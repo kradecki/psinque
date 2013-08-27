@@ -29,23 +29,24 @@ function addGenerateCardDAVHandler(where) {
             psinqueGenerateCardDAVLogin(cardDAVName, function(data) {
                 
                 window.cardDAVCounter++;
-                
+
+                // Display the CardDAV credentials
                 cardDAVLogin = $("#carddavlogin");
                 cardDAVLogin.html("<b>Username</b>: " + data.username +
                              "</br><b>Password</b>: " + data.password);
                 showElementWithEffects(cardDAVLogin.parent());
 
+                // Add a new row with the new login
                 uiChangeLabelHeight("#carddavlabel", +1);
                 newRow = $(cardDAVHTML(data.key, cardDAVName))
                 newRow.insertBefore(".newcarddav");
-                console.log(newRow);
                 addRemoveCardDAVHandler(newRow.find(".carddavremovers"));
                 
                 // Clear the new CardDAV name input 
                 $("#newcarddavname").val("");
 
-                if(window.cardDAVCounter == 1) {
-                    $("#carddavlabel").prependTo(newRow);
+                if(window.cardDAVCounter == 1) { // it's the first CardDAV login
+                    $("#carddavlabel").parent().prependTo(newRow);
                 }
                 
             });
@@ -59,8 +60,7 @@ function addRemoveCardDAVHandler(where) {
     
     $(where).click(function() {
         
-        tr = $(this).parent().parent();
-
+        tr = $(this).closest("tr");
         cardDAVKey = tr.find(".carddavkeys").val();
         
         psinqueDeleteCardDAVLogin(cardDAVKey, function() {
