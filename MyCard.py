@@ -46,7 +46,7 @@ class ProfileHandler(MasterHandler):
 
         logging.info("New permit created, key = " + str(permit.key()))
 
-        return permit
+        return permit.key()
 
 
     def _createNewGroup(self, userProfile, groupName):
@@ -55,9 +55,9 @@ class ProfileHandler(MasterHandler):
                       name = groupName)
         group.put()
 
-        #logging.info("New group created, key = " + str(group.key()))
+        logging.info("New group created, key = " + str(group.key()))
 
-        return group
+        return group.key()
 
 
     def _createNewProfile(self):
@@ -65,6 +65,7 @@ class ProfileHandler(MasterHandler):
         # Create an empty profile
         userProfile = UserProfile(user = self.user)
         userProfile.put()  # save the new (and empty) profile in the Datastore in order to obtain its key
+        logging.info("New profile created, key = " + str(userProfile.key()))
 
         # User settings
         userSettings = UserSettings(parent = userProfile)
@@ -92,7 +93,6 @@ class ProfileHandler(MasterHandler):
         # Save the updated user profile
         userProfile.put()
 
-        logging.info("New profile created")
         return userProfile
 
 

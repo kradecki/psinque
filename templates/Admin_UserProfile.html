@@ -1,0 +1,15 @@
+<table>
+  <tbody>
+    {% for profile in userProfiles %}
+      <tr>
+        <td>{{ profile.key() }}</td>
+        <td>{{ profile.username }}</td>
+        <td>{{ profile.givenNames }}</td>
+        <td>{{ profile.familyNames }}</td>
+        <td>
+          <a href="/admin/deleteprofile?key={{ profile.key() }}">Delete</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

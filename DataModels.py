@@ -39,7 +39,6 @@ def generateVCard(permit):
     
     logging.info("Generating vCard")
     userProfile = permit.parent()
-    logging.info(permit.canViewBirthday)
 
     newVCard = vCard.VCard()
 

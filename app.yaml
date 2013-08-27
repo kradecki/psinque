@@ -86,3 +86,10 @@ handlers:
 - url: /robots.txt
   static_files: robots.txt
   upload: robots.txt
+
+# Custom admin console pages
+admin_console:
+  pages:
+  - name: User profile administration
+    url: /admin/([^/]+)?
+    script: admin.py
