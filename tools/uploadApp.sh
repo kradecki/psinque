@@ -5,6 +5,7 @@ echo "Copying files to 'build'..."
 cp *.py build/
 cp app.yaml build/
 cp index.yaml build/
+cp robots.txt build/
 cp -R static build/
 cp -R carddav build/
 cp -R dateutil build/
