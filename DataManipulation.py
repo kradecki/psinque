@@ -15,6 +15,7 @@ from DataModels import PermitEmail
 
 def generateVCard(permit):
   
+    #reallyGenerateVCard(permit)
     permit.vcardNeedsUpdating = True
     permit.put()
     
@@ -38,16 +39,37 @@ def reallyGenerateVCard(permit):
         
     newVCard.addNames(givenNames, familyNames)
 
+    # Add e-mail addresses
     for email in userProfile.emails:
-        permitEmail = email.individualPermits.get()
-        if permitEmail.canView:
-            newVCard.addEmail(email.itemValue, email.privacyType)
+        individualPermit = email.individualPermits.ancestor(permit).get()
+        if individualPermit.canView:
+            newVCard.addEmail(email.itemValue, email.privacyType.lower())
+            
+    # Add physical addresses
+    for address in userProfile.addresses:
+        individualPermit = address.individualPermits.ancestor(permit).get()
+        if individualPermit.canView:
+            newVCard.addAddress(address.privacyType,
+                                u"", u"",
+                                address.address,
+                                address.city,
+                                u"",
+                                address.postalCode,
+                                address.country)
+    
+    # Add phone numbers
+    for phone in userProfile.phones:
+        individualPermit = phone.individualPermits.ancestor(permit).get()
+        if individualPermit.canView:
+            newVCard.addPhone(phone.itemValue,
+                              phone.privacyType.lower() + u"," + phone.itemType.lowe())
+    
+    newVCard.addTimeStamp(str(datetime.datetime.date(datetime.datetime.now())) + u"T" + str(datetime.datetime.time(datetime.datetime.now()))) + u"Z"
     
     newVCard = db.Text(newVCard.serialize())
     
     if newVCard != permit.vcard:
         logging.info("Updating vCard")
-        logging.info(newVCard)
         permit.vcard = newVCard
         permit.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
         permit.vcardMD5 = md5.new(permit.vcard.encode('utf8')).hexdigest()
@@ -59,6 +81,7 @@ def reallyGenerateVCard(permit):
                 permit.displayName = permitEmail.userEmail.email
                 break
     
+    permit.vcardNeedsUpdating = False
     permit.put()
 
 #-----------------------------------------------------------------------------

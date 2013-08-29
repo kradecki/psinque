@@ -6,7 +6,7 @@ class VCard():
     
     def __init__(self):
 
-        self.vcardTest = u"BEGIN:VCARD\nVERSION:4.0\n"
+        self.vcardString = u"BEGIN:VCARD\nVERSION:4.0\n"
 
     def addNames(self, givenNames,
                        familyNames,
@@ -14,34 +14,78 @@ class VCard():
                        honorificPrefixes = u"",
                        honorificSuffixes = u""):
         
-        self.vcardTest += u"N:" + \
+        self.vcardString += u"N:" + \
                           familyNames + u";" + \
                           givenNames + u";" + \
                           additionalNames + u";" + \
                           honorificPrefixes + u";" + \
                           honorificSuffixes + u"\n"
                  
-        self.vcardTest += u"FN:"
+        self.vcardString += u"FN:"
         
         if honorificPrefixes != u"":
-            self.vcardTest += honorificPrefixes + u" "
+            self.vcardString += honorificPrefixes + u" "
                 
-        self.vcardTest += givenNames + u" " + familyNames
+        self.vcardString += givenNames + u" " + familyNames
 
         if additionalNames != u"":
-            self.vcardTest += u" " + additionalNames
+            self.vcardString += u" " + additionalNames
 
         if honorificSuffixes != u"":
-            self.vcardTest += u", "+ honorificSuffixes
+            self.vcardString += u", "+ honorificSuffixes
             
-        self.vcardTest += u"\n"
+        self.vcardString += u"\n"
 
     
     def addEmail(self, email, emailType):
     
-        self.vcardTest += u"EMAIL;" + emailType + u":" + email + u"\n"
+        self.vcardString += u"EMAIL;TYPE=" + emailType + u":" + email + u"\n"
+        
+        
+    def addAddress(self, addressType, poBox, extAddress, street,
+                         locality, region, postalCode, country):
+      
+        label = street
+        if extAddress != u"":
+            label += u" " + extAddress
+        if postalCode != u"":
+            label += u", " + postalCode
+            if locality != u"":
+                label += u" " + locality
+        elif locality != u"":
+            label += u", " + locality
+        if country != u"":
+            label += u", " + country
+      
+        self.vcardString += u"ADR;TYPE=" + emailType + \
+                          u";LABEL=\"" + label + u"\"\n  :" + \
+                          poBox + u";" + \
+                          extAddress + u";" + \
+                          street + u";" + \
+                          locality + u";" + \
+                          region + u";" + \
+                          postalCode + u";" + \
+                          country + u"\n"
+        
+    
+    def addPhone(self, phone, phoneType):
+      
+        self.vcardString += u"TEL;TYPE=" + phoneType + ";VALUE=uri:tel:" + phone + u"\n"
+        
+    
+    def addIM(self):
+        pass
+        
+    
+    def addWebpage(self):
+        pass
+      
+      
+    def addTimeStamp(self, timestamp):
+      
+        self.vcardString += u"REV:" + timestamp + u"\n"
         
     
     def serialize(self):
             
-        return self.vcardTest + u"END:VCARD"
+        return self.vcardString + u"END:VCARD"
