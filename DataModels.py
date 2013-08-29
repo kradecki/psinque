@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-
-import vCard
 import datetime
-import md5
 
 from google.appengine.ext import db
 from google.appengine.ext.db import polymodel
@@ -34,49 +31,6 @@ availableLanguages = {
 }
 
 #-----------------------------------------------------------------------------
-
-def generateVCard(permit):
-    
-    logging.info("Generating vCard")
-    userProfile = permit.parent()
-
-    newVCard = vCard.VCard()
-
-    if(permit.canViewGivenNames):
-        givenNames = userProfile.givenNames
-    else:
-        givenNames = u""
-        
-    if(permit.canViewFamilyNames):
-        familyNames = userProfile.familyNames
-    else:
-        familyNames = u""
-        
-    newVCard.addNames(givenNames, familyNames)
-
-    for email in userProfile.emails:
-        permitEmail = email.individualPermits.get()
-        if permitEmail.canView:
-            newVCard.addEmail(email.itemValue, email.privacyType)
-    
-    newVCard = db.Text(newVCard.serialize())
-    
-    if newVCard != permit.vcard:
-        logging.info("Updating vCard")
-        logging.info(newVCard)
-        permit.vcard = newVCard
-        permit.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
-        permit.vcardMD5 = md5.new(permit.vcard.encode('utf8')).hexdigest()
-        
-    permit.displayName = u" ".join([givenNames, familyNames])
-    if permit.displayName == u"":
-        for permitEmail in permit.permitEmails:
-            if permitEmail.canView:
-                permit.displayName = permitEmail.userEmail.email
-                break
-    
-    permit.put()
-
 
 class Permit(db.Model):
     

@@ -4,8 +4,10 @@ import logging
 import webapp2
 
 from MasterHandler import MasterHandler, AjaxError
-from DataModels import Permit, Contact, generateVCard
+from DataModels import Permit, Contact
 from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress
+
+from DataManipulation import generateVCard
 
 #-----------------------------------------------------------------------------
 

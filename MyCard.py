@@ -11,10 +11,12 @@ from google.appengine.ext import db
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-from DataModels import UserProfile, UserSettings, Group, generateVCard
+from DataModels import UserProfile, UserSettings, Group
 from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress
 from DataModels import Permit, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
 from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames
+
+from DataManipulation import generateVCard, createNewProfile, createNewGroup, createNewPermit
 
 from MasterHandler import MasterHandler, AjaxError
 
@@ -30,70 +32,6 @@ class ProfileHandler(MasterHandler):
 
         for permit in Permit.all().ancestor(self.userProfile):
             generateVCard(permit)
-
-
-    def _createNewPermit(self, userProfile, permitName, userEmail):
-
-        permit = Permit(parent = userProfile,
-                        name = permitName)
-        permit.put()
-
-        permitEmail = PermitEmail(parent = permit,
-                                  userEmail = userEmail)
-        permitEmail.put()
-
-        generateVCard(permit)
-
-        logging.info("New permit created, key = " + str(permit.key()))
-
-        return permit.key()
-
-
-    def _createNewGroup(self, userProfile, groupName):
-
-        group = Group(parent = userProfile,
-                      name = groupName)
-        group.put()
-
-        logging.info("New group created, key = " + str(group.key()))
-
-        return group.key()
-
-
-    def _createNewProfile(self):
-
-        # Create an empty profile
-        userProfile = UserProfile(user = self.user)
-        userProfile.put()  # save the new (and empty) profile in the Datastore in order to obtain its key
-        logging.info("New profile created, key = " + str(userProfile.key()))
-
-        # User settings
-        userSettings = UserSettings(parent = userProfile)
-        userSettings.put()
-        userProfile.userSettings = userSettings
-
-        # Primary email address (needed for notifications, etc.)
-        userEmail = UserEmail(parent = userProfile,
-                              itemValue = "primary@nonexistant.com",
-                              privacyType = 'Home',
-                              primary = True)
-        userEmail.put()
-
-        userProfile.defaultGroup = self._createNewGroup(userProfile,
-                                                        'Default')
-
-        userProfile.defaultPermit = self._createNewPermit(userProfile,
-                                                          'Default',
-                                                          userEmail)
-
-        userProfile.publicPermit = self._createNewPermit(userProfile,
-                                                          'Public',
-                                                          userEmail)
-
-        # Save the updated user profile
-        userProfile.put()
-
-        return userProfile
 
 
     def _getItemByKey(self, itemClass):
@@ -142,7 +80,7 @@ class ProfileHandler(MasterHandler):
         firstLogin = (not userProfile)
 
         if firstLogin:  # no user profile registered yet, so create a new one
-          userProfile = self._createNewProfile()
+            userProfile = createNewProfile(self.user)
 
         self.sendContent('templates/MyCard.html',
                          activeEntry = "My card",
