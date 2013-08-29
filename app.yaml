@@ -6,6 +6,7 @@ threadsafe: true
 
 builtins:
 - remote_api: off
+# - admin_redirect: on
 
 # Later, to receive emails, we will need to add:
 # inbound_services:
@@ -52,6 +53,11 @@ handlers:
 - url: /settings/([^/]+)
   script: Settings.app
 
+# Custom admin console pages
+- url: /admin/.*
+  script: Admin.app
+#   login: admin
+
 # Static files
 - url: /javascripts
   static_dir: javascripts
@@ -78,18 +84,17 @@ handlers:
   secure: optional
   script: CardDAV.app
 
-# Error handling
-- url: /.*
-  script: NotFound.app
-
 # Web crawlers
 - url: /robots.txt
   static_files: robots.txt
   upload: robots.txt
 
+# Error handling
+- url: /.*
+  script: NotFound.app
+  
 # Custom admin console pages
 admin_console:
   pages:
-  - name: User profile administration
-    url: /admin/([^/]+)?
-    script: admin.py
+  - name: User profiles
+    url: /admin/userprofile
