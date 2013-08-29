@@ -2,7 +2,6 @@
 import os
 import webapp2
 import jinja2
-import logging
 
 from google.appengine.ext import db
 
@@ -55,21 +54,9 @@ class AdminHandler(webapp2.RequestHandler):
     # Views
     # 
     
-    def get(self, actionName):
-      
-        try:
-            actionFunction = getattr(self, actionName)
-        except AttributeError as e:
-            logging.error("Action method not found:")
-            logging.error(e)
-            self.error(404)
-            return
-        
-        actionFunction()
-
-   
-    def userprofile(self, actionName):
-
+    def get(self):
+     
+    
         template = jinja_environment.get_template('templates/Admin_UserProfile.html')
         self.response.out.write(template.render({
             'userProfiles': UserProfile.all(),
