@@ -1,7 +1,5 @@
 
-import os
 import webapp2
-import jinja2
 
 from google.appengine.ext import db
 
@@ -12,31 +10,33 @@ from DataModels import UserAddress, UserEmail, UserIM, UserPhoneNumber, UserWebp
 from DataModels import Psinque, Contact, IndividualPermit, CardDAVLogin
 
 @db.transactional
-def _deleteprofile(self, userProfileKey):
-    
-    for e in CardDAVLogin.all().ancestor(userProfileKey):
-        e.delete()
-    for e in IndividualPermit.all().ancestor(userProfileKey):
-        e.delete()
-    for e in Permit.all().ancestor(userProfileKey):
-        e.delete()
-    for e in Psinque.all().ancestor(userProfileKey):
-        e.delete()
-    for e in Contact.all().ancestor(userProfileKey):
-        e.delete()
-    for e in Group.all().ancestor(userProfileKey):
-        e.delete()
-    for e in UserAddress.all().ancestor(userProfileKey):
-        e.delete()
-    for e in UserEmail.all().ancestor(userProfileKey):
-        e.delete()
-    for e in UserIM.all().ancestor(userProfileKey):
-        e.delete()
-    for e in UserPhoneNumber.all().ancestor(userProfileKey):
-        e.delete()
-    for e in UserWebpage.all().ancestor(userProfileKey):
-        e.delete()
+def _deleteprofile(userProfileKey):
+
     userProfile = UserProfile.get(userProfileKey)    
+    
+    for e in CardDAVLogin.all().ancestor(userProfile):
+        e.delete()
+    for e in IndividualPermit.all().ancestor(userProfile):
+        e.delete()
+    for e in Permit.all().ancestor(userProfile):
+        e.delete()
+    for e in Psinque.all().ancestor(userProfile):
+        e.delete()
+    for e in Contact.all().ancestor(userProfile):
+        e.delete()
+    for e in Group.all().ancestor(userProfile):
+        e.delete()
+    for e in UserAddress.all().ancestor(userProfile):
+        e.delete()
+    for e in UserEmail.all().ancestor(userProfile):
+        e.delete()
+    for e in UserIM.all().ancestor(userProfile):
+        e.delete()
+    for e in UserPhoneNumber.all().ancestor(userProfile):
+        e.delete()
+    for e in UserWebpage.all().ancestor(userProfile):
+        e.delete()
+    
     userProfile.userSettings.delete()
     userProfile.delete()
 
@@ -44,29 +44,29 @@ def _deleteprofile(self, userProfileKey):
 #-----------------------------------------------------------------------------
 # Request handler
 
-jinja_environment = jinja2.Environment(
-    loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
-)
-
-class AdminHandler(webapp2.RequestHandler):
+class AdminHandler(MasterHandler):
 
     #****************************
     # Views
     # 
     
-    def get(self):
-     
+    def userprofile(self):
     
-        template = jinja_environment.get_template('templates/Admin_UserProfile.html')
-        self.response.out.write(template.render({
+        self.sendContent('templates/Admin_UserProfile.html',
+                            activeEntry = "",
+                            templateVariables = {
             'userProfiles': UserProfile.all(),
-        }))
+        })
+        
+        
+    def deleteprofile(self):
           
-        #_deleteprofile(self.getRequiredParameter("key"))
+        _deleteprofile(self.getRequiredParameter("key"))
+        self.sendJsonOK()
 
 
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    ('/admin/userprofile', AdminHandler),
+    (r'/admin/(\w+)', AdminHandler),
 ], debug=True)

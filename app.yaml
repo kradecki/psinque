@@ -54,9 +54,9 @@ handlers:
   script: Settings.app
 
 # Custom admin console pages
-- url: /admin/.*
+- url: /admin/([^/]+)
   script: Admin.app
-#   login: admin
+  login: admin
 
 # Static files
 - url: /javascripts
@@ -93,8 +93,8 @@ handlers:
 - url: /.*
   script: NotFound.app
   
-# Custom admin console pages
-admin_console:
-  pages:
-  - name: User profiles
-    url: /admin/userprofile
+# Custom admin console pages (DOES NOT WORK: THERE IS SOME ISSUE WITH login: admin)
+# admin_console:
+#   pages:
+#   - name: User profiles
+#     url: /admin/userprofile

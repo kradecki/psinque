@@ -132,6 +132,6 @@ class Settings(MasterHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-  ('/settings/(\w+)', Settings)
+  (r'/settings/(\w+)', Settings)
 ], debug=True)
 

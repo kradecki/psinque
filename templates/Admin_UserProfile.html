@@ -1,15 +1,28 @@
-<table>
-  <tbody>
-    {% for profile in userProfiles %}
+{% extends "templates/static.html" %}
+{% block title %}Privacy policy{% endblock %}
+{% block content %}
+  <h3>The list of currently registered user profiles:</h3>
+  <table>
+    <thead>
       <tr>
-        <td>{{ profile.key() }}</td>
-        <td>{{ profile.username }}</td>
-        <td>{{ profile.givenNames }}</td>
-        <td>{{ profile.familyNames }}</td>
-        <td>
-          <a href="/admin/deleteprofile?key={{ profile.key() }}">Delete</a>
-        </td>
+        <td>Key</td>
+        <td>User</td>
+        <td>Given names</td>
+        <td>Family names</td>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for profile in userProfiles %}
+        <tr>
+          <td>{{ profile.key() }}</td>
+          <td>{{ profile.user }}</td>
+          <td>{{ profile.givenNames }}</td>
+          <td>{{ profile.familyNames }}</td>
+          <td>
+            <a href="/admin/deleteprofile?key={{ profile.key() }}">Delete</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
