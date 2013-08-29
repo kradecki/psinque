@@ -46,6 +46,7 @@ class Permit(db.Model):
                                 # because it might be longer than 500 characters
     vcardMTime = db.StringProperty() # modification time
     vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
+    vcardNeedsUpdating = db.BooleanProperty(default = True)
     
     displayName = db.StringProperty()
 
@@ -158,11 +159,19 @@ class UserWebpage(db.Model):
 
 class UserProfile(db.Model):
 
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+
+    # Login data
     user = db.UserProperty()
+    nativeLogin = db.BooleanProperty(default = False)
     username = db.StringProperty()
+    email = db.StringProperty()
     passwordHash = db.StringProperty()
     passwordSalt = db.StringProperty()
+    activated = db.BooleanProperty(default = False) 
 
+    # Personal data
     givenNames = db.StringProperty(default = u"")
     givenNamesRomanization = db.StringProperty(default = u"")
     

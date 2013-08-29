@@ -14,6 +14,12 @@ from DataModels import PermitEmail
 #-----------------------------------------------------------------------------
 
 def generateVCard(permit):
+  
+    permit.vcardNeedsUpdating = True
+    permit.put()
+    
+    
+def reallyGenerateVCard(permit):
     
     logging.info("Generating vCard")
     userProfile = permit.parent()

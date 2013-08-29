@@ -9,6 +9,7 @@ from carddav.Provider import CardDAVProvider, WellKnownProvider
 from carddav.DomainController import PsinqueDomainController
 
 from DataModels import Contact, Group, CardDAVLogin
+from DataManipulation import reallyGenerateVCard
 
 #-----------------------------------------------------------------------------
 
@@ -50,6 +51,8 @@ def getVCard(contactID):
     logging.info("Getting vCard for Contact "+ contactID)
     contact = Contact.get(contactID)
     permit = contact.incoming.permit
+    if permit.vcardNeedsUpdating:
+        reallyGenerateVCard(permit)
     return [permit.vcard, permit.vcardMTime, permit.vcardMD5]
 
 

@@ -26,6 +26,10 @@ handlers:
   script: StartPage.app    # checks if the user is logged in and redirects
   secure: optional
 
+# OpenID login handler
+- url: /_ah/login_required
+  script: Login.app
+  
 # Static pages
 - url: /static/([^/]+)
   script: StaticPages.app
@@ -34,6 +38,7 @@ handlers:
 # My Card
 - url: /mycard/([^/]+)
   script: MyCard.app
+  login: required
 - url: /uploadphoto
   script: MyCard.app
 - url: /uploadphotopost
@@ -44,14 +49,17 @@ handlers:
 # Permits
 - url: /permits/([^/]+)
   script: Permits.app
+  login: required
 
 # Psinques
 - url: /psinques/([^/]+)
   script: Psinques.app
+  login: required
 
 # User settings
 - url: /settings/([^/]+)
   script: Settings.app
+  login: required
 
 # Custom admin console pages
 - url: /admin/([^/]+)

@@ -207,8 +207,7 @@ class MasterHandler(webapp2.RequestHandler):
         if user:
             return {
                 'username': user.nickname(),
-                'loginurl': users.create_logout_url(self.request.uri),       
-                'loginurl_linktext': "Logout",
+                'logouturl': users.create_logout_url(self.request.uri),       
                 'settings': True
             }
         else:

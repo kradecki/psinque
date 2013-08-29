@@ -4,8 +4,7 @@ import os
 import webapp2
 import jinja2
 
-from google.appengine.api import users
-
+from Users import getCurrentUser
 
 jinja_environment = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -13,14 +12,10 @@ jinja_environment = jinja2.Environment(
 
 class StartPage(webapp2.RequestHandler):
   
-  def get(self):
-    
-    user = users.get_current_user()
-    if not user:    # user not logged in
-        self.redirect("/static/landing")
-    else:
+    def get(self):
+      
         self.redirect('/mycard/view')
 
 app = webapp2.WSGIApplication([
-  ('/', StartPage),
+    ('/', StartPage),
 ], debug=True)

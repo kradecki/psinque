@@ -24,16 +24,6 @@ class StaticPageHandler(StaticHandler):
     # Views
     #
 
-    def landing(self):
-      
-        self.sendContent('templates/Landing.html', {
-            'loginurls': zip([users.create_login_url(dest_url = '/mycard/view',
-                                                     federated_identity = uri)
-                             for uri in directOpenIDProviders],
-                             directOpenIDIconNames)
-        })
-
-
     def faq(self):
       
         self.sendContent('templates/FAQ.html')
