@@ -45,6 +45,11 @@ class StaticPageHandler(StaticHandler):
         self.sendContent('templates/Support.html')
 
 
+    def gettingstarted(self):
+      
+        self.sendContent('templates/GettingStarted.html')
+
+
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
