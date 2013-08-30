@@ -3,11 +3,27 @@ import webapp2
 import jinja2
 import os
 
+from google.appengine.api import users
+
 from Users import getCurrentUser
+
+#-----------------------------------------------------------------------------
 
 jinja_environment = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
+
+#-----------------------------------------------------------------------------
+
+directOpenIDProviders = [
+    'https://www.google.com/accounts/o8/id',
+    'yahoo.com',
+    'yahoo.co.jp',
+]
+
+directOpenIDIconNames = ['google', 'yahoo', 'yahoo_japan']
+
+#-----------------------------------------------------------------------------
 
 class OpenIdLoginHandler(webapp2.RequestHandler):
   
@@ -23,6 +39,6 @@ class OpenIdLoginHandler(webapp2.RequestHandler):
                              directOpenIDIconNames)
         }))
     
-application = webapp2.WSGIApplication([
+app = webapp2.WSGIApplication([
     ('/_ah/login_required', OpenIdLoginHandler),
 ], debug=True)

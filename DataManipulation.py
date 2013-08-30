@@ -62,9 +62,9 @@ def reallyGenerateVCard(permit):
         individualPermit = phone.individualPermits.ancestor(permit).get()
         if individualPermit.canView:
             newVCard.addPhone(phone.itemValue,
-                              phone.privacyType.lower() + u"," + phone.itemType.lowe())
+                              phone.privacyType.lower() + u"," + phone.itemType.lower())
     
-    newVCard.addTimeStamp(str(datetime.datetime.date(datetime.datetime.now())) + u"T" + str(datetime.datetime.time(datetime.datetime.now()))) + u"Z"
+    newVCard.addTimeStamp(str(datetime.datetime.date(datetime.datetime.now())) + u"T" + str(datetime.datetime.time(datetime.datetime.now())) + u"Z")
     
     newVCard = db.Text(newVCard.serialize())
     

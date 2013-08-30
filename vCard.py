@@ -57,7 +57,7 @@ class VCard():
         if country != u"":
             label += u", " + country
       
-        self.vcardString += u"ADR;TYPE=" + emailType + \
+        self.vcardString += u"ADR;TYPE=" + addressType + \
                           u";LABEL=\"" + label + u"\"\n  :" + \
                           poBox + u";" + \
                           extAddress + u";" + \

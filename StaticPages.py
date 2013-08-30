@@ -2,21 +2,7 @@
 
 import webapp2
 
-from google.appengine.api import users
-
 from MasterHandler import StaticHandler
-
-#-----------------------------------------------------------------------------
-
-directOpenIDProviders = [
-    'https://www.google.com/accounts/o8/id',
-    'yahoo.com',
-    'yahoo.co.jp',
-]
-
-directOpenIDIconNames = ['google', 'yahoo', 'yahoo_japan']
-
-#-----------------------------------------------------------------------------
 
 class StaticPageHandler(StaticHandler):
 

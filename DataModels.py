@@ -313,5 +313,7 @@ class CardDAVLogin(db.Model):
     generatedUsername = db.StringProperty()
     generatedPasswordHash = db.StringProperty()
     salt = db.StringProperty()
+    lastUsed = db.DateTimeProperty(auto_now=True)
+    
 
 #-----------------------------------------------------------------------------
