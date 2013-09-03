@@ -6,7 +6,7 @@ class VCard():
     
     def __init__(self):
 
-        self.vcardString = u"BEGIN:VCARD\nVERSION:4.0\n"
+        self.vcardString = u"BEGIN:VCARD\nVERSION:3.0\n"
 
     def addNames(self, givenNames,
                        familyNames,
@@ -88,4 +88,4 @@ class VCard():
     
     def serialize(self):
             
-        return self.vcardString + u"END:VCARD"
+        return self.vcardString + u"END:VCARD\n"

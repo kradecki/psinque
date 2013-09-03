@@ -47,7 +47,7 @@ class CardDAVResource(_DAVResource):
                     raise ValueError("Unsupported extension: %r" % fileName[1])
                 self.contactID = fileName[0]           
                 self.name = "Forest Gump"
-                self.vCard = None  # we're lazy at generating the vCard
+                self.vCard = None
             else:
                 self.isCollection = True
                 self.name = self.groupName
@@ -57,14 +57,14 @@ class CardDAVResource(_DAVResource):
         #return urllib.quote(self.getPreferredPath(), safe=safe)
     
     def generateVCard(self):
-        if not self.isCollection and self.vCard is None:
-            logging.info("Generating vcard...")
+        if not self.isCollection:
             vCard = CardDAV.getVCard(self.contactID)
             self.vCard = vCard[0].encode("utf8")
             self.vCardMtime = vCard[1]
             self.vCardMD5 = vCard[2]
     
     def getContentLength(self):
+        logging.info("getContentLength()")
         if self.isCollection:
             return None
         self.generateVCard()
@@ -79,6 +79,7 @@ class CardDAVResource(_DAVResource):
         '''
         ETags are essential for caching.
         '''
+        logging.info("getEtag()")
         if self.isCollection:
             etag = '"' + md5.new(self.path).hexdigest() +'"'
         else:
@@ -98,6 +99,7 @@ class CardDAVResource(_DAVResource):
         logging.info("getContent()")
         assert not self.isCollection
         self.generateVCard()
+        logging.info(self.vCard)
         return StringIO(self.vCard)
     
     #def getCreationDate(self):

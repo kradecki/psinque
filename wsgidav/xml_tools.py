@@ -62,11 +62,11 @@ def xmlToString(element, pretty_print=False):
     option and prepends an encoding header."""
     if useLxml:
         xml = etree.tostring(element, 
-                             encoding="UTF-8", 
+                             encoding="utf-8", 
                              xml_declaration=True, 
                              pretty_print=pretty_print)
     else:
-        xml = etree.tostring(element, "UTF-8")
+        xml = etree.tostring(element, "utf-8")
     assert xml.startswith("<?xml ") 
     return xml
 

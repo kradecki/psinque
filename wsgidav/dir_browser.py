@@ -109,7 +109,7 @@ class WsgiDavDirBrowser(object):
         html.append("<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01//EN' 'http://www.w3.org/TR/html4/strict.dtd'>");
         html.append("<html>")
         html.append("<head>")
-        html.append("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>")
+        html.append("<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>")
         html.append("<meta name='generator' content='WsgiDAV %s'>" % __version__)
         html.append("<title>WsgiDAV - Index of %s </title>" % displaypath)
         

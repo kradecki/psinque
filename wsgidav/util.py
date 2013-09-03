@@ -716,7 +716,7 @@ def sendStatusResponse(environ, start_response, e):
     
     content_type, body = e.getResponsePage()            
 
-    start_response(status, [("Content-Type", content_type), 
+    start_response(status, [(u"Content-Type", content_type), 
                             ("Date", getRfc1123Time()),
                             ("Content-Length", str(len(body))),
                             ] + headers) 
@@ -737,9 +737,9 @@ def sendMultiStatusResponse(environ, start_response, multistatusEL):
     xml_data = xmlToString(multistatusEL, pretty_print=False)
     
     headers = [
-        ("Content-Type", "text/xml"),
-        ("Date", getRfc1123Time()),
+        ("Content-Type", "application/xml; charset=utf-8"),
         ("DAV", "1, 2, 3, calendar-access, addressbook, extended-mkcol"),
+        ("Date", getRfc1123Time()),
         ('Content-Length', str(len(xml_data))),
     ]
 

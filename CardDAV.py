@@ -48,7 +48,7 @@ def friendList(userProfile, groupName):
 def getVCard(contactID):
     
     # This is 3 Datastore fetches: Contact, Psinque, Permit
-    logging.info("Getting vCard for Contact "+ contactID)
+    logging.info("Getting vCard for Contact " + contactID)
     contact = Contact.get(contactID)
     permit = contact.incoming.permit
     if permit.vcardNeedsUpdating:
