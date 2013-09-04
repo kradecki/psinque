@@ -180,7 +180,7 @@ td#socialmedia img {
 }
 
 div#footer td#links {
-    width: 600px;
+    width: 650px;
     text-align: center;
 }
 
@@ -189,6 +189,6 @@ td#links a {
 }
 
 div#footer td#numalab {
-    width: 250px;
+    width: 150px;
     text-align: right;
 }
