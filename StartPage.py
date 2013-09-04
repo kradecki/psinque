@@ -14,7 +14,7 @@ class StartPage(webapp2.RequestHandler):
   
     def get(self):
       
-        self.redirect('/mycard/view')
+        self.redirect('/profile/view')
 
 app = webapp2.WSGIApplication([
     ('/', StartPage),

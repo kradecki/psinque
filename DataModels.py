@@ -32,7 +32,7 @@ availableLanguages = {
 
 #-----------------------------------------------------------------------------
 
-class Permit(db.Model):
+class Persona(db.Model):
     
     name = db.StringProperty()
     public = db.BooleanProperty(default = False)
@@ -188,10 +188,10 @@ class UserProfile(db.Model):
 
     publicEnabled = db.BooleanProperty(default = True)
 
-    # Shortcuts to non-removable permits
-    defaultPermit = db.ReferenceProperty(Permit,
+    # Shortcuts to non-removable personas
+    defaultPersona = db.ReferenceProperty(Persona,
                                          collection_name = "userProfile1")
-    publicPermit = db.ReferenceProperty(Permit,
+    publicPersona = db.ReferenceProperty(Persona,
                                         collection_name = "userProfile2")
     defaultGroup = db.ReferenceProperty(Group)
     
@@ -218,8 +218,8 @@ class UserProfile(db.Model):
         return UserPhoneNumber.all().ancestor(self)
     
     @property
-    def permits(self):
-        return Permit.all().ancestor(self)
+    def personas(self):
+        return Persona.all().ancestor(self)
 
     @property
     def groups(self):
@@ -237,13 +237,13 @@ class Psinque(db.Model):
 
     creationTime = db.DateTimeProperty(auto_now = True)
     
-    permit = db.ReferenceProperty(Permit)
+    persona = db.ReferenceProperty(Persona)
     
     @property
     def displayName(self):
-        if not self.permit is None:
-            return self.permit.displayName
-        return self.fromUser.publicPermit.displayName
+        if not self.persona is None:
+            return self.persona.displayName
+        return self.fromUser.publicPersona.displayName
   
 #-----------------------------------------------------------------------------
 
@@ -261,7 +261,7 @@ class Contact(db.Model):
     friendsContact = db.SelfReferenceProperty()
     
     group = db.ReferenceProperty(Group)
-    permit = db.ReferenceProperty(Permit)
+    persona = db.ReferenceProperty(Persona)
 
     creationTime = db.DateTimeProperty(auto_now = True)
 
@@ -269,7 +269,7 @@ class Contact(db.Model):
     def displayName(self):
         if not self.incoming is None:
             return self.incoming.displayName
-        return self.friendsContact.permit.displayName
+        return self.friendsContact.persona.displayName
   
 #-----------------------------------------------------------------------------
 

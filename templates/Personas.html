@@ -2,7 +2,7 @@
 {% import "templates/ui.html" as ui %}
 {% block title %}Permits{% endblock %}
 {% block stylesheets %}
-  <link rel="stylesheet" type="text/css" href="/stylesheets/Permits.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/Personas.css" />
 {% endblock %}
 {% block inlinescripts %}
   <script type="text/javascript">
@@ -12,20 +12,20 @@
 {% endblock %}
 {% block externalscripts %}
   <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
-  <script type="text/javascript" src="/javascripts/Permits.js"></script>
+  <script type="text/javascript" src="/javascripts/Personas.js"></script>
 {% endblock %}
 {% block content %}
   <div class="onecolumn">
-    <div id="permitlist">
-      {% for permit in permits %}
-        {% set permitIndex = loop.index %}
-        {% include "templates/Permits_Permit.html" %}
+    <div id="personalist">
+      {% for persona in personas %}
+        {% set personaIndex = loop.index %}
+        {% include "templates/Personas_Persona.html" %}
       {% endfor %}
-      {{ ui.beginform("newpermit") }}
+      {{ ui.beginform("newpersona") }}
         {{ ui.begintable() }}
-          {{ ui.tablelabel("New permit") }}
-          {{ ui.textinput("", "Please type name of your new permit", "newpermitname") }}
-          {{ ui.createbutton("permit") }}
+          {{ ui.tablelabel("New persona") }}
+          {{ ui.textinput("", "Please type name of your new persona", "newpersonaname") }}
+          {{ ui.createbutton("persona") }}
         {{ ui.endtable() }}
       {{ ui.endform() }}
     </div>

@@ -42,34 +42,34 @@
     <table class="contacttables"><tbody><tr>
     <td class="contactdetails">
       {% if contact.incomin %}
-        {% for permit in contact.incoming.permit.permitEmails %}
+        {% for permit in contact.incoming.persona.permitEmails %}
           {% if permit.canView %}
             <p>{{ permit.userEmail.itemValue }}</p>
           {% endif %}
         {% endfor %}
-        {% for permit in contact.incoming.permit.permitIMs %}
+        {% for permit in contact.incoming.persona.permitIMs %}
           {% if permit.canView %}
             <p>{{ permit.userIM.itemValue }}</p>
           {% endif %}
         {% endfor %}
-        {% for permit in contact.incoming.permit.permitWWWs %}
+        {% for permit in contact.incoming.persona.permitWWWs %}
           {% if permit.canView %}
             <p>{{ permit.userWebpage.itemValue }}</p>
           {% endif %}
         {% endfor %}
-        {% for permit in contact.incoming.permit.permitPhones %}
+        {% for permit in contact.incoming.persona.permitPhones %}
           {% if permit.canView %}
             <p>{{ permit.userPhoneNumber.itemValue }}</p>
           {% endif %}
         {% endfor %}
-        {% for permit in contact.incoming.permit.permitAddresses %}
+        {% for permit in contact.incoming.persona.permitAddresses %}
           {% if permit.canView %}
             <p>{{ permit.userAddress.itemValue }}</p>
           {% endif %}
         {% endfor %}
       {% endif %}
     </td>
-    <td class="groupspermits">
+    <td class="groupspersonas">
       <table><tbody>
         <tr>
           <td><b>Group</b></td>
@@ -77,7 +77,7 @@
         </tr>
         <tr>
           {{ ui.dropdown(groups, "", class = "groupselects", tdclass = "widedropdown") }}
-          {{ ui.dropdown(permits, "", class = "permitselects", tdclass = "widedropdown") }}
+          {{ ui.dropdown(personas, "", class = "personaselects", tdclass = "widedropdown") }}
         <tr>
       </tbody></table>
     </td>

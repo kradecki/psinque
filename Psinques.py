@@ -9,7 +9,7 @@ from google.appengine.ext.db import KindError
 from django.utils import simplejson as json
 
 from MasterHandler import MasterHandler, AjaxError
-from Permits import Permit
+from DataModels import Persona
 import Notifications
 
 from DataModels import Psinque, Group, Contact, UserEmail, UserProfile
@@ -74,7 +74,7 @@ class PsinquesHandler(MasterHandler):
 
     def _downgradePsinqueToPublic(self, psinque):
         psinque.private = False
-        psinque.permit = psinque.fromUser.publicPermit
+        psinque.persona = psinque.fromUser.publicPersona
         psinque.put()
 
 
@@ -130,8 +130,8 @@ class PsinquesHandler(MasterHandler):
             raise AjaxError("You already have access to private data")
         
         # We need to share our own private data first
-        if contact.permit.public:
-            contact.permit = self.userProfile.defaultPermit
+        if contact.persona.public:
+            contact.persona = self.userProfile.defaultPersona
 
         contact.status = "pending"
         contact.put()
@@ -155,7 +155,7 @@ class PsinquesHandler(MasterHandler):
             contact = Contact(parent = self.userProfile,
                               friend = friendsProfile,
                               group = self.userProfile.defaultGroup,
-                              permit = self.userProfile.publicPermit)
+                              persona = self.userProfile.publicPersona)
             contact.put()
         else:
             contactExisted = True
@@ -163,7 +163,7 @@ class PsinquesHandler(MasterHandler):
         newPsinque = Psinque(parent = contact,
                              fromUser = friendsProfile,
                              private = False,
-                             permit = friendsProfile.publicPermit,
+                             persona = friendsProfile.publicPersona,
                              status = "established")
         newPsinque.put()
         
@@ -190,7 +190,7 @@ class PsinquesHandler(MasterHandler):
             
             # Pending decisions
             pendingPsinques = Psinque.all().filter("fromUser =", self.userProfile).filter("status =", "pending")
-            pendingList = [{'name': x.parent().permit.displayName,
+            pendingList = [{'name': x.parent().persona.displayName,
                             'key': str(x.key())} for x in pendingPsinques]
 
             # List of contacts
@@ -208,7 +208,7 @@ class PsinquesHandler(MasterHandler):
             else:
                 isThereMore = False
 
-            permitList = { permit.name: permit.key() for permit in self.userProfile.permits.fetch(100) }
+            personaList = { persona.name: persona.key() for persona in self.userProfile.personas.fetch(100) }
                     
             groupList = { group.name: group.key() for group in self.userProfile.groups.fetch(100) }
                     
@@ -222,7 +222,7 @@ class PsinquesHandler(MasterHandler):
                 'contacts': contacts,
                 'pendings': pendingList,
                 'groups': groupList,
-                'permits': permitList,
+                'personas': personaList,
             })
 
     
@@ -252,7 +252,7 @@ class PsinquesHandler(MasterHandler):
             raise AjaxError("You already have a psinque with this email address.")
 
         if userProfile.publicEnabled:
-            displayName = userProfile.publicPermit.displayName
+            displayName = userProfile.publicPersona.displayName
         else:
             displayName = "<i>Undisclosed name</i>"
         
@@ -338,18 +338,18 @@ class PsinquesHandler(MasterHandler):
         self.sendJsonOK()
                        
 
-    def changepermit(self):
+    def changepersona(self):
 
         contact = Contact.get(self.getRequiredParameter('contact'))
         if contact is None:
             raise AjaxError("Contact does not exist")
 
-        permit  = Permit.get(self.getRequiredParameter('permit'))
-        if permit is None:
-            raise AjaxError("Permit does not exist")
+        persona  = Persona.get(self.getRequiredParameter('persona'))
+        if persona is None:
+            raise AjaxError("Persona does not exist")
         
         # First we check if this psinque is not already asigned to that group
-        contact.permit = permit
+        contact.persona = persona
         contact.put()
             
         self.sendJsonOK()
@@ -373,7 +373,7 @@ class PsinquesHandler(MasterHandler):
                                  friend = contactIn.parent(),
                                  friendsContact = contactIn,
                                  group = self.userProfile.defaultGroup,
-                                 permit = self.userProfile.defaultPermit)
+                                 persona = self.userProfile.defaultPersona)
             contactOut.put()
             contactIn.friendsContact = contactOut
                                          
@@ -390,16 +390,16 @@ class PsinquesHandler(MasterHandler):
                     
         contactIn.incoming = psinque
         contactIn.status = "private"
-        contactIn.permit = contactIn.parent().defaultPermit
+        contactIn.persona = contactIn.parent().defaultPersona
         contactIn.put()
         
         contactOut.outgoing = psinque
         contactOut.status = "private"
-        contactOut.permit = contactOut.parent().defaultPermit
+        contactOut.persona = contactOut.parent().defaultPersona
         contactOut.put()
         
         psinque.status = "established"
-        psinque.permit = psinque.fromUser.defaultPermit
+        psinque.persona = psinque.fromUser.defaultPersona
         psinque.put()
         
         Notifications.notifyAcceptedRequest(psinque)

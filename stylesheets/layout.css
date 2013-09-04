@@ -80,7 +80,7 @@ div#photos {
     width: 230px;
 }
 
-div#mycard {
+div#profile {
     float: left;
     width: 690px;
 }
@@ -152,7 +152,7 @@ div#header li a.active {
 }
 
 div#header td#extras {
-    width: 300px;
+    width: 100px;
     padding-right: 0px;
 }
 

@@ -4,36 +4,36 @@
 // 
 //*******************************************************************
 
-psinqueAPI_mycard = "/mycard/"
+psinqueAPI_profile = "/profile/"
 
-psinqueAPI_addEmail      = psinqueAPI_mycard + "addemail"
-psinqueAPI_addPhone      = psinqueAPI_mycard + "addphone"
-psinqueAPI_addIM         = psinqueAPI_mycard + "addim"
-psinqueAPI_addWWW        = psinqueAPI_mycard + "addwww"
-psinqueAPI_addAddress    = psinqueAPI_mycard + "addaddress"
+psinqueAPI_addEmail      = psinqueAPI_profile + "addemail"
+psinqueAPI_addPhone      = psinqueAPI_profile + "addphone"
+psinqueAPI_addIM         = psinqueAPI_profile + "addim"
+psinqueAPI_addWWW        = psinqueAPI_profile + "addwww"
+psinqueAPI_addAddress    = psinqueAPI_profile + "addaddress"
 
-psinqueAPI_removeEmail   = psinqueAPI_mycard + "removeemail"
-psinqueAPI_removePhone   = psinqueAPI_mycard + "removephone"
-psinqueAPI_removeIM      = psinqueAPI_mycard + "removeim"
-psinqueAPI_removeWWW     = psinqueAPI_mycard + "removewww"
-psinqueAPI_removeAddress = psinqueAPI_mycard + "removeaddress"
+psinqueAPI_removeEmail   = psinqueAPI_profile + "removeemail"
+psinqueAPI_removePhone   = psinqueAPI_profile + "removephone"
+psinqueAPI_removeIM      = psinqueAPI_profile + "removeim"
+psinqueAPI_removeWWW     = psinqueAPI_profile + "removewww"
+psinqueAPI_removeAddress = psinqueAPI_profile + "removeaddress"
 
-psinqueAPI_updateEmail   = psinqueAPI_mycard + "updateemail"
-psinqueAPI_updatePhone   = psinqueAPI_mycard + "updatephone"
-psinqueAPI_updateIM      = psinqueAPI_mycard + "updateim"
-psinqueAPI_updateWWW     = psinqueAPI_mycard + "updatewww"
-psinqueAPI_updateAddress = psinqueAPI_mycard + "updateaddress"
+psinqueAPI_updateEmail   = psinqueAPI_profile + "updateemail"
+psinqueAPI_updatePhone   = psinqueAPI_profile + "updatephone"
+psinqueAPI_updateIM      = psinqueAPI_profile + "updateim"
+psinqueAPI_updateWWW     = psinqueAPI_profile + "updatewww"
+psinqueAPI_updateAddress = psinqueAPI_profile + "updateaddress"
 
-psinqueAPI_updateGeneral = psinqueAPI_mycard + "updategeneral"
+psinqueAPI_updateGeneral = psinqueAPI_profile + "updategeneral"
 
 //------------------------------
 
-psinqueAPI_permits = "/permits/"
+psinqueAPI_personas = "/personas/"
 
-psinqueAPI_addPermit           = psinqueAPI_permits + "addpermit"
-psinqueAPI_removePermit        = psinqueAPI_permits + "removepermit"
-psinqueAPI_setGeneralPermit    = psinqueAPI_permits + "setgeneralpermit"
-psinqueAPI_setIndividualPermit = psinqueAPI_permits + "setindividualpermit"
+psinqueAPI_addPersona          = psinqueAPI_personas + "addpersona"
+psinqueAPI_removePersona       = psinqueAPI_personas + "removepersona"
+psinqueAPI_setGeneralPersona   = psinqueAPI_personas + "setgeneral"
+psinqueAPI_setIndividualPermit = psinqueAPI_personas + "setindividualpermit"
 
 //------------------------------
 
@@ -196,24 +196,24 @@ function psinqueUpdateGeneral(givenNames, givenNamesRomanization,
 }
 
 //------------------------------
-// Permits
+// Personas
 
-function psinqueAddPermit(name, index, successFunction) {
-    psinqueAJAX_HTML(psinqueAPI_addPermit, {
+function psinqueAddPersona(name, index, successFunction) {
+    psinqueAJAX_HTML(psinqueAPI_addPersona, {
                          name: name,
                          index: index,
                      }, successFunction);
 }
 
-function psinqueRemovePermit(permitKey, successFunction) {
-    psinqueRemove(psinqueAPI_removePermit, permitKey, successFunction);
+function psinqueRemovePersona(personaKey, successFunction) {
+    psinqueRemove(psinqueAPI_removePersona, personaKey, successFunction);
 }
 
-function psinqueSetGeneralPermit(permitKey, canViewGivenNames,
+function psinqueSetGeneralPersona(personaKey, canViewGivenNames,
                                  canViewFamilyNames, canViewBirthday,
                                  canViewGender, successFunction) {
-    psinqueAJAX(psinqueAPI_setGeneralPermit, {
-                    key: permitKey,
+    psinqueAJAX(psinqueAPI_setGeneralPersona, {
+                    key: personaKey,
                     givennames: canViewGivenNames,
                     familynames: canViewFamilyNames,
                     birthday: canViewBirthday,

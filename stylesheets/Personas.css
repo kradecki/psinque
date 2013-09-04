@@ -1,5 +1,5 @@
 
-div#permitlist h3 {
+div#personalist h3 {
     background-color: #404040;
     width: 700px;
     height: 30px;
@@ -10,40 +10,40 @@ div#permitlist h3 {
     font-size: 16px;
 }
 
-div#permitlist h3 label {
+div#personalist h3 label {
   margin-top: 10px;
 }
 
-div#permitlist .ui-accordion-header-active img.downarrows {
+div#personalist .ui-accordion-header-active img.downarrows {
     display: inline-block;
 }  
 
-div#permitlist .ui-accordion-header-active img.uparrows {
+div#personalist .ui-accordion-header-active img.uparrows {
     display: none;
 }  
 
-div#permitlist .ui-accordion-header-inactive img.downarrows {
+div#personalist .ui-accordion-header-inactive img.downarrows {
     display: none;
 }  
 
-div#permitlist .ui-accordion-header-inactive img.uparrows {
+div#personalist .ui-accordion-header-inactive img.uparrows {
     display: inline-block;
 }  
 
-div#permitlist h3 img {
+div#personalist h3 img {
     vertical-align: middle;
     display: inline-block;
     margin: 0;
 }
 
-div#permitlist h3 img.headerarrows {
+div#personalist h3 img.headerarrows {
     float: right;
 }
 
-div#permitlist h3 img.downarrows {
+div#personalist h3 img.downarrows {
     display: none;
 }
 
-div#permitlist div p {
+div#personalist div p {
     margin: 0;
 }

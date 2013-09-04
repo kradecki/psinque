@@ -13,10 +13,10 @@ from google.appengine.ext.webapp import blobstore_handlers
 
 from DataModels import UserProfile, UserSettings, Group
 from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress
-from DataModels import Permit, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
+from DataModels import Persona, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
 from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames
 
-from DataManipulation import generateVCard, createNewProfile, createNewGroup, createNewPermit
+from DataManipulation import generateVCard, createNewProfile, createNewGroup, createNewPersona
 
 from MasterHandler import MasterHandler, AjaxError
 
@@ -30,8 +30,8 @@ class ProfileHandler(MasterHandler):
 
     def _updateAllVCards(self):
 
-        for permit in Permit.all().ancestor(self.userProfile):
-            generateVCard(permit)
+        for persona in Persona.all().ancestor(self.userProfile):
+            generateVCard(persona)
 
 
     def _getItemByKey(self, itemClass):
@@ -82,8 +82,8 @@ class ProfileHandler(MasterHandler):
         if firstLogin:  # no user profile registered yet, so create a new one
             userProfile = createNewProfile(self.user)
 
-        self.sendContent('templates/MyCard.html',
-                         activeEntry = "My card",
+        self.sendContent('templates/Profile.html',
+                         activeEntry = "Profile",
                          templateVariables = {
             'firstlogin': firstLogin,
             'userProfile': userProfile,
@@ -146,8 +146,8 @@ class ProfileHandler(MasterHandler):
         userEmail.put()
 
         # Add permissions for this email in every outgoing group
-        for permit in self.userProfile.permits:
-            permitEmail = PermitEmail(parent = permit,
+        for persona in self.userProfile.personas:
+            permitEmail = PermitEmail(parent = persona,
                                       userEmail = userEmail)
             permitEmail.put()
 
@@ -198,8 +198,8 @@ class ProfileHandler(MasterHandler):
         userIM.put()
 
         # Add permissions for this email in every outgoing group
-        for permit in self.userProfile.permits:
-            permitIM = PermitIM(parent = permit,
+        for persona in self.userProfile.personas:
+            permitIM = PermitIM(parent = persona,
                                 userIM = userIM)
             permitIM.put()
 
@@ -236,8 +236,8 @@ class ProfileHandler(MasterHandler):
         userWebpage.put()
 
         # Add permissions for this email in every outgoing group
-        for permit in self.userProfile.permits:
-            permitWebpage = PermitWebpage(parent = permit,
+        for persona in self.userProfile.personas:
+            permitWebpage = PermitWebpage(parent = persona,
                                           userWebpage = userWebpage)
             permitWebpage.put()
 
@@ -274,8 +274,8 @@ class ProfileHandler(MasterHandler):
         userPhone.put()
 
         # Add permissions for this email in every outgoing group
-        for permit in self.userProfile.permits:
-            permitPhone = PermitPhoneNumber(parent = permit,
+        for persona in self.userProfile.personas:
+            permitPhone = PermitPhoneNumber(parent = persona,
                                             userPhoneNumber = userPhone)
             permitPhone.put()
 
@@ -322,8 +322,8 @@ class ProfileHandler(MasterHandler):
         userAddress.put()
 
         # Add permissions for this email in every outgoing group
-        for permit in self.userProfile.permits:
-            permitAddress = PermitAddress(parent = permit,
+        for persona in self.userProfile.personas:
+            permitAddress = PermitAddress(parent = persona,
                                           userAddress = userAddress)
             permitAddress.put()
 
@@ -396,7 +396,7 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
 #-----------------------------------------------------------------------------
 
 app = webapp2.WSGIApplication([
-    (r'/mycard/(\w+)', ProfileHandler),
+    (r'/profile/(\w+)', ProfileHandler),
     ('/uploadphoto', UploadPhoto),
     ('/uploadphotopost', UploadHandler),
     ('/serveimageblob/([^/]+)?', ServeHandler),

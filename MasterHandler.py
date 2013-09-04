@@ -180,9 +180,10 @@ class MasterHandler(webapp2.RequestHandler):
             self.psinqueText = "Psinques"
 
         menuentries = [
-            MenuEntry("mycard/view", "My card"),
-            MenuEntry("permits/view", "Permits"),
+            MenuEntry("profile/view", "Profile"),
+            MenuEntry("personas/view", "Personas"),
             MenuEntry("psinques/view", self.psinqueText),
+            MenuEntry("settings/view", "Settings"),
         ]
         if activeEntry != "":
             for entry in menuentries:

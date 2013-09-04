@@ -15,12 +15,12 @@ indexes:
   properties:
   - name: creationTime
 
-- kind: Permit
+- kind: Persona
   ancestor: yes
   properties:
   - name: creationTime
 
-- kind: Permit
+- kind: Persona
   ancestor: yes
   properties:
   - name: name

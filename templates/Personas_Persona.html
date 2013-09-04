@@ -1,0 +1,67 @@
+{% import "templates/ui.html" as ui -%}
+<h3>
+  {%- if persona.name == "Public" %}
+  <img src="/images/icon_public.png" alt="public" />
+  {% else %}
+  <img src="/images/icon_private.png" alt="private" />
+  {% endif -%}
+  <label>{{ persona.name }}</label>
+  <img src="/images/icon_down.png" class="headerarrows downarrows" alt="" />
+  <img src="/images/icon_up.png" class="headerarrows uparrows" alt="" />
+</h3>
+{{ ui.beginform("personaform" ~ personaIndex) }}
+  <input type="hidden" id="personakey{{ personaIndex }}" value="{{ persona.key() }}" />
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("Given names", "givennames", persona.canViewGivenNames, personaIndex, "general", userProfile.givenNames) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("Family names", "familynames", persona.canViewFamilyNames, personaIndex, "general", userProfile.familyNames) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("Birthday", "birthday", persona.canViewBirthday, personaIndex, "general", userProfile.birthDate) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.labelcheckbox("Gender", "gender", persona.canViewGender, personaIndex, "general", userProfile.gender) }}
+  {{ ui.endtable() }}
+  {% for permitEmail in persona.permitEmails %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("E-mail", "email" ~ loop.index, permitEmail.canView, personaIndex, "individual", permitEmail.userEmail.itemValue, permitEmail.key(), loop.index) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitIM in persona.permitIMs %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("IM", "im" ~ loop.index, permitIM.canView, personaIndex, "individual", permitIM.userIM.itemValue, permitIM.key(), loop.index) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitPhone in persona.permitPhones %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Phone", "phone" ~ loop.index, permitPhone.canView, personaIndex, "individual", permitPhone.userPhoneNumber.itemValue, permitPhone.key(), loop.index) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitWWW in persona.permitWWWs %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("WWW", "www" ~ loop.index, permitWWW.canView, personaIndex, "individual", permitWWW.userWebpage.itemValue, permitWWW.key(), loop.index) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {% for permitAddress in persona.permitAddresses %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Address", "address" ~ loop.index, permitAddress.canView, permitIndex, "individual", permitAddress.userAddress.itemValue, permitAddress.key(), loop.index) }}
+    {{ ui.endtable() }}
+  {% endfor %}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Displayed name") }}
+    {{ ui.textlabel(persona.displayName, "", "displayname" ~ personaIndex) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Save changes") }}
+    {{ ui.savebutton("updatebuttons", personaIndex) }}
+    {{ ui.spacer() }}
+  {{ ui.endtable() }}
+  {% if persona.name != "Public" and persona.name != "Default" -%}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Remove") }}
+      {{ ui.removebutton("persona", "removebuttons", personaIndex) }}
+      {{ ui.spacer() }}
+    {{ ui.endtable() }}
+  {%- endif %}
+{{ ui.endform() }}

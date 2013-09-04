@@ -52,7 +52,7 @@ class Settings(MasterHandler):
                                          fetch(1000)
             
             self.sendContent('templates/Settings.html',
-                            activeEntry = "",
+                            activeEntry = "Settings",
                             templateVariables = {
                 'userSettings': userSettings,
                 'carddavLogins': carddavLogins,

@@ -2,11 +2,11 @@
 {% import "templates/ui.html" as ui %}
 {% block title %}My Card{% endblock %}
 {% block stylesheets %}
-  <link rel="stylesheet" type="text/css" href="/stylesheets/MyCard.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/Profile.css" />
 {% endblock %}
 {% block externalscripts %}
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
-    <script type="text/javascript" src="/javascripts/MyCard.js"></script>
+    <script type="text/javascript" src="/javascripts/Profile.js"></script>
 {% endblock %}
 {% block content %}
   {% if firstlogin %}
@@ -15,7 +15,7 @@
   <div id="photos">
     <img src="/images/nophoto.png" />
   </div>
-  <div id="mycard">
+  <div id="profile">
     {{ ui.beginform() }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Name", 2) }}
@@ -44,7 +44,7 @@
         {% set emailkey = primaryEmail.key() %}
         {% set emailaddress = primaryEmail.itemValue %}
         {% set privacyType = primaryEmail.privacyType %}
-        {% include "templates/MyCard_Email.html" %}
+        {% include "templates/Profile_Email.html" %}
       </tbody>
       </table>
       <table id="additionalemailstable">
@@ -57,7 +57,7 @@
           {% set emailkey = email.key() %}
           {% set emailaddress = email.itemValue %}
           {% set privacyType = email.privacyType %}
-          {% include "templates/MyCard_Email.html" %}
+          {% include "templates/Profile_Email.html" %}
         {% else %}
           {% set primary = False %}
           {% set tablelabel = "Additional emails" %}
@@ -66,7 +66,7 @@
           {% set emailkey = "" %}
           {% set emailaddress = "" %}
           {% set privacyType = "Home" %}
-          {% include "templates/MyCard_Email.html" %}
+          {% include "templates/Profile_Email.html" %}
         {% endfor %}
       </tbody>
       </table>
@@ -84,7 +84,7 @@
             {% set itemValue = item.itemValue.address %}
             {% set itemType = item.itemValue.protocol %}
             {% set privacyType = item.privacyType %}
-            {% include "templates/MyCard_TextItem.html" %}
+            {% include "templates/Profile_TextItem.html" %}
           {% else %}
             {% set loopFirst = True %}
             {% set loopIndex = 1 %}
@@ -94,7 +94,7 @@
             {% set itemType = itemTypes[0] %}
             {% set privacyType = "Home" %}
             {% set privacyTypes = privacyTypes %}
-            {% include "templates/MyCard_TextItem.html" %}
+            {% include "templates/Profile_TextItem.html" %}
           {% endfor %}
         </tbody>
       </table>
@@ -112,7 +112,7 @@
             {% set city = address.city %}
             {% set country = address.country %}
             {% set postalCode = address.postalCode %}
-            {% include "templates/MyCard_Address.html" %}
+            {% include "templates/Profile_Address.html" %}
           {% else %}
             {% set loopFirst = True %}
             {% set loopIndex = 1 %}
@@ -124,7 +124,7 @@
             {% set city = "" %}
             {% set country = "" %}
             {% set postalCode = "" %}
-            {% include "templates/MyCard_Address.html" %}
+            {% include "templates/Profile_Address.html" %}
           {% endfor %}
         </tbody>
       </table>

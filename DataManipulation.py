@@ -6,33 +6,33 @@ import md5
 
 from google.appengine.ext import db
 
-from DataModels import UserProfile, UserSettings, Permit, Group
+from DataModels import UserProfile, UserSettings, Persona, Group
 from DataModels import UserAddress, UserEmail, UserIM, UserPhoneNumber, UserWebpage
 from DataModels import Psinque, Contact, IndividualPermit, CardDAVLogin
 from DataModels import PermitEmail
 
 #-----------------------------------------------------------------------------
 
-def generateVCard(permit):
+def generateVCard(persona):
   
-    #reallyGenerateVCard(permit)
-    permit.vcardNeedsUpdating = True
-    permit.put()
+    #reallyGenerateVCard(persona)
+    persona.vcardNeedsUpdating = True
+    persona.put()
     
     
-def reallyGenerateVCard(permit):
+def reallyGenerateVCard(persona):
     
     logging.info("Generating vCard")
-    userProfile = permit.parent()
+    userProfile = persona.parent()
 
     newVCard = vCard.VCard()
 
-    if(permit.canViewGivenNames):
+    if(persona.canViewGivenNames):
         givenNames = userProfile.givenNames
     else:
         givenNames = u""
         
-    if(permit.canViewFamilyNames):
+    if(persona.canViewFamilyNames):
         familyNames = userProfile.familyNames
     else:
         familyNames = u""
@@ -41,13 +41,13 @@ def reallyGenerateVCard(permit):
 
     # Add e-mail addresses
     for email in userProfile.emails:
-        individualPermit = email.individualPermits.ancestor(permit).get()
+        individualPermit = email.individualPermits.ancestor(persona).get()
         if individualPermit.canView:
             newVCard.addEmail(email.itemValue, email.privacyType.lower())
             
     # Add physical addresses
     for address in userProfile.addresses:
-        individualPermit = address.individualPermits.ancestor(permit).get()
+        individualPermit = address.individualPermits.ancestor(persona).get()
         if individualPermit.canView:
             newVCard.addAddress(address.privacyType,
                                 u"", u"",
@@ -59,7 +59,7 @@ def reallyGenerateVCard(permit):
     
     # Add phone numbers
     for phone in userProfile.phones:
-        individualPermit = phone.individualPermits.ancestor(permit).get()
+        individualPermit = phone.individualPermits.ancestor(persona).get()
         if individualPermit.canView:
             newVCard.addPhone(phone.itemValue,
                               phone.privacyType.lower() + u"," + phone.itemType.lower())
@@ -68,21 +68,21 @@ def reallyGenerateVCard(permit):
     
     newVCard = db.Text(newVCard.serialize())
     
-    if newVCard != permit.vcard:
+    if newVCard != persona.vcard:
         logging.info("Updating vCard")
-        permit.vcard = newVCard
-        permit.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
-        permit.vcardMD5 = md5.new(permit.vcard.encode('utf8')).hexdigest()
+        persona.vcard = newVCard
+        persona.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
+        persona.vcardMD5 = md5.new(persona.vcard.encode('utf8')).hexdigest()
         
-    permit.displayName = u" ".join([givenNames, familyNames])
-    if permit.displayName == u"":
-        for permitEmail in permit.permitEmails:
+    persona.displayName = u" ".join([givenNames, familyNames])
+    if persona.displayName == u"":
+        for permitEmail in persona.permitEmails:
             if permitEmail.canView:
-                permit.displayName = permitEmail.userEmail.email
+                persona.displayName = permitEmail.userEmail.email
                 break
     
-    permit.vcardNeedsUpdating = False
-    permit.put()
+    persona.vcardNeedsUpdating = False
+    persona.put()
 
 #-----------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ def deleteProfile(userProfileKey):
         e.delete()
     for e in IndividualPermit.all().ancestor(userProfile):
         e.delete()
-    for e in Permit.all().ancestor(userProfile):
+    for e in Persona.all().ancestor(userProfile):
         e.delete()
     for e in Psinque.all().ancestor(userProfile):
         e.delete()
@@ -122,21 +122,21 @@ def deleteProfile(userProfileKey):
 
 #-----------------------------------------------------------------------------
 
-def createNewPermit(userProfile, permitName, userEmail):
+def createNewPersona(userProfile, personaName, userEmail):
 
-    permit = Permit(parent = userProfile,
-                    name = permitName)
-    permit.put()
+    persona = Persona(parent = userProfile,
+                    name = personaName)
+    persona.put()
 
-    permitEmail = PermitEmail(parent = permit,
+    permitEmail = PermitEmail(parent = persona,
                               userEmail = userEmail)
     permitEmail.put()
 
-    generateVCard(permit)
+    generateVCard(persona)
 
-    logging.info("New permit created, key = " + str(permit.key()))
+    logging.info("New persona created, key = " + str(persona.key()))
 
-    return permit.key()
+    return persona.key()
 
 #-----------------------------------------------------------------------------
 
@@ -173,8 +173,8 @@ def createNewProfile(user):
     userEmail.put()
 
     userProfile.defaultGroup  = createNewGroup(userProfile, 'Default')
-    userProfile.defaultPermit = createNewPermit(userProfile, 'Default', userEmail)
-    userProfile.publicPermit  = createNewPermit(userProfile, 'Public', userEmail)
+    userProfile.defaultPersona = createNewPersona(userProfile, 'Default', userEmail)
+    userProfile.publicPersona  = createNewPersona(userProfile, 'Public', userEmail)
 
     # Save the updated user profile
     userProfile.put()

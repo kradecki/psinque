@@ -35,20 +35,20 @@ handlers:
   script: StaticPages.app
   secure: optional
 
-# My Card
-- url: /mycard/([^/]+)
-  script: MyCard.app
+# Profile
+- url: /profile/([^/]+)
+  script: Profile.app
   login: required
 - url: /uploadphoto
-  script: MyCard.app
+  script: Profile.app
 - url: /uploadphotopost
-  script: MyCard.app
+  script: Profile.app
 - url: /serveimageblob/([^/]+)?
-  script: MyCard.app
+  script: Profile.app
 
-# Permits
-- url: /permits/([^/]+)
-  script: Permits.app
+# Personas
+- url: /personas/([^/]+)
+  script: Personas.app
   login: required
 
 # Psinques
