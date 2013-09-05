@@ -149,6 +149,8 @@ $(document).ready(function() {
     // jQuery UI
     $("#personalist").accordion({
         heightStyle: "content",
+        collapsible: true,
+        active: false
     });
     
 });
