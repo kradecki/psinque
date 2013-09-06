@@ -192,3 +192,35 @@ div#footer td#numalab {
     width: 150px;
     text-align: right;
 }
+
+div.socialicons {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+div#social_googleplus {
+    background: url(/images/social_googleplus.png)  no-repeat;
+}
+
+div#social_googleplus:hover {
+    background: url(/images/social_googleplus_active.png)  no-repeat;
+}
+
+div#social_facebook{
+    background: url(/images/social_facebook.png)  no-repeat;
+}
+
+div#social_facebook:hover {
+    background: url(/images/social_facebook_active.png)  no-repeat;
+}
+
+div#social_twitter {
+    background: url(/images/social_twitter.png)  no-repeat;
+}
+
+div#social_twitter:hover {
+    background: url(/images/social_twitter_active.png)  no-repeat;
+}
+
