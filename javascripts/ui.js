@@ -180,23 +180,39 @@ function stopLogoAnimation() {
     $("#animatedlogo").hide();
 }
 
-function markChangedFields(where) {
-    $(where).css("color", "#de5d35");
-    $(where).find("input,select").css("color", "#de5d35");
+function uiMarkChangedFields(where) {
+    elem = $(where);
+    if(elem.is('input') || elem.is('select')) {
+        elem.addClass("unsavedchanges");
+    } else if(elem.is('select')) {
+        elem.prev().addClass("unsavedchanges");
+    } else {
+        elem.find("input,select").addClass("unsavedchanges");
+    } 
 }
 
-function unmarkChangedFields(where) {
-    $(where).css("color", "inherit");
-    $(where).find("input,select,label").css("color", "inherit");
+function uiUnmarkChangedFields(where) {
+    elem = $(where);
+    if(elem.is('input') || elem.is('select')) {
+        elem.removeClass("unsavedchanges");
+    } else if(elem.is('select')) {
+        elem.prev().removeClass("unsavedchanges");
+    } else {
+        elem.find("input,select,label").removeClass("unsavedchanges");
+    }
 }
 
 function unmarkAllFields() {
-    unmarkChangedFields(document);
+    uiUnmarkChangedFields(document);
 }
 
 function psinqueSetMarkingOnChange(where) {
-    $(where).change(function() {
-        markChangedFields(this);
+    elem = $(where);
+    elem.change(function() {
+        uiMarkChangedFields(this);
+    }).keyup(function() {
+        if(elem.is("input") && (elem.attr("type") == "text"))
+            uiMarkChangedFields(this);
     });
 }
 

@@ -365,7 +365,7 @@ class ProfileHandler(MasterHandler):
 
 class UploadPhoto(MasterHandler):
     def get(self):
-        MasterHandler.sendTopTemplate(self, activeEntry = "My card")
+        MasterHandler.sendTopTemplate(self, activeEntry = "Profile")
         MasterHandler.sendContent(self, 'templates/myCard_uploadProfilePhoto.html', {
             'photoUploadLink': blobstore.create_upload_url('/uploadphotopost'),
         })

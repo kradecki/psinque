@@ -13,14 +13,14 @@
   </td>
   {% endif %}
   {% if primary %}
-    {% set inputclass = "primary emailaddresses" %}
+    {% set inputclass = "required primary emailaddresses" %}
   {% else %}
     {% set inputclass = "additional emailaddresses" %}
   {% endif %}
   {% if emailaddress != "primary@nonexistant.com" %}
-    {{ ui.textinputwithkey(emailaddress, "e.g., john@doe.com", "", inputclass, "", emailkey, "additionalemailkeys") }}
+    {{ ui.textinputwithkey(emailaddress, "", "", inputclass, "", emailkey, "additionalemailkeys") }}
   {% else %}
-    {{ ui.textinputwithkey("", "e.g., john@doe.com", "", inputclass, "", emailkey, "additionalemailkeys") }}
+    {{ ui.textinputwithkey("", "", "", inputclass, "", emailkey, "additionalemailkeys") }}
   {% endif %}
   {{ ui.dropdown(privacyTypes, privacyType, "", "typesofemail", "smallinput") }}
   {% if not loopfirst %}

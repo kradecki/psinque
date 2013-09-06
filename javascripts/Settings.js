@@ -86,7 +86,7 @@ function addSaveSettingsHandler(where) {
                               $("#synccarddav").is(":checked"),
                               $("#newsletter").is(":checked"),
             function() {
-                unmarkChangedFields("#settings");
+                uiUnmarkChangedFields("#settings");
             });
 
         return false;
@@ -102,7 +102,7 @@ $(document).ready(function() {
     }
     
     $("input[type=checkbox]").change(function() {
-        markChangedFields($(this).parent().parent().next().children());
+        uiMarkChangedFields($(this).parent().parent().next().children());
     });
     
     // Hiding the CardDAV logins

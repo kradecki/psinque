@@ -35,7 +35,7 @@ function addUpdatePersonaHandler(where) {
             $("#birthday_" + personaIndex).is(':checked'),
             $("#gender_" + personaIndex).is(':checked'),
         function() {
-            unmarkChangedFields(personaForm.find(".generallabels"));    
+            uiUnmarkChangedFields(personaForm.find(".generallabels"));    
         });
         
         // Update all the other personas
@@ -46,7 +46,7 @@ function addUpdatePersonaHandler(where) {
             if(input.attr("type") == "checkbox" && (input.hasClass("individual"))) {               
                 psinqueSetIndividualPermit(input.attr("name"), input.is(':checked'),
                     function() {
-                        unmarkChangedFields(parentrow);
+                        uiUnmarkChangedFields(parentrow);
                     });
             }
         });
@@ -81,7 +81,7 @@ function addAddPersonaHandler(where) {
                     
                     recreateAccordeon();
                     uiInitializeCheckboxes();
-                    unmarkChangedFields("#newpersonaname");
+                    uiUnmarkChangedFields("#newpersonaname");
                     $("#newpersonaname").val("");
                     
                 });
@@ -143,7 +143,7 @@ $(document).ready(function() {
     });
 
     $("input[type=checkbox]").change(function() {
-        markChangedFields($(this).parent().next());
+        uiMarkChangedFields($(this).parent().next());
     });
 
     // jQuery UI

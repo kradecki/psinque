@@ -55,7 +55,7 @@ psinqueAPI_acceptRequest     = psinqueAPI_psinques + "acceptrequest"
 psinqueAPI_rejectRequest     = psinqueAPI_psinques + "rejectrequest"
 
 //------------------------------
-// My Card
+// Profile
 
 function psinqueAddEmail(emailAddress, privacyType, isPrimary, successFunction) {
     psinqueAJAX(psinqueAPI_addEmail, {
@@ -346,7 +346,7 @@ function psinqueDecreaseAJAXCounter() {
     window.ajaxCounter--;
     if(window.ajaxCounter == 0) {
         stopLogoAnimation();
-        unmarkChangedFields();
+        uiUnmarkChangedFields();
     }
 }
 

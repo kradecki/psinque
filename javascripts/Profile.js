@@ -98,14 +98,14 @@ function updateEmail(input) {
     emailKey = td.find(".additionalemailkeys");
     if(emailKey.val()) {
         psinqueUpdateEmail(emailKey.val(), emailAddress, typeOfEmail, function() {
-            unmarkChangedFields(td);
-            unmarkChangedFields(td.next());
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
         });
     } else {
         psinqueAddEmail(emailAddress, typeOfEmail, isPrimary, function(data) {
             emailKey.val(data["key"]);  // save the key for further queries
-            unmarkChangedFields(td);
-            unmarkChangedFields(td.next());
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
         });
     }
 }
@@ -126,14 +126,14 @@ function updateItem(input, prefix, updateFunction, addFunction) {
     itemKey = td.find("." + prefix + "keys");
     if(itemKey.val()) {
         updateFunction(itemKey.val(), itemValue, privacyType, itemType, function() {
-            unmarkChangedFields(td);
-            unmarkChangedFields(td.next());
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
         });
     } else {
         addFunction(itemValue, privacyType, itemType, function(data) {
             itemKey.val(data["key"]);  // save the key for further queries
-            unmarkChangedFields(td);
-            unmarkChangedFields(td.next());
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
         });
     }
 }
@@ -162,29 +162,45 @@ function updateAddress(input) {
                              postalCode, country, privacyType,
                              longitude, latitude,
             function() {
-                unmarkChangedFields(tr);
-                unmarkChangedFields(tr.next());
+                uiUnmarkChangedFields(tr);
+                uiUnmarkChangedFields(tr.next());
             });
     } else {
         psinqueAddAddress(address, city, postalCode, country,
                           privacyType, longitude, latitude, 
             function(data) {
                 addressKey.val(data["key"]);
-                unmarkChangedFields(tr);
-                unmarkChangedFields(tr.next());
+                uiUnmarkChangedFields(tr);
+                uiUnmarkChangedFields(tr.next());
             });
     }
+}
+
+function uiValidateTextInputs(selector, message) {
+  
+    fieldsCorrect = true;
+  
+    $(selector).each(function() {
+      
+        if($(this).val() == "") {
+      
+            uiShowErrorMessage(message);
+            fieldsCorrect = false;
+        }
+    });
+  
+    return fieldsCorrect;
 }
 
 function addUpdateHandler(where) {
     
     $(where).click(function() {
       
-        // First, we validate
-        if($("#givennames").val() == "") {
-            uiShowErrorMessage("The given names field cannot be empty.");
+        if(!uiValidateTextInputs(".required.general", "You need to fill out the given and family names."))
             return 0;
-        }
+      
+        if(!uiValidateTextInputs(".required.emailaddresses", "You need to fill out the primary email address."))
+            return 0;
       
         psinqueAjaxTransactionStart();
         
@@ -194,7 +210,7 @@ function addUpdateHandler(where) {
                              $("#birthdays").val(),   $("#birthmonths").val(), 
                              $("#birthyears").val(),  $("#gender").val(), 
             function() {
-                unmarkChangedFields("#generalinfo");
+                uiUnmarkChangedFields("#generalinfo");
             });
         
         $(".emailaddresses").each(function() { updateEmail($(this)); });
