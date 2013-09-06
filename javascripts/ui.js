@@ -218,7 +218,10 @@ function psinqueSetMarkingOnChange(where) {
 
 $(document).ready(function() {
     
-    $('select').dropdown();
+    $('select').chosen({
+        width: "100%",
+        disable_search: true,
+    });
     
     psinqueSetMarkingOnChange("input,select");
     uiInitializeCheckboxes();

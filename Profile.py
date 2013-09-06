@@ -95,10 +95,11 @@ class ProfileHandler(MasterHandler):
             'wwws': userProfile.webpages.order('-creationTime').fetch(limit = 1000),
             'addresses': userProfile.addresses.order('-creationTime').fetch(limit = 1000),
             'genders': genders,
-            'privacyTypes': privacyTypes,
-            'imTypes': imTypes,
-            'wwwTypes': wwwTypes,
-            'phoneTypes': phoneTypes,
+            #'privacyTypes': privacyTypes,
+            #'imTypes': imTypes,
+            'imTypes': { x:imTypes for x in privacyTypes },
+            'wwwTypes': { x:wwwTypes for x in privacyTypes },
+            'phoneTypes': { x:phoneTypes for x in privacyTypes },
         })
 
 

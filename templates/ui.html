@@ -93,6 +93,20 @@
   </td>
 {%- endmacro -%}
 
+{%- macro dropdown_hierarchical(items, selected, id="", class="", tdclass="") -%}
+  <td class="forminputs {% if tdclass %}{{ tdclass }}{% endif %}">
+    <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %} data-template="#dropdown">
+    {% for itemClass, subitems in items.iteritems() %}
+      <optgroup label="{{ itemClass }}">
+        {% for item in subitems %}
+          <option value="{{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
+        {% endfor %}
+      </optgroup>
+    {% endfor %}
+    </select>
+  </td>
+{%- endmacro -%}
+
 {%- macro textlabel(text, class="", id="", keyvalue="", keyclass="", colspan="", divclass="") -%}
   <td class="forminputs textlabels" {% if colspan -%}colspan="{{ colspan }}"{%- endif %}>
     <div {% if divclass %}class="{{ divclass }}"{% endif %}>

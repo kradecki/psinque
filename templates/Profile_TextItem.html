@@ -6,8 +6,7 @@
     </td>
   {% endif %}
   {{ ui.textinputwithkey(itemValue, "", prefix, prefix ~ "s", loopIndex, itemKey, prefix ~ "keys") }}
-  {{ ui.dropdown(privacyTypes, privacyType, "", prefix ~ "privacytypes", "smallinput") }}
-  {{ ui.dropdown(itemTypes, itemType, "", prefix ~ "types", "smallinput") }}
+  {{ ui.dropdown_hierarchical(itemTypes, itemType, "", prefix ~ "types", "smallinput") }}
   {% if not loopFirst %}
     {{ ui.removebutton(prefix, prefix ~ "removers") }}
   {% else %}
