@@ -180,6 +180,12 @@ function addUpdateHandler(where) {
     
     $(where).click(function() {
       
+        // First, we validate
+        if($("#givennames").val() == "") {
+            uiShowErrorMessage("The given names field cannot be empty.");
+            return 0;
+        }
+      
         psinqueAjaxTransactionStart();
         
         psinqueUpdateGeneral($("#givennames").val(),  $("#givenroman").val(),

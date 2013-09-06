@@ -222,3 +222,75 @@ div.tableform span.buttons {
 div.tableform .sublabel {
     text-align: right;
 }
+
+/****************************************
+ * Dialog boxes
+ ****************************************/
+
+.ui-dialog {
+    background-color: white;
+    border: none;
+    z-index: 9999;
+}
+
+.ui-dialog-titlebar {
+    width: 100%;
+    background-color: #de5d35;
+    height: 35px;
+    padding-top: 5px;
+}
+
+.ui-dialog-title {
+    margin-left: 10px;
+    margin-top: 7px;
+    float: left;
+    font-weight: 600;
+}
+
+.ui-dialog-titlebar-close {
+    float: right;
+    margin-right: 5px;
+}
+
+.ui-dialog-buttonset {
+    padding-bottom: 10px;
+}
+
+.ui-button {
+    background-color: #e35c33;
+    border: none;
+    padding: 0;
+}
+
+.ui-button-text-only {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    background-color: #ece8df;
+    color: #404040;
+}
+
+.ui-button-text {
+    padding: 10px;
+    display: block;
+}
+
+.ui-dialog-titlebar-close .ui-button-text {
+    display: none;
+    margin: 10px;
+}
+
+.ui-icon-closethick {
+    background: url("/images/icon_close.png");
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+}
+
+.ui-dialog-content {
+    padding: 10px;
+}
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}

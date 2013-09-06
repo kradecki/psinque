@@ -115,3 +115,39 @@ function uiInitializeCheckboxes() {
     });
 }
 
+function uiShowErrorMessage(messageText) {
+  
+   $("body").append("<div id='overlay'></div>");
+
+   $("#overlay")
+      .height($(document).height())
+      .css({
+         'opacity' : 0.6,
+         'position': 'fixed',
+         'top': 0,
+         'left': 0,
+         'background-color': 'black',
+         'width': '100%',
+         'z-index': 5000
+      });
+    
+    $("#overlay").append("<div id='dialogbox'></div>");
+    
+    $("#dialogbox").dialog({
+        autoOpen: false,
+        modal: true,
+        dialogClass: "no-close",
+        width: 500,
+        buttons: {
+          "Dismiss": function() {
+            $(this).dialog("close");
+            $("#overlay").remove();
+          }
+        },
+        title: 'Error'
+    });
+
+    $("#dialogbox").html(messageText);
+    $("#dialogbox").dialog("open");
+    
+}
