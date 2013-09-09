@@ -22,7 +22,7 @@
   {% else %}
     {{ ui.textinputwithkey("", "", "", inputclass, "", emailkey, "additionalemailkeys") }}
   {% endif %}
-  {{ ui.dropdown(privacyTypes, privacyType, "", "typesofemail", "smallinput") }}
+  {{ ui.dropdown(privacyTypes, privacyType, "", "typesofemail nosearch shortbox", "shortinput") }}
   {% if not loopfirst %}
     {{ ui.removebutton("email", "emailremovers") }}
   {% elif tablelabel != "Primary email" %}

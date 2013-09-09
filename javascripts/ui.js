@@ -36,6 +36,24 @@ function uiRemoveTableRow(tr, prefix) {
     
 }
 
+
+// function uiCountObjects(selector) {
+//     return parseInt($(selector).length);
+// }
+// 
+// function uiCountProfileObjects() {
+//   
+//   window.objectCounters = {
+//       'additionalemail': uiCountObjects(".additional.emailaddresses"),
+//       'phone': uiCountObjects(".additional.emailaddresses"),
+//       'im': uiCountObjects(".additional.emailaddresses"),
+//       'www': uiCountObjects(".additional.emailaddresses"),
+//       'nickname': uiCountObjects(".additional.emailaddresses"),
+//       'company': uiCountObjects(".additional.emailaddresses"),
+//   };
+//   
+// }
+
 function uiAddNewTableRow(prefix, removeAjax) {
   
     tableName = "#" + prefix + "stable"
@@ -57,10 +75,21 @@ function uiAddNewTableRow(prefix, removeAjax) {
     $(tableName + "> tbody").append(tr);
 
     // Re-create the dropdown
-    tr.find('.dropdown').remove();
-    tr.find('select').dropdown();
+    tr.find('.chosen-container').remove();
+    uiMakeDropdowns(tr);
     
     uiAddRemoverHandler(tr.find('.' + prefix + 'removers'), prefix, removeAjax);
+    
+    window.objectCounters[prefix]++;
+    
+//     tr.find("input").each(function() {
+//       
+//       e = $(this);
+//       newID = e.attr("id").replace(/[0-9]+/g, "");
+//       newID += window.objectCounters[prefix];
+//       e.attr("id", newID);      
+//       
+//     });
     
     return tr;
 }
@@ -87,9 +116,9 @@ function uiAddRemoverHandler(where, prefix, removeAjax) {
 function uiAddAddHandler(prefix, removeAjax) {
 
     $("#add" + prefix).click(function() {
-      
+            
         tr = uiAddNewTableRow(prefix, removeAjax);
-        tr.slideDown();
+        tr.show();
         
         return false;
     });
@@ -115,25 +144,35 @@ function uiInitializeCheckboxes() {
     });
 }
 
-function uiShowErrorMessage(messageText) {
+function uiAddOverlay() {
   
    $("body").append("<div id='overlay'></div>");
 
    $("#overlay")
       .height($(document).height())
       .css({
-         'opacity' : 0.6,
+//          'opacity' : 0.6,
          'position': 'fixed',
          'top': 0,
          'left': 0,
-         'background-color': 'black',
+         'background-color': 'rgba(0,0,0,0.6)',
          'width': '100%',
          'z-index': 5000
       });
-    
+}
+
+function uiShowDialogbox(messageText, options) {
+  
+    uiAddOverlay();
     $("#overlay").append("<div id='dialogbox'></div>");
-    
-    $("#dialogbox").dialog({
+    $("#dialogbox").dialog(options);
+    $("#dialogbox").html(messageText);
+    $("#dialogbox").dialog("open");
+}
+
+function uiShowErrorMessage(messageText) {
+      
+    uiShowDialogbox(messageText, {
         autoOpen: false,
         modal: true,
         dialogClass: "no-close",
@@ -145,11 +184,30 @@ function uiShowErrorMessage(messageText) {
           }
         },
         title: 'Error'
-    });
+    });    
+}
 
-    $("#dialogbox").html(messageText);
-    $("#dialogbox").dialog("open");
-    
+function uiShowYesNoMessage(messageText) {
+      
+    uiShowDialogbox(messageText, {
+        autoOpen: false,
+        modal: true,
+        dialogClass: "no-close",
+        width: 500,
+        buttons: {
+          "Yes": function() {
+              $(this).dialog("close");
+              $("#overlay").remove();
+              return true;
+          },
+          "No": function() {
+              $(this).dialog("close");
+              $("#overlay").remove();
+              return false;
+          }
+        },
+        title: 'Warning'
+    });    
 }
 
 function removeElementWithEffects(element) {
@@ -166,21 +224,30 @@ function showElementWithEffects(element) {
     element.slideDown('fast');
 }
 
-function startLogoAnimation() {
-    window.onbeforeunload = function() {
-        return "An AJAX query is in progress. Please wait until it's done.";
+function uiStartLogoAnimation() {
+  
+    if($("#overlay").length == 0) {
+      
+        uiAddOverlay();
+        
+        $("#overlay").append("<div id='animatedlogo'><img src='/images/animated_logo.gif' alt='Psinque logo' /></div>");
+        $("#animatedlogo").position({
+            my: "center",
+            at: "center",
+            of: window
+        });
     }
-    $("#staticlogo").hide();
-    $("#animatedlogo").show();
 }
 
-function stopLogoAnimation() {
-    window.onbeforeunload = null;
-    $("#staticlogo").show();
-    $("#animatedlogo").hide();
+function uiStopLogoAnimation() {
+    window.unsavedChanges = false;  // well... it's not pretty, but it works
+    $("#overlay").remove();
 }
 
 function uiMarkChangedFields(where) {
+  
+    window.unsavedChanges = true;
+  
     elem = $(where);
     if(elem.is('input') || elem.is('select')) {
         elem.addClass("unsavedchanges");
@@ -216,14 +283,58 @@ function psinqueSetMarkingOnChange(where) {
     });
 }
 
-$(document).ready(function() {
-    
-    $('select').chosen({
-        width: "100%",
-        disable_search: true,
+function uiMakeDropdowns(where) {
+  
+    $(where).find('select').each(function() {
+      
+        select = $(this);
+      
+        chosenOptions = {
+            width: "100%",
+            disable_search: false,
+        }
+        
+        if(select.hasClass("nosearch"))
+            chosenOptions.disable_search = true;
+        
+        if(select.hasClass("shortbox"))
+            chosenOptions.width = "80px";
+        
+        if(select.hasClass("mediumbox"))
+            chosenOptions.width = "160px";
+        
+        if(select.hasClass("bigbox"))
+            chosenOptions.width = "240px";
+        
+        select.chosen(chosenOptions);
     });
-    
+}
+
+function uiValidateEmail(emailValue) {
+  
+    var atpos = emailValue.indexOf("@");
+    var dotpos = emailValue.lastIndexOf(".");
+    return !(atpos < 1 || dotpos < atpos+2 || dotpos+2 >= emailValue.length);
+}
+
+$(document).ready(function() {
+  
+    uiMakeDropdowns("body");
+  
     psinqueSetMarkingOnChange("input,select");
     uiInitializeCheckboxes();
+
+    window.ajaxInProgress = false;
+    window.unsavedChanges = false;
+    
+    $(window).bind('beforeunload', function(e) {
+      
+        if(window.ajaxInProgress) {
+            return "An AJAX query is in progress. Are you sure you want to exit?";
+        } else if(window.unsavedChanges) {
+            return "There are unsaved changes on the webpage. Are you sure you want to exit?";
+        } else
+            return;
+    });
     
 });

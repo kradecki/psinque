@@ -18,22 +18,29 @@
   <div id="profile">
     {{ ui.beginform() }}
       {{ ui.begintable() }}
-        {{ ui.tablelabel("Name", 2) }}
+        {{ ui.tablelabel("Name", 4) }}
+        {{ ui.textinput(userProfile.namePrefix, "Prefix", "prefix", "general") }}
+        {{ ui.spacer() }}
+        {{ ui.newrow() }}
         {{ ui.textinput(userProfile.givenNames, "Given names", "givennames", "required general") }}
         {{ ui.textinput(userProfile.givenNamesRomanization, "Romanization", "givenroman") }}
         {{ ui.newrow() }}
         {{ ui.textinput(userProfile.familyNames, "Family names", "familynames", "required general") }}
         {{ ui.textinput(userProfile.familyNamesRomanization, "Romanization", "familyroman") }}
+        {{ ui.newrow() }}
+        {{ ui.spacer() }}
+        {{ ui.textinput(userProfile.nameSuffix, "Suffix", "suffix", "general") }}
       {{ ui.endtable() }}
       {{ ui.multipletextinput("Nicknames", "nickname", [], "") }}
       {{ ui.multipletextinput("Company", "company", [], "") }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Birthday") }}
-        {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays") }}
-        {{ ui.dropdown(months, months[userProfile.birthDate.month-1], "birthmonths") }}
-        {{ ui.dropdown(range(2013, 1899, -1), userProfile.birthDate.year, "birthyears") }}
+        {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays", "nosearch shortbox", "shortinput") }}
+        {{ ui.dropdown(months, months[userProfile.birthDate.month-1], "birthmonths", "nosearch shortbox", "shortinput") }}
+        {{ ui.dropdown(range(2013, 1899, -1), userProfile.birthDate.year, "birthyears", "nosearch shortbox", "shortinput") }}
           <td class="forminputs sublabel">Gender:</td>
-        {{ ui.dropdown(genders, userProfile.gender, "gender") }}
+        {{ ui.dropdown(genders, userProfile.gender, "gender", "nosearch shortbox", "shortinput") }}
+        {{ ui.spacer() }}
       {{ ui.endtable() }}
       <table id="primaryemailaddress">
       <tbody>
@@ -110,7 +117,7 @@
             {% set privacyType = address.privacyType %}
             {% set addressLocation = address.location %}
             {% set city = address.city %}
-            {% set country = address.country %}
+            {% set country = address.countryCode %}
             {% set postalCode = address.postalCode %}
             {% include "templates/Profile_Address.html" %}
           {% else %}

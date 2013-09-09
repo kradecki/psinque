@@ -37,13 +37,17 @@ div.wrappers {
 }
 
 div#headerwrapper {
-    height: 59px;
-    background-color: #ECE8DF;
-    border-bottom: 1px solid #404040;
+    height: 61px;
+    background-color: #404040;
+/*     border-bottom: 1px solid #404040; */
+    box-shadow: 0 0px 6px 3px #d8d4cb;
+    position: fixed;
+    top: 0;
 }
 
 div#contentwrapper {
     padding-bottom: 40px;
+    margin-top: 61px;
 }
 
 div#footerwrapper {
@@ -58,9 +62,11 @@ div#footerwrapper {
 }
 
 div#header {
-    width: 960px;
+    width: 920px;
     margin: 0 auto;
     padding: 0;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 div#content {
@@ -104,17 +110,15 @@ div#header td {
 }
 
 div#header td#logographics img {
-    margin-top: 10px;
+/*     margin-top: 10px; */
     margin-left: 29px;
 }
 
-div#header td#logotext img {
-    margin-top: 10px;
-    margin-left: 5px;
-}
-
-div#header #animatedlogo {
-    display: none;
+div#header td#logotext {
+    margin: 0;
+/*     padding-left: 40px; */
+    width: 230px;
+    text-align: center;
 }
 
 div#header ul {
@@ -135,6 +139,7 @@ div#header li a {
     width: 120px;
     height: 28px;
     text-align: center;
+    color: #fff;
 }
 
 div#header li a:hover {
@@ -143,12 +148,12 @@ div#header li a:hover {
 
 div#header li a.active {
     font-weight: 800;
-    border: 1px solid #404040;
-    border-bottom: none;
+/*     border: 1px solid #404040; */
+/*     border-bottom: none; */
     width: 118px;
     height: 28px;
     padding-top: 7px;
-    background: #d9d4cc;
+/*     background: #d9d4cc; */
 }
 
 div#header td#extras {

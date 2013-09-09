@@ -14,7 +14,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 from DataModels import UserProfile, UserSettings, Group
 from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress
 from DataModels import Persona, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
-from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames
+from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames, countries
 
 from DataManipulation import generateVCard, createNewProfile, createNewGroup, createNewPersona
 
@@ -95,11 +95,11 @@ class ProfileHandler(MasterHandler):
             'wwws': userProfile.webpages.order('-creationTime').fetch(limit = 1000),
             'addresses': userProfile.addresses.order('-creationTime').fetch(limit = 1000),
             'genders': genders,
-            #'privacyTypes': privacyTypes,
-            #'imTypes': imTypes,
+            'countries': countries,
             'imTypes': { x:imTypes for x in privacyTypes },
             'wwwTypes': { x:wwwTypes for x in privacyTypes },
             'phoneTypes': { x:phoneTypes for x in privacyTypes },
+            'privacyTypes': privacyTypes,
         })
 
 
@@ -122,6 +122,8 @@ class ProfileHandler(MasterHandler):
         except ValueError:
             raise AjaxError("Invalid month name: " + birthmonth)
 
+        self.userProfile.namePrefix = self.request.get('prefix')
+        self.userProfile.nameSuffix = self.request.get('suffix')
         self.userProfile.givenNames = self.getRequiredParameter('givennames')
         self.userProfile.givenNamesRomanization = self.request.get('givenroman')
         self.userProfile.familyNames = self.getRequiredParameter('familynames')
@@ -346,7 +348,7 @@ class ProfileHandler(MasterHandler):
         userAddress.address = self.getRequiredParameter('address')
         userAddress.city = self.getRequiredParameter('city')
         userAddress.postalCode = self.request.get('postal')
-        userAddress.country = self.getRequiredParameter('country')
+        userAddress.countryCode = self.getRequiredParameter('country')
         userAddress.privacyType = self.getRequiredParameter('privacy')
         userAddress.location = location
         userAddress.put()

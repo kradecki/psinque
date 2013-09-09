@@ -167,7 +167,7 @@ def createNewProfile(user):
 
     # Primary email address (needed for notifications, etc.)
     userEmail = UserEmail(parent = userProfile,
-                          itemValue = "primary@nonexistant.com",
+                          itemValue = user.email(),  # "primary@nonexistant.com"
                           privacyType = 'Home',
                           primary = True)
     userEmail.put()
@@ -175,6 +175,8 @@ def createNewProfile(user):
     userProfile.defaultGroup  = createNewGroup(userProfile, 'Default')
     userProfile.defaultPersona = createNewPersona(userProfile, 'Default', userEmail)
     userProfile.publicPersona  = createNewPersona(userProfile, 'Public', userEmail)
+    
+    userProfile.pseudonyms = [ user.nickname() ]
 
     # Save the updated user profile
     userProfile.put()

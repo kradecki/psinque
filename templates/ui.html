@@ -23,7 +23,7 @@
 
 {%- macro endtable() -%}
   </tr>
-  </tbody>
+<!--   </tbody> -->
   </table>
 {%- endmacro -%}
 
@@ -42,9 +42,7 @@
 {%- macro button(id, action, class="", index="", divclass="") -%}
   <td class="forminputs formbuttons">
     <div {% if divclass %}class="{{ divclass }}"{% endif %}>
-      <span class="buttons clickable {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}>
-      <img src="/images/button_{{ action }}.png" alt="{{ action }}" />
-      </span>
+      <span class="buttons clickable buttons-{{ action }} {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}></span>
     </div>
   </td>
 {%- endmacro -%}
@@ -79,10 +77,10 @@
 
 {%- macro dropdown(items, selected, id="", class="", tdclass="") -%}
   <td class="forminputs {% if tdclass %}{{ tdclass }}{% endif %}">
-    <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %} data-template="#dropdown">
+    <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %}>
     {% if items is mapping %}
-      {% for itemCode, itemName in items.iteritems() %}
-        <option value="{{ itemName }}" {% if itemName == selected %}selected="selected"{% endif %}>{{ itemCode }}</option>
+      {% for item in items|dictsort %}
+        <option value="{{ item[0] }}" {% if item[0] == selected %}selected="selected"{% endif %}>{{ item[1] }}</option>
       {% endfor %}
     {% else %}
       {% for item in items %}
@@ -95,11 +93,11 @@
 
 {%- macro dropdown_hierarchical(items, selected, id="", class="", tdclass="") -%}
   <td class="forminputs {% if tdclass %}{{ tdclass }}{% endif %}">
-    <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %} data-template="#dropdown">
+    <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %}>
     {% for itemClass, subitems in items.iteritems() %}
       <optgroup label="{{ itemClass }}">
         {% for item in subitems %}
-          <option value="{{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
+          <option value="{{ itemClass }} {{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
         {% endfor %}
       </optgroup>
     {% endfor %}
@@ -165,12 +163,12 @@
      * Whole tables -->
      
 {%- macro multipletextinput(label, inputid, values, placeholder="") -%}
-  <table>
+  <table id="{{ inputid }}stable">
     <tbody>
       {% for value in values %}
         <tr>
           {% if loop.first %}
-            {{ tablelabel(label, values|count) }}
+            {{ tablelabel(label, values|count, inputid ~ "label") }}
           {% endif %}
           {{ textinput(value, placeholder, inputid ~ loop.index) }}
           {% if loop.first %}
@@ -181,7 +179,7 @@
         </tr>
       {% else %}
         <tr>
-          {{ tablelabel(label, 1) }}
+          {{ tablelabel(label, 1, inputid ~ "label") }}
           {{ textinput("", placeholder, inputid ~ "1") }}
           {{ addbutton(inputid) }}
         </tr>

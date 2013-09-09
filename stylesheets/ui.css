@@ -7,6 +7,20 @@
     color: #de5d35;
 }
 
+div#animatedlogo {
+    width: 140px;
+    height: 140px;
+    position: fixed;
+    z-index: 9999;
+    background-color: #fff;
+}
+
+div#animatedlogo img {
+    position: relative;
+    left: 30px;
+    top: 30px;
+}
+
 /****************************************
  * Checkboxes
  ****************************************/
@@ -48,7 +62,6 @@ div.tableform table {
 }
 
 div.tableform tr {
-/*     vertical-align: top; */
     border-bottom: 12px solid #d8d4cb;
 }
 
@@ -77,8 +90,16 @@ div.tableform td.forminputs {
     padding-left: 12px;
 }
 
-div.tableform td.smallinput {
-    width: 100px;
+div.tableform td.forminputs.shortinput {
+    width: 80px;
+}
+
+div.tableform td.forminputs.mediuminput {
+    width: 160px;
+}
+
+div.tableform td.forminputs.biginput {
+    width: 240px;
 }
 
 div.tableform td.formbuttons {
@@ -130,17 +151,16 @@ div.tableform td.forminputs label {
     display: block;
 }
 
-div.tableform img,
 div.tableform span.buttons {
     display: block;
-}
-
-div.tableform span.buttons {
     cursor: pointer;
+    width: 40px;
+    height: 40px;
 }
 
 div.tableform .sublabel {
     text-align: right;
+/*     width: 160px; */
 }
 
 /****************************************
@@ -213,4 +233,64 @@ div.tableform .sublabel {
 
 .no-close .ui-dialog-titlebar-close {
   display: none;
+}
+
+/****************************************
+ * Buttons
+ ****************************************/
+
+.buttons-add {
+    background: url("/images/button_add_inactive.png") no-repeat;
+}
+
+.buttons-add:hover {
+    background: url("/images/button_add.png") no-repeat;
+}
+
+.buttons-check {
+    background: url("/images/button_check_inactive.png") no-repeat;
+}
+
+.buttons-check:hover {
+    background: url("/images/button_check.png") no-repeat;
+}
+
+.buttons-create {
+    background: url("/images/button_create_inactive.png") no-repeat;
+}
+
+.buttons-create:hover {
+    background: url("/images/button_create.png") no-repeat;
+}
+
+.buttons-localize {
+    background: url("/images/button_localize_inactive.png") no-repeat;
+}
+
+.buttons-localize:hover {
+    background: url("/images/button_localize.png") no-repeat;
+}
+
+.buttons-remove {
+    background: url("/images/button_remove_inactive.png") no-repeat;
+}
+
+.buttons-remove:hover {
+    background: url("/images/button_remove.png") no-repeat;
+}
+
+.buttons-save {
+    background: url("/images/button_save_inactive.png") no-repeat;
+}
+
+.buttons-save:hover {
+    background: url("/images/button_save.png") no-repeat;
+}
+
+.buttons-search {
+    background: url("/images/button_search_inactive.png") no-repeat;
+}
+
+.buttons-search:hover {
+    background: url("/images/button_search.png") no-repeat;
 }

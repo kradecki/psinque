@@ -176,16 +176,18 @@ function psinqueUpdateAddress(key, address, city, postalCode, country,
                 }, successFunction);
 }
 
-function psinqueUpdateGeneral(givenNames, givenNamesRomanization,
-                              familyNames, familyNamesRomanization,
+function psinqueUpdateGeneral(prefix, givenNames, givenNamesRomanization,
+                              familyNames, familyNamesRomanization, suffix,
                               companyName, companyNameRomanization,
                               birthday, birthmonth, birthyear, gender,
                               successFunction) {
     psinqueAJAX(psinqueAPI_updateGeneral, {
+                    prefix: prefix,
                     givennames: givenNames,
                     givenroman: givenNamesRomanization,
                     familynames: familyNames,
                     familyroman: familyNamesRomanization,
+                    suffix: suffix,
                     company: companyName,
                     companyroman: companyNameRomanization,
                     day: birthday,
@@ -339,13 +341,13 @@ function psinqueAJAX_HTML(url, parameters, successFunction) {
 
 function psinqueIncreaseAJAXCounter() {
     window.ajaxCounter++;
-    startLogoAnimation();
+    uiStartLogoAnimation();
 }
 
 function psinqueDecreaseAJAXCounter() {
     window.ajaxCounter--;
     if(window.ajaxCounter == 0) {
-        stopLogoAnimation();
+        uiStopLogoAnimation();
         uiUnmarkChangedFields();
     }
 }
@@ -364,7 +366,7 @@ window.ajaxCounter = 0;
 $(document).ready(function() {
     
     $(document).ajaxError(function(event, jqXHR, settings, exception) {
-        stopLogoAnimation();
+        uiStopLogoAnimation();
 //         window.ajaxCounter = 0;
         alert("Uknown error occured while performing operation: " + exception);
         console.log(settings);

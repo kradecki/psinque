@@ -37,16 +37,28 @@ function codeAddress(address, mapNr) {
   
     geocoder.geocode( { 'address': address }, function(results, status) {
       
+        console.log(status);
+      
         if (status == google.maps.GeocoderStatus.OK) {
           
             currentAddressPositions[mapNr-1] = results[0].geometry.location;
             
             maps[mapNr-1].setCenter(currentAddressPositions[mapNr-1]);
             updateMapMarker(mapNr);
+            
+            $("#googlemap" + mapNr).parent().parent().show();
                         
-        } else {
+        } else if(status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+            
+            uiShowErrorMessage("No results were found for the given address.");
+            
+            return false;
           
-            alert("Geocode was not successful for the following reason: " + status);
+        } else {
+
+            uiShowErrorMessage("Geocode was not successful for the following reason: " + status);
+            
+            return false;
         }
     });
 }
@@ -63,13 +75,15 @@ function addLocalizerHandler(where) {
   
     $(where).click(function() {
       
+        if(!uiValidateTextInputs(".required.addressdata", "Not enough address data to perform geocoding. You need to specify at least the address and the city."))
+           return false;
+      
         mapNr = $(this).attr("data-psinque-index");
 
         initializeGoogleMap(mapNr, -34.397, 150.644);
         fullAddress = $("#city" + mapNr).val() + ", " + $("#address" + mapNr).val();
+        
         codeAddress(fullAddress, mapNr);
-
-        $("#googlemap" + mapNr).parent().parent().show();
 
         return false;
 
@@ -182,9 +196,29 @@ function uiValidateTextInputs(selector, message) {
   
     $(selector).each(function() {
       
-        if($(this).val() == "") {
+        e = $(this);
+      
+        if(e.val() == "") {
       
             uiShowErrorMessage(message);
+            fieldsCorrect = false;
+        }
+    });
+  
+    return fieldsCorrect;
+}
+
+function uiValidateEmails(selector) {
+  
+    fieldsCorrect = true;
+  
+    $(selector).each(function() {
+      
+        e = $(this);
+      
+        if(e.hasClass("emailaddresses") && (e.val() != "") &&  (!uiValidateEmail(e.val()))) {
+          
+            uiShowErrorMessage("Invalid email address: " + e.val());
             fieldsCorrect = false;
         }
     });
@@ -197,15 +231,20 @@ function addUpdateHandler(where) {
     $(where).click(function() {
       
         if(!uiValidateTextInputs(".required.general", "You need to fill out the given and family names."))
-            return 0;
+            return false;
       
         if(!uiValidateTextInputs(".required.emailaddresses", "You need to fill out the primary email address."))
-            return 0;
+            return false;
+        
+        if(!uiValidateEmails(".emailaddresses"))
+            return false;
       
         psinqueAjaxTransactionStart();
         
-        psinqueUpdateGeneral($("#givennames").val(),  $("#givenroman").val(),
+        psinqueUpdateGeneral($("#prefix").val(), 
+                             $("#givennames").val(),  $("#givenroman").val(),
                              $("#familynames").val(), $("#familyroman").val(),
+                             $("#suffix").val(), 
                              $("#companyname").val(), $("#companyroman").val(),
                              $("#birthdays").val(),   $("#birthmonths").val(), 
                              $("#birthyears").val(),  $("#gender").val(), 
@@ -238,6 +277,8 @@ $(document).ready(function() {
     uiAddAddHandler("phone", psinqueRemovePhone);
     uiAddAddHandler("im", psinqueRemoveIM);
     uiAddAddHandler("www", psinqueRemoveWWW);
+    uiAddAddHandler("nickname", null);
+    uiAddAddHandler("company", null);
     
     // Handlers for removing fields
     uiAddRemoverHandler(".emailremovers", "additionalemail", psinqueRemoveEmail);
