@@ -80,7 +80,7 @@ function uiAddNewTableRow(prefix, removeAjax) {
     
     uiAddRemoverHandler(tr.find('.' + prefix + 'removers'), prefix, removeAjax);
     
-    window.objectCounters[prefix]++;
+//     window.objectCounters[prefix]++;
     
 //     tr.find("input").each(function() {
 //       

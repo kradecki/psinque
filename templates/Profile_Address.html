@@ -20,7 +20,7 @@
   <td class="forminputs" colspan="3">
     <div class="googlemaps" id="googlemap{{ loopIndex }}"></div>
     <input type="hidden" class="longitudes" id="longitude{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lon }}"{% endif %} readonly="readonly" data-psinque-index="{{ loopIndex }}" />
-    <input type="hidden" id="latitude{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lat }}"{% endif %} readonly="readonly" />
+    <input type="hidden" class="latitudes" id="latitude{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lat }}"{% endif %} readonly="readonly" />
   </td>
-  {{ ui.removebutton("map") }}
+  {{ ui.removebutton("map", "mapremovers") }}
 </tr>

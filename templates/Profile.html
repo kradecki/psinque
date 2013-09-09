@@ -28,11 +28,29 @@
         {{ ui.textinput(userProfile.familyNames, "Family names", "familynames", "required general") }}
         {{ ui.textinput(userProfile.familyNamesRomanization, "Romanization", "familyroman") }}
         {{ ui.newrow() }}
-        {{ ui.spacer() }}
         {{ ui.textinput(userProfile.nameSuffix, "Suffix", "suffix", "general") }}
+        {{ ui.spacer() }}
       {{ ui.endtable() }}
       {{ ui.multipletextinput("Nicknames", "nickname", [], "") }}
-      {{ ui.multipletextinput("Company", "company", [], "") }}
+      <table id="companystable">
+      <tbody>
+        {% for company in companies %}
+          {% set loopFirst = loop.first %}
+          {% set loopIndex = loop.index %}
+          {% set itemCount = items|count %}
+          {% set itemKey = company.key() %}
+          {% set itemValue = company.itemValue %}
+          {% include "templates/Profile_Company.html" %}
+        {% else %}
+          {% set loopFirst = True %}
+          {% set loopIndex = 1 %}
+          {% set itemCount = 1 %}
+          {% set itemKey = "" %}
+          {% set itemValue = "" %}
+          {% include "templates/Profile_Company.html" %}
+        {% endfor %}
+      </tbody>
+      </table>
       {{ ui.begintable() }}
         {{ ui.tablelabel("Birthday") }}
         {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays", "nosearch shortbox", "shortinput") }}

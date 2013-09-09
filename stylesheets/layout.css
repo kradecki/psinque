@@ -39,10 +39,10 @@ div.wrappers {
 div#headerwrapper {
     height: 61px;
     background-color: #404040;
-/*     border-bottom: 1px solid #404040; */
     box-shadow: 0 0px 6px 3px #d8d4cb;
     position: fixed;
     top: 0;
+    z-index: 9999;
 }
 
 div#contentwrapper {

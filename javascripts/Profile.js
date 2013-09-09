@@ -46,6 +46,7 @@ function codeAddress(address, mapNr) {
             maps[mapNr-1].setCenter(currentAddressPositions[mapNr-1]);
             updateMapMarker(mapNr);
             
+            updateAddressCoordinates(mapNr);
             $("#googlemap" + mapNr).parent().parent().show();
                         
         } else if(status == google.maps.GeocoderStatus.ZERO_RESULTS) {
@@ -66,8 +67,8 @@ function codeAddress(address, mapNr) {
 function updateAddressCoordinates(mapNr) {
   
     // Copy the coordinates into appropriate input fields
-    $("#longitude" + mapNr).val(currentAddressPositions[mapNr-1].kb);
-    $("#latitude" + mapNr).val(currentAddressPositions[mapNr-1].jb);
+    $("#longitude" + mapNr).val(currentAddressPositions[mapNr-1].pb);
+    $("#latitude" + mapNr).val(currentAddressPositions[mapNr-1].ob);
   
 }
 
@@ -80,7 +81,7 @@ function addLocalizerHandler(where) {
       
         mapNr = $(this).attr("data-psinque-index");
 
-        initializeGoogleMap(mapNr, -34.397, 150.644);
+        initializeGoogleMap(mapNr, 54.366667, 18.633333);
         fullAddress = $("#city" + mapNr).val() + ", " + $("#address" + mapNr).val();
         
         codeAddress(fullAddress, mapNr);
@@ -285,6 +286,12 @@ $(document).ready(function() {
     uiAddRemoverHandler(".imremovers", "im", psinqueRemoveIM);
     uiAddRemoverHandler(".phoneremovers", "phone", psinqueRemovePhone);
     uiAddRemoverHandler(".wwwremovers", "www", psinqueRemoveWWW);
+    
+    $(".mapremovers").click(function() {
+        map = $(this).parent().parent().prev();
+        map.find("input").val("");
+        map.parent().hide();
+    });
     
     // Google map handlers
     geocoder = new google.maps.Geocoder();
