@@ -319,7 +319,7 @@ function psinqueAJAX(url, parameters, successFunction) {
     $.getJSON(url, parameters, function(data) {
         psinqueDecreaseAJAXCounter();
         if(data["status"] != 0) {
-            alert("An error occured while performing operation: " + data["message"]);
+            uiShowErrorMessage("An error occured while performing operation: " + data["message"]);
         } else if(successFunction != undefined) {
             successFunction(data);
         }
@@ -368,8 +368,7 @@ $(document).ready(function() {
     $(document).ajaxError(function(event, jqXHR, settings, exception) {
         uiStopLogoAnimation();
 //         window.ajaxCounter = 0;
-        alert("Uknown error occured while performing operation: " + exception);
-        console.log(settings);
+        uiShowErrorMessage("Uknown error occured while performing operation: " + exception);
     });
     
 });
