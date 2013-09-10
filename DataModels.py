@@ -421,8 +421,8 @@ class UserProfile(db.Model):
     activated = db.BooleanProperty(default = False) 
 
     # Personal data
-    namePrefix = db.StringProperty()
-    nameSuffix = db.StringProperty()
+    namePrefix = db.StringProperty(default = u"")
+    nameSuffix = db.StringProperty(default = u"")
 
     givenNames = db.StringProperty(default = u"")
     givenNamesRomanization = db.StringProperty(default = u"")
