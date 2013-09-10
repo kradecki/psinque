@@ -49,7 +49,7 @@ Please click <a href="%s">this link</a> to reject this psinque.
 
 The Psinque Team
 """ % (u" ".join(psinque.fromUser.givenNames),
-       psinque.parent().parent().defaultPermit.displayName,
+       psinque.parent().parent().defaultPersona.displayName,
        createAcceptUrl(psinque)),
        createRejectUrl(psinque),
                      u"You have a pending psinque request from ...")

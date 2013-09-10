@@ -27,19 +27,11 @@
   {{ ui.beginform("newpsinqueform") }}
     {{ ui.begintable("searchtable") }}
       {{ ui.tablelabel("New psinque", 2) }}
-      {{ ui.textinput("", "Type an email address to find your friend", id = "email") }}
+      {{ ui.textinput("", "Type an email address to find your friend", id = "email", class = "emailaddresses") }}
       {{ ui.searchbutton() }}
       {{ ui.newrow(id = "searchresults") }}
       {{ ui.textlabel("", id="searchresult", keyvalue="unknown", keyclass="friendsprofilekeys", divclass = "hiddenelements") }}
       {{ ui.addbutton("contact", divclass = "hiddenelements") }}
-    {{ ui.endtable() }}
-  {{ ui.endform() }}
-  {{ ui.beginform("searchform") }}
-    {{ ui.begintable() }}
-      {{ ui.tablelabel("Filter") }}
-      {{ ui.dropdown(groups, "") }}
-      {{ ui.textinput("", "Custom text search", "psinque_filter") }}
-      {{ ui.searchbutton("psinque") }}
     {{ ui.endtable() }}
   {{ ui.endform() }}
   <div id="contactlist">

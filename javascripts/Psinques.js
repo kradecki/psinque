@@ -2,6 +2,9 @@
 function addSearchHandler(where) {
     
     $(where).click(function() {
+      
+        if(!uiValidateEmails("#email"))
+            return false;
                 
         psinqueSearchEmail($("#email").val(), function(jsonResults) {
             
@@ -56,12 +59,12 @@ function addExpandContactHandler(where) {
   
   $(where).click(function() {
     
-    contactDetails = $(this).parent().next();
-    if(contactDetails.is(":visible")) {
-        hideElementWithEffects(contactDetails);
-    } else {
-        showElementWithEffects(contactDetails);
-    }
+      contactDetails = $(this).parent().next();
+      if(contactDetails.is(":visible")) {
+          hideElementWithEffects(contactDetails);
+      } else {
+          showElementWithEffects(contactDetails);
+      }
   });
 }
 

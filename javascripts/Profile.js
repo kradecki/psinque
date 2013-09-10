@@ -191,42 +191,6 @@ function updateAddress(input) {
     }
 }
 
-function uiValidateTextInputs(selector, message) {
-  
-    fieldsCorrect = true;
-  
-    $(selector).each(function() {
-      
-        e = $(this);
-      
-        if(e.val() == "") {
-      
-            uiShowErrorMessage(message);
-            fieldsCorrect = false;
-        }
-    });
-  
-    return fieldsCorrect;
-}
-
-function uiValidateEmails(selector) {
-  
-    fieldsCorrect = true;
-  
-    $(selector).each(function() {
-      
-        e = $(this);
-      
-        if(e.hasClass("emailaddresses") && (e.val() != "") &&  (!uiValidateEmail(e.val()))) {
-          
-            uiShowErrorMessage("Invalid email address: " + e.val());
-            fieldsCorrect = false;
-        }
-    });
-  
-    return fieldsCorrect;
-}
-
 function addUpdateHandler(where) {
     
     $(where).click(function() {
@@ -281,12 +245,13 @@ $(document).ready(function() {
     uiAddAddHandler("nickname", null);
     uiAddAddHandler("company", null);
     
-    // Handlers for removing fields
+    // Handlers for removing standard fields
     uiAddRemoverHandler(".emailremovers", "additionalemail", psinqueRemoveEmail);
     uiAddRemoverHandler(".imremovers", "im", psinqueRemoveIM);
     uiAddRemoverHandler(".phoneremovers", "phone", psinqueRemovePhone);
     uiAddRemoverHandler(".wwwremovers", "www", psinqueRemoveWWW);
     
+    // Non-standard element removers
     $(".mapremovers").click(function() {
         map = $(this).parent().parent().prev();
         map.find("input").val("");

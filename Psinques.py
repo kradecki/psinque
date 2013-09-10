@@ -208,9 +208,9 @@ class PsinquesHandler(MasterHandler):
             else:
                 isThereMore = False
 
-            personaList = { persona.name: persona.key() for persona in self.userProfile.personas.fetch(100) }
+            personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }
                     
-            groupList = { group.name: group.key() for group in self.userProfile.groups.fetch(100) }
+            groupList = { group.key(): group.name for group in self.userProfile.groups.fetch(100) }
                     
             self.sendContent('templates/Psinques.html',
                             activeEntry = "Psinques",

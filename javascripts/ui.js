@@ -4,7 +4,7 @@ function uiCloneElement(oldElement) {
     newElement = oldElement.clone();  // clone an existing address field group
 
     // Clean all the input values:
-    newElement.find("input,select").val('');
+//     newElement.find("input,select").val('');
     newElement.hide();
     psinqueSetMarkingOnChange(newElement.find('input,select'));
 
@@ -118,6 +118,10 @@ function uiAddAddHandler(prefix, removeAjax) {
     $("#add" + prefix).click(function() {
             
         tr = uiAddNewTableRow(prefix, removeAjax);
+        
+        input = $(this).closest("tr").find("input");
+        input.val("");
+        
         tr.show();
         
         return false;
@@ -249,18 +253,18 @@ function uiMarkChangedFields(where) {
     window.unsavedChanges = true;
   
     elem = $(where);
-    if(elem.is('input') || elem.is('select')) {
+    if(elem.is('input')) {
         elem.addClass("unsavedchanges");
     } else if(elem.is('select')) {
         elem.prev().addClass("unsavedchanges");
     } else {
-        elem.find("input,select").addClass("unsavedchanges");
+        elem.find("input,select,label").addClass("unsavedchanges");
     } 
 }
 
 function uiUnmarkChangedFields(where) {
     elem = $(where);
-    if(elem.is('input') || elem.is('select')) {
+    if(elem.is('input')) {
         elem.removeClass("unsavedchanges");
     } else if(elem.is('select')) {
         elem.prev().removeClass("unsavedchanges");
@@ -315,6 +319,46 @@ function uiValidateEmail(emailValue) {
     var atpos = emailValue.indexOf("@");
     var dotpos = emailValue.lastIndexOf(".");
     return !(atpos < 1 || dotpos < atpos+2 || dotpos+2 >= emailValue.length);
+}
+
+function uiValidateTextInputs(selector, message) {
+  
+    fieldsCorrect = true;
+  
+    $(selector).each(function() {
+      
+        e = $(this);
+      
+        if(e.val() == "") {
+      
+            uiShowErrorMessage(message);
+            fieldsCorrect = false;
+        }
+    });
+  
+    return fieldsCorrect;
+}
+
+function uiValidateEmails(selector) {
+  
+    fieldsCorrect = true;
+  
+    $(selector).each(function() {
+      
+        e = $(this);
+        
+        if(e.hasClass("emailaddresses")) {
+            if(e.val() == "") {  
+                uiShowErrorMessage("Email address cannot be empty.");
+                fieldsCorrect = false;
+            } else if(!uiValidateEmail(e.val())) {
+                uiShowErrorMessage("Invalid email address: " + e.val());
+                fieldsCorrect = false;
+            }
+        }
+    });
+  
+    return fieldsCorrect;
 }
 
 $(document).ready(function() {
