@@ -47,6 +47,9 @@ function addUpdatePersonaHandler(where) {
                 psinqueSetIndividualPermit(input.attr("name"), input.is(':checked'),
                     function() {
                         uiUnmarkChangedFields(parentrow);
+                        
+                        if($(".unsavedchanges").length == 0)
+                            window.unsavedChanges = false;
                     });
             }
         });
@@ -117,15 +120,19 @@ function updateDisplayName(personaIndex) {
     }
     
     if(displayName.length == 0) {
-        emailPermits = $("#personaform" + personaIndex).find(".email");
+        emailPermits = $("#personaform" + personaIndex).find(".emails");
         for(ii = 0; ii < emailPermits.length; ii++) {
-            if($("#email" + personaIndex + "_" + (ii+1)).is(":checked")) {
-                displayName = $("#emailaddress" + personaIndex + "_" + (ii+1)).html();
+            if($("#email" + (ii+1) + "_" + personaIndex).is(":checked")) {
+                displayName = $("#labelemail" + (ii+1) + "_" + personaIndex).html();
                 break;
             }
         }
     }
-    
+
+    if(displayName.length == 0) {
+        displayName = "Anonymous user " + $("#personaid" + personaIndex).val();
+    }
+
     $("#displayname" + personaIndex).html(displayName);
 }
 
@@ -139,11 +146,11 @@ $(document).ready(function() {
 
     $("input[type=checkbox]").change(function() {
         updateDisplayName($(this).attr("data-psinque-index"));
-        console.log($(this).is(":checked"));
     });
 
     $("input[type=checkbox]").change(function() {
         uiMarkChangedFields($(this).parent().next());
+        console.log($(this).parent().next());
     });
 
     // jQuery UI

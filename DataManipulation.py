@@ -15,7 +15,35 @@ from DataModels import PermitEmail
 
 def generateVCard(persona):
   
-    #reallyGenerateVCard(persona)
+    userProfile = persona.parent()
+  
+    if(persona.canViewGivenNames):
+        givenNames = userProfile.givenNames
+    else:
+        givenNames = u""
+        
+    if(persona.canViewFamilyNames):
+        familyNames = userProfile.familyNames
+    else:
+        familyNames = u""
+        
+    displayName = u" ".join([givenNames, familyNames]).strip()
+    
+    if displayName != u"" and userProfile.namePrefix != u"":
+        displayName = userProfile.namePrefix + u" " + displayName
+    if displayName != u"" and userProfile.nameSuffix != u"":
+        displayName = displayName + u", " + userProfile.nameSuffix
+    
+    if displayName == u"":
+        for permitEmail in persona.permitEmails:
+            if permitEmail.canView:
+                displayName = permitEmail.userEmail.email
+                break
+
+    if displayName == u"":
+        displayName = u"Anonymous user " + unicode(userProfile.key().id())
+    
+    persona.displayName = displayName
     persona.vcardNeedsUpdating = True
     persona.put()
     
@@ -74,13 +102,6 @@ def reallyGenerateVCard(persona):
         persona.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
         persona.vcardMD5 = md5.new(persona.vcard.encode('utf8')).hexdigest()
         
-    persona.displayName = u" ".join([givenNames, familyNames])
-    if persona.displayName == u"":
-        for permitEmail in persona.permitEmails:
-            if permitEmail.canView:
-                persona.displayName = permitEmail.userEmail.email
-                break
-    
     persona.vcardNeedsUpdating = False
     persona.put()
 

@@ -11,6 +11,7 @@
 </h3>
 {{ ui.beginform("personaform" ~ personaIndex) }}
   <input type="hidden" id="personakey{{ personaIndex }}" value="{{ persona.key() }}" />
+  <input type="hidden" id="personaid{{ personaIndex }}" value="{{ persona.key().id() }}" />
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Given names", "givennames", persona.canViewGivenNames, personaIndex, "general", userProfile.givenNames) }}
   {{ ui.endtable() }}
@@ -25,7 +26,7 @@
   {{ ui.endtable() }}
   {% for permitEmail in persona.permitEmails %}
     {{ ui.begintable() }}
-      {{ ui.labelcheckbox("E-mail", "email" ~ loop.index, permitEmail.canView, personaIndex, "individual", permitEmail.userEmail.itemValue, permitEmail.key(), loop.index) }}
+      {{ ui.labelcheckbox("E-mail", "email" ~ loop.index, permitEmail.canView, personaIndex, "individual emails", permitEmail.userEmail.itemValue, permitEmail.key(), loop.index) }}
     {{ ui.endtable() }}
   {% endfor %}
   {% for permitIM in persona.permitIMs %}
