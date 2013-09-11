@@ -67,8 +67,8 @@ function codeAddress(address, mapNr) {
 function updateAddressCoordinates(mapNr) {
   
     // Copy the coordinates into appropriate input fields
-    $("#longitude" + mapNr).val(currentAddressPositions[mapNr-1].pb);
-    $("#latitude" + mapNr).val(currentAddressPositions[mapNr-1].ob);
+    $("#longitude" + mapNr).val(currentAddressPositions[mapNr-1].qb);
+    $("#latitude" + mapNr).val(currentAddressPositions[mapNr-1].pb);
   
 }
 
@@ -100,6 +100,9 @@ function updateEmail(input) {
     if(emailAddress == "")
         return;
 
+    if(!uiValidateEmail(emailAddress))
+        return false;
+  
     if(input.hasClass("primary")) {
         isPrimary = true;
     } else if(input.hasClass("additional")) {
@@ -201,27 +204,41 @@ function addUpdateHandler(where) {
         if(!uiValidateTextInputs(".required.emailaddresses", "You need to fill out the primary email address."))
             return false;
         
-        if(!uiValidateEmails(".emailaddresses"))
-            return false;
-      
         psinqueAjaxTransactionStart();
         
-        psinqueUpdateGeneral($("#prefix").val(), 
-                             $("#givennames").val(),  $("#givenroman").val(),
-                             $("#familynames").val(), $("#familyroman").val(),
-                             $("#suffix").val(), 
-                             $("#companyname").val(), $("#companyroman").val(),
-                             $("#birthdays").val(),   $("#birthmonths").val(), 
-                             $("#birthyears").val(),  $("#gender").val(), 
-            function() {
-                uiUnmarkChangedFields("#generalinfo");
-            });
+        if($(".general.unsavedchanges").length > 0) {
+          psinqueUpdateGeneral($("#prefix").val(), 
+                              $("#givennames").val(),  $("#givenroman").val(),
+                              $("#familynames").val(), $("#familyroman").val(),
+                              $("#suffix").val(), 
+                              $("#companyname").val(), $("#companyroman").val(),
+                              $("#birthdays").val(),   $("#birthmonths").val(), 
+                              $("#birthyears").val(),  $("#gender").val(), 
+              function() {
+                  uiUnmarkChangedFields(".general.unsavedchanges");
+              });
+        }
         
-        $(".emailaddresses").each(function() { updateEmail($(this)); });
-        $(".phones").each(function() { updateItem($(this), "phone", psinqueUpdatePhone, psinqueAddPhone); });
-        $(".ims").each(function() { updateItem($(this), "im", psinqueUpdateIM, psinqueAddIM); });
-        $(".wwws").each(function() { updateItem($(this), "www", psinqueUpdateWWW, psinqueAddWWW); });
-        $(".addresses").each(function() { updateAddress($(this)); });
+        $(".emailaddresses").each(function() {
+            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+                updateEmail($(this));
+        });
+        $(".phones").each(function() {
+            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+                updateItem($(this), "phone", psinqueUpdatePhone, psinqueAddPhone);
+        });
+        $(".ims").each(function() {
+            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+                updateItem($(this), "im", psinqueUpdateIM, psinqueAddIM);
+        });
+        $(".wwws").each(function() {
+            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+                updateItem($(this), "www", psinqueUpdateWWW, psinqueAddWWW);
+        });
+        $(".addresses").each(function() {
+            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+                updateAddress($(this));
+        });
 
         psinqueAjaxTransactionStop();
         
@@ -278,6 +295,22 @@ $(document).ready(function() {
     addUpdateHandler("#savebutton");
     
     // React to pressing the Enter key
-    uiAddEnterAction("input[type=text]", "#savebutton");
-    
+    uiAddEnterAction("input[type=text].general", "#savebutton");
+    uiAddEnterAction("input[type=text].additional.emailaddresses:first", "#addadditionalemail");
+
+    // Image uploading
+    $('#imageupload').fileupload({
+        submit: function (e, data) {
+            var $this = $(this);
+            $.getJSON('/profile/getphotouploadurl', function (result) {
+                data.url = result;
+                $this.fileupload('send', data);
+            });
+            return false;
+        },
+        done: function (e, data) {
+            $("<img src=" + data.result + "/>").insertBefore("#imageupload");
+            $("#nophoto").remove();
+        } 
+    });    
 });

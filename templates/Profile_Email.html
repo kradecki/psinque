@@ -18,7 +18,7 @@
     {% set inputclass = "additional emailaddresses" %}
   {% endif %}
   {% if emailaddress != "primary@nonexistant.com" %}
-    {{ ui.textinputwithkey(emailaddress, "", "", inputclass, "", emailkey, "additionalemailkeys") }}
+    {{ ui.textinputwithkey(emailaddress, "Add email", "", inputclass, "", emailkey, "additionalemailkeys") }}
   {% else %}
     {{ ui.textinputwithkey("", "", "", inputclass, "", emailkey, "additionalemailkeys") }}
   {% endif %}

@@ -10,9 +10,10 @@ from google.appengine.api import users
 from google.appengine.ext import db
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.api import images
 
 from DataModels import UserProfile, UserSettings, Group
-from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress
+from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress, UserPhoto
 from DataModels import Persona, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
 from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames, countries
 
@@ -363,34 +364,38 @@ class ProfileHandler(MasterHandler):
         self._removeItem(UserAddress)
         self.sendJsonOK()
         
-
+      
+    def getphotouploadurl(self):
+      
+        upload_url = blobstore.create_upload_url('/uploadphoto')
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write('"' + upload_url + '"')
+        
 #-----------------------------------------------------------------------------
 
-class UploadPhoto(MasterHandler):
-    def get(self):
-        MasterHandler.sendTopTemplate(self, activeEntry = "Profile")
-        MasterHandler.sendContent(self, 'templates/myCard_uploadProfilePhoto.html', {
-            'photoUploadLink': blobstore.create_upload_url('/uploadphotopost'),
-        })
-        MasterHandler.sendBottomTemplate(self)
-
-#-----------------------------------------------------------------------------
-
-#TODO: Remove the previous photo of the user or add some photo management feature (e.g. different photos for different groups)
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+
     def post(self):
-        upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
+      
+        upload_files = self.get_uploads('files[]')  # 'file' is file upload field in the form
         blob_info = upload_files[0]
+        
         user = users.get_current_user()
         userProfile = UserProfile.all().filter("user =", user).get()
-        userProfile.photograph = blob_info.key()
-        userProfile.put()
-        self.redirect('/mycard/view')  # go back to the profile viewer
+        userPhoto = UserPhoto(parent = userProfile,
+                              image = blob_info.key(),
+                              servingUrl = images.get_serving_url(blob_info.key()))
+        userPhoto.put()
+        
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write('"' + userPhoto.servingUrl + '=s220-c"')
 
 #-----------------------------------------------------------------------------
 
 class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
+  
     def get(self, resource):
+      
         resource = str(urllib.unquote(resource))
         logging.info("Getting a blob " + resource)
         blob_info = blobstore.BlobInfo.get(resource)
@@ -400,7 +405,6 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
 
 app = webapp2.WSGIApplication([
     (r'/profile/(\w+)', ProfileHandler),
-    ('/uploadphoto', UploadPhoto),
-    ('/uploadphotopost', UploadHandler),
+    ('/uploadphoto', UploadHandler),
     ('/serveimageblob/([^/]+)?', ServeHandler),
 ], debug=True)

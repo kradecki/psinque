@@ -8,7 +8,7 @@ html, body { height: 100%; }
 body {
     font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 16px;
-    line-height: 100%;
+    line-height: 150%;
     background-color: #d8d4cb;
 }
 
@@ -51,12 +51,12 @@ div#contentwrapper {
 }
 
 div#footerwrapper {
-    height: 39px;
+    height: 40px;
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding-top: 15px;
+    padding-top: 10px;
     border-top: 1px solid #404040;
     background: #fff;
 }
@@ -134,8 +134,8 @@ div#header li a {
     font-size: inherit;
     text-decoration: none;
     display: block;
-    padding-top: 8px;
-    padding-bottom: 7px;
+    padding-top: 0px;
+/*     padding-bottom: 7px; */
     width: 120px;
     height: 28px;
     text-align: center;
@@ -152,7 +152,7 @@ div#header li a.active {
 /*     border-bottom: none; */
     width: 118px;
     height: 28px;
-    padding-top: 7px;
+/*     padding-top: 0; */
 /*     background: #d9d4cc; */
 }
 
@@ -165,9 +165,7 @@ div#header td#extras {
  * Footer
  ****************************************/
 
-div#footer table {
-    margin: 0;
-    width: 100%;
+div#footer {
     font-size: 13px;
 }
 
@@ -175,27 +173,28 @@ div#footer a:hover {
     color: #e35c33;
 }
 
-div#footer td#socialmedia {
+div#footer > div#leftfoot {
     width: 100px;
+    float: left;
     text-align: left;
 }
 
-td#socialmedia img {
-    margin-right:5px;
-}
-
-div#footer td#links {
-    width: 650px;
+div#footer > div#centerfoot {
+    margin-left: 40px;
+    float: left;
     text-align: center;
+    margin-top: 3px;
 }
 
-td#links a {
-    margin-left: 15px;
-}
-
-div#footer td#numalab {
+div#footer > div#rightfoot {
     width: 150px;
+    float: right;
     text-align: right;
+    margin-top: 3px;
+}
+
+div#centerfoot > a {
+    margin-left: 15px;
 }
 
 div.socialicons {
@@ -203,6 +202,7 @@ div.socialicons {
     height: 24px;
     display: inline-block;
     margin-right: 5px;
+    margin-top: 3px;
 }
 
 div#social_googleplus {

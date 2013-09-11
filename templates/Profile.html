@@ -1,56 +1,81 @@
+
 {% extends "templates/master.html" %}
+
 {% import "templates/ui.html" as ui %}
+
+{%- macro addCompany(loopFirst, loopIndex, itemCount, itemKey, itemValue) -%}
+  {% include "templates/Profile_Company.html" %}
+{%- endmacro -%}
+
+{%- macro addEmail(primary, tablelabel, emailCount, loopfirst, emailkey, emailaddress, privacyType) -%}
+  {% include "templates/Profile_Email.html" %}
+{%- endmacro -%}
+
+{%- macro addTextItem(tableLabel, prefix, itemTypes, loopFirst, loopIndex, itemCount, itemKey, itemValue, itemType, privacyType, privacyTypes) -%}
+  {% include "templates/Profile_TextItem.html" %}
+{%- endmacro -%}
+
+{%- macro addAddress(loopFirst, loopIndex, addressCount, addressKey, addressMain, privacyType, addressLocation, city, country, postalCode) -%}
+  {% include "templates/Profile_Address.html" %}
+{%- endmacro -%}
+
 {% block title %}Profile{% endblock %}
+
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/stylesheets/Profile.css" />
 {% endblock %}
+
 {% block externalscripts %}
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false&v=3.14.3"></script>
+    <script type="text/javascript" src="/javascripts/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.mosaicflow.min.js"></script> 
+    <script type="text/javascript" src="/javascripts/jquery.colorbox.min.js"></script> 
     <script type="text/javascript" src="/javascripts/Profile.js"></script>
 {% endblock %}
+
 {% block content %}
   {% if firstlogin %}
   <h3>This is your first login, so please fill up your profile below.</h3>
   {% endif %}
   <div id="photos">
-    <img src="/images/nophoto.png" />
+    {% for photo in userProfile.photos %}
+<!--       <img src="/serveimageblob/{{ photo.image.key() }}" data-highres="/serveimageblob/{{ photo.image.key() }}" height="220" width="220" /> -->
+      <img src="{{ photo.servingUrl }}=s220-c" />
+    {% else %}
+      <img src="/images/nophoto.png" id="nophoto">
+    {% endfor %}
+    <input id="imageupload" type="file" name="files[]" multiple>
+<!--     <div class="fileinput-button"> -->
+<!--       <span class="buttons clickable buttons-add" id="addphoto"></span> -->
+<!--     </div> -->
   </div>
   <div id="profile">
     {{ ui.beginform() }}
+    
       {{ ui.begintable() }}
         {{ ui.tablelabel("Name", 4) }}
         {{ ui.textinput(userProfile.namePrefix, "Prefix", "prefix", "general") }}
         {{ ui.spacer() }}
         {{ ui.newrow() }}
         {{ ui.textinput(userProfile.givenNames, "Given names", "givennames", "required general") }}
-        {{ ui.textinput(userProfile.givenNamesRomanization, "Romanization", "givenroman") }}
+        {{ ui.textinput(userProfile.givenNamesRomanization, "Romanization", "givenroman", "general") }}
         {{ ui.newrow() }}
         {{ ui.textinput(userProfile.familyNames, "Family names", "familynames", "required general") }}
-        {{ ui.textinput(userProfile.familyNamesRomanization, "Romanization", "familyroman") }}
+        {{ ui.textinput(userProfile.familyNamesRomanization, "Romanization", "familyroman", "general") }}
         {{ ui.newrow() }}
         {{ ui.textinput(userProfile.nameSuffix, "Suffix", "suffix", "general") }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
-      {{ ui.multipletextinput("Nicknames", "nickname", [], "") }}
-      <table id="companystable">
-      <tbody>
+      {{ ui.multipletextinput("Nicknames", "nickname", [], "Add nickname") }}
+      
+      <table id="companystable"><tbody>
         {% for company in companies %}
-          {% set loopFirst = loop.first %}
-          {% set loopIndex = loop.index %}
-          {% set itemCount = items|count %}
-          {% set itemKey = company.key() %}
-          {% set itemValue = company.itemValue %}
-          {% include "templates/Profile_Company.html" %}
+          {{ addCompany(loop.first, loop.index, items|count, company.key(), company.itemValue) }}
         {% else %}
-          {% set loopFirst = True %}
-          {% set loopIndex = 1 %}
-          {% set itemCount = 1 %}
-          {% set itemKey = "" %}
-          {% set itemValue = "" %}
-          {% include "templates/Profile_Company.html" %}
+          {{ addCompany(True, 1, 1, "", "") }}
         {% endfor %}
-      </tbody>
-      </table>
+      </tbody></table>
+      
       {{ ui.begintable() }}
         {{ ui.tablelabel("Birthday") }}
         {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays", "nosearch shortbox", "shortinput") }}
@@ -60,104 +85,43 @@
         {{ ui.dropdown(genders, userProfile.gender, "gender", "nosearch shortbox", "shortinput") }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
-      <table id="primaryemailaddress">
-      <tbody>
-        {% set primary = True %}
-        {% set tablelabel = "Primary email" %}
-        {% set emailCount = 1 %}
-        {% set loopfirst = True %}
-        {% set emailkey = primaryEmail.key() %}
-        {% set emailaddress = primaryEmail.itemValue %}
-        {% set privacyType = primaryEmail.privacyType %}
-        {% include "templates/Profile_Email.html" %}
-      </tbody>
-      </table>
-      <table id="additionalemailstable">
-      <tbody>
+      
+      <table id="primaryemailaddress"><tbody>
+        {{ addEmail(True, "Primary email", 1, True, primaryEmail.key(), primaryEmail.itemValue, primaryEmail.privacyType) }}
+      </tbody></table>
+      
+      <table id="additionalemailstable"><tbody>
+        {{ addEmail(False, "Additional emails", additionalEmails|count + 1, True, "", "", "Home") }}
         {% for email in additionalEmails %}
-          {% set primary = False %}
-          {% set tablelabel = "Additional emails" %}
-          {% set emailCount = additionalEmails|count %}
-          {% set loopfirst = loop.first %}
-          {% set emailkey = email.key() %}
-          {% set emailaddress = email.itemValue %}
-          {% set privacyType = email.privacyType %}
-          {% include "templates/Profile_Email.html" %}
-        {% else %}
-          {% set primary = False %}
-          {% set tablelabel = "Additional emails" %}
-          {% set emailCount = 1 %}
-          {% set loopfirst = True %}
-          {% set emailkey = "" %}
-          {% set emailaddress = "" %}
-          {% set privacyType = "Home" %}
-          {% include "templates/Profile_Email.html" %}
+          {{ addEmail(False, "Additional emails", 1, False, email.key(), email.itemValue, email.privacyType) }}
         {% endfor %}
-      </tbody>
-      </table>
+      </tbody></table>
+      
+      <table id="addressstable"><tbody>
+        {% for address in addresses %}
+          {{ addAddress(loop.first, loop.index, addresses|count, address.key(), address.address, address.privacyType, address.location, address.city, address.countryCode, address.postalCode) }}
+        {% else %}
+          {{ addAddress(True, 1, 1, "", "", "", None, "", "", "") }}
+        {% endfor %}
+      </tbody></table>
+      
       {{ ui.multipletextinputwithtypes(phones, phoneTypes, privacyTypes, "Phone numbers", "phone") }}
-      <table id="imstable">
-        <tbody>
-          {% set tableLabel = "IM" %}
-          {% set prefix = "im" %}
-          {% set itemTypes = imTypes %}
-          {% for item in ims %}
-            {% set loopFirst = loop.first %}
-            {% set loopIndex = loop.index %}
-            {% set itemCount = ims|count %}
-            {% set itemKey = item.key() %}
-            {% set itemValue = item.itemValue.address %}
-            {% set itemType = item.itemValue.protocol %}
-            {% set privacyType = item.privacyType %}
-            {% include "templates/Profile_TextItem.html" %}
-          {% else %}
-            {% set loopFirst = True %}
-            {% set loopIndex = 1 %}
-            {% set itemCount = 1 %}
-            {% set itemKey = "" %}
-            {% set itemValue = "" %}
-            {% set itemType = "" %}
-            {% set privacyType = "Home" %}
-            {% set privacyTypes = privacyTypes %}
-            {% include "templates/Profile_TextItem.html" %}
-          {% endfor %}
-        </tbody>
-      </table>
+      
+      <table id="imstable"><tbody>
+        {% for item in ims %}
+          {{ addTextItem("IM", "im", imTypes, loop.first, loop.index, ims|count, item.key(), item.itemValue.address, item.itemValue.protocol, item.privacyType, privacyTypes) }}
+        {% else %}
+          {{ addTextItem("IM", "im", imTypes, True, 1, 1, "", "", "", "Home", privacyTypes) }}
+        {% endfor %}
+      </tbody></table>
       {{ ui.multipletextinputwithtypes(wwws, wwwTypes, privacyTypes, "WWW", "www") }}
-      <table>
-        <tbody>
-          {% for address in addresses %}
-            {% set loopFirst = loop.first %}
-            {% set loopIndex = loop.index %}
-            {% set addressCount = addresses|count %}
-            {% set addressKey = address.key() %}
-            {% set addressMain = address.address %}
-            {% set privacyType = address.privacyType %}
-            {% set addressLocation = address.location %}
-            {% set city = address.city %}
-            {% set country = address.countryCode %}
-            {% set postalCode = address.postalCode %}
-            {% include "templates/Profile_Address.html" %}
-          {% else %}
-            {% set loopFirst = True %}
-            {% set loopIndex = 1 %}
-            {% set addressCount = 1 %}
-            {% set addressKey = "" %}
-            {% set addressMain = "" %}
-            {% set privacyType = "" %}
-            {% set addressLocation = None %}
-            {% set city = "" %}
-            {% set country = "" %}
-            {% set postalCode = "" %}
-            {% include "templates/Profile_Address.html" %}
-          {% endfor %}
-        </tbody>
-      </table>
+      
       {{ ui.begintable() }}
         {{ ui.tablelabel("Save changes") }}
         {{ ui.savebutton() }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
+      
     {{ ui.endform() }}
   </div>
   <br style="clear:both;"/>

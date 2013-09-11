@@ -21,6 +21,10 @@ div#animatedlogo img {
     top: 30px;
 }
 
+input[type="text"] {
+    line-height: 150%;   /* this fixes the placeholder padding problem */  
+}
+
 /****************************************
  * Checkboxes
  ****************************************/
@@ -42,11 +46,6 @@ input[type="checkbox"]:checked + div {
     background:url(/images/checkbox.png) -30px 0px no-repeat;
 }
 
-/****************************************
- * Dropdowns
- ****************************************/
-
-   
 /****************************************
  * Square forms are implemented with tables
  ****************************************/
@@ -80,7 +79,7 @@ div.tableform td.formlabels {
 
 div.tableform td.formlabels label {
     display: block;
-    margin-top: 12px;
+    margin-top: 8px;
     margin-right: 10px;
     background-color: #404040;
     height: 28px;
@@ -149,13 +148,6 @@ div.tableform td.forminputs label {
     height: 40px;
     padding-top: 12px;
     display: block;
-}
-
-div.tableform span.buttons {
-    display: block;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
 }
 
 div.tableform .sublabel {
@@ -238,6 +230,13 @@ div.tableform .sublabel {
 /****************************************
  * Buttons
  ****************************************/
+
+span.buttons {
+    display: block;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
 
 .buttons-add {
     background: url("/images/button_add_inactive.png") no-repeat;

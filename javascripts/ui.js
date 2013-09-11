@@ -98,8 +98,10 @@ function uiAddRemoverHandler(where, prefix, removeAjax) {
   
     $(where).click(function() {
         
-        tr = $(this).parent().parent();
+        tr = $(this).closest("tr");
+        console.log(tr);
         itemKey = tr.find("." + prefix + "keys").val();
+        console.log(itemKey);
         if(itemKey) {
             removeAjax(itemKey, function() {
                 uiRemoveTableRow(tr, prefix);
@@ -116,11 +118,15 @@ function uiAddRemoverHandler(where, prefix, removeAjax) {
 function uiAddAddHandler(prefix, removeAjax) {
 
     $("#add" + prefix).click(function() {
+      
+        mainInput = $(this).closest("tr").find("input[type=text]:first");
+        if(mainInput.val() == "")
+            return false;
             
         tr = uiAddNewTableRow(prefix, removeAjax);
         
         input = $(this).closest("tr").find("input");
-        input.val("");
+        input.val("");  // clear them all!
         
         tr.show();
         

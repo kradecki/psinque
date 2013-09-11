@@ -8,3 +8,35 @@ div#content h3 {
     height: 300px;
 }
 
+.fileinput-button {
+  position: relative;
+  overflow: hidden;
+}
+
+/*.fileinput-button input {
+  position: relative;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  transform: translate(-300px, 0) scale(4);
+  font-size: 23px;
+  direction: ltr;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.fileinput-button span {
+  position: absolute;
+}*/
+
+.mosaicflow__column {
+    float:left;
+}
+
+.mosaicflow__item img {
+    display:block;
+    width:100%;
+    height:auto;
+}

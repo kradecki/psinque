@@ -5,6 +5,7 @@ import datetime
 
 from google.appengine.ext import db
 from google.appengine.ext.db import polymodel
+from google.appengine.ext import blobstore
 
 #-----------------------------------------------------------------------------
 
@@ -401,8 +402,10 @@ class UserWebpage(db.Model):
 
 #-----------------------------------------------------------------------------
 
-#class UserPhoto(db.Model):
-  #photograph = blobstore.BlobReferenceProperty()
+class UserPhoto(db.Model):
+    image = blobstore.BlobReferenceProperty()
+    servingUrl = db.StringProperty()
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------
 
@@ -476,6 +479,10 @@ class UserProfile(db.Model):
     @property
     def groups(self):
         return Group.all().ancestor(self)
+
+    @property
+    def photos(self):
+        return UserPhoto.all().ancestor(self)
 
 #-----------------------------------------------------------------------------
 
