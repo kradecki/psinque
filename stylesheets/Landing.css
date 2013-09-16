@@ -32,6 +32,13 @@ div#bigcard {
     width: 180px;
 }
 
+div#tagline {
+    display: inline-block;
+    font-size: 40px;
+    font-weight: 600;
+    font-style: italic;
+}
+
 div#slogan {
     display: inline-block;
     font-size: 40px;

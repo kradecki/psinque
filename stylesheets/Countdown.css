@@ -1,0 +1,94 @@
+
+* {
+    padding: 0;
+    margin: 0;
+}
+    
+html, body { height: 100%; }
+
+body {
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    line-height: 150%;
+    background-image: -ms-radial-gradient(center, ellipse closest-corner, #D8D4CB 40%, #FFFFFF 100%);
+    background-image: -moz-radial-gradient(center, ellipse closest-corner, #D8D4CB 40%, #FFFFFF 100%);
+    background-image: -o-radial-gradient(center, ellipse closest-corner, #D8D4CB 40%, #FFFFFF 100%);
+    background-image: -webkit-gradient(radial, center center, 0, center center, 500, color-stop(0.4, #D8D4CB), color-stop(1, #FFFFFF));
+    background-image: -webkit-radial-gradient(center, ellipse closest-corner, #D8D4CB 40%, #FFFFFF 100%);
+    background-image: radial-gradient(ellipse closest-corner at center, #D8D4CB 40%, #FFFFFF 100%);
+}
+
+div#content {
+    width: 920px;
+    margin: 0 auto;
+    padding: 20px;
+    height: 100%;
+    text-align: center;
+    padding-bottom: 120px;
+}
+
+div#contentwrapper {
+    padding: 0;
+    margin: 0;
+}
+
+div#biglogo {
+    text-align: center;
+    width: 100%;
+}
+
+div#biglogo img {
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+div.tableclock {
+    margin-top: 20px;
+    width: 240px;
+    padding: 0;
+    margin: 0 auto;
+}
+
+div.tableclock table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 12px;  
+}
+
+div.tableclock td {
+    font-weight: 600;
+}
+
+div.tableclock td.leftfields {
+    color: #fff;
+    text-align: right;
+    width: 165px;
+}
+
+div.tableclock td label {
+    display: block;
+    background-color: #404040;
+    height: 32px;
+    border: 0;
+    font: inherit;
+    font-size: inherit;
+    padding-bottom: 0px;
+    padding-top: 8px;
+}
+
+div.tableclock td.leftfields label {
+    background-color: #404040;
+    padding-right: 10px;
+/*     margin-right: 12px; */
+}
+
+div.tableclock td.rightfields label {
+    background-color: #fff;
+    width: 100%;
+}
+
+

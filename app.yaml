@@ -23,6 +23,8 @@ libraries:
 handlers:
 # Start pages
 - url: /
+  script: Countdown.app
+- url: /reallandingforsecrettesters
   script: StartPage.app    # checks if the user is logged in and redirects
   secure: optional
 

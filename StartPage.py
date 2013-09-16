@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os
 import webapp2
-import jinja2
-
-from Users import getCurrentUser
-
-jinja_environment = jinja2.Environment(
-    loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
-
 
 class StartPage(webapp2.RequestHandler):
   
@@ -17,5 +9,5 @@ class StartPage(webapp2.RequestHandler):
         self.redirect('/profile/view')
 
 app = webapp2.WSGIApplication([
-    ('/', StartPage),
+    ('/reallandingforsecrettesters', StartPage),
 ], debug=True)
