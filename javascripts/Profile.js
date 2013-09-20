@@ -246,6 +246,24 @@ function addUpdateHandler(where) {
     });
 }
 
+function addPhotoRemoverHandler(where) {
+  
+    $(where).click(function() {
+        
+        photoDiv = $(this).parent().parent();
+        photoKey = photoDiv.find(".photokeys").val();
+        if(photoKey) {
+            psinqueRemovePhoto(photoKey, function() {
+                removeElementWithEffects(photoDiv);
+            });
+        } else {
+            removeElementWithEffects(photoDiv);
+        }
+      
+        return false;
+    }); 
+}
+
 //---------------------------------------------------------
 
 $(document).ready(function() {
@@ -312,5 +330,10 @@ $(document).ready(function() {
             $("<img src=" + data.result + "/>").insertBefore("#imageupload");
             $("#nophoto").remove();
         } 
-    });    
+    });
+    
+    $('a.colorbox').colorbox();
+    
+    addPhotoRemoverHandler(".photoremovers");
+
 });

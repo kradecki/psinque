@@ -17,6 +17,7 @@ psinqueAPI_removePhone   = psinqueAPI_profile + "removephone"
 psinqueAPI_removeIM      = psinqueAPI_profile + "removeim"
 psinqueAPI_removeWWW     = psinqueAPI_profile + "removewww"
 psinqueAPI_removeAddress = psinqueAPI_profile + "removeaddress"
+psinqueAPI_removePhoto   = psinqueAPI_profile + "removephoto"
 
 psinqueAPI_updateEmail   = psinqueAPI_profile + "updateemail"
 psinqueAPI_updatePhone   = psinqueAPI_profile + "updatephone"
@@ -121,6 +122,10 @@ function psinqueRemoveWWW(key, successFunction) {
 
 function psinqueRemoveAddress(key, successFunction) {
     psinqueRemove(psinqueAPI_removeAddress, key, successFunction);
+}
+
+function psinqueRemovePhoto(key, successFunction) {
+    psinqueRemove(psinqueAPI_removePhoto, key, successFunction);
 }
 
 function psinqueUpdateEmail(key, emailAddress, privacyType,

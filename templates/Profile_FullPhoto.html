@@ -1,0 +1,15 @@
+{% set widthint = width|int %}
+{% set heightint = height|int %}
+{% if widthint > heightint %}
+  {% if widthint > 760 %}
+    <img src="/serveimageblob/{{ key }}" alt="fullimage" width="760" height="{{ (heightint * 760) // widthint }}"/>
+  {% else %}
+    <img src="/serveimageblob/{{ key }}" alt="fullimage" width="{{ width }}" height="{{ height }}"/>
+  {% endif %}
+{% else %}
+  {% if heightint > 760 %}
+    <img src="/serveimageblob/{{ key }}" alt="fullimage" width="{{ (widthint * 760) // heightint }}" height="760" />
+  {% else %}
+    <img src="/serveimageblob/{{ key }}" alt="fullimage" width="{{ width }}" height="{{ height }}"/>
+  {% endif %}
+{% endif %}

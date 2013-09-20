@@ -305,6 +305,20 @@ class ProfileHandler(MasterHandler):
  
         self._removeItem(UserPhoneNumber)
         self.sendJsonOK()
+        
+        
+    def removephoto(self):
+
+        key = self.getRequiredParameter('key')
+
+        photo = UserPhoto.get(key)
+        if photo is None:
+            raise AjaxError("Photo not found.")
+          
+        photo.image.delete()
+        photo.delete()
+        
+        self.sendJsonOK()
 
 
     def addaddress(self):
@@ -371,6 +385,20 @@ class ProfileHandler(MasterHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write('"' + upload_url + '"')
         
+        
+    def getfullphoto(self):
+
+        key = self.getRequiredParameter('key')
+        width = self.getRequiredParameter('width')
+        height = self.getRequiredParameter('height')
+        
+        self.sendContent('templates/Profile_FullPhoto.html',
+                         templateVariables = {
+            'key': key,
+            'width': width,
+            'height': height,
+        })
+        
 #-----------------------------------------------------------------------------
 
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
@@ -380,10 +408,20 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         upload_files = self.get_uploads('files[]')  # 'file' is file upload field in the form
         blob_info = upload_files[0]
         
+        img = images.Image(blob_key=str(blob_info.key()))
+        
+        # we must execute a transform to access the width/height
+        img.im_feeling_lucky() # do a transform, otherwise GAE complains.
+
+        # set quality to 1 so the result will fit in 1MB if the image is huge
+        img.execute_transforms(output_encoding=images.JPEG,quality=1)
+
         user = users.get_current_user()
         userProfile = UserProfile.all().filter("user =", user).get()
         userPhoto = UserPhoto(parent = userProfile,
                               image = blob_info.key(),
+                              width = img.width,
+                              height = img.height,
                               servingUrl = images.get_serving_url(blob_info.key()))
         userPhoto.put()
         
@@ -397,7 +435,6 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, resource):
       
         resource = str(urllib.unquote(resource))
-        logging.info("Getting a blob " + resource)
         blob_info = blobstore.BlobInfo.get(resource)
         self.send_blob(blob_info)
 

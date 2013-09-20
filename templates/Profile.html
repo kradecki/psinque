@@ -23,31 +23,42 @@
 
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/stylesheets/Profile.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/colorbox.css" />
 {% endblock %}
 
 {% block externalscripts %}
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbYyXY_nwEorG6uOAMY5nf-3yrKx7Agfg&sensor=false&v=3.14.3"></script>
     <script type="text/javascript" src="/javascripts/jquery.fileupload.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery.mosaicflow.min.js"></script> 
     <script type="text/javascript" src="/javascripts/jquery.colorbox.min.js"></script> 
     <script type="text/javascript" src="/javascripts/Profile.js"></script>
 {% endblock %}
 
 {% block content %}
   {% if firstlogin %}
-  <h3>This is your first login, so please fill up your profile below.</h3>
+  <h3 id="firstlogin">This is your first login, so please fill up your profile below.</h3>
   {% endif %}
   <div id="photos">
-    {% for photo in userProfile.photos %}
-<!--       <img src="/serveimageblob/{{ photo.image.key() }}" data-highres="/serveimageblob/{{ photo.image.key() }}" height="220" width="220" /> -->
-      <img src="{{ photo.servingUrl }}=s220-c" />
-    {% else %}
-      <img src="/images/nophoto.png" id="nophoto">
-    {% endfor %}
-    <input id="imageupload" type="file" name="files[]" multiple>
-<!--     <div class="fileinput-button"> -->
-<!--       <span class="buttons clickable buttons-add" id="addphoto"></span> -->
-<!--     </div> -->
+    <div id="mosaic">
+      {% for photo in userProfile.photos %}
+        <div class="photoitem">
+          <input type="hidden" class="photokeys" value="{{ photo.key() }}">
+          <div class="photoremovebuttons">
+            <span class="buttons clickable buttons-remove photoremovers"></span>
+          </div>
+          <a class="colorbox" href="/profile/getfullphoto?key={{ photo.image.key() }}&width={{ photo.width }}&height={{ photo.height }}">
+            <img src="{{ photo.servingUrl }}=s162"/>
+          </a>
+        </div>
+      {% else %}
+        <img src="/images/nophoto.png" id="nophoto">
+      {% endfor %}
+    </div>
+    <div id="uploadbutton">
+      <div class="fileinput-button">
+        <input id="imageupload" type="file" name="files[]" multiple>
+        <span class="buttons clickable buttons-add" id="addphoto"></span>
+      </div> 
+    </div>
   </div>
   <div id="profile">
     {{ ui.beginform() }}

@@ -7,19 +7,34 @@
     color: #de5d35;
 }
 
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 5000;
+    background-color: rgba(256,256,256,0.6);
+}
+
 div#animatedlogo {
-    width: 140px;
-    height: 140px;
+/*     width: 140px; */
+/*     height: 140px; */
     position: fixed;
     z-index: 9999;
-    background-color: #fff;
+/*     background-color: #fff; */
 }
 
 div#animatedlogo img {
     position: relative;
     left: 30px;
     top: 30px;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
 }
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 input[type="text"] {
     line-height: 150%;   /* this fixes the placeholder padding problem */  

@@ -47,13 +47,13 @@ def friendList(userProfile, groupName):
 
 def getVCard(contactID):
     
-    # This is 3 Datastore fetches: Contact, Psinque, Permit
+    # This is 3 Datastore fetches: Contact, Psinque, Persona
     logging.info("Getting vCard for Contact " + contactID)
     contact = Contact.get(contactID)
-    permit = contact.incoming.permit
-    if permit.vcardNeedsUpdating:
-        reallyGenerateVCard(permit)
-    return [permit.vcard, permit.vcardMTime, permit.vcardMD5]
+    persona = contact.incoming.persona
+    if persona.vcardNeedsUpdating:
+        reallyGenerateVCard(persona)
+    return [persona.vcard, persona.vcardMTime, persona.vcardMD5]
 
 
 def getCardDAVLogin(username):

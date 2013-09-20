@@ -99,9 +99,7 @@ function uiAddRemoverHandler(where, prefix, removeAjax) {
     $(where).click(function() {
         
         tr = $(this).closest("tr");
-        console.log(tr);
         itemKey = tr.find("." + prefix + "keys").val();
-        console.log(itemKey);
         if(itemKey) {
             removeAjax(itemKey, function() {
                 uiRemoveTableRow(tr, prefix);
@@ -158,17 +156,7 @@ function uiAddOverlay() {
   
    $("body").append("<div id='overlay'></div>");
 
-   $("#overlay")
-      .height($(document).height())
-      .css({
-//          'opacity' : 0.6,
-         'position': 'fixed',
-         'top': 0,
-         'left': 0,
-         'background-color': 'rgba(0,0,0,0.6)',
-         'width': '100%',
-         'z-index': 5000
-      });
+   $("#overlay").height($(document).height());
 }
 
 function uiShowDialogbox(messageText, options) {
@@ -240,7 +228,7 @@ function uiStartLogoAnimation() {
       
         uiAddOverlay();
         
-        $("#overlay").append("<div id='animatedlogo'><img src='/images/animated_logo.gif' alt='Psinque logo' /></div>");
+        $("#overlay").append("<div id='animatedlogo'><img src='/images/logo_01.png' alt='Psinque logo' /></div>");
         $("#animatedlogo").position({
             my: "center",
             at: "center",
@@ -252,6 +240,7 @@ function uiStartLogoAnimation() {
 function uiStopLogoAnimation() {
     window.unsavedChanges = false;  // well... it's not pretty, but it works
     $("#overlay").remove();
+    removeElementWithEffects($("#firstlogin"));
 }
 
 function uiMarkChangedFields(where) {

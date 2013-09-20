@@ -404,6 +404,8 @@ class UserWebpage(db.Model):
 
 class UserPhoto(db.Model):
     image = blobstore.BlobReferenceProperty()
+    width = db.IntegerProperty()
+    height = db.IntegerProperty()
     servingUrl = db.StringProperty()
     creationTime = db.DateTimeProperty(auto_now = True)
 

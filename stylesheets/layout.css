@@ -38,8 +38,9 @@ div.wrappers {
 
 div#headerwrapper {
     height: 61px;
-    background-color: #404040;
+    position: fixed;
     box-shadow: 0 0px 6px 3px #d8d4cb;
+    background-color: #404040;
     position: fixed;
     top: 0;
     z-index: 9999;
@@ -52,13 +53,14 @@ div#contentwrapper {
 
 div#footerwrapper {
     height: 40px;
-    position: absolute;
+    position: fixed;
+    box-shadow: 0 0px 6px 3px #d8d4cb;
+    background-color: #fff;
     bottom: 0;
-    left: 0;
+/*     left: 0; */
     width: 100%;
     padding-top: 10px;
     border-top: 1px solid #404040;
-    background: #fff;
 }
 
 div#header {
@@ -83,7 +85,10 @@ div#footer {
 
 div#photos {
     float: left;
-    width: 230px;
+    width: 218px;
+    margin-right: 12px;
+    text-align: right;
+    overflow: hidden;
 }
 
 div#profile {
