@@ -208,29 +208,29 @@ div.socialicons {
     display: inline-block;
     margin-right: 5px;
     margin-top: 3px;
-}
-
-div#social_googleplus {
-    background: url(/images/social_googleplus.png)  no-repeat;
-}
-
-div#social_googleplus:hover {
-    background: url(/images/social_googleplus_active.png)  no-repeat;
+    background: url(/images/social.png)  no-repeat;
 }
 
 div#social_facebook{
-    background: url(/images/social_facebook.png)  no-repeat;
+    background-position: 0px 0px;
 }
 
 div#social_facebook:hover {
-    background: url(/images/social_facebook_active.png)  no-repeat;
+    background-position: 0px -24px;
 }
 
 div#social_twitter {
-    background: url(/images/social_twitter.png)  no-repeat;
+    background-position: -24px 0px;
 }
 
 div#social_twitter:hover {
-    background: url(/images/social_twitter_active.png)  no-repeat;
+    background-position: -24px -24px;
 }
 
+div#social_googleplus {
+    background-position: -48px 0px;
+}
+
+div#social_googleplus:hover {
+    background-position: -48px -24px;
+}

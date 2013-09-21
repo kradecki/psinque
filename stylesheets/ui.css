@@ -251,60 +251,69 @@ span.buttons {
     cursor: pointer;
     width: 40px;
     height: 40px;
+    background: url("/images/buttons.png") no-repeat;
 }
 
-.buttons-add {
-    background: url("/images/button_add_inactive.png") no-repeat;
+.buttons.buttons-signin {
+    background-position: 0px 0px;
 }
 
-.buttons-add:hover {
-    background: url("/images/button_add.png") no-repeat;
+.buttons.buttons-signin:hover {
+    background-position: -40px 0px;
 }
 
-.buttons-check {
-    background: url("/images/button_check_inactive.png") no-repeat;
+.buttons.buttons-add {
+    background-position: 0px -40px;
 }
 
-.buttons-check:hover {
-    background: url("/images/button_check.png") no-repeat;
+.buttons.buttons-add:hover {
+    background-position: -40px -40px;
 }
 
-.buttons-create {
-    background: url("/images/button_create_inactive.png") no-repeat;
+.buttons.buttons-remove {
+    background-position: 0px -80px;
 }
 
-.buttons-create:hover {
-    background: url("/images/button_create.png") no-repeat;
+.buttons.buttons-remove:hover {
+    background-position: -40px -80px;
 }
 
-.buttons-localize {
-    background: url("/images/button_localize_inactive.png") no-repeat;
+.buttons.buttons-save {
+    background-position: 0px -120px;
 }
 
-.buttons-localize:hover {
-    background: url("/images/button_localize.png") no-repeat;
+.buttons.buttons-save:hover {
+    background-position: -40px -120px;
 }
 
-.buttons-remove {
-    background: url("/images/button_remove_inactive.png") no-repeat;
+.buttons.buttons-localize {
+    background-position: 0px -160px;
 }
 
-.buttons-remove:hover {
-    background: url("/images/button_remove.png") no-repeat;
+.buttons.buttons-localize:hover {
+    background-position: -40px -160px;
 }
 
-.buttons-save {
-    background: url("/images/button_save_inactive.png") no-repeat;
+.buttons.buttons-create {
+    background-position: 0px -200px;
 }
 
-.buttons-save:hover {
-    background: url("/images/button_save.png") no-repeat;
+.buttons.buttons-create:hover {
+    background-position: -40px -200px;
 }
 
-.buttons-search {
-    background: url("/images/button_search_inactive.png") no-repeat;
+.buttons.buttons-search {
+    background-position: 0px -240px;
 }
 
-.buttons-search:hover {
-    background: url("/images/button_search.png") no-repeat;
+.buttons.buttons-search:hover {
+    background-position: -40px -240px;
+}
+
+.buttons.buttons-check {
+    background-position: 0px -280px;
+}
+
+.buttons.buttons-check:hover {
+    background-position: -40px -280px;
 }

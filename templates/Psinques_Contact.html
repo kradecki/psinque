@@ -1,6 +1,6 @@
 {% import "templates/ui.html" as ui -%}
 {%- macro tablelessbutton(id, buttonname, class="") -%}
-  <span class="buttons {{ class }}">
+  <span class="clickable {{ class }}">
     <img src="/images/{{ buttonname }}.png" alt="{{ buttonname }}" />
   </span>
 {%- endmacro -%}
