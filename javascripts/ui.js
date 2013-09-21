@@ -69,7 +69,7 @@ function uiAddNewTableRow(prefix, removeAjax) {
     
     // Replace the add button with a remove button
     tr.find(".formbuttons").remove();
-    tr.append("<td class='forminputs formbuttons'><span class='" + removerClass + " buttons clickable'><img src='/images/button_remove.png' /></span></td>");
+    tr.append("<td class='forminputs formbuttons'><span class='" + removerClass + " buttons clickable buttons-remove'></span></td>");
 
     // Show the new row
     $(tableName + "> tbody").append(tr);

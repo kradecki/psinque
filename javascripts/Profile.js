@@ -128,6 +128,10 @@ function updateEmail(input) {
     }
 }
 
+function splitItemTypes(compoundItemType) {
+  
+}
+
 function updateItem(input, prefix, updateFunction, addFunction) {
   
     itemValue = input.val();
@@ -136,19 +140,18 @@ function updateItem(input, prefix, updateFunction, addFunction) {
         return;
 
     td = input.parent();
-    privacytd = td.next();
-    typetd = privacytd.next();
-    privacyType = privacytd.find("." + prefix + "privacytypes").val();
-    itemType    = typetd.find("." + prefix + "types").val();
+    itemTypes = td.next().find("." + prefix + "types").val()
+    console.log(itemTypes);
+    itemTypes = itemTypes.split(" ");
     
     itemKey = td.find("." + prefix + "keys");
     if(itemKey.val()) {
-        updateFunction(itemKey.val(), itemValue, privacyType, itemType, function() {
+        updateFunction(itemKey.val(), itemValue, itemTypes[0], itemTypes[1], function() {
             uiUnmarkChangedFields(td);
             uiUnmarkChangedFields(td.next());
         });
     } else {
-        addFunction(itemValue, privacyType, itemType, function(data) {
+        addFunction(itemValue, itemTypes[0], itemTypes[1], function(data) {
             itemKey.val(data["key"]);  // save the key for further queries
             uiUnmarkChangedFields(td);
             uiUnmarkChangedFields(td.next());
