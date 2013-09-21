@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import jinja2
 import os
 import logging
 import urllib
@@ -381,9 +382,9 @@ class ProfileHandler(MasterHandler):
       
     def getphotouploadurl(self):
       
-        upload_url = blobstore.create_upload_url('/uploadphoto')
+        uploadURL = blobstore.create_upload_url('/uploadphoto')
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write('"' + upload_url + '"')
+        self.response.out.write('"' + uploadURL + '"')
         
         
     def getfullphoto(self):
@@ -400,6 +401,10 @@ class ProfileHandler(MasterHandler):
         })
         
 #-----------------------------------------------------------------------------
+
+jinja_environment = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
+)
 
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 
@@ -425,8 +430,13 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                               servingUrl = images.get_serving_url(blob_info.key()))
         userPhoto.put()
         
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write('"' + userPhoto.servingUrl + '=s220-c"')
+        #self.response.headers['Content-Type'] = 'application/json'
+        #self.response.out.write('"' + userPhoto.servingUrl + '=s162"')
+                         
+        template = jinja_environment.get_template('templates/Profile_Thumbnail.html')
+        self.response.out.write(template.render({
+            'photo': userPhoto,
+        }))
 
 #-----------------------------------------------------------------------------
 

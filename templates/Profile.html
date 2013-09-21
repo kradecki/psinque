@@ -40,15 +40,7 @@
   <div id="photos">
     <div id="mosaic">
       {% for photo in userProfile.photos %}
-        <div class="photoitem">
-          <input type="hidden" class="photokeys" value="{{ photo.key() }}">
-          <div class="photoremovebuttons">
-            <span class="buttons clickable buttons-remove photoremovers"></span>
-          </div>
-          <a class="colorbox" href="/profile/getfullphoto?key={{ photo.image.key() }}&width={{ photo.width }}&height={{ photo.height }}">
-            <img src="{{ photo.servingUrl }}=s162"/>
-          </a>
-        </div>
+        {% include "templates/Profile_Thumbnail.html" %}
       {% else %}
         <img src="/images/nophoto.png" id="nophoto">
       {% endfor %}

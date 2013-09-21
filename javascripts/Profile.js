@@ -246,6 +246,15 @@ function addUpdateHandler(where) {
     });
 }
 
+function removePhotoWithEffects(element) {
+    element.slideUp('fast', function() {
+        element.remove();
+        if($(".photoitem").length == 0) {  // no photos left
+            $("<img src='/images/nophoto.png' id='nophoto'>").appendTo("#mosaic");
+        }
+    });
+}
+
 function addPhotoRemoverHandler(where) {
   
     $(where).click(function() {
@@ -254,10 +263,10 @@ function addPhotoRemoverHandler(where) {
         photoKey = photoDiv.find(".photokeys").val();
         if(photoKey) {
             psinqueRemovePhoto(photoKey, function() {
-                removeElementWithEffects(photoDiv);
+                removePhotoWithEffects(photoDiv);
             });
         } else {
-            removeElementWithEffects(photoDiv);
+            removePhotoWithEffects(photoDiv);
         }
       
         return false;
@@ -327,8 +336,9 @@ $(document).ready(function() {
             return false;
         },
         done: function (e, data) {
-            $("<img src=" + data.result + "/>").insertBefore("#imageupload");
             $("#nophoto").remove();
+            newItem = $(data.result).appendTo("#mosaic");
+            addPhotoRemoverHandler(newItem.find(".photoremovers"));
         } 
     });
     
