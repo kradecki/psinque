@@ -14,7 +14,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.api import images
 
 from DataModels import UserProfile, UserSettings, Group
-from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress, UserPhoto
+from DataModels import UserEmail, UserIM, UserWebpage, UserPhoneNumber, UserAddress, UserPhoto, UserNickname, UserCompany
 from DataModels import Persona, PermitEmail, PermitIM, PermitWebpage, PermitPhoneNumber, PermitAddress
 from DataModels import genders, imTypes, wwwTypes, phoneTypes, privacyTypes, monthNames, countries
 
@@ -96,6 +96,8 @@ class ProfileHandler(MasterHandler):
             'ims': userProfile.ims.order('-creationTime').fetch(limit = 1000),
             'wwws': userProfile.webpages.order('-creationTime').fetch(limit = 1000),
             'addresses': userProfile.addresses.order('-creationTime').fetch(limit = 1000),
+            'nicknames': userProfile.nicknames.order('-creationTime').fetch(limit = 1000),
+            'companies': userProfile.companies.order('-creationTime').fetch(limit = 1000),
             'genders': genders,
             'countries': countries,
             'imTypes': { x:imTypes for x in privacyTypes },
@@ -399,6 +401,66 @@ class ProfileHandler(MasterHandler):
             'width': width,
             'height': height,
         })
+                         
+                         
+    def addnickname(self):
+
+        userNickname = UserNickname(parent = self.userProfile,
+                                    itemValue = self.getRequiredParameter('nickname'))
+        userNickname.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK({'key': str(userNickname.key())})
+
+
+    def updatenickname(self):
+
+        userNickname = self._getItemByKey(UserNickname)
+        userNickname.itemValue = self.getRequiredParameter('nickname')
+        userNickname.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK()
+
+
+    def removenickname(self):
+ 
+        self._removeItem(UserNickname)
+        self.sendJsonOK()
+        
+        
+    def addcompany(self):
+
+        userCompany = UserCompany(parent = self.userProfile,
+                                  companyName = self.getRequiredParameter('company'),
+                                  positionName = self.request.get('position'))
+        userCompany.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK({'key': str(userCompany.key())})
+
+
+    def updatecompany(self):
+
+        userCompany = self._getItemByKey(UserCompany)
+        userCompany.companyName = self.getRequiredParameter('company')
+        userCompany.positionName = self.request.get('position')
+        userCompany.put()
+
+        self._updateAllVCards()
+
+        self.sendJsonOK()
+
+
+    def removecompany(self):
+ 
+        self._removeItem(UserCompany)
+        self.sendJsonOK()
+        
+
         
 #-----------------------------------------------------------------------------
 

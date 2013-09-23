@@ -1,0 +1,14 @@
+{% import "templates/ui.html" as ui %}
+<tr>
+  {% if loopFirst %}
+    <td rowspan="{{ itemCount }}" class="formlabels" id="nicknamelabel">
+      <label>Nickname</label>
+    </td>
+  {% endif %}
+  {{ ui.textinputwithkey(itemValue, "Add nickname", "nickname", "nicknames", loopIndex, itemKey, "nicknamekeys") }}
+  {% if not loopFirst %}
+    {{ ui.removebutton("nickname", "nicknameremovers") }}
+  {% else %}
+    {{ ui.addbutton("nickname") }}
+  {% endif %}
+</tr>

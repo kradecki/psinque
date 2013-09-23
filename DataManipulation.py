@@ -50,7 +50,7 @@ def generateVCard(persona):
     
 def reallyGenerateVCard(persona):
     
-    logging.info("Generating vCard")
+    logging.info("Really generating vCard")
     userProfile = persona.parent()
 
     newVCard = vCard.VCard()
@@ -97,7 +97,7 @@ def reallyGenerateVCard(persona):
     newVCard = db.Text(newVCard.serialize())
     
     if newVCard != persona.vcard:
-        logging.info("Updating vCard")
+        logging.info("Updating vCard in the DataStore")
         persona.vcard = newVCard
         persona.vcardMTime = str(datetime.datetime.date(datetime.datetime.now())) + "." + str(datetime.datetime.time(datetime.datetime.now()))
         persona.vcardMD5 = md5.new(persona.vcard.encode('utf8')).hexdigest()
@@ -131,6 +131,13 @@ def deleteProfile(userProfileKey):
     for e in UserIM.all().ancestor(userProfile):
         e.delete()
     for e in UserPhoneNumber.all().ancestor(userProfile):
+        e.delete()
+    for e in UserPhoto.all().ancestor(userProfile):
+        e.image.delete()
+        e.delete()
+    for e in UserNickname.all().ancestor(userProfile):
+        e.delete()
+    for e in UserCompany.all().ancestor(userProfile):
         e.delete()
     for e in UserWebpage.all().ancestor(userProfile):
         e.delete()

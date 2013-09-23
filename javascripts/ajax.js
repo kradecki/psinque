@@ -6,26 +6,32 @@
 
 psinqueAPI_profile = "/profile/"
 
-psinqueAPI_addEmail      = psinqueAPI_profile + "addemail"
-psinqueAPI_addPhone      = psinqueAPI_profile + "addphone"
-psinqueAPI_addIM         = psinqueAPI_profile + "addim"
-psinqueAPI_addWWW        = psinqueAPI_profile + "addwww"
-psinqueAPI_addAddress    = psinqueAPI_profile + "addaddress"
+psinqueAPI_addEmail       = psinqueAPI_profile + "addemail"
+psinqueAPI_addPhone       = psinqueAPI_profile + "addphone"
+psinqueAPI_addIM          = psinqueAPI_profile + "addim"
+psinqueAPI_addWWW         = psinqueAPI_profile + "addwww"
+psinqueAPI_addAddress     = psinqueAPI_profile + "addaddress"
+psinqueAPI_addNickname    = psinqueAPI_profile + "addnickname"
+psinqueAPI_addCompany     = psinqueAPI_profile + "addcompany"
 
-psinqueAPI_removeEmail   = psinqueAPI_profile + "removeemail"
-psinqueAPI_removePhone   = psinqueAPI_profile + "removephone"
-psinqueAPI_removeIM      = psinqueAPI_profile + "removeim"
-psinqueAPI_removeWWW     = psinqueAPI_profile + "removewww"
-psinqueAPI_removeAddress = psinqueAPI_profile + "removeaddress"
-psinqueAPI_removePhoto   = psinqueAPI_profile + "removephoto"
+psinqueAPI_removeEmail    = psinqueAPI_profile + "removeemail"
+psinqueAPI_removePhone    = psinqueAPI_profile + "removephone"
+psinqueAPI_removeIM       = psinqueAPI_profile + "removeim"
+psinqueAPI_removeWWW      = psinqueAPI_profile + "removewww"
+psinqueAPI_removeAddress  = psinqueAPI_profile + "removeaddress"
+psinqueAPI_removePhoto    = psinqueAPI_profile + "removephoto"
+psinqueAPI_removeNickname = psinqueAPI_profile + "removenickname"
+psinqueAPI_removeCompany  = psinqueAPI_profile + "removecompany"
 
-psinqueAPI_updateEmail   = psinqueAPI_profile + "updateemail"
-psinqueAPI_updatePhone   = psinqueAPI_profile + "updatephone"
-psinqueAPI_updateIM      = psinqueAPI_profile + "updateim"
-psinqueAPI_updateWWW     = psinqueAPI_profile + "updatewww"
-psinqueAPI_updateAddress = psinqueAPI_profile + "updateaddress"
+psinqueAPI_updateEmail    = psinqueAPI_profile + "updateemail"
+psinqueAPI_updatePhone    = psinqueAPI_profile + "updatephone"
+psinqueAPI_updateIM       = psinqueAPI_profile + "updateim"
+psinqueAPI_updateWWW      = psinqueAPI_profile + "updatewww"
+psinqueAPI_updateAddress  = psinqueAPI_profile + "updateaddress"
+psinqueAPI_updateNickname = psinqueAPI_profile + "updatenickname"
+psinqueAPI_updateCompany  = psinqueAPI_profile + "updatecompany"
 
-psinqueAPI_updateGeneral = psinqueAPI_profile + "updategeneral"
+psinqueAPI_updateGeneral  = psinqueAPI_profile + "updategeneral"
 
 //------------------------------
 
@@ -104,6 +110,20 @@ function psinqueAddAddress(address, city, postalCode, country,
                 }, successFunction);
 }
 
+function psinqueAddNickname(nickname, successFunction) {
+    psinqueAJAX(psinqueAPI_addNickname, {
+                    nickname: nickname,
+                }, successFunction);
+}
+
+
+function psinqueAddCompany(company, position, successFunction) {
+    psinqueAJAX(psinqueAPI_addCompany, {
+                    company: company,
+                    position: position,
+                }, successFunction);
+}
+
 function psinqueRemoveEmail(key, successFunction) {
     psinqueRemove(psinqueAPI_removeEmail, key, successFunction);
 }
@@ -126,6 +146,14 @@ function psinqueRemoveAddress(key, successFunction) {
 
 function psinqueRemovePhoto(key, successFunction) {
     psinqueRemove(psinqueAPI_removePhoto, key, successFunction);
+}
+
+function psinqueRemoveNickname(key, successFunction) {
+    psinqueRemove(psinqueAPI_removeNickname, key, successFunction);
+}
+
+function psinqueRemoveCompany(key, successFunction) {
+    psinqueRemove(psinqueAPI_removeCompany, key, successFunction);
 }
 
 function psinqueUpdateEmail(key, emailAddress, privacyType,
@@ -178,6 +206,22 @@ function psinqueUpdateAddress(key, address, city, postalCode, country,
                     privacy: privacyType,
                     lon: longitude,
                     lat: latitude,
+                }, successFunction);
+}
+
+function psinqueUpdateNickname(key, nickname, successFunction) {
+    psinqueAJAX(psinqueAPI_updateNickname, {
+                    key: key,
+                    nickname: nickname,
+                }, successFunction);
+}
+
+
+function psinqueUpdateCompany(key, company, position, successFunction) {
+    psinqueAJAX(psinqueAPI_updateCompany, {
+                    key: key,
+                    company: company,
+                    position: position,
                 }, successFunction);
 }
 

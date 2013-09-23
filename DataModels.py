@@ -411,6 +411,19 @@ class UserPhoto(db.Model):
 
 #-----------------------------------------------------------------------------
 
+class UserNickname(db.Model):
+    itemValue = db.StringProperty()
+    creationTime = db.DateTimeProperty(auto_now = True)
+
+#-----------------------------------------------------------------------------
+
+class UserCompany(db.Model):
+    companyName = db.StringProperty()
+    positionName = db.StringProperty()
+    creationTime = db.DateTimeProperty(auto_now = True)
+
+#-----------------------------------------------------------------------------
+
 class UserProfile(db.Model):
 
     created = db.DateTimeProperty(auto_now_add=True)
@@ -485,6 +498,14 @@ class UserProfile(db.Model):
     @property
     def photos(self):
         return UserPhoto.all().ancestor(self)
+
+    @property
+    def nicknames(self):
+        return UserNickname.all().ancestor(self)
+
+    @property
+    def companies(self):
+        return UserCompany.all().ancestor(self)
 
 #-----------------------------------------------------------------------------
 

@@ -3,8 +3,12 @@
 
 {% import "templates/ui.html" as ui %}
 
-{%- macro addCompany(loopFirst, loopIndex, itemCount, itemKey, itemValue) -%}
+{%- macro addCompany(loopFirst, loopIndex, itemCount, itemKey, companyName, positionName) -%}
   {% include "templates/Profile_Company.html" %}
+{%- endmacro -%}
+
+{%- macro addNickname(loopFirst, loopIndex, itemCount, itemKey, itemValue) -%}
+  {% include "templates/Profile_Nickname.html" %}
 {%- endmacro -%}
 
 {%- macro addEmail(primary, tablelabel, emailCount, loopfirst, emailkey, emailaddress, privacyType) -%}
@@ -69,13 +73,18 @@
         {{ ui.textinput(userProfile.nameSuffix, "Suffix", "suffix", "general") }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
-      {{ ui.multipletextinput("Nicknames", "nickname", [], "Add nickname") }}
+      
+      <table id="nicknamestable"><tbody>
+        {{ addNickname(True, 0, nicknames|count + 1, "", "") }}
+        {% for nickname in nicknames %}
+          {{ addNickname(False, loop.index, items|count, nickname.key(), nickname.itemValue) }}
+        {% endfor %}
+      </tbody></table>
       
       <table id="companystable"><tbody>
+        {{ addCompany(True, 0, companies|count + 1, "", "", "") }}
         {% for company in companies %}
-          {{ addCompany(loop.first, loop.index, items|count, company.key(), company.itemValue) }}
-        {% else %}
-          {{ addCompany(True, 1, 1, "", "") }}
+          {{ addCompany(False, loop.index, items|count, company.key(), company.companyName, company.positionName) }}
         {% endfor %}
       </tbody></table>
       

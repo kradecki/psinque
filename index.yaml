@@ -31,6 +31,12 @@ indexes:
   - name: creationTime
     direction: desc
 
+- kind: UserCompany
+  ancestor: yes
+  properties:
+  - name: creationTime
+    direction: desc
+
 - kind: UserEmail
   ancestor: yes
   properties:
@@ -45,6 +51,12 @@ indexes:
     direction: desc
 
 - kind: UserIM
+  ancestor: yes
+  properties:
+  - name: creationTime
+    direction: desc
+
+- kind: UserNickname
   ancestor: yes
   properties:
   - name: creationTime

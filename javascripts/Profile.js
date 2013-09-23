@@ -128,8 +128,51 @@ function updateEmail(input) {
     }
 }
 
-function splitItemTypes(compoundItemType) {
+function updateNickname(input) {
   
+    itemValue = input.val();
+    
+    if(itemValue == "")
+        return;
+  
+    td = input.parent();
+    itemKey = td.find(".nicknamekeys");
+    if(itemKey.val()) {
+        psinqueUpdateNickname(itemKey.val(), itemValue, function() {
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
+        });
+    } else {
+        psinqueAddNickname(itemValue, function(data) {
+            itemKey.val(data["key"]);  // save the key for further queries
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
+        });
+    }
+}
+
+function updateCompany(input) {
+  
+    itemValue = input.val();
+    
+    if(itemValue == "")
+        return;
+  
+    td = input.parent();
+    itemType = td.next().find("input").val()
+    itemKey = td.find(".companykeys");
+    if(itemKey.val()) {
+        psinqueUpdateCompany(itemKey.val(), itemValue, itemType, function() {
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
+        });
+    } else {
+        psinqueAddCompany(itemValue, itemType, function(data) {
+            itemKey.val(data["key"]);  // save the key for further queries
+            uiUnmarkChangedFields(td);
+            uiUnmarkChangedFields(td.next());
+        });
+    }
 }
 
 function updateItem(input, prefix, updateFunction, addFunction) {
@@ -141,7 +184,6 @@ function updateItem(input, prefix, updateFunction, addFunction) {
 
     td = input.parent();
     itemTypes = td.next().find("." + prefix + "types").val()
-    console.log(itemTypes);
     itemTypes = itemTypes.split(" ");
     
     itemKey = td.find("." + prefix + "keys");
@@ -241,6 +283,14 @@ function addUpdateHandler(where) {
         $(".addresses").each(function() {
             if($(this).closest("tr").find(".unsavedchanges").length > 0)
                 updateAddress($(this));
+        });
+        $(".nicknames").each(function() {
+            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+                updateNickname($(this));
+        });
+        $(".companys").each(function() {
+            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+                updateCompany($(this));
         });
 
         psinqueAjaxTransactionStop();

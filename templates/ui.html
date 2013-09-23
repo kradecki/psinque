@@ -170,7 +170,7 @@
           {% if loop.first %}
             {{ tablelabel(label, values|count, inputid ~ "label") }}
           {% endif %}
-          {{ textinput(value, placeholder, inputid ~ loop.index) }}
+          {{ textinput(value, placeholder, inputid ~ loop.index, inputid ~ "s") }}
           {% if loop.first %}
             {{ addbutton(inputid) }}
           {% else %}
@@ -180,7 +180,7 @@
       {% else %}
         <tr>
           {{ tablelabel(label, 1, inputid ~ "label") }}
-          {{ textinput("", placeholder, inputid ~ "1") }}
+          {{ textinput("", placeholder, inputid ~ "1", "nicknames") }}
           {{ addbutton(inputid) }}
         </tr>
       {% endfor %}
