@@ -10,44 +10,30 @@ class StaticPageHandler(StaticHandler):
     # Views
     #
 
-    def faq(self):
-      
-        self.sendContent('templates/FAQ.html')
-
 
     def about(self):
       
-        self.sendContent('templates/AboutUs.html')
-
-
-    def investors(self):
-      
-        self.sendContent('templates/Investors.html')
-
-
-    def privacy(self):
-      
-        self.sendContent('templates/Privacy.html')
+        self.sendContent('templates/Static_AboutUs.html')
 
 
     def terms(self):
       
-        self.sendContent('templates/Terms.html')
+        self.sendContent('templates/Static_Terms.html')
 
 
-    def mobile(self):
+    def privacy(self):
       
-        self.sendContent('templates/Mobile.html')
+        self.sendContent('templates/Static_Privacy.html')
 
 
-    def support(self):
+    def help(self):
       
-        self.sendContent('templates/Support.html')
+        self.sendContent('templates/Static_Help.html')
 
 
-    def gettingstarted(self):
+    def work(self):
       
-        self.sendContent('templates/GettingStarted.html')
+        self.sendContent('templates/Static_Work.html')
 
 
 #-----------------------------------------------------------------------------
