@@ -6,7 +6,7 @@ function uiCloneElement(oldElement) {
     // Clean all the input values:
 //     newElement.find("input,select").val('');
     newElement.hide();
-    psinqueSetMarkingOnChange(newElement.find('input,select'));
+    uiSetMarkingOnChange(newElement.find('input,select'));
 
     return newElement;
 }
@@ -59,7 +59,8 @@ function uiAddNewTableRow(prefix, removeAjax) {
     tableName = "#" + prefix + "stable"
     removerClass = prefix + "removers"
   
-    tr = uiCloneElement($(tableName + " > tbody > tr:first"));
+    originaltr = $(tableName + " > tbody > tr:first");
+    tr = uiCloneElement(originaltr);
     
     // Remove the table label
     tr.find('.formlabels').remove();
@@ -76,6 +77,7 @@ function uiAddNewTableRow(prefix, removeAjax) {
 
     // Re-create the dropdown
     tr.find('.chosen-container').remove();
+    tr.find('select').val(originaltr.find('select').val());
     uiMakeDropdowns(tr);
     
     uiAddRemoverHandler(tr.find('.' + prefix + 'removers'), prefix, removeAjax);
@@ -123,8 +125,7 @@ function uiAddAddHandler(prefix, removeAjax) {
             
         tr = uiAddNewTableRow(prefix, removeAjax);
         
-        input = $(this).closest("tr").find("input");
-        input.val("");  // clear them all!
+        $(this).closest("tr").find("input,select").val("");  // clear them all!
         
         tr.show();
         
@@ -272,12 +273,12 @@ function unmarkAllFields() {
     uiUnmarkChangedFields(document);
 }
 
-function psinqueSetMarkingOnChange(where) {
+function uiSetMarkingOnChange(where) {
     elem = $(where);
     elem.change(function() {
         uiMarkChangedFields(this);
     }).keyup(function() {
-        if(elem.is("input") && (elem.attr("type") == "text"))
+        if($(this).is("input") && ($(this).attr("type") == "text"))
             uiMarkChangedFields(this);
     });
 }
@@ -360,7 +361,7 @@ $(document).ready(function() {
   
     uiMakeDropdowns("body");
   
-    psinqueSetMarkingOnChange("input,select");
+    uiSetMarkingOnChange("input,select");
     uiInitializeCheckboxes();
 
     window.ajaxInProgress = false;
@@ -376,7 +377,6 @@ $(document).ready(function() {
             return;
     });
     
-//     $("#content").slideDown();
     $("#content").animate({top: "0"}, { duration: 1000 });
     
 });

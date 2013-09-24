@@ -43,7 +43,8 @@ div.wrappers {
 div#headerwrapper {
     height: 61px;
     position: fixed;
-    box-shadow: 0 0px 6px 3px #d8d4cb;
+/*     box-shadow: 0 0px 6px 3px #d8d4cb; */
+    box-shadow: 0 0px 6px 3px rgba(215,212,203,0.5);
     background-color: #404040;
     position: fixed;
     top: 0;

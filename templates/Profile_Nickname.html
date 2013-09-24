@@ -5,7 +5,7 @@
       <label>Nickname</label>
     </td>
   {% endif %}
-  {{ ui.textinputwithkey(itemValue, "Add nickname", "nickname", "nicknames", loopIndex, itemKey, "nicknamekeys") }}
+  {{ ui.textinputwithkey(itemValue, "New nickname", "nickname", "nicknames", loopIndex, itemKey, "nicknamekeys") }}
   {% if not loopFirst %}
     {{ ui.removebutton("nickname", "nicknameremovers") }}
   {% else %}

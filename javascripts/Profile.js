@@ -339,8 +339,8 @@ $(document).ready(function() {
     uiAddAddHandler("phone", psinqueRemovePhone);
     uiAddAddHandler("im", psinqueRemoveIM);
     uiAddAddHandler("www", psinqueRemoveWWW);
-    uiAddAddHandler("nickname", null);
-    uiAddAddHandler("company", null);
+    uiAddAddHandler("nickname", psinqueRemoveNickname);
+    uiAddAddHandler("company", psinqueRemoveCompany);
     
     // Handlers for removing standard fields
     uiAddRemoverHandler(".emailremovers", "additionalemail", psinqueRemoveEmail);
@@ -377,11 +377,18 @@ $(document).ready(function() {
     // React to pressing the Enter key
     uiAddEnterAction("input[type=text].general", "#savebutton");
     uiAddEnterAction("input[type=text].additional.emailaddresses:first", "#addadditionalemail");
+    uiAddEnterAction("input[type=text].nicknames:first", "#addnickname");
+    uiAddEnterAction("input[type=text].companys:first", "#addcompany");
+    uiAddEnterAction("input[type=text].phones:first", "#addphone");
+    uiAddEnterAction("input[type=text].ims:first", "#addim");
+    uiAddEnterAction("input[type=text].wwws:first", "#addwww");
 
     // Image uploading
     $('#imageupload').fileupload({
         submit: function (e, data) {
             var $this = $(this);
+            uiStartLogoAnimation();
+            window.ajaxInProgress = true;
             $.getJSON('/profile/getphotouploadurl', function (result) {
                 data.url = result;
                 $this.fileupload('send', data);
@@ -392,6 +399,8 @@ $(document).ready(function() {
             $("#nophoto").remove();
             newItem = $(data.result).appendTo("#mosaic");
             addPhotoRemoverHandler(newItem.find(".photoremovers"));
+            uiStopLogoAnimation();
+            window.ajaxInProgress = false;
         } 
     });
     
