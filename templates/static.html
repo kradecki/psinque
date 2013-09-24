@@ -16,6 +16,7 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/static.css" />
   {% block stylesheets -%}
   {%- endblock %}
+  <script type="text/javascript" src="/javascripts/jquery.js"></script>
   <script type="text/javascript" src="/javascripts/ui.js"></script>
   {%- block externalscripts -%}
   {%- endblock %}
@@ -24,11 +25,11 @@
   <div id="uberwrapper">
     <div id="contentwrapper" class="wrappers">
       <div id="content">
-        <div id="biglogo">
+<!--        <div id="biglogo">
           <a href="/">
             <img src="/images/biglogo.png" alt="Psinque" />
           </a>
-        </div>
+        </div>-->
         <div class="onecolumn">
           {% block content %}{% endblock %}
         </div>

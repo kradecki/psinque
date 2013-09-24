@@ -17,6 +17,13 @@ div#contentwrapper {
     background-color: #fff;
 }
 
+div#content {
+    top: 1500px;
+    box-shadow: 0 0px 12px 3px #d8d4cb;
+    background-color: #fff;
+    padding-top: 20px;
+}
+
 div#biglogo {
     text-align: center;
     height: 180px;

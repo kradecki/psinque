@@ -46,7 +46,7 @@
       {% for photo in userProfile.photos %}
         {% include "templates/Profile_Thumbnail.html" %}
       {% else %}
-        <img src="/images/nophoto.png" id="nophoto">
+        <img src="/images/nophoto.png" id="nophoto" width="196" height="196">
       {% endfor %}
     </div>
     <div id="uploadbutton">
@@ -61,8 +61,7 @@
     
       {{ ui.begintable() }}
         {{ ui.tablelabel("Name", 4) }}
-        {{ ui.textinput(userProfile.namePrefix, "Prefix", "prefix", "general") }}
-        {{ ui.spacer() }}
+        {{ ui.textinput(userProfile.namePrefix, "Prefix", "prefix", "general", "", 2) }}
         {{ ui.newrow() }}
         {{ ui.textinput(userProfile.givenNames, "Given names", "givennames", "required general") }}
         {{ ui.textinput(userProfile.givenNamesRomanization, "Romanization", "givenroman", "general") }}
@@ -70,8 +69,7 @@
         {{ ui.textinput(userProfile.familyNames, "Family names", "familynames", "required general") }}
         {{ ui.textinput(userProfile.familyNamesRomanization, "Romanization", "familyroman", "general") }}
         {{ ui.newrow() }}
-        {{ ui.textinput(userProfile.nameSuffix, "Suffix", "suffix", "general") }}
-        {{ ui.spacer() }}
+        {{ ui.textinput(userProfile.nameSuffix, "Suffix", "suffix", "general", "", 2) }}
       {{ ui.endtable() }}
       
       <table id="nicknamestable"><tbody>

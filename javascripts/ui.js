@@ -376,4 +376,7 @@ $(document).ready(function() {
             return;
     });
     
+//     $("#content").slideDown();
+    $("#content").animate({top: "0"}, { duration: 1000 });
+    
 });

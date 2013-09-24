@@ -9,7 +9,7 @@ body {
     font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 16px;
     line-height: 150%;
-    background-color: #d8d4cb;
+    background-color: #fff;
 }
 
 a {
@@ -54,7 +54,7 @@ div#contentwrapper {
 div#footerwrapper {
     height: 40px;
     position: fixed;
-    box-shadow: 0 0px 6px 3px #d8d4cb;
+/*    box-shadow: 0 0px 6px 3px #d8d4cb;*/
     background-color: #fff;
     bottom: 0;
 /*     left: 0; */
@@ -75,7 +75,13 @@ div#content {
     width: 920px;
     margin: 0 auto;
     padding: 20px;
-    height: 100%;
+    padding-top: 12px;
+/*     height: 100%; */
+    box-shadow: 0 0px 12px 3px #404040;
+    background-color: #d8d4cb;
+    min-height: 500px;
+    position: relative;
+    top: -1500px;
 }
 
 div#footer {
@@ -85,7 +91,7 @@ div#footer {
 
 div#photos {
     float: left;
-    width: 218px;
+    width: 196px;
     margin-right: 12px;
     text-align: right;
     overflow: hidden;
@@ -93,7 +99,7 @@ div#photos {
 
 div#profile {
     float: left;
-    width: 690px;
+    width: 712px;
 }
 
 div.onecolumn {
@@ -114,21 +120,17 @@ div#header td {
     vertical-align: top;
 }
 
-div#header td#logographics img {
-/*     margin-top: 10px; */
-    margin-left: 29px;
-}
-
 div#header td#logotext {
     margin: 0;
-/*     padding-left: 40px; */
-    width: 230px;
-    text-align: center;
+    padding-left: 34px;
+    width: 161px;
+    text-align: left;
 }
 
 div#header ul {
     list-style: none;
-    float: left;
+    float: right;
+    padding: 0;
 }
 
 div#header li {
@@ -140,7 +142,6 @@ div#header li a {
     text-decoration: none;
     display: block;
     padding-top: 0px;
-/*     padding-bottom: 7px; */
     width: 120px;
     height: 28px;
     text-align: center;
@@ -153,18 +154,20 @@ div#header li a:hover {
 
 div#header li a.active {
     font-weight: 800;
-/*     border: 1px solid #404040; */
-/*     border-bottom: none; */
     width: 118px;
     height: 28px;
-/*     padding-top: 0; */
-/*     background: #d9d4cc; */
 }
 
 div#header td#extras {
+    width: 122px;
+}
+
+div#header td#extras a {
     width: 100px;
     padding-right: 0px;
+    text-align: right;
 }
+
 
 /****************************************
  * Footer

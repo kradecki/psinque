@@ -42,6 +42,12 @@ div#uploadbutton {
     z-index: 1;
 }
 
+div#mosaic {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 6px;
+}
+
 div.photoitem {
     margin-bottom: 12px;
     float: right;
@@ -49,13 +55,33 @@ div.photoitem {
 }
 
 div.photoitem a {
-  display: block;
-  float: right;
-  position: relative;
+    display: block;
+    float: right;
+    position: relative;
+    line-height: 80%;
+}
+
+div.photoitem img {
+  -webkit-transition: all 1s ease;
+     -moz-transition: all 1s ease;
+       -o-transition: all 1s ease;
+      -ms-transition: all 1s ease;
+          transition: all 1s ease;
+/*     -webkit-filter: grayscale(100%); */
+/*   -webkit-filter: brightness(-65%); */
+  -webkit-filter: sepia(70%);
+  z-index: 1;
+}
+
+div.photoitem img:hover {
+/*     -webkit-filter: grayscale(0%); */
+/*   -webkit-filter: brightness(0%); */
+  -webkit-filter: sepia(0%);
 }
 
 div.photoremovebuttons {
     float: right;
     margin-right: 12px;
     position: absolute;
+    z-index: 2;
 }
