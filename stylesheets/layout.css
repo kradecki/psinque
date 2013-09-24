@@ -17,6 +17,10 @@ a {
     text-decoration: none;
 }
 
+a:hover {
+    color: #e35c33;
+}
+
 .hiddenelements {
     display: none;
 }
@@ -177,9 +181,9 @@ div#footer {
     font-size: 13px;
 }
 
-div#footer a:hover {
+/*div#footer a:hover {
     color: #e35c33;
-}
+}*/
 
 div#footer > div#leftfoot {
     width: 100px;

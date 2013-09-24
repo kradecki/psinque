@@ -12,29 +12,28 @@ class StaticPageHandler(StaticHandler):
 
 
     def about(self):
-      
         self.sendContent('templates/Static_AboutUs.html')
 
-
     def terms(self):
-      
         self.sendContent('templates/Static_Terms.html')
 
-
     def privacy(self):
-      
         self.sendContent('templates/Static_Privacy.html')
 
-
-    def help(self):
-      
-        self.sendContent('templates/Static_Help.html')
-
-
     def work(self):
-      
         self.sendContent('templates/Static_Work.html')
 
+    def help(self):
+        self.sendContent('templates/Static_Help.html')
+
+    def ios(self):
+        self.sendContent('templates/Static_Help_iOS.html')
+
+    def android(self):
+        self.sendContent('templates/Static_Help_Android.html')
+
+    def windows(self):
+        self.sendContent('templates/Static_Help_Windows.html')
 
 #-----------------------------------------------------------------------------
 

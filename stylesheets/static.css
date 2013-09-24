@@ -26,8 +26,14 @@ div#content {
 
 div#biglogo {
     text-align: center;
-    height: 180px;
+/*     height: 180px; */
 /*     padding-top: 70px; */
-    width: 100%;
-    border-bottom: 1px solid #404040;
+/*     width: 100%; */
+/*     border-bottom: 1px solid #404040; */
+/*     margin: 0 auto; */
+}
+
+h3 {
+    background: url("/images/smalllogo.png") left no-repeat;
+    padding-left: 35px;
 }
