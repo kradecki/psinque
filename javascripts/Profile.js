@@ -37,8 +37,6 @@ function codeAddress(address, mapNr) {
   
     geocoder.geocode( { 'address': address }, function(results, status) {
       
-        console.log(status);
-      
         if (status == google.maps.GeocoderStatus.OK) {
           
             currentAddressPositions[mapNr-1] = results[0].geometry.location;
@@ -64,12 +62,16 @@ function codeAddress(address, mapNr) {
     });
 }
 
+// Copies the coordinates into appropriate input fields
 function updateAddressCoordinates(mapNr) {
   
-    // Copy the coordinates into appropriate input fields
-    $("#longitude" + mapNr).val(currentAddressPositions[mapNr-1].qb);
-    $("#latitude" + mapNr).val(currentAddressPositions[mapNr-1].pb);
-  
+    lonInput = $("#longitude" + mapNr);
+    lonInput.val(currentAddressPositions[mapNr-1].lng());
+    lonInput.addClass("unsavedchanges");
+    
+    latInput = $("#latitude" + mapNr);
+    latInput.val(currentAddressPositions[mapNr-1].lat());
+    latInput.addClass("unsavedchanges");
 }
 
 function addLocalizerHandler(where) {
@@ -210,10 +212,14 @@ function updateAddress(input) {
     tr = input.parent().parent();
     
     addressNr = input.attr("data-psinque-index");
-    console.log(addressNr);
+    
+    city = $("#city" + addressNr).val();
+    if(city == "") {
+        uiShowErrorMessage("The city field in the address cannot be empty.");
+        return;
+    }
     
     addressKey = $("#addresskey" + addressNr);
-    city = $("#city" + addressNr).val();
     postalCode = $("#postalcode" + addressNr).val();
     country = $("#country" + addressNr).val();
     privacyType = $("#addressprivacytype" + addressNr).val();
@@ -281,7 +287,10 @@ function addUpdateHandler(where) {
                 updateItem($(this), "www", psinqueUpdateWWW, psinqueAddWWW);
         });
         $(".addresses").each(function() {
-            if($(this).closest("tr").find(".unsavedchanges").length > 0)
+            tr = $(this).closest("tr");
+            if((tr.find(".unsavedchanges").length > 0) 
+              || (tr.next().find(".unsavedchanges").length > 0)
+              || (tr.next().next().find(".unsavedchanges").length > 0))
                 updateAddress($(this));
         });
         $(".nicknames").each(function() {
