@@ -72,6 +72,20 @@
     {{ ui.savebutton("updatebuttons", personaIndex) }}
     {{ ui.spacer() }}
   {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Get vCard") }}
+    <td class="forminputs formbuttons">
+      <div>
+        <a href="/personas/getvcardastext?key={{ persona.key() }}"><span class="buttons clickable buttons-text"></span></a>
+      </div>
+    </td>
+    <td class="forminputs formbuttons">
+      <div>
+        <a href="/personas/getvcardasgif?key={{ persona.key() }}"><span class="buttons clickable buttons-qr"></span></a>
+      </div>
+    </td>
+    {{ ui.spacer() }}
+  {{ ui.endtable() }}
   {% if persona.name != "Public" and persona.name != "Default" -%}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Remove") }}

@@ -13,6 +13,8 @@ builtins:
 # - mail
 
 libraries:
+- name: PIL
+  version: latest
 - name: jinja2
   version: latest
 - name: django

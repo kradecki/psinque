@@ -288,26 +288,35 @@ span.buttons {
     background-position: -40px -160px;
 }
 
-.buttons.buttons-create {
+.buttons.buttons-search {
     background-position: 0px -200px;
 }
 
-.buttons.buttons-create:hover {
+.buttons.buttons-search:hover {
     background-position: -40px -200px;
 }
 
-.buttons.buttons-search {
+.buttons.buttons-check {
     background-position: 0px -240px;
 }
 
-.buttons.buttons-search:hover {
+.buttons.buttons-check:hover {
     background-position: -40px -240px;
 }
 
-.buttons.buttons-check {
+.buttons.buttons-text {
     background-position: 0px -280px;
 }
 
-.buttons.buttons-check:hover {
+.buttons.buttons-text:hover {
     background-position: -40px -280px;
 }
+
+.buttons.buttons-qr {
+    background-position: 0px -320px;
+}
+
+.buttons.buttons-qr:hover {
+    background-position: -40px -320px;
+}
+

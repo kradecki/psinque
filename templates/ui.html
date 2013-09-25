@@ -51,10 +51,6 @@
   {{ button(id, "add", divclass=divclass) }} 
 {%- endmacro -%}
 
-{%- macro createbutton(id) -%}
-  {{ button(id, "create") }}
-{%- endmacro -%}
-
 {%- macro removebutton(id, class="", index="") -%}
   {{ button(id, "remove", class, index) }}
 {%- endmacro -%}

@@ -12,7 +12,7 @@ from google.appengine.ext import blobstore
 genders      = ["Male", "Female", "N/A"]
 privacyTypes = ['Home', 'Work']
 phoneTypes   = ["Landline", "Cellphone", "Internet", "Fax", "Other"]
-wwwTypes     = ["Personal", "Company", "MySpace", "Facebook"]
+wwwTypes     = ["Personal", "Company", "MySpace", "Facebook", "Twitter", "Google+"]
 
 monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -281,51 +281,6 @@ availableLanguages = {
 
 #-----------------------------------------------------------------------------
 
-class Persona(db.Model):
-    
-    name = db.StringProperty()
-    public = db.BooleanProperty(default = False)
-
-    canViewGivenNames = db.BooleanProperty(default = True)
-    canViewFamilyNames = db.BooleanProperty(default = True)
-    canViewBirthday = db.BooleanProperty(default = False)
-    canViewGender = db.BooleanProperty(default = False)
-
-    vcard = db.TextProperty()   # vCard for CardDAV access; it's not a StringProperty
-                                # because it might be longer than 500 characters
-    vcardMTime = db.StringProperty() # modification time
-    vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
-    vcardNeedsUpdating = db.BooleanProperty(default = True)
-    
-    displayName = db.StringProperty()
-
-    @property
-    def permitEmails(self):
-        return PermitEmail.all().ancestor(self)
-    
-    @property
-    def permitIMs(self):
-        return PermitIM.all().ancestor(self)
-    
-    @property
-    def permitWWWs(self):
-        return PermitWebpage.all().ancestor(self)
-    
-    @property
-    def permitPhones(self):
-        return PermitPhoneNumber.all().ancestor(self)
-    
-    @property
-    def permitAddresses(self):
-        return PermitAddress.all().ancestor(self)
-
-    @property
-    def individualPermits(self):
-        return IndividualPermit.all().ancestor(self)
-
-
-#-----------------------------------------------------------------------------
-
 class Group(db.Model):
     
     name = db.StringProperty()
@@ -420,6 +375,53 @@ class UserCompany(db.Model):
     companyName = db.StringProperty()
     positionName = db.StringProperty()
     creationTime = db.DateTimeProperty(auto_now = True)
+
+#-----------------------------------------------------------------------------
+
+class Persona(db.Model):
+    
+    name = db.StringProperty()
+    public = db.BooleanProperty(default = False)
+
+    canViewGivenNames = db.BooleanProperty(default = True)
+    canViewFamilyNames = db.BooleanProperty(default = True)
+    canViewBirthday = db.BooleanProperty(default = False)
+    canViewGender = db.BooleanProperty(default = False)
+
+    vcard = db.TextProperty()   # vCard for CardDAV access; it's not a StringProperty
+                                # because it might be longer than 500 characters
+    vcardMTime = db.StringProperty() # modification time
+    vcardMD5 = db.StringProperty()   # MD5 checksum of the vcard
+    vcardNeedsUpdating = db.BooleanProperty(default = True)
+    
+    displayName = db.StringProperty()
+    
+    company = db.ReferenceProperty(UserCompany)
+    picture = db.ReferenceProperty(UserPhoto)
+
+    @property
+    def permitEmails(self):
+        return PermitEmail.all().ancestor(self)
+    
+    @property
+    def permitIMs(self):
+        return PermitIM.all().ancestor(self)
+    
+    @property
+    def permitWWWs(self):
+        return PermitWebpage.all().ancestor(self)
+    
+    @property
+    def permitPhones(self):
+        return PermitPhoneNumber.all().ancestor(self)
+    
+    @property
+    def permitAddresses(self):
+        return PermitAddress.all().ancestor(self)
+
+    @property
+    def individualPermits(self):
+        return IndividualPermit.all().ancestor(self)
 
 #-----------------------------------------------------------------------------
 

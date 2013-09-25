@@ -66,6 +66,7 @@ div#footerwrapper {
     width: 100%;
     padding-top: 10px;
     border-top: 1px solid #404040;
+    z-index: 999;
 }
 
 div#header {
@@ -87,6 +88,7 @@ div#content {
     min-height: 500px;
     position: relative;
     top: -1500px;
+    z-index: 500;
 }
 
 div#footer {

@@ -67,11 +67,27 @@ def reallyGenerateVCard(persona):
         
     newVCard.addNames(givenNames, familyNames)
 
+    # Add company names and positions
+    if persona.company:
+        newVCard.addCompany(persona.company.companyName, persona.company.positionName)
+    
     # Add e-mail addresses
     for email in userProfile.emails:
         individualPermit = email.individualPermits.ancestor(persona).get()
         if individualPermit.canView:
             newVCard.addEmail(email.itemValue, email.privacyType.lower())
+            
+    # Add IM addresses
+    for im in userProfile.ims:
+        individualPermit = im.individualPermits.ancestor(persona).get()
+        if individualPermit.canView:
+            newVCard.addIM(im.itemValue.protocol, im.privacyType.lower(), im.itemValue.address)
+            
+    # Add WWW addresses
+    for www in userProfile.webpages:
+        individualPermit = www.individualPermits.ancestor(persona).get()
+        if individualPermit.canView:
+            newVCard.addWebpage(www.privacyType.lower(), www.itemValue)
             
     # Add physical addresses
     for address in userProfile.addresses:
@@ -91,7 +107,7 @@ def reallyGenerateVCard(persona):
         if individualPermit.canView:
             newVCard.addPhone(phone.itemValue,
                               phone.privacyType.lower() + u"," + phone.itemType.lower())
-    
+
     newVCard.addTimeStamp(str(datetime.datetime.date(datetime.datetime.now())) + u"T" + str(datetime.datetime.time(datetime.datetime.now())) + u"Z")
     
     newVCard = db.Text(newVCard.serialize())

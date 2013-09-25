@@ -70,15 +70,32 @@ class VCard():
     
     def addPhone(self, phone, phoneType):
       
-        self.vcardString += u"TEL;TYPE=" + phoneType + ";VALUE=uri:tel:" + phone + u"\n"
+        #self.vcardString += u"TEL;TYPE=" + phoneType + ";VALUE=uri:tel:" + phone + u"\n"
+        self.vcardString += u"TEL;TYPE=" + phoneType + u":" + phone + u"\n"
         
     
-    def addIM(self):
-        pass
+    def addIM(self, imtype, privacytype, imaddress):
+        
+        if imtype == "http://talk.google.com/":
+            self.vcardString += u"X-GOOGLE-TALK;TYPE=" + privacytype + u":" + imaddress + u"\n"
+        elif imtype == "http://www.skype.com/":
+            self.vcardString += u"X-SKYPE;TYPE=" + privacytype + u":" + imaddress + u"\n"
+        elif imtype == "http://gadu-gadu.pl/":
+            self.vcardString += u"X-GADUGADU;TYPE=" + privacytype + u":" + imaddress + u"\n"
+        elif imtype == "http://messenger.msn.com/":
+            self.vcardString += u"IMPP;TYPE=" + privacytype + u":msn:" + imaddress + u"\n"
+        elif imtype == "http://messenger.yahoo.com/":
+            self.vcardString += u"IMPP;TYPE=" + privacytype + u":ymsgr:" + imaddress + u"\n"
         
     
-    def addWebpage(self):
-        pass
+    def addWebpage(self, privacytype, url):
+        
+        self.vcardString += u"URL;TYPE=" + privacytype + u":" + url + u"\n"
+      
+      
+    def addCompany(self, company, position):
+        self.vcardString += u"ORG:" + company + u"\n"
+        self.vcardString += u"TITLE:" + position + u"\n"
       
       
     def addTimeStamp(self, timestamp):

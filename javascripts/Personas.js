@@ -142,7 +142,7 @@ $(document).ready(function() {
 
     addUpdatePersonaHandler(".updatebuttons");
     addRemovePersonaHandler(".removebuttons");
-    addAddPersonaHandler("#createpersona");
+    addAddPersonaHandler("#addpersona");
 
     $("input[type=checkbox]").change(function() {
         updateDisplayName($(this).attr("data-psinque-index"));

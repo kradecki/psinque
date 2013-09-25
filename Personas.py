@@ -3,11 +3,14 @@
 import logging
 import webapp2
 
+import pyqrcode
+import StringIO
+
 from MasterHandler import MasterHandler, AjaxError
 from DataModels import Persona, Contact
 from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress
 
-from DataManipulation import generateVCard
+from DataManipulation import generateVCard, reallyGenerateVCard
 
 #-----------------------------------------------------------------------------
 
@@ -18,10 +21,21 @@ class PersonasHandler(MasterHandler):
     # 
     
     def _getPersonaByName(self, personaName):
-        return Persona.all(). \
+      
+      return Persona.all(). \
                       ancestor(self.userProfile). \
                       filter("name =", personaName). \
                       get()
+
+
+    def _getPersonaUpdateVCard(self):
+      
+        personaKey = self.getRequiredParameter('key')
+        persona = Persona.get(personaKey)
+        if persona.vcardNeedsUpdating:
+            reallyGenerateVCard(persona)
+            
+        return persona
 
     #****************************
     # Views
@@ -171,6 +185,32 @@ class PersonasHandler(MasterHandler):
         generateVCard(individualPermit.parent())
         
         self.sendJsonOK()
+        
+        
+    def getvcardastext(self):
+      
+        persona = self._getPersonaUpdateVCard()
+      
+        self.response.headers['Content-Type'] = "text/x-vcard; charset=utf-8"
+        self.response.headers['Content-Disposition'] = (u'inline; filename="' + persona.name + '.vcf"').encode("utf-8")
+        self.response.out.write(persona.vcard)
+
+
+    def getvcardasgif(self):
+
+        persona = self._getPersonaUpdateVCard()
+        
+        qrcode = pyqrcode.MakeQRImage(persona.vcard.encode("utf-8"))
+
+        output = StringIO.StringIO()
+        qrcode.save(output, format="GIF")
+
+        #self.response.headers['Content-Type'] = "image/gif"
+        self.response.headers['Content-Type'] = "application/octet-stream"
+        self.response.headers['Content-Disposition'] = (u'inline; filename="' + persona.name + '.gif"').encode("utf-8")
+        self.response.out.write(output.getvalue())
+
+        output.close()
         
         
 #-----------------------------------------------------------------------------
