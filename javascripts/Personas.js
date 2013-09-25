@@ -26,16 +26,20 @@ function addUpdatePersonaHandler(where) {
         personaIndex = $(this).attr('data-psinque-index');
         personaForm = $("#personaform" + personaIndex);
         
+        newName = $("#personaname" + personaIndex).val();
+        
         psinqueAjaxTransactionStart();
         
         // Update the general personas
         psinqueSetGeneralPersona($("#personakey" + personaIndex).val(),
+            newName,
             $("#givennames_" + personaIndex).is(':checked'),
             $("#familynames_" + personaIndex).is(':checked'),
             $("#birthday_" + personaIndex).is(':checked'),
             $("#gender_" + personaIndex).is(':checked'),
         function() {
-            uiUnmarkChangedFields(personaForm.find(".generallabels"));    
+            uiUnmarkChangedFields(personaForm.find(".general"));    
+            if(newName) personaForm.prev().find("label").html(newName);
         });
         
         // Update all the other personas
@@ -159,5 +163,12 @@ $(document).ready(function() {
         collapsible: true,
         active: false
     });
+    
+    // Correct the margins in image grids; couldn't do that in CSS
+    // CORRECTION: did that in CSS
+//     $(".imageinputs").each(function() {
+//         imgs = $(this).find("img");
+//         imgs.slice(-(imgs.length % 9)).css("margin-bottom", 0)
+//     });
     
 });

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import datetime
 
 class VCard():
     
@@ -35,6 +36,15 @@ class VCard():
             self.vcardString += u", "+ honorificSuffixes
             
         self.vcardString += u"\n"
+
+
+    def addBirthday(self, year, month, day):
+        self.vcardString += u"BDAY:" + unicode(year) + u"{0:02d}".format(month) + u"{0:02d}".format(day) + u"\n"
+
+    
+    def addGender(self, gender):
+        if gender != "N/A":
+            self.vcardString += u"GENDER:" + {'Male': u'M', 'Female': u'F'}[gender] + u"\n"
 
     
     def addEmail(self, email, emailType):
@@ -98,9 +108,15 @@ class VCard():
         self.vcardString += u"TITLE:" + position + u"\n"
       
       
-    def addTimeStamp(self, timestamp):
+    def addTimeStamp(self):
       
-        self.vcardString += u"REV:" + timestamp + u"\n"
+        dateStamp = str(datetime.datetime.date(datetime.datetime.now()))
+        dateStamp = dateStamp.replace("-", "")
+        timeStamp = str(datetime.datetime.time(datetime.datetime.now()))
+        timeStamp = timeStamp.replace(":", "")
+        timeStamp = timeStamp.split(".")[0]
+        
+        self.vcardString += u"REV:" + dateStamp + u"T" + timeStamp + u"Z\n"
         
     
     def serialize(self):

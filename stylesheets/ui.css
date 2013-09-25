@@ -96,6 +96,7 @@ div.tableform td.formlabels label {
 
 div.tableform td.forminputs {
     padding-left: 12px;
+    line-height: 100%;
 }
 
 div.tableform td.forminputs.shortinput {

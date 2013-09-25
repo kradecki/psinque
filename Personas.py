@@ -44,11 +44,21 @@ class PersonasHandler(MasterHandler):
     def view(self):
         
         if self.getUserProfile():
+          
+            companies = self.userProfile.companies.order('-creationTime').fetch(limit = 1000)
+            companies = { x.key(): x.companyName for x in companies }
+            companies[None] = None
+
+            nicknames = self.userProfile.nicknames.order('-creationTime').fetch(limit = 1000)
+            nicknames = { x.key(): x.itemValue for x in nicknames }
+            nicknames[None] = None
             
             self.sendContent('templates/Personas.html',
                             activeEntry = "Personas",
                             templateVariables = {
                 'userProfile': self.userProfile,
+                'companies': companies,
+                'nicknames': nicknames,
                 'personas': Persona.all(). \
                                   ancestor(self.userProfile). \
                                   order("name"),
@@ -151,6 +161,10 @@ class PersonasHandler(MasterHandler):
         persona = Persona.get(self.getRequiredParameter('key'))
         if persona is None:
             raise AjaxError("Persona not found.")
+          
+        newName = self.request.get("name")
+        if newName != "":
+            persona.name = newName
 
         persona.canViewGivenNames = self.getRequiredBoolParameter('givennames')
         persona.canViewFamilyNames = self.getRequiredBoolParameter('familynames')
@@ -205,7 +219,6 @@ class PersonasHandler(MasterHandler):
         output = StringIO.StringIO()
         qrcode.save(output, format="GIF")
 
-        #self.response.headers['Content-Type'] = "image/gif"
         self.response.headers['Content-Type'] = "application/octet-stream"
         self.response.headers['Content-Disposition'] = (u'inline; filename="' + persona.name + '.gif"').encode("utf-8")
         self.response.out.write(output.getvalue())

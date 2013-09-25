@@ -321,7 +321,7 @@ class UserAddress(db.Model):
     def itemValue(self):
         return u", ".join([self.address,
                            u" ".join([self.postalCode, self.city]),
-                           self.country])
+                           countries[self.countryCode]])
 
 #-----------------------------------------------------------------------------
 
@@ -397,6 +397,7 @@ class Persona(db.Model):
     displayName = db.StringProperty()
     
     company = db.ReferenceProperty(UserCompany)
+    nickname = db.ReferenceProperty(UserNickname)
     picture = db.ReferenceProperty(UserPhoto)
 
     @property

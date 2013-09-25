@@ -317,7 +317,8 @@ function uiMakeDropdowns(where) {
             uiMarkChangedFields(select);
         });
         
-        select.next().find("a > span").html(select.val());
+        if(select.hasClass("countries"))
+            select.next().find("a > span").html(select.val());
     });
 }
 

@@ -7,7 +7,7 @@ import md5
 from google.appengine.ext import db
 
 from DataModels import UserProfile, UserSettings, Persona, Group
-from DataModels import UserAddress, UserEmail, UserIM, UserPhoneNumber, UserWebpage
+from DataModels import UserAddress, UserEmail, UserIM, UserPhoneNumber, UserWebpage, UserPhoto, UserCompany, UserNickname
 from DataModels import Psinque, Contact, IndividualPermit, CardDAVLogin
 from DataModels import PermitEmail
 
@@ -67,6 +67,13 @@ def reallyGenerateVCard(persona):
         
     newVCard.addNames(givenNames, familyNames)
 
+    if persona.canViewBirthday:
+        birthday = userProfile.birthDate
+        newVCard.addBirthday(birthday.year, birthday.month, birthday.day)
+
+    if persona.canViewGender:
+        newVCard.addGender(userProfile.gender)
+
     # Add company names and positions
     if persona.company:
         newVCard.addCompany(persona.company.companyName, persona.company.positionName)
@@ -108,7 +115,7 @@ def reallyGenerateVCard(persona):
             newVCard.addPhone(phone.itemValue,
                               phone.privacyType.lower() + u"," + phone.itemType.lower())
 
-    newVCard.addTimeStamp(str(datetime.datetime.date(datetime.datetime.now())) + u"T" + str(datetime.datetime.time(datetime.datetime.now())) + u"Z")
+    newVCard.addTimeStamp()
     
     newVCard = db.Text(newVCard.serialize())
     

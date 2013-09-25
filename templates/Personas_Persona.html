@@ -15,7 +15,7 @@
   {% if persona.name != "Public" and persona.name != "Default" -%}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Persona name") }}
-      {{ ui.textinput(persona.name, "", "", "personanames", "") }}
+      {{ ui.textinput(persona.name, "", "personaname" ~ personaIndex, "personanames general", "") }}
     {{ ui.endtable() }}
   {%- endif %}
   {{ ui.begintable() }}
@@ -31,6 +31,14 @@
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Family names", "familynames", persona.canViewFamilyNames, personaIndex, "general", userProfile.familyNames) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Nickname") }}
+    {{ ui.dropdown(nicknames, persona.nickname.itemValue, "", "nicknames nosearch") }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Company") }}
+    {{ ui.dropdown(companies, persona.company.companyName, "", "companies nosearch") }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Birthday", "birthday", persona.canViewBirthday, personaIndex, "general", userProfile.birthDate) }}

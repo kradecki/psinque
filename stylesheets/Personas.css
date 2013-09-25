@@ -1,7 +1,7 @@
 
 div#personalist h3 {
     background-color: #404040;
-    width: 700px;
+    width: 658px;
     height: 30px;
     color: #fff;
     padding: 5px;
@@ -48,11 +48,22 @@ div#personalist div p {
     margin: 0;
 }
 
-td.imageinputs {
-    line-height: 80%;
+div.tableform td.forminputs.imageinputs {
+    line-height: 0;
+    display: inline-block;
+    word-spacing: 8px;
 }
 
 td.imageinputs img {
     margin: 0;
-    margin-right: 8px;
+    margin-top: 12px;
+}
+
+td.imageinputs img:nth-child(-n+9) {
+    margin-top: 0;
+}
+
+.chosen-container-single .chosen-single span {
+    text-align: left;
+    margin-left: 12px;
 }
