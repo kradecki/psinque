@@ -13,10 +13,6 @@
         {{ ui.spacer() }}
       {{ ui.endtable() }}
       {{ ui.begintable() }}
-        {{ ui.tablelabel("Newsletter") }}
-        {{ ui.checkbox("newsletter", userSettings.notifyNewsletter, "Send me a newsletter") }}
-      {{ ui.endtable() }}
-      {{ ui.begintable() }}
         {{ ui.tablelabel("Notifications", 6) }}
         {{ ui.checkbox("emailnotifications", userSettings.notifyEmails, "Send me email notifications") }}
         {{ ui.newrow("individualnotifications") }}
