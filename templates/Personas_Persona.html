@@ -12,6 +12,20 @@
 {{ ui.beginform("personaform" ~ personaIndex) }}
   <input type="hidden" id="personakey{{ personaIndex }}" value="{{ persona.key() }}" />
   <input type="hidden" id="personaid{{ personaIndex }}" value="{{ persona.key().id() }}" />
+  {% if persona.name != "Public" and persona.name != "Default" -%}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Persona name") }}
+      {{ ui.textinput(persona.name, "", "", "personanames", "") }}
+    {{ ui.endtable() }}
+  {%- endif %}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("Picture") }}
+    <td class="forminputs imageinputs">
+      {% for photo in userProfile.photos %}
+        <img src="{{ photo.servingUrl }}=s40-c" width="40" height="40"/>
+      {% endfor %}
+    </td>
+  {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Given names", "givennames", persona.canViewGivenNames, personaIndex, "general", userProfile.givenNames) }}
   {{ ui.endtable() }}
@@ -31,7 +45,7 @@
   {% endfor %}
   {% for permitIM in persona.permitIMs %}
     {{ ui.begintable() }}
-      {{ ui.labelcheckbox("IM", "im" ~ loop.index, permitIM.canView, personaIndex, "individual", permitIM.userIM.itemValue, permitIM.key(), loop.index) }}
+      {{ ui.labelcheckbox("IM", "im" ~ loop.index, permitIM.canView, personaIndex, "individual", permitIM.userIM.itemValue.address, permitIM.key(), loop.index) }}
     {{ ui.endtable() }}
   {% endfor %}
   {% for permitPhone in persona.permitPhones %}

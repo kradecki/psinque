@@ -96,9 +96,15 @@
     <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %}>
     {% for itemClass, subitems in items.iteritems() %}
       <optgroup label="{{ itemClass }}">
-        {% for item in subitems %}
-          <option value="{{ itemClass }} {{ item }}" {% if item == selected %}selected="selected"{% endif %}>{{ item }}</option>
-        {% endfor %}
+        {% if subitems is mapping %}
+          {% for item in subitems.keys() %}
+            <option value="{{ itemClass }} {{ item }}" {% if (itemClass == selected[0]) and (subitems[item] == selected[1]) %}selected="selected"{% endif %}>{{ item }}</option>
+          {% endfor %}
+        {% else %}
+          {% for item in subitems %}
+            <option value="{{ itemClass }} {{ item }}" {% if (itemClass == selected[0]) and (item == selected[1]) %}selected="selected"{% endif %}>{{ item }}</option>
+          {% endfor %}
+        {% endif %}
       </optgroup>
     {% endfor %}
     </select>
@@ -191,24 +197,23 @@
 {%- macro multipletextinputwithtypes(items, itemTypes, privacyTypes, tableLabel, prefix) -%}
   <table id="{{ prefix ~ 'stable' }}">
     <tbody>
+      {% set loopFirst = True %}
+      {% set loopIndex = 1 %}
+      {% set itemCount = items|count + 1 %}
+      {% set itemKey = "" %}
+      {% set itemValue = "" %}
+      {% set itemType = itemTypes[0] %}
+      {% set privacyType = "Home" %}
+      {% set privacyTypes = privacyTypes %}
+      {% include "templates/Profile_TextItem.html" %}
       {% for item in items %}
-        {% set loopFirst = loop.first %}
+        {% set loopFirst = False %}
         {% set loopIndex = loop.index %}
-        {% set itemCount = items|count %}
+        {% set itemCount = items|count + 1 %}
         {% set itemKey = item.key() %}
         {% set itemValue = item.itemValue %}
         {% set itemType = item.itemType %}
         {% set privacyType = item.privacyType %}
-        {% include "templates/Profile_TextItem.html" %}
-      {% else %}
-        {% set loopFirst = True %}
-        {% set loopIndex = 1 %}
-        {% set itemCount = 1 %}
-        {% set itemKey = "" %}
-        {% set itemValue = "" %}
-        {% set itemType = itemTypes[0] %}
-        {% set privacyType = "Home" %}
-        {% set privacyTypes = privacyTypes %}
         {% include "templates/Profile_TextItem.html" %}
       {% endfor %}
     </tbody>

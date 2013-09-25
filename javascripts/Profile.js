@@ -93,6 +93,22 @@ function addLocalizerHandler(where) {
     });
 }
 
+function openExistingGoogleMaps() {
+  
+    $(".longitudes").each(function() {
+        long = $(this).val();
+        if(long != "") {
+
+            mapNr = $(this).attr("data-psinque-index");
+            lat = $("#latitude" + mapNr).val();
+            
+            initializeGoogleMap(mapNr, lat, long);
+
+            $("#googlemap" + mapNr).parent().parent().show();
+        }
+    });
+}
+
 //---------------------------------------------------------
 
 function updateEmail(input) {
@@ -248,6 +264,8 @@ function updateAddress(input) {
 function addUpdateHandler(where) {
     
     $(where).click(function() {
+
+        console.log("Click!");
       
         if(!uiValidateTextInputs(".required.general", "You need to fill out the given and family names."))
             return false;
@@ -335,6 +353,29 @@ function addPhotoRemoverHandler(where) {
     }); 
 }
 
+function initializeImageUploading() {
+  
+    $('#imageupload').fileupload({
+        submit: function (e, data) {
+            var $this = $(this);
+            uiStartLogoAnimation();
+            window.ajaxInProgress = true;
+            $.getJSON('/profile/getphotouploadurl', function (result) {
+                data.url = result;
+                $this.fileupload('send', data);
+            });
+            return false;
+        },
+        done: function (e, data) {
+            $("#nophoto").remove();
+            newItem = $(data.result).appendTo("#mosaic");
+            addPhotoRemoverHandler(newItem.find(".photoremovers"));
+            uiStopLogoAnimation();
+            window.ajaxInProgress = false;
+        } 
+    });
+}
+
 //---------------------------------------------------------
 
 $(document).ready(function() {
@@ -367,18 +408,7 @@ $(document).ready(function() {
     // Google map handlers
     geocoder = new google.maps.Geocoder();
     addLocalizerHandler(".localizers");
-    $(".longitudes").each(function() {
-        long = $(this).val();
-        if(long != "") {
-
-            mapNr = $(this).attr("data-psinque-index");
-            lat = $("#latitude" + mapNr).val();
-            
-            initializeGoogleMap(mapNr, lat, long);
-
-            $("#googlemap" + mapNr).parent().parent().show();
-        }
-    });
+    openExistingGoogleMaps();
 
     // A handler to save all profile data
     addUpdateHandler("#savebutton");
@@ -392,28 +422,9 @@ $(document).ready(function() {
     uiAddEnterAction("input[type=text].ims:first", "#addim");
     uiAddEnterAction("input[type=text].wwws:first", "#addwww");
 
-    // Image uploading
-    $('#imageupload').fileupload({
-        submit: function (e, data) {
-            var $this = $(this);
-            uiStartLogoAnimation();
-            window.ajaxInProgress = true;
-            $.getJSON('/profile/getphotouploadurl', function (result) {
-                data.url = result;
-                $this.fileupload('send', data);
-            });
-            return false;
-        },
-        done: function (e, data) {
-            $("#nophoto").remove();
-            newItem = $(data.result).appendTo("#mosaic");
-            addPhotoRemoverHandler(newItem.find(".photoremovers"));
-            uiStopLogoAnimation();
-            window.ajaxInProgress = false;
-        } 
-    });
-    
-    $('a.colorbox').colorbox();
+    // Profile pictures
+    initializeImageUploading();    
+    $('a.colorbox').colorbox();   // enable the colorbox
     
     addPhotoRemoverHandler(".photoremovers");
 

@@ -88,9 +88,9 @@
       
       {{ ui.begintable() }}
         {{ ui.tablelabel("Birthday") }}
-        {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays", "nosearch shortbox", "shortinput") }}
-        {{ ui.dropdown(months, months[userProfile.birthDate.month-1], "birthmonths", "nosearch shortbox", "shortinput") }}
-        {{ ui.dropdown(range(2013, 1899, -1), userProfile.birthDate.year, "birthyears", "nosearch shortbox", "shortinput") }}
+        {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays", "nosearch shortbox general", "shortinput") }}
+        {{ ui.dropdown(months, months[userProfile.birthDate.month-1], "birthmonths", "nosearch shortbox general", "shortinput") }}
+        {{ ui.dropdown(range(2013, 1899, -1), userProfile.birthDate.year, "birthyears", "nosearch shortbox general", "shortinput") }}
           <td class="forminputs sublabel">Gender:</td>
         {{ ui.dropdown(genders, userProfile.gender, "gender", "nosearch shortbox", "shortinput") }}
         {{ ui.spacer() }}
@@ -118,12 +118,12 @@
       {{ ui.multipletextinputwithtypes(phones, phoneTypes, privacyTypes, "Phone numbers", "phone") }}
       
       <table id="imstable"><tbody>
+        {{ addTextItem("IM", "im", imTypes, True, 1, ims|count + 1, "", "", "Google", "Home", imTypes) }}
         {% for item in ims %}
-          {{ addTextItem("IM", "im", imTypes, loop.first, loop.index, ims|count, item.key(), item.itemValue.address, item.itemValue.protocol, item.privacyType, privacyTypes) }}
-        {% else %}
-          {{ addTextItem("IM", "im", imTypes, True, 1, 1, "", "", "", "Home", privacyTypes) }}
+          {{ addTextItem("IM", "im", imTypes, False, loop.index, ims|count + 1, item.key(), item.itemValue.address, item.itemValue.protocol, item.privacyType, imTypes) }}
         {% endfor %}
       </tbody></table>
+
       {{ ui.multipletextinputwithtypes(wwws, wwwTypes, privacyTypes, "WWW", "www") }}
       
       {{ ui.begintable() }}

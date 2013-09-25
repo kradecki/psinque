@@ -252,7 +252,8 @@ function uiMarkChangedFields(where) {
     if(elem.is('input')) {
         elem.addClass("unsavedchanges");
     } else if(elem.is('select')) {
-        elem.prev().addClass("unsavedchanges");
+        elem.addClass("unsavedchanges");
+        elem.next().find("a").css("color", "#e35c33");
     } else {
         elem.find("input,select,label").addClass("unsavedchanges");
     } 
@@ -263,7 +264,8 @@ function uiUnmarkChangedFields(where) {
     if(elem.is('input')) {
         elem.removeClass("unsavedchanges");
     } else if(elem.is('select')) {
-        elem.prev().removeClass("unsavedchanges");
+        elem.removeClass("unsavedchanges");
+        elem.next().find("a").css("color", "");
     } else {
         elem.find("input,select,label").removeClass("unsavedchanges");
     }
@@ -305,8 +307,17 @@ function uiMakeDropdowns(where) {
         
         if(select.hasClass("bigbox"))
             chosenOptions.width = "240px";
+                
+        select.chosen(chosenOptions).change(function() {
+          
+            select = $(this);
+            if(select.hasClass("countries")) {
+                select.next().find("a > span").html(select.val());
+            }
+            uiMarkChangedFields(select);
+        });
         
-        select.chosen(chosenOptions);
+        select.next().find("a > span").html(select.val());
     });
 }
 

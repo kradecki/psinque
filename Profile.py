@@ -199,7 +199,7 @@ class ProfileHandler(MasterHandler):
     def addim(self):
 
         userIM = UserIM(parent = self.userProfile,
-                        itemValue = db.IM(self.getRequiredParameter('type'),
+                        itemValue = db.IM(imTypes[self.getRequiredParameter('type')],
                                           self.getRequiredParameter('im')),
                         privacyType = self.getRequiredParameter('privacy'))
         userIM.put()
@@ -218,7 +218,7 @@ class ProfileHandler(MasterHandler):
     def updateim(self):
 
         userIM = self._getItemByKey(UserIM)
-        userIM.itemValue = db.IM(self.getRequiredParameter('type'),
+        userIM.itemValue = db.IM(imTypes[self.getRequiredParameter('type')],
                                  self.getRequiredParameter('im'))
         userIM.privacyType = self.getRequiredParameter('privacy')
         userIM.put()

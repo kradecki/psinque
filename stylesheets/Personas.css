@@ -47,3 +47,12 @@ div#personalist h3 img.downarrows {
 div#personalist div p {
     margin: 0;
 }
+
+td.imageinputs {
+    line-height: 80%;
+}
+
+td.imageinputs img {
+    margin: 0;
+    margin-right: 8px;
+}
