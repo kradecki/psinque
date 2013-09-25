@@ -10,6 +10,7 @@ from DataModels import UserProfile, UserSettings, Persona, Group
 from DataModels import UserAddress, UserEmail, UserIM, UserPhoneNumber, UserWebpage, UserPhoto, UserCompany, UserNickname
 from DataModels import Psinque, Contact, IndividualPermit, CardDAVLogin
 from DataModels import PermitEmail
+from DataModels import countries
 
 #-----------------------------------------------------------------------------
 
@@ -106,7 +107,7 @@ def reallyGenerateVCard(persona):
                                 address.city,
                                 u"",
                                 address.postalCode,
-                                address.country)
+                                countries[address.countryCode])
     
     # Add phone numbers
     for phone in userProfile.phones:

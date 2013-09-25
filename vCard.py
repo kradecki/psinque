@@ -55,20 +55,21 @@ class VCard():
     def addAddress(self, addressType, poBox, extAddress, street,
                          locality, region, postalCode, country):
       
-        label = street
-        if extAddress != u"":
-            label += u" " + extAddress
-        if postalCode != u"":
-            label += u", " + postalCode
-            if locality != u"":
-                label += u" " + locality
-        elif locality != u"":
-            label += u", " + locality
-        if country != u"":
-            label += u", " + country
+        #label = street
+        #if extAddress != u"":
+            #label += u" " + extAddress
+        #if postalCode != u"":
+            #label += u", " + postalCode
+            #if locality != u"":
+                #label += u" " + locality
+        #elif locality != u"":
+            #label += u", " + locality
+        #if country != u"":
+            #label += u", " + country
+            #u";LABEL=\"" + label + 
       
         self.vcardString += u"ADR;TYPE=" + addressType + \
-                          u";LABEL=\"" + label + u"\"\n  :" + \
+                          u":" + \
                           poBox + u";" + \
                           extAddress + u";" + \
                           street + u";" + \
