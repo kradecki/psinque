@@ -107,6 +107,7 @@ function recreateAccordeon() {
     $("#personalist").accordion('destroy').accordion({
         heightStyle: "content",
         active: active,
+        collapsible: true,
     });
 }
 
@@ -154,7 +155,6 @@ $(document).ready(function() {
 
     $("input[type=checkbox]").change(function() {
         uiMarkChangedFields($(this).parent().next());
-        console.log($(this).parent().next());
     });
 
     // jQuery UI
@@ -162,6 +162,15 @@ $(document).ready(function() {
         heightStyle: "content",
         collapsible: true,
         active: false
+    });
+    
+    $("#enablepublicprofile").change(function() {
+        if($(this).is(":checked")) {
+            $(".publicpersona").slideDown();
+            recreateAccordeon();
+        } else
+            $(".publicpersona").slideUp();
+            recreateAccordeon();
     });
     
     // Correct the margins in image grids; couldn't do that in CSS

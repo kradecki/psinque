@@ -1,8 +1,8 @@
 <!-- ********************************************************
      * Form definitions -->
      
-{%- macro beginform(id="") -%}
-  <div class="tableform" {% if id %}id="{{ id }}"{% endif %}>
+{%- macro beginform(id="", class="") -%}
+  <div class="tableform {% if class %}{{ class }}{% endif %}" {% if id %}id="{{ id }}"{% endif %}>
 {%- endmacro -%}
 
 {%- macro endform() -%}

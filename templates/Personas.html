@@ -16,6 +16,12 @@
 {% endblock %}
 {% block content %}
   <div class="onecolumn">
+    {{ ui.beginform("publicprofile") }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("Public profile") }}
+        {{ ui.checkbox("enablepublicprofile", True, "Enable") }}
+      {{ ui.endtable() }}
+    {{ ui.endform() }}
     <div id="personalist">
       {% for persona in personas %}
         {% set personaIndex = loop.index %}
