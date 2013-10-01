@@ -23,17 +23,32 @@ class StaticPageHandler(StaticHandler):
     def work(self):
         self.sendContent('templates/Static_Work.html')
 
-    def help(self):
+    def pricing(self):
+        self.sendContent('templates/Static_Pricing.html')
+
+    def helpgeneral(self):
         self.sendContent('templates/Static_Help.html')
 
-    def ios(self):
+    def helpoverview(self):
+        self.sendContent('templates/Static_Help_Overview.html')
+
+    def helpios(self):
         self.sendContent('templates/Static_Help_iOS.html')
 
-    def android(self):
+    def helpandroid(self):
         self.sendContent('templates/Static_Help_Android.html')
 
-    def windows(self):
+    def helpwindows(self):
         self.sendContent('templates/Static_Help_Windows.html')
+
+    def helpprofile(self):
+        self.sendContent('templates/Static_Help_Profile.html')
+
+    def helppersonas(self):
+        self.sendContent('templates/Static_Help_Personas.html')
+
+    def helppsinques(self):
+        self.sendContent('templates/Static_Help_Psinques.html')
 
 #-----------------------------------------------------------------------------
 
