@@ -6,9 +6,9 @@ function cardDAVHTML(key, name) {
                   <label class='carddavnames'>" + name + "</label> \
               </td> \
               <td class='forminputs formbuttons'> \
-                  <span class='buttons clickable carddavremovers'> \
-                    <img src='/images/button_remove.png' /> \
-                  </span> \
+                <div> \
+                  <span class='buttons clickable buttons-remove carddavremovers'></span> \
+                </div> \
               </td> \
             </tr>"
 }
@@ -126,11 +126,11 @@ $(document).ready(function() {
         }
     });
 
-    addGenerateCardDAVHandler("#createcarddav");
+    addGenerateCardDAVHandler("#addcarddav");
     addRemoveCardDAVHandler(".carddavremovers");
     addSaveSettingsHandler("#savebutton");
     
     // React to pressing the Enter key
-    uiAddEnterAction("#newcarddavname", "#createcarddav")
+    uiAddEnterAction("#newcarddavname", "#addcarddav")
 
 });
