@@ -1,5 +1,5 @@
 {% import "templates/ui.html" as ui -%}
-<h3>
+<h3 {% if persona.name == "Public" -%}class="publicpersona"{%- endif %}>
   {%- if persona.name == "Public" %}
   <img src="/images/icon_public.png" alt="public" />
   {% else %}
@@ -9,7 +9,7 @@
   <img src="/images/icon_down.png" class="headerarrows downarrows" alt="" />
   <img src="/images/icon_up.png" class="headerarrows uparrows" alt="" />
 </h3>
-{{ ui.beginform("personaform" ~ personaIndex) }}
+{{ ui.beginform("personaform" ~ personaIndex, "publicpersona") }}
   <input type="hidden" id="personakey{{ personaIndex }}" value="{{ persona.key() }}" />
   <input type="hidden" id="personaid{{ personaIndex }}" value="{{ persona.key().id() }}" />
   {% if persona.name != "Public" and persona.name != "Default" -%}
