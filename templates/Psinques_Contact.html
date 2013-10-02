@@ -1,8 +1,6 @@
 {% import "templates/ui.html" as ui -%}
 {%- macro tablelessbutton(id, buttonname, class="") -%}
-  <span class="clickable {{ class }}">
-    <img src="/images/{{ buttonname }}.png" alt="{{ buttonname }}" />
-  </span>
+  <span class="clickable {{ class }} buttons {{ buttonname }}"></span>
 {%- endmacro -%}
 <div class="contacts">
   <div class="shortdetails">
@@ -26,16 +24,16 @@
       {% endif %}
       {% if contact.incoming %}
         {% if contact.status == "private" %}
-          {{ tablelessbutton("contact", "button_private") }}
+          {{ tablelessbutton("contact", "button-private") }}
         {% elif contact.status == "pending" %}
-          {{ tablelessbutton("contact", "button_pending") }}
+          {{ tablelessbutton("contact", "button-pending") }}
         {% else %}
-          {{ tablelessbutton("contact", "button_public", "contactupgraders clickable") }}
+          {{ tablelessbutton("contact", "button-public", "contactupgraders clickable") }}
         {% endif %}
       {% else %}
-        {{ tablelessbutton("contact", "button_private") }}
+        {{ tablelessbutton("contact", "button-private") }}
       {% endif %}
-      {{ tablelessbutton("contact", "button_remove", "contactremovers clickable") }}
+      {{ tablelessbutton("contact", "button-remove", "contactremovers clickable") }}
     </div>
   </div>
   <div class="fulldetails hiddenelements">

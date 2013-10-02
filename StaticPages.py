@@ -10,7 +10,6 @@ class StaticPageHandler(StaticHandler):
     # Views
     #
 
-
     def about(self):
         self.sendContent('templates/Static_AboutUs.html')
 
