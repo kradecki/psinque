@@ -37,6 +37,8 @@ function addUpdatePersonaHandler(where) {
             $("#familynames_" + personaIndex).is(':checked'),
             $("#birthday_" + personaIndex).is(':checked'),
             $("#gender_" + personaIndex).is(':checked'),
+            $("#company" + personaIndex).val(),
+            $("#nickname" + personaIndex).val(),
         function() {
             uiUnmarkChangedFields(personaForm.find(".general"));    
             if(newName) personaForm.prev().find("label").html(newName);

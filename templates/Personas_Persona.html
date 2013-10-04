@@ -34,11 +34,11 @@
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Nickname") }}
-    {{ ui.dropdown(nicknames, persona.nickname.itemValue, "", "nicknames nosearch") }}
+    {{ ui.dropdown(nicknames, persona.nickname.itemValue, "nickname" ~ personaIndex, "nicknames nosearch") }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Company") }}
-    {{ ui.dropdown(companies, persona.company.companyName, "", "companies nosearch") }}
+    {{ ui.dropdown(companies, persona.company.companyName, "company" ~ personaIndex, "companies nosearch") }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Birthday", "birthday", persona.canViewBirthday, personaIndex, "general", userProfile.birthDate) }}

@@ -6,6 +6,8 @@ import webapp2
 import pyqrcode
 import StringIO
 
+from google.appengine.ext.db import Key
+
 from MasterHandler import MasterHandler, AjaxError
 from DataModels import Persona, Contact
 from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress
@@ -170,6 +172,15 @@ class PersonasHandler(MasterHandler):
         persona.canViewFamilyNames = self.getRequiredBoolParameter('familynames')
         persona.canViewBirthday = self.getRequiredBoolParameter('birthday')
         persona.canViewGender = self.getRequiredBoolParameter('gender')
+        
+        company = self.request.get("company")
+        if company != "None":
+            persona.company = Key(company)
+        
+        nickname = self.request.get("nickname")
+        if nickname != "None":
+            persona.nickname = Key(nickname)
+        
         persona.put()
 
         generateVCard(persona)
