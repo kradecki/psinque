@@ -559,6 +559,7 @@ class Contact(db.Model):
 
 class Notification(db.Model):
     text = db.StringProperty()
+    creationTime = db.DateTimeProperty(auto_now = True)
 
 #-----------------------------------------------------------------------------
 

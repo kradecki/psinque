@@ -1,6 +1,6 @@
 {% import "templates/ui.html" as ui -%}
-{%- macro tablelessbutton(id, buttonname, class="") -%}
-  <span class="clickable {{ class }} buttons {{ buttonname }}"></span>
+{%- macro tablelessbutton(id, class="") -%}
+  <span class="{{ class }} buttons"></span>
 {%- endmacro -%}
 <div class="contacts">
   <div class="shortdetails">
@@ -13,27 +13,27 @@
     </div>
     <div class="contactcontrols">
       {% if contact.incoming %}
-        {{ tablelessbutton("contact", "icon_incoming_active") }}
+        {{ tablelessbutton("contact", "buttons-in-active") }}
       {% else %}
-        {{ tablelessbutton("contact", "icon_incoming_inactive") }}
+        {{ tablelessbutton("contact", "buttons-in-inactive") }}
       {% endif %}
       {% if contact.outgoing %}
-        {{ tablelessbutton("contact", "icon_outgoing_active") }}
+        {{ tablelessbutton("contact", "buttons-out-active") }}
       {% else %}
-        {{ tablelessbutton("contact", "icon_outgoing_inactive") }}
+        {{ tablelessbutton("contact", "buttons-out-inactive") }}
       {% endif %}
       {% if contact.incoming %}
         {% if contact.status == "private" %}
-          {{ tablelessbutton("contact", "button-private") }}
+          {{ tablelessbutton("contact", "buttons-private") }}
         {% elif contact.status == "pending" %}
-          {{ tablelessbutton("contact", "button-pending") }}
+          {{ tablelessbutton("contact", "buttons-pending") }}
         {% else %}
-          {{ tablelessbutton("contact", "button-public", "contactupgraders clickable") }}
+          {{ tablelessbutton("contact", "buttons-public contactupgraders clickable") }}
         {% endif %}
       {% else %}
-        {{ tablelessbutton("contact", "button-private") }}
+        {{ tablelessbutton("contact", "buttons-private") }}
       {% endif %}
-      {{ tablelessbutton("contact", "button-remove", "contactremovers clickable") }}
+      {{ tablelessbutton("contact", "buttons-remove contactremovers clickable") }}
     </div>
   </div>
   <div class="fulldetails hiddenelements">

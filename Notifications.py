@@ -1,9 +1,56 @@
 # -*- coding: utf-8 -*-
 
+import jinja2
+
 from google.appengine.api import mail
 from google.appengine.api import users
 
 from DataModels import Notification
+
+#-----------------------------------------------------------------------------
+
+jinja_environment = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
+)
+
+#-----------------------------------------------------------------------------
+
+bodyHeader = u"""Dear %s:
+
+"""
+
+bodyFooter = u"""
+Sincerely,
+The Psinque Team
+"""
+
+bodyPendingPsinque = bodyHeader + \
+                     u"""Another user, %s, has requested access to your private contact
+details.
+
+Please click <a href="%s">this link</a> to accept this psinque.
+
+Please click <a href="%s">this link</a> to reject this psinque.""" + \
+                     bodyFooter
+
+
+bodyStoppedUsingPrivateData = bodyHeader + \
+                              u"""Another user, %s, has stopped using your private data.""" + \
+                              bodyFooter
+
+bodyDowngradedPsinque = bodyHeader + \
+                        u"""Another user, %s, has revoked your access to his/her private data.""" + \
+                        bodyFooter
+
+bodyAcceptedRequest = bodyHeader + \
+                      u"""Another user, %s, has accepted your request for sharing private contact data.""" + \
+                      bodyFooter
+
+bodyRejectedRequest = bodyHeader + \
+                      u"""Another user, %s, has rejected your request for sharing private contact data.""" + \
+                      bodyFooter
+
+#-----------------------------------------------------------------------------
 
 def getPrimaryEmail(userProfile):
     
@@ -20,98 +67,67 @@ def createRejectUrl(psinque):
     return "http://www.psinque.com/psinques/rejectrequest?key=" + str(psinque.key())
 
 
-def sendNotification(fromUser, subject, body, shorttext = u""):
+def sendNotification(user, subject, body, shorttext = u""):
     
     message = mail.EmailMessage(sender = "Psinque notifications <noreply@psinque.appspotmail.com>",
                                 subject = subject)
-    message.to = getPrimaryEmail(fromUser)
+    message.to = getPrimaryEmail(user)
+    message.body = body
     message.html = body
     message.send()
     
-    if shorttext != u"":
-      onpageNotification = Notification(parent = fromUser,
-                                        text = shorttext)
-      onpageNotification.put()
+    #if shorttext != u"":
+        #onpageNotification = Notification(parent = user,
+                                          #text = shorttext)
+        #onpageNotification.put()
 
+#-----------------------------------------------------------------------------
 
 def notifyPendingPsinque(psinque):
     
+    acceptURL = createAcceptUrl(psinque)
+    rejectURL = createRejectUrl(psinque)
+    
     sendNotification(psinque.fromUser, 
                      "You have a new pending psinque request",
-                     u"""Dear %s:
-
-Another user, %s, has requested access to your private contact
-details.
-
-Please click <a href="%s">this link</a> to accept this psinque.
-
-Please click <a href="%s">this link</a> to reject this psinque.
-
-The Psinque Team
-""" % (u" ".join(psinque.fromUser.givenNames),
-       psinque.parent().parent().defaultPersona.displayName,
-       createAcceptUrl(psinque)),
-       createRejectUrl(psinque),
+                     bodyPendingPsinque % (psinque.fromUser.givenNames,
+                                           psinque.parent().parent().defaultPersona.displayName,
+                                           acceptURL, rejectURL),
                      u"You have a pending psinque request from ...")
+    
+    #template = jinja_environment.get_template(templateName)
+    #body = template.render({'what': 'value'})
 
     
-def notifyStoppedUsingPrivateData(psinque):
-    
-    pass
-
-
-def notifyDowngradedPsinque(psinque):
-    
-    pass
-
-
 def notifyStoppedUsingPrivateData(psinque):
     
     sendNotification(psinque.fromUser, 
                      "%s has stopped using your private data" % psinque.fromUser.fullName,
-                     u"""Dear %s:
-
-Another user, %s, has stopped using your private data.
-
-The Psinque Team
-""" % (psinque.fromUser.fullName,
-       psinque.displayName))
+                     bodyStoppedUsingPrivateData % (psinque.fromUser.fullName,
+                     psinque.displayName))
 
     
 def notifyDowngradedPsinque(psinque):
     
     sendNotification(psinque.fromUser, 
                      "Your access to private data has been revoked",
-                     u"""Dear %s:
-
-Another user, %s, has revoked your access to his/her private data.
-
-The Psinque Team
-""" % (u" ".join(psinque.parent().parent().givenNames),
-       psinque.displayName))
+                     bodyDowngradedPsinque % psinque.parent().parent().givenNames,
+                     psinque.displayName))
 
 
 def notifyAcceptedRequest(psinque):
     
     sendNotification(psinque.fromUser, 
                      "Your request for sharing private contact data has been accepted",
-                     u"""Dear %s:
-
-Another user, %s, has accepted your request for sharing private contact data.
-
-The Psinque Team
-""" % (u" ".join(psinque.parent().parent().givenNames),
-       psinque.displayName))
+                     bodyAcceptedRequest % psinque.parent().parent().givenNames,
+                     psinque.displayName))
 
     
 def notifyRejectedRequest(psinque):
     
     sendNotification(psinque.fromUser, 
                      "Your request for sharing private contact data has been rejected",
-                     u"""Dear %s:
+                     bodyRejectedRequest % psinque.parent().parent().givenNames,
+                     psinque.displayName))
 
-Another user, %s, has rejected your request for sharing private contact data.
-
-The Psinque Team
-""" % (u" ".join(psinque.parent().parent().givenNames),
-       psinque.displayName))
+#-----------------------------------------------------------------------------

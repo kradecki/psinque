@@ -242,8 +242,8 @@ div.tableform .sublabel {
  ****************************************/
 
 span.buttons {
-    display: block;
-    cursor: pointer;
+    display: inline-block;
+/*     cursor: pointer; */
     width: 40px;
     height: 40px;
     background: url("/images/buttons.png") no-repeat;
@@ -317,7 +317,35 @@ span.buttons {
     background-position: 0px -320px;
 }
 
-.buttons.buttons-qr:hover {
-    background-position: -40px -320px;
+.buttons.buttons-in-active {
+    background-position: 0px -360px;
+}
+
+.buttons.buttons-out-active {
+    background-position: -40px -360px;
+}
+
+.buttons.buttons-in-inactive {
+    background-position: 0px -400px;
+}
+
+.buttons.buttons-out-inactive {
+    background-position: -40px -400px;
+}
+
+.buttons.buttons-private {
+    background-position: 0px -440px;
+}
+
+.buttons.buttons-pending {
+    background-position: -40px -440px;
+}
+
+.buttons.buttons-public {
+    background-position: 0px -480px;
+}
+
+.buttons.buttons-public:hover {
+    background-position: -40px -440px;
 }
 
