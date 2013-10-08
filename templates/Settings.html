@@ -38,7 +38,7 @@
         {{ ui.tablelabel("CardDAV devices", carddavLogins|count + 2, "carddavlabel") }}
       {% for login in carddavLogins %}
         {{ ui.textlabel(login.name, "carddavnames", "", login.key(), "carddavkeys") }}
-        {{ ui.removebutton("carddav" ~ loop.index, "carddavremovers") }}
+        {{ ui.removebutton("carddav" ~ loop.index, "carddavremovers", tooltip="Remove this device") }}
         {% if loop.last %}
           {{ ui.newrow("newcarddav") }}
         {% else %}
@@ -46,14 +46,14 @@
         {% endif %}
       {% endfor %}
       {{ ui.textinput("", "Type a name for your device", "newcarddavname") }}
-      {{ ui.addbutton("carddav") }}
+      {{ ui.addbutton("carddav", tooltip="Add new CardDAV device") }}
       {{ ui.newrow("hiddenelements") }}
         <td class="forminputs" id="carddavlogin"></td>
         <td class="forminputs formbuttons"></td>
       {{ ui.endtable() }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Save changes") }}
-        {{ ui.savebutton() }}
+        {{ ui.savebutton(tooltip="Save changes in the settings") }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
     {{ ui.endform() }}

@@ -39,36 +39,36 @@
   <td><br style="clear:both;"/></td>
 {%- endmacro -%}
 
-{%- macro button(id, action, class="", index="", divclass="") -%}
+{%- macro button(id, action, class="", tooltip="", index="", divclass="") -%}
   <td class="forminputs formbuttons">
     <div {% if divclass %}class="{{ divclass }}"{% endif %}>
-      <span class="buttons clickable buttons-{{ action }} {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}></span>
+      <span title="{{ tooltip }}" class="buttons clickable buttons-{{ action }} {{ class }}" id="{{ action }}{{ id }}{{ index }}" {% if index %}data-psinque-index="{{ index }}"{% endif %}></span>
     </div>
   </td>
 {%- endmacro -%}
 
-{%- macro addbutton(id, divclass="") -%}
-  {{ button(id, "add", divclass=divclass) }} 
+{%- macro addbutton(id, tooltip="", divclass="") -%}
+  {{ button(id, "add", tooltip=tooltip, divclass=divclass) }} 
 {%- endmacro -%}
 
-{%- macro removebutton(id, class="", index="") -%}
-  {{ button(id, "remove", class, index) }}
+{%- macro removebutton(id, class="", tooltip="", index="") -%}
+  {{ button(id, "remove", class, tooltip, index) }}
 {%- endmacro -%}
 
-{%- macro savebutton(class="", index="") -%}
-  {{ button("button", "save", class, index) }}
+{%- macro savebutton(class="", tooltip="", index="") -%}
+  {{ button("button", "save", class, tooltip, index) }}
 {%- endmacro -%}
 
 {%- macro signinbutton(class="", index="") -%}
-  {{ button("button", "signin", class, index) }}
+  {{ button("button", "signin", class, "Sign in", index) }}
 {%- endmacro -%}
 
-{%- macro searchbutton(class="", index="") -%}
-  {{ button("button", "search", class, index) }}
+{%- macro searchbutton(class="", tooltip="", index="") -%}
+  {{ button("button", "search", class, tooltip, index) }}
 {%- endmacro -%}
 
-{%- macro checkbutton(id, class) -%}
-  {{ button(id, "check", class) }}
+{%- macro checkbutton(id, class, tooltip="") -%}
+  {{ button(id, "check", class, tooltip) }}
 {%- endmacro -%}
 
 {%- macro dropdown(items, selected, id="", class="", tdclass="") -%}

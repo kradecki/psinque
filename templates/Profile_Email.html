@@ -24,8 +24,8 @@
   {% endif %}
   {{ ui.dropdown(privacyTypes, privacyType, "", "typesofemail nosearch shortbox", "shortinput") }}
   {% if not loopfirst %}
-    {{ ui.removebutton("email", "emailremovers") }}
+    {{ ui.removebutton("email", "emailremovers", tooltip="Remove this email") }}
   {% elif tablelabel != "Primary email" %}
-    {{ ui.addbutton("additionalemail") }}
+    {{ ui.addbutton("additionalemail", tooltip="Add new email") }}
   {% endif %}
 </tr>

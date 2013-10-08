@@ -7,9 +7,9 @@
   {{ ui.textinputwithkey(addressMain, "Address", "address", "addresses required addressdata", loopIndex, addressKey, "addresskeys", 2) }}
   {{ ui.dropdown(privacyTypes, privacyType, "addressprivacytype" ~ loopIndex, "nosearch mediumbox", "mediuminput") }}
   {% if loopFirst %}
-    {{ ui.addbutton("address") }}
+    {{ ui.addbutton("address", tooltip="Add new address") }}
   {% else %}
-    {{ ui.removebutton("address", "addressremovers") }}
+    {{ ui.removebutton("address", "addressremovers", tooltip="Remove this address") }}
   {% endif %}
 {{ ui.newrow() }}
   {{ ui.textinput(city, "City", "city" ~ loopIndex, "cities required addressdata") }}
@@ -22,5 +22,5 @@
     <input type="hidden" class="longitudes" id="longitude{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lon }}"{% endif %} readonly="readonly" data-psinque-index="{{ loopIndex }}" />
     <input type="hidden" class="latitudes" id="latitude{{ loopIndex }}" {% if addressLocation %}value="{{ addressLocation.lat }}"{% endif %} readonly="readonly" />
   </td>
-  {{ ui.removebutton("map", "mapremovers") }}
+  {{ ui.removebutton("map", "mapremovers", tooltip="Remove this map") }}
 </tr>

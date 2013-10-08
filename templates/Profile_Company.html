@@ -8,8 +8,8 @@
   {{ ui.textinputwithkey(companyName, "New company", "company", "companys", loopIndex, itemKey, "companykeys") }}
   {{ ui.textinput(positionName, "Position", "position" ~ loopIndex, "positions") }}
   {% if not loopFirst %}
-    {{ ui.removebutton("company", "companyremovers") }}
+    {{ ui.removebutton("company", "companyremovers", tooltip="Remove this company") }}
   {% else %}
-    {{ ui.addbutton("company") }}
+    {{ ui.addbutton("company", tooltip="Add new company") }}
   {% endif %}
 </tr>

@@ -77,7 +77,7 @@
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Save changes") }}
-    {{ ui.savebutton("updatebuttons", personaIndex) }}
+    {{ ui.savebutton("updatebuttons", tooltip="Save changes in this persona", index=personaIndex) }}
     {{ ui.spacer() }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
@@ -97,7 +97,7 @@
   {% if persona.name != "Public" and persona.name != "Default" -%}
     {{ ui.begintable() }}
       {{ ui.tablelabel("Remove") }}
-      {{ ui.removebutton("persona", "removebuttons", personaIndex) }}
+      {{ ui.removebutton("persona", "removebuttons", tooltip="Remove this persona", index=personaIndex) }}
       {{ ui.spacer() }}
     {{ ui.endtable() }}
   {%- endif %}

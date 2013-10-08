@@ -7,8 +7,8 @@
   {% endif %}
   {{ ui.textinputwithkey(itemValue, "New nickname", "nickname", "nicknames", loopIndex, itemKey, "nicknamekeys") }}
   {% if not loopFirst %}
-    {{ ui.removebutton("nickname", "nicknameremovers") }}
+    {{ ui.removebutton("nickname", "nicknameremovers", tooltip="Remove this nickname") }}
   {% else %}
-    {{ ui.addbutton("nickname") }}
+    {{ ui.addbutton("nickname", tooltip="Add new nickname") }}
   {% endif %}
 </tr>

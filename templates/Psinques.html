@@ -17,8 +17,8 @@
               {{ ui.tablelabel("Notifications", pendings|count, "notificationlabel") }}
             {% endif %}
             {{ ui.textlabel("<b>" ~ pending.name ~ "</b> asks for private data", keyvalue = pending.key, keyclass="notificationkeys") }}
-            {{ ui.checkbutton("notification", "accepters") }}
-            {{ ui.removebutton("notificatoin", "rejecters") }}
+            {{ ui.checkbutton("notification", "accepters", tooltip="Accept this request") }}
+            {{ ui.removebutton("notificatoin", "rejecters", tooltip="Reject this request") }}
           </tr>
         {% endfor %}
       </tbody></table>
@@ -28,10 +28,10 @@
     {{ ui.begintable("searchtable") }}
       {{ ui.tablelabel("New psinque", 2) }}
       {{ ui.textinput("", "Type an email address to find your friend", id = "email", class = "emailaddresses") }}
-      {{ ui.searchbutton() }}
+      {{ ui.searchbutton(tooltip="Search") }}
       {{ ui.newrow(id = "searchresults") }}
       {{ ui.textlabel("", id="searchresult", keyvalue="unknown", keyclass="friendsprofilekeys", divclass = "hiddenelements") }}
-      {{ ui.addbutton("contact", divclass = "hiddenelements") }}
+      {{ ui.addbutton("contact", divclass = "hiddenelements", tooltip="Add to contacts") }}
     {{ ui.endtable() }}
   {{ ui.endform() }}
   <div id="contactlist">

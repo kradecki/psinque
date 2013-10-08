@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import jinja2
 
 from google.appengine.api import mail
@@ -111,23 +112,23 @@ def notifyDowngradedPsinque(psinque):
     
     sendNotification(psinque.fromUser, 
                      "Your access to private data has been revoked",
-                     bodyDowngradedPsinque % psinque.parent().parent().givenNames,
-                     psinque.displayName))
+                     bodyDowngradedPsinque % (psinque.parent().parent().givenNames,
+                                              psinque.displayName))
 
 
 def notifyAcceptedRequest(psinque):
     
     sendNotification(psinque.fromUser, 
                      "Your request for sharing private contact data has been accepted",
-                     bodyAcceptedRequest % psinque.parent().parent().givenNames,
-                     psinque.displayName))
+                     bodyAcceptedRequest % (psinque.parent().parent().givenNames,
+                                            psinque.displayName))
 
     
 def notifyRejectedRequest(psinque):
     
     sendNotification(psinque.fromUser, 
                      "Your request for sharing private contact data has been rejected",
-                     bodyRejectedRequest % psinque.parent().parent().givenNames,
-                     psinque.displayName))
+                     bodyRejectedRequest % (psinque.parent().parent().givenNames,
+                                            psinque.displayName))
 
 #-----------------------------------------------------------------------------

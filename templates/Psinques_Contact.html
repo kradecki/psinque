@@ -1,6 +1,6 @@
 {% import "templates/ui.html" as ui -%}
-{%- macro tablelessbutton(id, class="") -%}
-  <span class="{{ class }} buttons"></span>
+{%- macro tablelessbutton(id, class="", tooltip="") -%}
+  <span title="{{ tooltip }}" class="{{ class }} buttons"></span>
 {%- endmacro -%}
 <div class="contacts">
   <div class="shortdetails">
@@ -13,27 +13,27 @@
     </div>
     <div class="contactcontrols">
       {% if contact.incoming %}
-        {{ tablelessbutton("contact", "buttons-in-active") }}
+        {{ tablelessbutton("contact", "buttons-in-active", tooltip="Incoming psinque is active") }}
       {% else %}
-        {{ tablelessbutton("contact", "buttons-in-inactive") }}
+        {{ tablelessbutton("contact", "buttons-in-inactive", tooltip="Incoming psinque is not active") }}
       {% endif %}
       {% if contact.outgoing %}
-        {{ tablelessbutton("contact", "buttons-out-active") }}
+        {{ tablelessbutton("contact", "buttons-out-active", tooltip="Outgoing psinque is active") }}
       {% else %}
-        {{ tablelessbutton("contact", "buttons-out-inactive") }}
+        {{ tablelessbutton("contact", "buttons-out-inactive", tooltip="Outgoing psinque is not active") }}
       {% endif %}
       {% if contact.incoming %}
         {% if contact.status == "private" %}
-          {{ tablelessbutton("contact", "buttons-private") }}
+          {{ tablelessbutton("contact", "buttons-private", tooltip="You have access to the private contact data") }}
         {% elif contact.status == "pending" %}
-          {{ tablelessbutton("contact", "buttons-pending") }}
+          {{ tablelessbutton("contact", "buttons-pending", tooltip="Your request to access private data is pending") }}
         {% else %}
-          {{ tablelessbutton("contact", "buttons-public contactupgraders clickable") }}
+          {{ tablelessbutton("contact", "buttons-public contactupgraders clickable", tooltip="You have access to the public contact data") }}
         {% endif %}
       {% else %}
-        {{ tablelessbutton("contact", "buttons-private") }}
+        {{ tablelessbutton("contact", "buttons-private", tooltip="You have access to the private contact data") }}
       {% endif %}
-      {{ tablelessbutton("contact", "buttons-remove contactremovers clickable") }}
+      {{ tablelessbutton("contact", "buttons-remove contactremovers clickable", tooltip="Remove this contact") }}
     </div>
   </div>
   <div class="fulldetails hiddenelements">
