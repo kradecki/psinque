@@ -43,7 +43,6 @@ div.wrappers {
 div#headerwrapper {
     height: 61px;
     position: fixed;
-/*     box-shadow: 0 0px 6px 3px #d8d4cb; */
     box-shadow: 0 0px 6px 3px rgba(215,212,203,0.5);
     background-color: #404040;
     position: fixed;
@@ -59,10 +58,8 @@ div#contentwrapper {
 div#footerwrapper {
     height: 40px;
     position: fixed;
-/*    box-shadow: 0 0px 6px 3px #d8d4cb;*/
     background-color: #fff;
     bottom: 0;
-/*     left: 0; */
     width: 100%;
     padding-top: 10px;
     border-top: 1px solid #404040;
@@ -83,8 +80,8 @@ div#content {
     padding: 20px;
     padding-top: 12px;
 /*     height: 100%; */
-    box-shadow: 0 0px 12px 3px #404040;
-    background-color: #d8d4cb;
+    box-shadow: 0 0px 12px 3px #b0b0b0;
+    background-color: #e0dcd4;
     min-height: 500px;
     position: relative;
     top: -1500px;
