@@ -1,0 +1,19 @@
+
+{% extends "templates/email.html" %}
+
+{% block content %}
+  <p>Dear {{ recipientsName }},</p>
+  <p>
+    Another user, <strong>{{ friendsName }}</strong>, has <strong>requested</strong> access to your private contact details.
+  </p>
+  <p>
+  Please click <a href="{{ acceptURL }}">this link</a> to <strong>accept</strong> this request.
+  </p>
+  <p>
+  Please click <a href="{{ rejectURL }}">this link</a> to <strong>reject</strong> this request.
+  </p>
+  <p>
+    Sincerely,</br>
+    The Psinque Team
+  </p>
+{% endblock %}

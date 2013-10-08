@@ -137,8 +137,9 @@ class PsinquesHandler(MasterHandler):
         contact.put()
         
         newPsinque = Psinque(parent = contact,
-                             private = True,
                              fromUser = friendsProfile,
+                             private = True,
+                             persona = friendsProfile.defaultPersona,
                              status = "pending")
         newPsinque.put()
         Notifications.notifyPendingPsinque(newPsinque)
@@ -195,8 +196,8 @@ class PsinquesHandler(MasterHandler):
 
             # List of contacts
             contactQuery = Contact.all(). \
-                                    ancestor(self.userProfile). \
-                                    order("creationTime")
+                                   ancestor(self.userProfile). \
+                                   order("creationTime")
                                 
             count = contactQuery.count(1000)
             if currentCursor:

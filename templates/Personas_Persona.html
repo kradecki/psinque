@@ -18,14 +18,16 @@
       {{ ui.textinput(persona.name, "", "personaname" ~ personaIndex, "personanames general", "") }}
     {{ ui.endtable() }}
   {%- endif %}
-  {{ ui.begintable() }}
-    {{ ui.tablelabel("Picture") }}
-    <td class="forminputs imageinputs">
-      {% for photo in userProfile.photos %}
-        <img src="{{ photo.servingUrl }}=s40-c" width="40" height="40"/>
-      {% endfor %}
-    </td>
-  {{ ui.endtable() }}
+  {% if photos|length %}
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("Picture") }}
+      <td class="forminputs imageinputs">
+        {% for photo in userProfile.photos %}
+          <img src="{{ photo.servingUrl }}=s40-c" width="40" height="40"/>
+        {% endfor %}
+      </td>
+    {{ ui.endtable() }}
+  {% endif %}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Given names", "givennames", persona.canViewGivenNames, personaIndex, "general", userProfile.givenNames) }}
   {{ ui.endtable() }}

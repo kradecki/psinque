@@ -518,7 +518,7 @@ class Psinque(db.Model):
     
     status = db.StringProperty(choices = ["pending", "established", "banned"])
     private = db.BooleanProperty(default = False)
-
+    
     creationTime = db.DateTimeProperty(auto_now = True)
     
     persona = db.ReferenceProperty(Persona)
@@ -528,7 +528,7 @@ class Psinque(db.Model):
         if not self.persona is None:
             return self.persona.displayName
         return self.fromUser.publicPersona.displayName
-  
+    
 #-----------------------------------------------------------------------------
 
 class Contact(db.Model):
