@@ -130,10 +130,12 @@ function updateEmail(input) {
     }
     
     td = input.parent();
+    console.log(td.position());
     typeOfEmail = td.next().find(".typesofemail").val();
     emailKey = td.find(".additionalemailkeys");
     if(emailKey.val()) {
         psinqueUpdateEmail(emailKey.val(), emailAddress, typeOfEmail, function() {
+            console.log(td.position());
             uiUnmarkChangedFields(td);
             uiUnmarkChangedFields(td.next());
         });
@@ -265,8 +267,6 @@ function addUpdateHandler(where) {
     
     $(where).click(function() {
 
-        console.log("Click!");
-      
         if(!uiValidateTextInputs(".required.general", "You need to fill out the given and family names."))
             return false;
       

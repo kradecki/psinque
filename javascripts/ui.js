@@ -4,7 +4,6 @@ function uiCloneElement(oldElement) {
     newElement = oldElement.clone();  // clone an existing address field group
 
     // Clean all the input values:
-//     newElement.find("input,select").val('');
     newElement.hide();
     uiSetMarkingOnChange(newElement.find('input,select'));
 
@@ -27,7 +26,6 @@ function uiRemoveTableRow(tr, prefix) {
     tr.slideUp('fast', function() {
         labelid = "#" + prefix + "label";
         if(tr.find(labelid).length > 0) {
-//             console.log("Found label in this row");
             $(labelid).parent().prependTo(tr.next());
         }
         uiChangeLabelHeight(labelid, -1);
@@ -35,24 +33,6 @@ function uiRemoveTableRow(tr, prefix) {
     });
     
 }
-
-
-// function uiCountObjects(selector) {
-//     return parseInt($(selector).length);
-// }
-// 
-// function uiCountProfileObjects() {
-//   
-//   window.objectCounters = {
-//       'additionalemail': uiCountObjects(".additional.emailaddresses"),
-//       'phone': uiCountObjects(".additional.emailaddresses"),
-//       'im': uiCountObjects(".additional.emailaddresses"),
-//       'www': uiCountObjects(".additional.emailaddresses"),
-//       'nickname': uiCountObjects(".additional.emailaddresses"),
-//       'company': uiCountObjects(".additional.emailaddresses"),
-//   };
-//   
-// }
 
 function uiAddNewTableRow(prefix, removeAjax) {
   
@@ -82,17 +62,6 @@ function uiAddNewTableRow(prefix, removeAjax) {
     
     uiAddRemoverHandler(tr.find('.' + prefix + 'removers'), prefix, removeAjax);
     
-//     window.objectCounters[prefix]++;
-    
-//     tr.find("input").each(function() {
-//       
-//       e = $(this);
-//       newID = e.attr("id").replace(/[0-9]+/g, "");
-//       newID += window.objectCounters[prefix];
-//       e.attr("id", newID);      
-//       
-//     });
-    
     return tr;
 }
 
@@ -119,13 +88,17 @@ function uiAddAddHandler(prefix, removeAjax) {
 
     $("#add" + prefix).click(function() {
       
-        mainInput = $(this).closest("tr").find("input[type=text]:first");
+        mainTr = $(this).closest("tr");
+        mainInput = mainTr.find("input[type=text]:first");
         if(mainInput.val() == "")
             return false;
+        
+        uiUnmarkChangedFields(mainTr);
             
         tr = uiAddNewTableRow(prefix, removeAjax);
         
         $(this).closest("tr").find("input,select").val("");  // clear them all!
+        uiMarkChangedFields(tr);
         
         tr.show();
         
@@ -255,8 +228,13 @@ function uiMarkChangedFields(where) {
         elem.addClass("unsavedchanges");
         elem.next().find("a").css("color", "#e35c33");
     } else {
-        elem.find("input,select,label").addClass("unsavedchanges");
-    } 
+      elem.find('input').addClass("unsavedchanges");
+      elem.find('select').each(function() {
+          $(this).addClass("unsavedchanges");
+          $(this).next().find("a").css("color", "#e35c33");
+      });
+      elem.find("label").addClass("unsavedchanges");
+    }
 }
 
 function uiUnmarkChangedFields(where) {
@@ -267,8 +245,15 @@ function uiUnmarkChangedFields(where) {
         elem.removeClass("unsavedchanges");
         elem.next().find("a").css("color", "");
     } else {
-        elem.find("input,select,label").removeClass("unsavedchanges");
+      elem.find('input').removeClass("unsavedchanges");
+      elem.find('select').each(function() {
+          $(this).removeClass("unsavedchanges");
+          $(this).next().find("a").css("color", "");
+      });
+      elem.find("label").removeClass("unsavedchanges");
     }
+    
+    window.unsavedChanges = ($(".unsavedchanges").length > 0);
 }
 
 function unmarkAllFields() {
