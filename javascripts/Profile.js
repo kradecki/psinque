@@ -394,6 +394,8 @@ $(document).ready(function() {
     uiAddRemoverHandler(".imremovers", "im", psinqueRemoveIM);
     uiAddRemoverHandler(".phoneremovers", "phone", psinqueRemovePhone);
     uiAddRemoverHandler(".wwwremovers", "www", psinqueRemoveWWW);
+
+    uiAddRemoverHandler(".companyremovers", "company", psinqueRemoveCompany);
     
     // Non-standard element removers
     $(".mapremovers").click(function() {
@@ -415,6 +417,7 @@ $(document).ready(function() {
     uiAddEnterAction("input[type=text].additional.emailaddresses:first", "#addadditionalemail");
     uiAddEnterAction("input[type=text].nicknames:first", "#addnickname");
     uiAddEnterAction("input[type=text].companys:first", "#addcompany");
+    uiAddEnterAction("input[type=text].positions:first", "#addcompany");
     uiAddEnterAction("input[type=text].phones:first", "#addphone");
     uiAddEnterAction("input[type=text].ims:first", "#addim");
     uiAddEnterAction("input[type=text].wwws:first", "#addwww");

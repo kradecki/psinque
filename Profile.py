@@ -427,7 +427,9 @@ class ProfileHandler(MasterHandler):
 
     def removenickname(self):
  
-        self._removeItem(UserNickname)
+        item = self._getItemByKey(UserNickname)
+        item.delete()
+        
         self.sendJsonOK()
         
         
@@ -457,7 +459,9 @@ class ProfileHandler(MasterHandler):
 
     def removecompany(self):
  
-        self._removeItem(UserCompany)
+        item = self._getItemByKey(UserCompany)
+        item.delete()
+        
         self.sendJsonOK()
         
 
