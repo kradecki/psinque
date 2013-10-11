@@ -22,8 +22,9 @@
     {{ ui.begintable() }}
       {{ ui.tablelabel("Picture") }}
       <td class="forminputs imageinputs">
-        {% for photo in userProfile.photos %}
-          <img src="{{ photo.servingUrl }}=s40-c" width="40" height="40"/>
+        {% for photo in photos %}
+          <input type="hidden" class="photokeys" value="{{ photo.key() }}">
+          <img class="thumbnails" src="{{ photo.servingUrl }}=s40-c" width="40" height="40"/>
         {% endfor %}
       </td>
     {{ ui.endtable() }}

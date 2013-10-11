@@ -41,6 +41,7 @@ psinqueAPI_addPersona          = psinqueAPI_personas + "addpersona"
 psinqueAPI_removePersona       = psinqueAPI_personas + "removepersona"
 psinqueAPI_setGeneralPersona   = psinqueAPI_personas + "setgeneral"
 psinqueAPI_setIndividualPermit = psinqueAPI_personas + "setindividualpermit"
+psinqueAPI_enablePublic        = psinqueAPI_personas + "enablepublic"
 
 //------------------------------
 
@@ -281,6 +282,12 @@ function psinqueSetIndividualPermit(permitKey, canView, successFunction) {
     psinqueAJAX(psinqueAPI_setIndividualPermit, {
                     key: permitKey,
                     canview: canView,
+                }, successFunction);
+}
+
+function psinqueEnablePublic(enable, successFunction) {
+    psinqueAJAX(psinqueAPI_enablePublic, {
+                    enable: enable,
                 }, successFunction);
 }
 

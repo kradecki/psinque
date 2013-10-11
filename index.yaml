@@ -68,6 +68,12 @@ indexes:
   - name: creationTime
     direction: desc
 
+- kind: UserPhoto
+  ancestor: yes
+  properties:
+  - name: creationTime
+    direction: desc
+
 - kind: UserWebpage
   ancestor: yes
   properties:

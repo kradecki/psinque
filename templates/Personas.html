@@ -19,7 +19,7 @@
     {{ ui.beginform("publicprofile") }}
       {{ ui.begintable() }}
         {{ ui.tablelabel("Public profile") }}
-        {{ ui.checkbox("enablepublicprofile", True, "Enable") }}
+        {{ ui.checkbox("enablepublicprofile", userProfile.publicEnabled, "Enable") }}
       {{ ui.endtable() }}
     {{ ui.endform() }}
     <div id="personalist">

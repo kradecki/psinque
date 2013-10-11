@@ -84,6 +84,7 @@ function addAddPersonaHandler(where) {
                     addUpdatePersonaHandler(newPersonaForm.find(".updatebuttons"));
                     addRemovePersonaHandler(newPersonaForm.find(".removebuttons"));
 
+                    uiMakeDropdowns(newPersonaForm);
                     newPersonaForm.slideDown();
                     
                     window.highestExistingPersonaNumber++;
@@ -159,7 +160,6 @@ $(document).ready(function() {
         uiMarkChangedFields($(this).parent().next());
     });
 
-    // jQuery UI
     $("#personalist").accordion({
         heightStyle: "content",
         collapsible: true,
@@ -168,18 +168,21 @@ $(document).ready(function() {
     
     $("#enablepublicprofile").change(function() {
         if($(this).is(":checked")) {
-            $(".publicpersona").slideDown();
-            recreateAccordeon();
+            psinqueEnablePublic(true, function() {
+                $(".publicpersona").slideDown();
+                recreateAccordeon();
+            });
         } else
-            $(".publicpersona").slideUp();
-            recreateAccordeon();
+            psinqueEnablePublic(false, function() {
+                $(".publicpersona").slideUp();
+                recreateAccordeon();
+            });
     });
     
-    // Correct the margins in image grids; couldn't do that in CSS
-    // CORRECTION: did that in CSS
-//     $(".imageinputs").each(function() {
-//         imgs = $(this).find("img");
-//         imgs.slice(-(imgs.length % 9)).css("margin-bottom", 0)
-//     });
+    if(!$("#enablepublicprofile").is(":checked")) {
+        $(".publicpersona").hide();
+    }
+    
+    uiAddEnterAction("#newpersonaname", "#addpersona");
     
 });

@@ -38,6 +38,29 @@ class PersonasHandler(MasterHandler):
             reallyGenerateVCard(persona)
             
         return persona
+      
+      
+    def _getNicknames(self):
+
+        nicknames = self.userProfile.nicknames.order('-creationTime').fetch(limit = 1000)
+        nicknames = { x.key(): x.itemValue for x in nicknames }
+        nicknames[None] = None
+        return nicknames
+
+
+    def _getCompanies(self):
+
+        companies = self.userProfile.companies.order('-creationTime').fetch(limit = 1000)
+        companies = { x.key(): x.companyName for x in companies }
+        companies[None] = None
+        return companies
+      
+      
+    def _getPhotos(self):
+      
+        photos = self.userProfile.photos.order('-creationTime').fetch(limit = 1000)
+        return photos
+
 
     #****************************
     # Views
@@ -47,20 +70,13 @@ class PersonasHandler(MasterHandler):
         
         if self.getUserProfile():
           
-            companies = self.userProfile.companies.order('-creationTime').fetch(limit = 1000)
-            companies = { x.key(): x.companyName for x in companies }
-            companies[None] = None
-
-            nicknames = self.userProfile.nicknames.order('-creationTime').fetch(limit = 1000)
-            nicknames = { x.key(): x.itemValue for x in nicknames }
-            nicknames[None] = None
-            
             self.sendContent('templates/Personas.html',
                             activeEntry = "Personas",
                             templateVariables = {
                 'userProfile': self.userProfile,
-                'companies': companies,
-                'nicknames': nicknames,
+                'companies': self._getCompanies(),
+                'nicknames': self._getNicknames(),
+                'photos': self._getPhotos(),
                 'personas': Persona.all(). \
                                   ancestor(self.userProfile). \
                                   order("name"),
@@ -153,6 +169,9 @@ class PersonasHandler(MasterHandler):
                          activeEntry = "Personas",
                          templateVariables = {
                 'persona': newPersona,
+                'companies': self._getCompanies(),
+                'nicknames': self._getNicknames(),
+                'photos': self._getPhotos(),
                 'userProfile': self.userProfile,
                 'personaIndex': personaIndex,
             })
@@ -188,13 +207,6 @@ class PersonasHandler(MasterHandler):
         self.sendJsonOK()
             
             
-    def enablepublic(self):
-        
-        publicEnabled = self.getRequiredBoolParameter("enable")
-        
-        self.userProfile.publicEnabled = publicEnabled
-
-
     def setindividualpermit(self):
 
         itemKey = self.getRequiredParameter('key')
@@ -212,6 +224,16 @@ class PersonasHandler(MasterHandler):
         self.sendJsonOK()
         
         
+    def enablepublic(self):
+        
+        publicEnabled = self.getRequiredBoolParameter("enable")
+        
+        self.userProfile.publicEnabled = publicEnabled
+        self.userProfile.put()
+        
+        self.sendJsonOK()
+
+
     def getvcardastext(self):
       
         persona = self._getPersonaUpdateVCard()
