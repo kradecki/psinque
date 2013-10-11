@@ -22,9 +22,10 @@
     {{ ui.begintable() }}
       {{ ui.tablelabel("Picture") }}
       <td class="forminputs imageinputs">
+        <input type="hidden" class="photoselections" id="photoselection{{ personaIndex }}" value="">
         {% for photo in photos %}
-          <input type="hidden" class="photokeys" value="{{ photo.key() }}">
-          <img class="thumbnails" src="{{ photo.servingUrl }}=s40-c" width="40" height="40"/>
+          <input type="hidden" class="photokeys" id="photo{{ loop.index }}" value="{{ photo.key() }}">
+          <img class="thumbnails {% if persona.picture and photo.key() == persona.picture.key() %}selected{% endif %}" src="{{ photo.servingUrl }}=s40-c" width="40" height="40" data-psinque-index="{{ loop.index }}"/>
         {% endfor %}
       </td>
     {{ ui.endtable() }}

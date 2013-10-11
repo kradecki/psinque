@@ -79,6 +79,14 @@ def reallyGenerateVCard(persona):
     if persona.company:
         newVCard.addCompany(persona.company.companyName, persona.company.positionName)
     
+    # Add the nickname
+    if persona.nickname:
+        newVCard.addNickname(persona.nickname.itemValue)
+    
+    # Add the picture
+    if persona.picture:
+        newVCard.addPhoto(persona.picture)
+    
     # Add e-mail addresses
     for email in userProfile.emails:
         individualPermit = email.individualPermits.ancestor(persona).get()

@@ -67,3 +67,7 @@ td.imageinputs img:nth-child(-n+9) {
     text-align: left;
     margin-left: 12px;
 }
+
+img.selected {
+    border: 2px solid #404040;
+}

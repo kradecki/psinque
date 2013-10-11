@@ -31,6 +31,9 @@ function addUpdatePersonaHandler(where) {
         psinqueAjaxTransactionStart();
         
         // Update the general personas
+        photoNr = $("#photoselection" + personaIndex).val();
+        photoKey = $("#personaform" + personaIndex).find("#photo" + photoNr).val();
+        
         psinqueSetGeneralPersona($("#personakey" + personaIndex).val(),
             newName,
             $("#givennames_" + personaIndex).is(':checked'),
@@ -39,6 +42,7 @@ function addUpdatePersonaHandler(where) {
             $("#gender_" + personaIndex).is(':checked'),
             $("#company" + personaIndex).val(),
             $("#nickname" + personaIndex).val(),
+            photoKey,
         function() {
             uiUnmarkChangedFields(personaForm.find(".general"));    
             if(newName) personaForm.prev().find("label").html(newName);
@@ -152,6 +156,17 @@ $(document).ready(function() {
     addRemovePersonaHandler(".removebuttons");
     addAddPersonaHandler("#addpersona");
 
+    uiAddEnterAction("#newpersonaname", "#addpersona");
+    
+    $(".thumbnails").click(function() {
+        $(".thumbnails").removeClass("selected");
+        img = $(this);
+        img.addClass("selected");
+        input = img.parent().find(".photoselections")
+        input.val(img.attr("data-psinque-index"));
+        uiMarkChangedFields(input);
+    });
+    
     $("input[type=checkbox]").change(function() {
         updateDisplayName($(this).attr("data-psinque-index"));
     });
@@ -182,7 +197,5 @@ $(document).ready(function() {
     if(!$("#enablepublicprofile").is(":checked")) {
         $(".publicpersona").hide();
     }
-    
-    uiAddEnterAction("#newpersonaname", "#addpersona");
     
 });

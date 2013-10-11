@@ -265,6 +265,7 @@ function psinqueSetGeneralPersona(personaKey, personaName,
                                   canViewGivenNames,
                                   canViewFamilyNames, canViewBirthday,
                                   canViewGender, company, nickname,
+                                  photoKey,
                                   successFunction) {
     psinqueAJAX(psinqueAPI_setGeneralPersona, {
                     key: personaKey,
@@ -275,6 +276,7 @@ function psinqueSetGeneralPersona(personaKey, personaName,
                     gender: canViewGender,
                     company: company,
                     nickname: nickname,
+                    photo: photoKey,
                 }, successFunction);
 }
 

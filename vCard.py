@@ -107,7 +107,15 @@ class VCard():
     def addCompany(self, company, position):
         self.vcardString += u"ORG:" + company + u"\n"
         self.vcardString += u"TITLE:" + position + u"\n"
-      
+        
+    
+    def addNickname(self, nickname):
+        self.vcardString += u"NICKNAME:" + nickname + u"\n"
+    
+    
+    def addPhoto(self, photo):
+        self.vcardString += u"PHOTO;TYPE=JPEG:" + photo.servingUrl + u"=s196-c\n"
+    
       
     def addTimeStamp(self):
       

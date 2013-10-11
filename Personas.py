@@ -10,7 +10,7 @@ from google.appengine.ext.db import Key
 
 from MasterHandler import MasterHandler, AjaxError
 from DataModels import Persona, Contact
-from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress
+from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress, UserPhoto
 
 from DataManipulation import generateVCard, reallyGenerateVCard
 
@@ -199,6 +199,11 @@ class PersonasHandler(MasterHandler):
         nickname = self.request.get("nickname")
         if nickname != "None":
             persona.nickname = Key(nickname)
+
+        photoKey = self.request.get("photo")
+        if photoKey != "":
+            photo = UserPhoto.get(photoKey)
+            persona.picture = photo
         
         persona.put()
 
