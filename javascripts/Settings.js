@@ -13,6 +13,14 @@ function cardDAVHTML(key, name) {
             </tr>"
 }
 
+function passwordGrouper(password) {
+    grouptext = "";
+    for(ii = 0; ii < Math.ceil(password.length/4); ii++) {
+        grouptext += "<span>" + password.substr(ii*4, 4) + "</span>";
+    }
+    return grouptext;
+}
+
 function addGenerateCardDAVHandler(where) {
 
     $(where).click(function() {
@@ -32,8 +40,8 @@ function addGenerateCardDAVHandler(where) {
 
                 // Display the CardDAV credentials
                 cardDAVLogin = $("#carddavlogin");
-                cardDAVLogin.html("<b>Username</b>: " + data.username +
-                             "</br><b>Password</b>: " + data.password);
+                cardDAVLogin.html("<b>Username</b>: " + passwordGrouper(data.username) +
+                             "</br><b>Password</b>: " + passwordGrouper(data.password));
                 showElementWithEffects(cardDAVLogin.parent());
 
                 // Add a new row with the new login
