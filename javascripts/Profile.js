@@ -129,21 +129,18 @@ function updateEmail(input) {
         return;
     }
     
-    td = input.parent();
-    console.log(td.position());
-    typeOfEmail = td.next().find(".typesofemail").val();
-    emailKey = td.find(".additionalemailkeys");
+    typeOfEmail = input.parent().next().find(".typesofemail").val();
+    emailKey = input.parent().find(".additionalemailkeys");
     if(emailKey.val()) {
         psinqueUpdateEmail(emailKey.val(), emailAddress, typeOfEmail, function() {
-            console.log(td.position());
-            uiUnmarkChangedFields(td);
-            uiUnmarkChangedFields(td.next());
+            uiUnmarkChangedFields(input.parent());
+            uiUnmarkChangedFields(input.parent().next());
         });
     } else {
         psinqueAddEmail(emailAddress, typeOfEmail, isPrimary, function(data) {
             emailKey.val(data["key"]);  // save the key for further queries
-            uiUnmarkChangedFields(td);
-            uiUnmarkChangedFields(td.next());
+            uiUnmarkChangedFields(input.parent());
+            uiUnmarkChangedFields(input.parent().next());
         });
     }
 }
