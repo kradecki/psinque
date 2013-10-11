@@ -66,6 +66,8 @@ def getCardDAVLogin(username):
     
     if not carddavLogin.parent().userSettings.cardDAVenabled:
         return None
+      
+    carddavLogin.put()  # to update the 'lastUsed' field
 
     return carddavLogin
 

@@ -396,6 +396,7 @@ $(document).ready(function() {
     uiAddRemoverHandler(".wwwremovers", "www", psinqueRemoveWWW);
 
     uiAddRemoverHandler(".companyremovers", "company", psinqueRemoveCompany);
+    uiAddRemoverHandler(".nicknameremovers", "nickname", psinqueRemoveNickname);
     
     // Non-standard element removers
     $(".mapremovers").click(function() {

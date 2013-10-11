@@ -37,7 +37,7 @@
       {% endif %}
         {{ ui.tablelabel("CardDAV devices", carddavLogins|count + 2, "carddavlabel") }}
       {% for login in carddavLogins %}
-        {{ ui.textlabel(login.name, "carddavnames", "", login.key(), "carddavkeys") }}
+        {{ ui.textlabel(login.name ~ " (last used " ~ login.lastUsed|humanizeddatetime ~ ")", "carddavnames", "", login.key(), "carddavkeys") }}
         {{ ui.removebutton("carddav" ~ loop.index, "carddavremovers", tooltip="Remove this device") }}
         {% if loop.last %}
           {{ ui.newrow("newcarddav") }}

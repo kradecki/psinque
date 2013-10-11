@@ -43,7 +43,7 @@
   <div class="fulldetails hiddenelements">
     <table class="contacttables"><tbody><tr>
     <td class="contactdetails">
-      {% if contact.incomin %}
+      {% if contact.incoming %}
         {% for permit in contact.incoming.persona.permitEmails %}
           {% if permit.canView %}
             <p>{{ permit.userEmail.itemValue }}</p>
@@ -75,12 +75,12 @@
       <table><tbody>
         <tr>
           <td><b>Group</b></td>
-          <td><b>Permit</b></td>
+          <td>{{ ui.dropdown(groups, "", class = "groupselects", tdclass = "widedropdown") }}</td>
         </tr>
         <tr>
-          {{ ui.dropdown(groups, "", class = "groupselects", tdclass = "widedropdown") }}
-          {{ ui.dropdown(personas, "", class = "personaselects", tdclass = "widedropdown") }}
-        <tr>
+          <td><b>Permit</b></td>
+          <td>{{ ui.dropdown(personas, "", class = "personaselects", tdclass = "widedropdown") }}</td>
+        </tr>
       </tbody></table>
     </td>
     </tr></tbody></table>

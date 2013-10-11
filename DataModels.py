@@ -315,7 +315,7 @@ class UserAddress(db.Model):
     postalCode = db.StringProperty(default = "")
     privacyType = db.StringProperty(choices = privacyTypes)
     location = db.GeoPtProperty()
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
     
     @property
     def itemValue(self):
@@ -329,14 +329,14 @@ class UserEmail(db.Model):
     itemValue = db.EmailProperty()
     privacyType = db.StringProperty(choices = privacyTypes)
     primary = db.BooleanProperty(default = False)
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 
 class UserIM(db.Model):
     itemValue = db.IMProperty()
     privacyType = db.StringProperty(choices = privacyTypes)
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 
@@ -344,7 +344,7 @@ class UserPhoneNumber(db.Model):
     itemValue = db.PhoneNumberProperty(required = True)
     itemType = db.StringProperty(choices = phoneTypes)
     privacyType = db.StringProperty(choices = privacyTypes)
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 
@@ -352,7 +352,7 @@ class UserWebpage(db.Model):
     itemValue = db.StringProperty()
     itemType = db.StringProperty(choices = wwwTypes)
     privacyType = db.StringProperty(choices = privacyTypes)
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 
@@ -361,20 +361,20 @@ class UserPhoto(db.Model):
     width = db.IntegerProperty()
     height = db.IntegerProperty()
     servingUrl = db.StringProperty()
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 
 class UserNickname(db.Model):
     itemValue = db.StringProperty()
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 
 class UserCompany(db.Model):
     companyName = db.StringProperty()
     positionName = db.StringProperty()
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 
@@ -519,7 +519,7 @@ class Psinque(db.Model):
     status = db.StringProperty(choices = ["pending", "established", "banned"])
     private = db.BooleanProperty(default = False)
     
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
     
     persona = db.ReferenceProperty(Persona)
     
@@ -547,7 +547,7 @@ class Contact(db.Model):
     group = db.ReferenceProperty(Group)
     persona = db.ReferenceProperty(Persona)
 
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
     @property
     def displayName(self):
@@ -559,7 +559,7 @@ class Contact(db.Model):
 
 class Notification(db.Model):
     text = db.StringProperty()
-    creationTime = db.DateTimeProperty(auto_now = True)
+    creationTime = db.DateTimeProperty(auto_now_add = True)
 
 #-----------------------------------------------------------------------------
 

@@ -26,11 +26,11 @@ a:hover {
 }
 
 ::selection {
-    color:#e35c33;
+    background-color: #e35c33;
 }
 
 ::-moz-selection {
-    color:#e35c33;
+    background-color: #e35c33;
 }
 
 /****************************************
