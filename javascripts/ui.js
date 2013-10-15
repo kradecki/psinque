@@ -212,14 +212,11 @@ function uiStartLogoAnimation() {
 }
 
 function uiStopLogoAnimation() {
-    window.unsavedChanges = false;  // well... it's not pretty, but it works
     $("#overlay").remove();
     removeElementWithEffects($("#firstlogin"));
 }
 
 function uiMarkChangedFields(where) {
-  
-    window.unsavedChanges = true;
   
     elem = $(where);
     if(elem.is('input')) {
@@ -227,6 +224,8 @@ function uiMarkChangedFields(where) {
     } else if(elem.is('select')) {
         elem.addClass("unsavedchanges");
         elem.next().find("a").css("color", "#e35c33");
+    } else if(elem.is('label')) {
+        elem.addClass("unsavedchanges");
     } else {
       elem.find('input').addClass("unsavedchanges");
       elem.find('select').each(function() {
@@ -244,6 +243,8 @@ function uiUnmarkChangedFields(where) {
     } else if(elem.is('select')) {
         elem.removeClass("unsavedchanges");
         elem.next().find("a").css("color", "");
+    } else if(elem.is('label')) {
+        elem.removeClass("unsavedchanges");
     } else {
       elem.find('input').removeClass("unsavedchanges");
       elem.find('select').each(function() {
@@ -252,8 +253,6 @@ function uiUnmarkChangedFields(where) {
       });
       elem.find("label").removeClass("unsavedchanges");
     }
-    
-    window.unsavedChanges = ($(".unsavedchanges").length > 0);
 }
 
 function unmarkAllFields() {
@@ -362,13 +361,12 @@ $(document).ready(function() {
     uiInitializeCheckboxes();
 
     window.ajaxInProgress = false;
-    window.unsavedChanges = false;
     
     $(window).bind('beforeunload', function(e) {
       
         if(window.ajaxInProgress) {
             return "An AJAX query is in progress. Are you sure you want to exit?";
-        } else if(window.unsavedChanges) {
+        } else if($(".unsavedchanges").length > 0) {
             return "There are unsaved changes on the webpage. Are you sure you want to exit?";
         } else
             return;

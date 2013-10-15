@@ -44,7 +44,7 @@ function addUpdatePersonaHandler(where) {
             $("#nickname" + personaIndex).val(),
             photoKey,
         function() {
-            uiUnmarkChangedFields(personaForm.find(".general"));    
+            uiUnmarkChangedFields(personaForm.find(".general,.generallabels"));    
             if(newName) personaForm.prev().find("label").html(newName);
         });
         
@@ -57,9 +57,6 @@ function addUpdatePersonaHandler(where) {
                 psinqueSetIndividualPermit(input.attr("name"), input.is(':checked'),
                     function() {
                         uiUnmarkChangedFields(parentrow);
-                        
-                        if($(".unsavedchanges").length == 0)
-                            window.unsavedChanges = false;
                     });
             }
         });
@@ -185,11 +182,13 @@ $(document).ready(function() {
         if($(this).is(":checked")) {
             psinqueEnablePublic(true, function() {
                 $(".publicpersona").slideDown();
+                uiUnmarkChangedFields("#enablepublicprofile");
                 recreateAccordeon();
             });
         } else
             psinqueEnablePublic(false, function() {
                 $(".publicpersona").slideUp();
+                uiUnmarkChangedFields("#enablepublicprofile");
                 recreateAccordeon();
             });
     });
