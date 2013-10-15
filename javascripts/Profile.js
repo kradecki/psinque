@@ -15,6 +15,7 @@ function initializeGoogleMap(mapNr, lat, long) {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     
+    console.log(mapNr);
     maps[mapNr-1] = new google.maps.Map(document.getElementById("googlemap" + mapNr), mapOptions);  
 
     markers[mapNr-1] = new google.maps.Marker({
@@ -246,16 +247,14 @@ function updateAddress(input) {
                              postalCode, country, privacyType,
                              longitude, latitude,
             function() {
-                uiUnmarkChangedFields(tr);
-                uiUnmarkChangedFields(tr.next());
+                uiUnmarkChangedFields(tr.parent());
             });
     } else {
         psinqueAddAddress(address, city, postalCode, country,
                           privacyType, longitude, latitude, 
             function(data) {
                 addressKey.val(data["key"]);
-                uiUnmarkChangedFields(tr);
-                uiUnmarkChangedFields(tr.next());
+                uiUnmarkChangedFields(tr.parent());
             });
     }
 }
@@ -401,7 +400,9 @@ $(document).ready(function() {
     // Non-standard element removers
     $(".mapremovers").click(function() {
         map = $(this).parent().parent().prev();
-        map.find("input").val("");
+        input = map.find("input");
+        input.val("");
+        uiMarkChangedFields(input);
         map.parent().hide();
     });
     

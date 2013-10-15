@@ -44,7 +44,7 @@ function addUpdatePersonaHandler(where) {
             $("#nickname" + personaIndex).val(),
             photoKey,
         function() {
-            uiUnmarkChangedFields(personaForm.find(".general,.generallabels"));    
+            uiUnmarkChangedFields(personaForm.find(".general,.generallabels,.photoselections"));    
             if(newName) personaForm.prev().find("label").html(newName);
         });
         
@@ -82,14 +82,13 @@ function addAddPersonaHandler(where) {
                     newPersonaForm.hide();
                     newPersonaForm.insertBefore($("#newpersona"));
 
-                    addUpdatePersonaHandler(newPersonaForm.find(".updatebuttons"));
-                    addRemovePersonaHandler(newPersonaForm.find(".removebuttons"));
+                    addAllPersonaHandlers(newPersonaForm);
+
+                    window.highestExistingPersonaNumber++;
 
                     uiMakeDropdowns(newPersonaForm);
                     newPersonaForm.slideDown();
-                    
-                    window.highestExistingPersonaNumber++;
-                    
+                                        
                     recreateAccordeon();
                     uiInitializeCheckboxes();
                     uiUnmarkChangedFields("#newpersonaname");
@@ -145,17 +144,8 @@ function updateDisplayName(personaIndex) {
     $("#displayname" + personaIndex).html(displayName);
 }
 
-$(document).ready(function() {
-    
-    window.highestExistingPersonaNumber = parseInt($("h3").length);
-
-    addUpdatePersonaHandler(".updatebuttons");
-    addRemovePersonaHandler(".removebuttons");
-    addAddPersonaHandler("#addpersona");
-
-    uiAddEnterAction("#newpersonaname", "#addpersona");
-    
-    $(".thumbnails").click(function() {
+function addThumbnailSelector(where) {
+    $(where).click(function() {
         $(".thumbnails").removeClass("selected");
         img = $(this);
         img.addClass("selected");
@@ -163,15 +153,34 @@ $(document).ready(function() {
         input.val(img.attr("data-psinque-index"));
         uiMarkChangedFields(input);
     });
-    
-    $("input[type=checkbox]").change(function() {
+}
+
+function addChangeDataHandlers(where) {
+    $(where).change(function() {
         updateDisplayName($(this).attr("data-psinque-index"));
     });
 
-    $("input[type=checkbox]").change(function() {
+    $(where).change(function() {
         uiMarkChangedFields($(this).parent().next());
     });
+}
 
+function addAllPersonaHandlers(where) {
+    addUpdatePersonaHandler(where.find(".updatebuttons"));
+    addRemovePersonaHandler(where.find(".removebuttons"));
+    addThumbnailSelector(where.find(".thumbnails"));
+    addChangeDataHandlers(where.find("input[type=checkbox]"));
+}
+
+$(document).ready(function() {
+        
+    addAllPersonaHandlers($(document));
+
+    window.highestExistingPersonaNumber = parseInt($("h3").length);
+
+    addAddPersonaHandler("#addpersona");
+    uiAddEnterAction("#newpersonaname", "#addpersona");
+    
     $("#personalist").accordion({
         heightStyle: "content",
         collapsible: true,

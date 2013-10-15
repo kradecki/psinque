@@ -15,7 +15,7 @@
   {{ ui.textinput(city, "City", "city" ~ loopIndex, "cities required addressdata") }}
   {{ ui.textinput(postalCode, "Postal code", "postalcode" ~ loopIndex, "postalcodes") }}
   {{ ui.dropdown(countries, country, "country" ~ loopIndex, "search countries") }}
-  {{ ui.button("map", "localize", "localizers", loopIndex) }}
+  {{ ui.button("map", "localize", "localizers", "Find on a map", loopIndex) }}
 {{ ui.newrow("hiddenelements") }}
   <td class="forminputs" colspan="3">
     <div class="googlemaps" id="googlemap{{ loopIndex }}"></div>

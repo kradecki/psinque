@@ -357,7 +357,7 @@ $(document).ready(function() {
   
     uiMakeDropdowns("body");
   
-    uiSetMarkingOnChange("input,select");
+    uiSetMarkingOnChange("input[type=text],input[type=checkbox],select");
     uiInitializeCheckboxes();
 
     window.ajaxInProgress = false;

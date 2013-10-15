@@ -9,7 +9,7 @@
   <img src="/images/icon_down.png" class="headerarrows downarrows" alt="" />
   <img src="/images/icon_up.png" class="headerarrows uparrows" alt="" />
 </h3>
-{{ ui.beginform("personaform" ~ personaIndex, "publicpersona") }}
+{{ ui.beginform("personaform" ~ personaIndex, "publicpersona", personaIndex) }}
   <input type="hidden" id="personakey{{ personaIndex }}" value="{{ persona.key() }}" />
   <input type="hidden" id="personaid{{ personaIndex }}" value="{{ persona.key().id() }}" />
   {% if persona.name != "Public" and persona.name != "Default" -%}
