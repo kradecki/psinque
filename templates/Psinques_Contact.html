@@ -5,7 +5,7 @@
 <div class="contacts">
   <div class="shortdetails">
     <div class="contactphotos">
-      {% if contact.incoming.persona.picture %}
+      {% if contact.incoming and contact.incoming.persona.picture %}
         <img src="{{ contact.incoming.persona.picture.servingUrl }}=s40-c" width="40" height="40" alt="Profile picture" />
       {% else %}
         <img src="/images/nophoto_small.png" />
