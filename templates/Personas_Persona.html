@@ -21,7 +21,7 @@
     {{ ui.begintable() }}
       {{ ui.tablelabel("Picture") }}
       <td class="forminputs imageinputs">
-        <input type="hidden" class="photoselections" id="photoselection{{ personaIndex }}" value="">
+        <input type="hidden" class="photoselections general" id="photoselection{{ personaIndex }}" value="">
         {% for photo in photos %}
         <input type="hidden" class="photokeys" id="photo{{ loop.index }}" value="{{ photo.key() }}">
           <div class="photowrappers">
@@ -40,11 +40,21 @@
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Nickname") }}
-    {{ ui.dropdown(nicknames, persona.nickname.itemValue, "nickname" ~ personaIndex, "nicknames nosearch") }}
+    {% if not persona.nickname is none %}
+      {% set nickname = persona.nickname.key() %}
+    {% else %}
+      {% set nickname = "None" %}
+    {% endif %}
+    {{ ui.dropdown(nicknames, nickname, "nickname" ~ personaIndex, "nicknames nosearch general") }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Company") }}
-    {{ ui.dropdown(companies, persona.company.companyName, "company" ~ personaIndex, "companies nosearch") }}
+    {% if not persona.company is none %}
+      {% set company = persona.company.key() %}
+    {% else %}
+      {% set company = "None" %}
+    {% endif %}
+    {{ ui.dropdown(companies, company, "company" ~ personaIndex, "companies nosearch general") }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Birthday", "birthday", persona.canViewBirthday, personaIndex, "general", userProfile.birthDate) }}
@@ -74,12 +84,16 @@
   {% endfor %}
   {% for permitAddress in persona.permitAddresses %}
     {{ ui.begintable() }}
-      {{ ui.labelcheckbox("Address", "address" ~ loop.index, permitAddress.canView, permitIndex, "individual", permitAddress.userAddress.itemValue, permitAddress.key(), loop.index) }}
+      {{ ui.labelcheckbox("Address", "address" ~ loop.index, permitAddress.canView, personaIndex, "individual", permitAddress.userAddress.itemValue, permitAddress.key(), loop.index) }}
     {{ ui.endtable() }}
   {% endfor %}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Displayed name") }}
     {{ ui.textlabel(persona.displayName, "", "displayname" ~ personaIndex) }}
+  {{ ui.endtable() }}
+  {{ ui.begintable() }}
+    {{ ui.tablelabel("URL") }}
+    {{ ui.textlabel("http://psinque.com/p/" ~ persona.key(), "urls", "url" ~ personaIndex) }}
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Save changes") }}

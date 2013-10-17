@@ -382,7 +382,7 @@ class Persona(db.Model):
     
     name = db.StringProperty()
     public = db.BooleanProperty(default = False)
-
+    
     canViewGivenNames = db.BooleanProperty(default = True)
     canViewFamilyNames = db.BooleanProperty(default = True)
     canViewBirthday = db.BooleanProperty(default = False)

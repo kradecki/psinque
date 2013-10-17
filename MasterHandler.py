@@ -99,7 +99,7 @@ class MasterHandler(webapp2.RequestHandler):
         '''
         self.user = users.get_current_user()
         if not self.user:  # user not logged in
-            self.redirect("/static/landing")
+            self.redirect("/static/about")
             return False
         return True
     
@@ -114,7 +114,7 @@ class MasterHandler(webapp2.RequestHandler):
         if self.safeGuard():
             self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
             if not self.userProfile:
-                self.redirect("/mycard/view")
+                self.redirect("/profile/view")
                 return False
             self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
             return True

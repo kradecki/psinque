@@ -6,6 +6,7 @@ import webapp2
 import pyqrcode
 import StringIO
 
+from google.appengine.api import users, datastore_errors
 from google.appengine.ext.db import Key
 
 from MasterHandler import MasterHandler, AjaxError
@@ -44,7 +45,7 @@ class PersonasHandler(MasterHandler):
 
         nicknames = self.userProfile.nicknames.order('-creationTime').fetch(limit = 1000)
         nicknames = { x.key(): x.itemValue for x in nicknames }
-        nicknames[None] = None
+        nicknames["None"] = "None"
         return nicknames
 
 
@@ -52,7 +53,7 @@ class PersonasHandler(MasterHandler):
 
         companies = self.userProfile.companies.order('-creationTime').fetch(limit = 1000)
         companies = { x.key(): x.companyName for x in companies }
-        companies[None] = None
+        companies["None"] = "None"
         return companies
       
       
@@ -89,31 +90,33 @@ class PersonasHandler(MasterHandler):
     
     def removepersona(self):
         
-        persona = Persona.get(self.getRequiredParameter('key'))
-        
-        # Check for errors
-        if persona is None:
+        try:
+            persona = Persona.get(self.getRequiredParameter('key'))
+            
+            # Check for errors
+            if persona.name == "Public":  # cannot remove the public persona
+                raise AjaxError("Cannot remove the public persona")
+            if persona.name == "Default":  # cannot remove the default persona
+                raise AjaxError("Cannot remove the default private persona")
+
+            # Get all contacts that use this persona and assign them the default persona
+            contacts = Contact.all(). \
+                              ancestor(self.userProfile). \
+                              filter("persona =", persona)
+            defaultPersona = self._getPersonaByName("Default")
+            for contact in contacts:
+                contact.persona = defaultPersona
+
+            # Remove all children individual permits
+            individualPermits = IndividualPermit.all().ancestor(persona)
+            for individualPermit in individualPermits:
+                individualPermit.delete()
+            persona.delete()  # and the persona itself
+
+            self.sendJsonOK()
+
+        except datastore_errors.BadKeyError:
             raise AjaxError("Persona not found")
-        if persona.name == "Public":  # cannot remove the public persona
-            raise AjaxError("Cannot remove the public persona")
-        if persona.name == "Default":  # cannot remove the default persona
-            raise AjaxError("Cannot remove the default private persona")
-
-        # Get all contacts that use this persona and assign them the default persona
-        contacts = Contact.all(). \
-                           ancestor(self.userProfile). \
-                           filter("persona =", persona)
-        defaultPersona = self._getPersonaByName("Default")
-        for contact in contacts:
-            contact.persona = defaultPersona
-
-        # Remove all children individual permits
-        individualPermits = IndividualPermit.all().ancestor(persona)
-        for individualPermit in individualPermits:
-            individualPermit.delete()
-        persona.delete()  # and the persona itself
-
-        self.sendJsonOK()
             
             
     def addpersona(self):
@@ -127,89 +130,97 @@ class PersonasHandler(MasterHandler):
         if personaName == "Default":
             raise AjaxError("Cannot create another default private persona")
 
-        # Check if the persona already exists
-        persona = self._getPersonaByName(personaName)
-        if not persona is None:
+        try:
+            # Check if the persona already exists
+            persona = self._getPersonaByName(personaName)
+
+            # Create a new Persona
+            newPersona = Persona(parent = self.userProfile,
+                              name = personaName)
+            newPersona.put()
+            
+            for email in self.userProfile.emails:
+                permitEmail = PermitEmail(parent = newPersona,
+                                          userEmail = email)
+                permitEmail.put()
+                
+            for im in self.userProfile.ims:
+                permitIM = PermitIM(parent = newPersona,
+                                    userIM = im)
+                permitIM.put()
+                
+            for www in self.userProfile.webpages:
+                permitWebpage = PermitWebpage(parent = newPersona,
+                                              userWebpage = www)
+                permitWebpage.put()
+                
+            for phone in self.userProfile.phones:
+                permitPhoneNumber = PermitPhoneNumber(parent = newPersona,
+                                                      userPhoneNumber = phone)
+                permitPhoneNumber.put()
+                
+            for address in self.userProfile.addresses:
+                permitAddress = PermitAddress(parent = newPersona,
+                                              userAddress = address)
+                permitAddress.put()
+            
+            # Generate the Persona's vCard and eTag:
+            generateVCard(newPersona)
+
+            self.sendContent('templates/Personas_Persona.html',
+                            activeEntry = "Personas",
+                            templateVariables = {
+                    'persona': newPersona,
+                    'companies': self._getCompanies(),
+                    'nicknames': self._getNicknames(),
+                    'photos': self._getPhotos(),
+                    'userProfile': self.userProfile,
+                    'personaIndex': personaIndex,
+                })
+
+        except datastore_errors.BadKeyError:
             raise AjaxError("Persona with that name already exists")
-
-        # Create a new Persona
-        newPersona = Persona(parent = self.userProfile,
-                           name = personaName)
-        newPersona.put()
-        
-        for email in self.userProfile.emails:
-            permitEmail = PermitEmail(parent = newPersona,
-                                      userEmail = email)
-            permitEmail.put()
-            
-        for im in self.userProfile.ims:
-            permitIM = PermitIM(parent = newPersona,
-                                userIM = im)
-            permitIM.put()
-            
-        for www in self.userProfile.webpages:
-            permitWebpage = PermitWebpage(parent = newPersona,
-                                          userWebpage = www)
-            permitWebpage.put()
-            
-        for phone in self.userProfile.phones:
-            permitPhoneNumber = PermitPhoneNumber(parent = newPersona,
-                                                  userPhoneNumber = phone)
-            permitPhoneNumber.put()
-            
-        for address in self.userProfile.addresses:
-            permitAddress = PermitAddress(parent = newPersona,
-                                          userAddress = address)
-            permitAddress.put()
-        
-        # Generate the Persona's vCard and eTag:
-        generateVCard(newPersona)
-
-        self.sendContent('templates/Personas_Persona.html',
-                         activeEntry = "Personas",
-                         templateVariables = {
-                'persona': newPersona,
-                'companies': self._getCompanies(),
-                'nicknames': self._getNicknames(),
-                'photos': self._getPhotos(),
-                'userProfile': self.userProfile,
-                'personaIndex': personaIndex,
-            })
     
     
     def setgeneral(self):
 
-        persona = Persona.get(self.getRequiredParameter('key'))
-        if persona is None:
+        try:
+            persona = Persona.get(self.getRequiredParameter('key'))
+              
+            newName = self.request.get("name")
+            if newName != "":
+                persona.name = newName
+
+            persona.canViewGivenNames = self.getRequiredBoolParameter('givennames')
+            persona.canViewFamilyNames = self.getRequiredBoolParameter('familynames')
+            persona.canViewBirthday = self.getRequiredBoolParameter('birthday')
+            persona.canViewGender = self.getRequiredBoolParameter('gender')
+            
+            company = self.request.get("company")
+            if company != "None":
+                persona.company = Key(company)
+            else:
+                persona.company = None
+            
+            nickname = self.request.get("nickname")
+            if nickname != "None":
+                persona.nickname = Key(nickname)
+            else:
+                persona.nickname = None
+
+            photoKey = self.request.get("photo")
+            if photoKey != "":
+                photo = UserPhoto.get(photoKey)
+                persona.picture = photo
+            
+            persona.put()
+
+            generateVCard(persona)
+
+            self.sendJsonOK()
+
+        except datastore_errors.BadKeyError:
             raise AjaxError("Persona not found.")
-          
-        newName = self.request.get("name")
-        if newName != "":
-            persona.name = newName
-
-        persona.canViewGivenNames = self.getRequiredBoolParameter('givennames')
-        persona.canViewFamilyNames = self.getRequiredBoolParameter('familynames')
-        persona.canViewBirthday = self.getRequiredBoolParameter('birthday')
-        persona.canViewGender = self.getRequiredBoolParameter('gender')
-        
-        company = self.request.get("company")
-        if company != "None":
-            persona.company = Key(company)
-        
-        nickname = self.request.get("nickname")
-        if nickname != "None":
-            persona.nickname = Key(nickname)
-
-        photoKey = self.request.get("photo")
-        if photoKey != "":
-            photo = UserPhoto.get(photoKey)
-            persona.picture = photo
-        
-        persona.put()
-
-        generateVCard(persona)
-
-        self.sendJsonOK()
             
             
     def setindividualpermit(self):
@@ -217,16 +228,17 @@ class PersonasHandler(MasterHandler):
         itemKey = self.getRequiredParameter('key')
         canView = self.getRequiredBoolParameter('canview')
         
-        individualPermit = IndividualPermit.get(itemKey)
-        if individualPermit is None:
+        try:
+            individualPermit = IndividualPermit.get(itemKey)
+            individualPermit.canView = canView
+            individualPermit.put()
+                  
+            generateVCard(individualPermit.parent())
+            
+            self.sendJsonOK()
+            
+        except datastore_errors.BadKeyError:
             raise AjaxError("Individual permit not found.")
-        
-        individualPermit.canView = canView
-        individualPermit.put()
-               
-        generateVCard(individualPermit.parent())
-        
-        self.sendJsonOK()
         
         
     def enablepublic(self):
@@ -266,6 +278,32 @@ class PersonasHandler(MasterHandler):
         
 #-----------------------------------------------------------------------------
 
+class PersonaURLs(MasterHandler):
+
+
+    def get(self, personaKey):
+
+        if self.safeGuard():
+            
+            try:
+                persona = Persona.get(personaKey)
+                self.response.out.write("You would have gotten access to this persona if it were implemented. Good luck next time!")
+            except datastore_errors.BadKeyError:
+                self.response.out.write("Persona not found!")
+
+
+    def safeGuard(self):
+
+        self.user = users.get_current_user()
+        if not self.user:  # user not logged in
+            self.redirect("/static/about")
+            return False
+        return True
+
+
+#-----------------------------------------------------------------------------
+
 app = webapp2.WSGIApplication([
+    (r'/p/([a-zA-Z0-9\-]+)', PersonaURLs),
     (r'/personas/(\w+)', PersonasHandler),
 ], debug=True)

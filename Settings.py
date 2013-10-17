@@ -115,18 +115,19 @@ class Settings(MasterHandler):
 
         
     def deletecarddav(self):
-        
-        cardDAVLogin = CardDAVLogin.get(self.getRequiredParameter("key"))
-        
-        logging.info(cardDAVLogin.parent())
-        logging.info(self.userProfile.key())
-        
-        if cardDAVLogin.parent().key() != self.userProfile.key():
-            raise AjaxError("You don't own these CardDAV credentials")
-        
-        cardDAVLogin.delete()
 
-        self.sendJsonOK()
+        try:
+            cardDAVLogin = CardDAVLogin.get(self.getRequiredParameter("key"))
+            
+            if cardDAVLogin.parent().key() != self.userProfile.key():
+                raise AjaxError("You don't own these CardDAV credentials.")
+            
+            cardDAVLogin.delete()
+
+            self.sendJsonOK()
+            
+        except datastore_errors.BadKeyError:
+            raise AjaxError("CardDAV login does not exist.")
         
 
 #-----------------------------------------------------------------------------

@@ -6,7 +6,7 @@ function markChangesInPersona(where) {
 
 function unmarkChangesInPersona(where) {
     uiUnmarkChangedFields(where);
-    $(where).closest(".tableform").prev().removeClass("unsavedchanges");
+    $(where).first().closest(".tableform").prev().removeClass("unsavedchanges");
 }
 
 function addRemovePersonaHandler(where) {
@@ -44,22 +44,24 @@ function addUpdatePersonaHandler(where) {
         photoNr = $("#photoselection" + personaIndex).val();
         photoKey = $("#personaform" + personaIndex).find("#photo" + photoNr).val();
         
-        psinqueSetGeneralPersona($("#personakey" + personaIndex).val(),
-            newName,
-            $("#givennames_" + personaIndex).is(':checked'),
-            $("#familynames_" + personaIndex).is(':checked'),
-            $("#birthday_" + personaIndex).is(':checked'),
-            $("#gender_" + personaIndex).is(':checked'),
-            $("#company" + personaIndex).val(),
-            $("#nickname" + personaIndex).val(),
-            photoKey,
-        function() {
-            unmarkChangesInPersona(personaForm.find(".general,.generallabels,.photoselections"));    
-            if(newName) personaForm.prev().find("label").html(newName);
-        });
+        if($(".general.unsavedchanges").length > 0) {
+            psinqueSetGeneralPersona($("#personakey" + personaIndex).val(),
+                newName,
+                $("#givennames_" + personaIndex).is(':checked'),
+                $("#familynames_" + personaIndex).is(':checked'),
+                $("#birthday_" + personaIndex).is(':checked'),
+                $("#gender_" + personaIndex).is(':checked'),
+                $("#company" + personaIndex).val(),
+                $("#nickname" + personaIndex).val(),
+                photoKey,
+            function() {
+                unmarkChangesInPersona(personaForm.find(".general,.generallabels"));    
+                if(newName) personaForm.prev().find("label").html(newName);
+            });
+        }
         
         // Update all the other personas
-        personaForm.find("input").each(function() {
+        personaForm.find("input.unsavedchanges").each(function() {
             input = $(this);
             parentrow = input.parent().parent();
             itemIndex = input.attr("data-psinque-subindex");

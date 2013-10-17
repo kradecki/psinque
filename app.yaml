@@ -55,6 +55,9 @@ handlers:
 - url: /personas/([^/]+)
   script: Personas.app
   login: required
+- url: /p/([^/]+)
+  script: Personas.app
+  login: required
 
 # Psinques
 - url: /psinques/([^/]+)

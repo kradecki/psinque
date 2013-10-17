@@ -235,33 +235,35 @@ class PsinquesHandler(MasterHandler):
 
         # Search for the owner of the email address
         email = self.request.get('email')
-        userEmail = UserEmail.all(keys_only = True). \
-                              filter("itemValue =", email). \
-                              get()
+        
+        try:
+            userEmail = UserEmail.all(keys_only = True). \
+                                  filter("itemValue =", email). \
+                                  get()
+            
+            # Check if it's not my own email address
+            userProfile = UserProfile.get(userEmail.parent())
+            if userProfile.key() == self.userProfile.key():
+                raise AjaxError("It is your own email address.")
+              
+            # Check if there already is a Psinque from that user
+            psinque = self._getPsinqueFrom(userProfile)
+            if not psinque is None:
+                raise AjaxError("You already have a psinque with this email address.")
 
-        if userEmail is None:
+            if userProfile.publicEnabled:
+                displayName = userProfile.publicPersona.displayName
+            else:
+                displayName = "<i>Undisclosed name</i>"
+            
+            self.sendJsonOK({
+                "key": str(userProfile.key()),
+                "displayName": displayName,
+                "publicEnabled": userProfile.publicEnabled,
+            })
+
+        except datastore_errors.BadKeyError:
             raise AjaxError("Email not registered in Psinque.")
-        
-        # Check if it's not my own email address
-        userProfile = UserProfile.get(userEmail.parent())
-        if userProfile.key() == self.userProfile.key():
-            raise AjaxError("It is your own email address.")
-          
-        # Check if there already is a Psinque from that user
-        psinque = self._getPsinqueFrom(userProfile)
-        if not psinque is None:
-            raise AjaxError("You already have a psinque with this email address.")
-
-        if userProfile.publicEnabled:
-            displayName = userProfile.publicPersona.displayName
-        else:
-            displayName = "<i>Undisclosed name</i>"
-        
-        self.sendJsonOK({
-            "key": str(userProfile.key()),
-            "displayName": displayName,
-            "publicEnabled": userProfile.publicEnabled,
-        })
 
 
     def addpublic(self):
@@ -341,12 +343,14 @@ class PsinquesHandler(MasterHandler):
 
     def changepersona(self):
 
-        contact = Contact.get(self.getRequiredParameter('contact'))
-        if contact is None:
+        try:
+            contact = Contact.get(self.getRequiredParameter('contact'))
+        except datastore_errors.BadKeyError:
             raise AjaxError("Contact does not exist")
 
-        persona  = Persona.get(self.getRequiredParameter('persona'))
-        if persona is None:
+        try:
+            persona  = Persona.get(self.getRequiredParameter('persona'))
+        except datastore_errors.BadKeyError:
             raise AjaxError("Persona does not exist")
         
         # First we check if this psinque is not already asigned to that group

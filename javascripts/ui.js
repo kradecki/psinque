@@ -121,7 +121,6 @@ function uiAddEnterAction(where, trigger) {
 function uiInitializeCheckboxes() {
     $("input[type=checkbox] + div").bind('click', function() {
         checkBox = $(this).prev();
-//         checkBox.prop("checked", !checkBox.prop("checked"));
         checkBox.click();
     });
 }
@@ -217,41 +216,20 @@ function uiStopLogoAnimation() {
 }
 
 function uiMarkChangedFields(where) {
-  
     elem = $(where);
-    if(elem.is('input')) {
-        elem.addClass("unsavedchanges");
-    } else if(elem.is('select')) {
-        elem.addClass("unsavedchanges");
-        elem.next().find("a").css("color", "#e35c33");
-    } else if(elem.is('label')) {
+    if(elem.is('input,select,label')) {
         elem.addClass("unsavedchanges");
     } else {
-      elem.find('input').addClass("unsavedchanges");
-      elem.find('select').each(function() {
-          $(this).addClass("unsavedchanges");
-          $(this).next().find("a").css("color", "#e35c33");
-      });
-      elem.find("label").addClass("unsavedchanges");
+        elem.find('input,select,label').addClass("unsavedchanges");
     }
 }
 
 function uiUnmarkChangedFields(where) {
     elem = $(where);
-    if(elem.is('input')) {
-        elem.removeClass("unsavedchanges");
-    } else if(elem.is('select')) {
-        elem.removeClass("unsavedchanges");
-        elem.next().find("a").css("color", "");
-    } else if(elem.is('label')) {
+    if(elem.is('input,select,label')) {
         elem.removeClass("unsavedchanges");
     } else {
-      elem.find('input').removeClass("unsavedchanges");
-      elem.find('select').each(function() {
-          $(this).removeClass("unsavedchanges");
-          $(this).next().find("a").css("color", "");
-      });
-      elem.find("label").removeClass("unsavedchanges");
+        elem.find('input,select,label').removeClass("unsavedchanges");
     }
 }
 
@@ -363,7 +341,7 @@ $(document).ready(function() {
     window.ajaxInProgress = false;
     
     $(window).bind('beforeunload', function(e) {
-      
+        
         if(window.ajaxInProgress) {
             return "An AJAX query is in progress. Are you sure you want to exit?";
         } else if($(".unsavedchanges").length > 0) {

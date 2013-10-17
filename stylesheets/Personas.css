@@ -76,6 +76,12 @@ div#personalist div p {
     margin-left: 12px;
 }
 
+div.tableform td.forminputs label.urls {
+    word-break: break-all;
+    height: 58px;
+    padding-right: 8px;
+}
+
 /***********************
  * Profile photo selection
  ***********************/

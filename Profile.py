@@ -39,9 +39,10 @@ class ProfileHandler(MasterHandler):
     def _getItemByKey(self, itemClass):
 
         key = self.getRequiredParameter('key')
-
-        item = itemClass.get(key)
-        if item is None:
+        
+        try:
+            item = itemClass.get(key)
+        except datastore_errors.BadKeyError:
             raise AjaxError("Profile item not found.")
           
         return item
@@ -52,10 +53,12 @@ class ProfileHandler(MasterHandler):
         itemValue = self.getRequiredParameter(itemValueName)
 
         # Check if this email has already been registered:
-        existingItem = itemClass.all(keys_only = True). \
-                                 filter(itemValueName + " =", itemValue). \
-                                 get()
-        if not existingItem is None:
+        try:
+            existingItem = itemClass.all(keys_only = True). \
+                                    filter(itemValueName + " =", itemValue). \
+                                    get()
+
+        except datastore_errors.BadKeyError:
             raise AjaxError(itemValueName + ": " + itemValue + " already registered in the system")
           
         return itemValue
@@ -314,14 +317,20 @@ class ProfileHandler(MasterHandler):
 
         key = self.getRequiredParameter('key')
 
-        photo = UserPhoto.get(key)
-        if photo is None:
+        try:
+            photo = UserPhoto.get(key)
+            
+            for persona in Persona.all().filter("picture =", photo):
+                persona.picture = None
+                persona.put()
+              
+            photo.image.delete()
+            photo.delete()
+            
+            self.sendJsonOK()
+
+        except datastore_errors.BadKeyError:
             raise AjaxError("Photo not found.")
-          
-        photo.image.delete()
-        photo.delete()
-        
-        self.sendJsonOK()
 
 
     def addaddress(self):
