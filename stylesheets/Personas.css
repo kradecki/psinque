@@ -10,57 +10,65 @@ div#personalist h3 {
     font-size: 16px;
 }
 
+div#personalist h3.unsavedchanges {
+    background-color: #e35c33;
+}
+
 div#personalist h3 label {
   margin-top: 10px;
 }
 
-div#personalist .ui-accordion-header-active img.downarrows {
+div#personalist h3 div.personaicons {
+    background: url("/images/personas.png") no-repeat;
     display: inline-block;
-}  
-
-div#personalist .ui-accordion-header-active img.uparrows {
-    display: none;
-}  
-
-div#personalist .ui-accordion-header-inactive img.downarrows {
-    display: none;
-}  
-
-div#personalist .ui-accordion-header-inactive img.uparrows {
-    display: inline-block;
-}  
-
-div#personalist h3 img {
     vertical-align: middle;
-    display: inline-block;
     margin: 0;
+    width: 30px;
+    height: 30px;
 }
 
-div#personalist h3 img.headerarrows {
+div#personalist h3 div.personaicons.unsavedchanges {
+    background-position: -30px -90px;
+}
+
+div#personalist h3 div.arrows {
     float: right;
 }
 
-div#personalist h3 img.downarrows {
-    display: none;
+div#personalist h3 div.public {
+    background-position: 0px 0px;
+}
+
+div#personalist h3.unsavedchanges div.public {
+    background-position: -30px 0px;
+}
+
+div#personalist h3 div.private {
+    background-position: 0px -30px;
+}
+
+div#personalist h3.unsavedchanges div.private {
+    background-position: -30px -30px;
+}
+
+div#personalist h3 div.arrows {
+    background-position: 0px -90px;
+}  
+
+div#personalist h3.unsavedchanges div.arrows {
+    background-position: -30px -90px;
+}  
+
+div#personalist h3.ui-accordion-header-active div.arrows {
+    background-position: 0px -60px;
+}
+
+div#personalist h3.ui-accordion-header-active.unsavedchanges div.arrows {
+    background-position: -30px -60px;
 }
 
 div#personalist div p {
     margin: 0;
-}
-
-div.tableform td.forminputs.imageinputs {
-    line-height: 0;
-    display: inline-block;
-    word-spacing: 8px;
-}
-
-td.imageinputs img {
-    margin: 0;
-    margin-top: 12px;
-}
-
-td.imageinputs img:nth-child(-n+9) {
-    margin-top: 0;
 }
 
 .chosen-container-single .chosen-single span {
@@ -68,6 +76,47 @@ td.imageinputs img:nth-child(-n+9) {
     margin-left: 12px;
 }
 
-img.selected {
-    border: 2px solid #404040;
+/***********************
+ * Profile photo selection
+ ***********************/
+
+div.tableform td.forminputs.imageinputs {
+    line-height: 0;
+/*     display: inline-block; */
+    word-spacing: 48px;
+    height: 40px;
+}
+
+td.imageinputs > div {
+    margin: 0;
+    margin-top: 12px;
+    position: relative;
+    display: inline-block;
+    top: -23px;
+}
+
+td.imageinputs > div:nth-child(-n+9) {
+    margin-top: 0;
+}
+
+div.photowrappers img {
+    z-index: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+div.photocheckmarks {
+    position: absolute;
+    width: 0;
+    height: 0;
+    z-index: 10;
+    left: 0;
+    top: 0;
+}
+
+img.selected+div.photocheckmarks {
+    background: url("/images/smallcheck.png") no-repeat;
+    width: 10px;
+    height: 10px;
 }

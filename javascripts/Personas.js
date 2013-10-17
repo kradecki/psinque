@@ -1,4 +1,14 @@
 
+function markChangesInPersona(where) {
+    uiMarkChangedFields(where);
+    $(where).closest(".tableform").prev().addClass("unsavedchanges");
+}
+
+function unmarkChangesInPersona(where) {
+    uiUnmarkChangedFields(where);
+    $(where).closest(".tableform").prev().removeClass("unsavedchanges");
+}
+
 function addRemovePersonaHandler(where) {
     
     $(where).click(function() {
@@ -44,7 +54,7 @@ function addUpdatePersonaHandler(where) {
             $("#nickname" + personaIndex).val(),
             photoKey,
         function() {
-            uiUnmarkChangedFields(personaForm.find(".general,.generallabels,.photoselections"));    
+            unmarkChangesInPersona(personaForm.find(".general,.generallabels,.photoselections"));    
             if(newName) personaForm.prev().find("label").html(newName);
         });
         
@@ -56,7 +66,7 @@ function addUpdatePersonaHandler(where) {
             if(input.attr("type") == "checkbox" && (input.hasClass("individual"))) {               
                 psinqueSetIndividualPermit(input.attr("name"), input.is(':checked'),
                     function() {
-                        uiUnmarkChangedFields(parentrow);
+                        unmarkChangesInPersona(parentrow);
                     });
             }
         });
@@ -91,7 +101,7 @@ function addAddPersonaHandler(where) {
                                         
                     recreateAccordeon();
                     uiInitializeCheckboxes();
-                    uiUnmarkChangedFields("#newpersonaname");
+                    unmarkChangesInPersona("#newpersonaname");
                     $("#newpersonaname").val("");
                     
                 });
@@ -146,12 +156,17 @@ function updateDisplayName(personaIndex) {
 
 function addThumbnailSelector(where) {
     $(where).click(function() {
-        $(".thumbnails").removeClass("selected");
         img = $(this);
-        img.addClass("selected");
-        input = img.parent().find(".photoselections")
-        input.val(img.attr("data-psinque-index"));
-        uiMarkChangedFields(input);
+        selected = img.hasClass("selected");
+        input = img.parent().parent().find(".photoselections")
+        $(".thumbnails").removeClass("selected");
+        if(!selected) {
+            img.addClass("selected");
+            input.val(img.attr("data-psinque-index"));
+        } else {
+            input.val("");
+        }
+        markChangesInPersona(input);
     });
 }
 
@@ -161,7 +176,7 @@ function addChangeDataHandlers(where) {
     });
 
     $(where).change(function() {
-        uiMarkChangedFields($(this).parent().next());
+        markChangesInPersona($(this).parent().next());
     });
 }
 
@@ -191,13 +206,13 @@ $(document).ready(function() {
         if($(this).is(":checked")) {
             psinqueEnablePublic(true, function() {
                 $(".publicpersona").slideDown();
-                uiUnmarkChangedFields("#enablepublicprofile");
+                unmarkChangesInPersona("#enablepublicprofile");
                 recreateAccordeon();
             });
         } else
             psinqueEnablePublic(false, function() {
                 $(".publicpersona").slideUp();
-                uiUnmarkChangedFields("#enablepublicprofile");
+                unmarkChangesInPersona("#enablepublicprofile");
                 recreateAccordeon();
             });
     });

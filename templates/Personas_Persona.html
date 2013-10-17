@@ -1,13 +1,12 @@
 {% import "templates/ui.html" as ui -%}
 <h3 {% if persona.name == "Public" -%}class="publicpersona"{%- endif %}>
   {%- if persona.name == "Public" %}
-  <img src="/images/icon_public.png" alt="public" />
+  <div class="personaicons public"></div>
   {% else %}
-  <img src="/images/icon_private.png" alt="private" />
+  <div class="personaicons private"></div>
   {% endif -%}
   <label>{{ persona.name }}</label>
-  <img src="/images/icon_down.png" class="headerarrows downarrows" alt="" />
-  <img src="/images/icon_up.png" class="headerarrows uparrows" alt="" />
+  <div class="personaicons arrows"></div>
 </h3>
 {{ ui.beginform("personaform" ~ personaIndex, "publicpersona", personaIndex) }}
   <input type="hidden" id="personakey{{ personaIndex }}" value="{{ persona.key() }}" />
@@ -24,8 +23,11 @@
       <td class="forminputs imageinputs">
         <input type="hidden" class="photoselections" id="photoselection{{ personaIndex }}" value="">
         {% for photo in photos %}
-          <input type="hidden" class="photokeys" id="photo{{ loop.index }}" value="{{ photo.key() }}">
-          <img class="thumbnails {% if persona.picture and photo.key() == persona.picture.key() %}selected{% endif %}" src="{{ photo.servingUrl }}=s40-c" width="40" height="40" data-psinque-index="{{ loop.index }}"/>
+        <input type="hidden" class="photokeys" id="photo{{ loop.index }}" value="{{ photo.key() }}">
+          <div class="photowrappers">
+            <img class="thumbnails {% if persona.picture and photo.key() == persona.picture.key() %}selected{% endif %}" src="{{ photo.servingUrl }}=s40-c" width="40" height="40" data-psinque-index="{{ loop.index }}"/>
+            <div class="photocheckmarks"></div>
+          </div>
         {% endfor %}
       </td>
     {{ ui.endtable() }}
