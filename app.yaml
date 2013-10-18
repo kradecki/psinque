@@ -46,10 +46,13 @@ handlers:
   login: required
 - url: /uploadphoto
   script: Profile.app
+  login: required
 - url: /uploadphotopost
   script: Profile.app
+  login: required
 - url: /serveimageblob/([^/]+)?
   script: Profile.app
+  login: required
 
 # Personas
 - url: /personas/([^/]+)

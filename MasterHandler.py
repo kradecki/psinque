@@ -64,7 +64,21 @@ class AjaxError(Exception):
 
 #-----------------------------------------------------------------------------
 
-class MasterHandler(webapp2.RequestHandler):
+class UserLoggedInHandler(webapp2.RequestHandler):
+
+    def safeGuard(self):
+        '''
+        Checks if a user is logged in and if not, redirects
+        to the login page.
+        '''
+        # 1. Try to use tge GAE's OpenID framework
+        self.user = users.get_current_user()
+        if not self.user:   # no OpenID user logged in    
+            self.redirect("/")
+            return False
+        return True
+
+class MasterHandler(UserLoggedInHandler):
     '''
     The base class for all Psinque request handlers.
     '''
@@ -90,19 +104,7 @@ class MasterHandler(webapp2.RequestHandler):
                 logging.error("AjaxError:")
                 logging.error(e)
                 self.sendJsonError(e.value)
-
-
-    def safeGuard(self):
-        '''
-        Checks if a user is logged in and if not, redirects
-        to the login page.
-        '''
-        self.user = users.get_current_user()
-        if not self.user:  # user not logged in
-            self.redirect("/static/about")
-            return False
-        return True
-    
+                
     
     def getUserProfile(self):
         '''
