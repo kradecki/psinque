@@ -1,5 +1,9 @@
 
 div#content {
+    box-shadow: none;
+}
+
+div#content {
     top: 0px;
 }
 
@@ -86,9 +90,9 @@ div.tableform td.bigdarklabel {
 }
 
 div.tableform td.bigdarklabel label {
-    margin-top: 12px;
+    margin-top: 8px;
     display: block;
-    height: 28px;
+    height: 32px;
 }
 
 .ui-tooltip {
