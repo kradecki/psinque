@@ -5,8 +5,6 @@ import os
 
 from google.appengine.api import users
 
-from Users import getCurrentUser
-
 #-----------------------------------------------------------------------------
 
 jinja_environment = jinja2.Environment(
