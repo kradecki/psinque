@@ -5,6 +5,7 @@ import logging
 import webapp2
 
 from google.appengine.ext.db import KindError
+from google.appengine.api import users, datastore_errors
 
 from django.utils import simplejson as json
 
@@ -13,6 +14,7 @@ from DataModels import Persona
 import Notifications
 
 from DataModels import Psinque, Group, Contact, UserEmail, UserProfile
+from DataManipulation import contactExists
 
 #-----------------------------------------------------------------------------
 
@@ -147,19 +149,14 @@ class PsinquesHandler(MasterHandler):
     
     def _addPublicPsinque(self, friendsProfile):
         
-        contact = Contact.all(). \
-                          ancestor(self.userProfile). \
-                          filter("friend =", friendsProfile). \
-                          get()
-        if contact is None:
+        contactExisted = contactExists(self.userProfile, friendsProfile)
+        if not contactExisted:
             contactExisted = False
             contact = Contact(parent = self.userProfile,
                               friend = friendsProfile,
                               group = self.userProfile.defaultGroup,
                               persona = self.userProfile.publicPersona)
             contact.put()
-        else:
-            contactExisted = True
         
         newPsinque = Psinque(parent = contact,
                              fromUser = friendsProfile,
@@ -209,8 +206,7 @@ class PsinquesHandler(MasterHandler):
             else:
                 isThereMore = False
 
-            personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }
-                    
+            personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }         
             groupList = { group.key(): group.name for group in self.userProfile.groups.fetch(100) }
                     
             self.sendContent('templates/Psinques.html',
@@ -236,11 +232,15 @@ class PsinquesHandler(MasterHandler):
         # Search for the owner of the email address
         email = self.request.get('email')
         
-        try:
-            userEmail = UserEmail.all(keys_only = True). \
-                                  filter("itemValue =", email). \
-                                  get()
-            
+        userEmail = UserEmail.all(keys_only = True). \
+                              filter("itemValue =", email). \
+                              get()
+        if not userEmail:
+          
+            self.sendJsonOK({ "found": False })
+        
+        else:
+          
             # Check if it's not my own email address
             userProfile = UserProfile.get(userEmail.parent())
             if userProfile.key() == self.userProfile.key():
@@ -257,13 +257,11 @@ class PsinquesHandler(MasterHandler):
                 displayName = "<i>Undisclosed name</i>"
             
             self.sendJsonOK({
+                "found": True,
                 "key": str(userProfile.key()),
                 "displayName": displayName,
                 "publicEnabled": userProfile.publicEnabled,
             })
-
-        except datastore_errors.BadKeyError:
-            raise AjaxError("Email not registered in Psinque.")
 
 
     def addpublic(self):
@@ -276,10 +274,15 @@ class PsinquesHandler(MasterHandler):
         
         contact = self._addPublicPsinque(friendsProfile)
         
+        personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }         
+        groupList = { group.key(): group.name for group in self.userProfile.groups.fetch(100) }
+                
         if not contact[0]:
             self.sendContent('templates/Psinques_Contact.html',
                             templateVariables = {
                 'contact': contact[1],
+                'groups': groupList,
+                'personas': personaList,
             })
 
 
@@ -297,6 +300,29 @@ class PsinquesHandler(MasterHandler):
         self._addRequestToUpgrade(contact, contact.friend)
         self.sendJsonOK()
     
+    
+    def addincoming(self):
+      
+        contact = self._getContact()
+        if contact.incoming:
+            raise AjaxError("Incoming psinque already exists.")
+        
+        friendsProfle = contact.friendsContact.parent()
+        newPsinque = Psinque(parent = contact,
+                             fromUser = friendsProfle,
+                             private = True,
+                             persona = friendsProfle.defaultPersona,
+                             status = "established")
+        newPsinque.put()
+        
+        contact.incoming = newPsinque
+        contact.put()
+        
+        contact.friendsContact.outgoing = newPsinque
+        contact.friendsContact.put()
+        
+        self.sendJsonOK()
+
 
     #def addprivate(self):
         
@@ -353,16 +379,52 @@ class PsinquesHandler(MasterHandler):
         except datastore_errors.BadKeyError:
             raise AjaxError("Persona does not exist")
         
-        # First we check if this psinque is not already asigned to that group
+        if contact.persona == persona:
+          
+            self.sendJsonOK()
+            return
+          
         contact.persona = persona
         contact.put()
+        
+        if persona.public:
+          
+            contact.outgoing.private = False
+            contact.outgoing.put()
+            
+            contact.friendsContact.status = "public"
+            contact.friendsContact.put()
+            
+            Notifications.notifyDowngradedPsinque(contact.outgoing)
             
         self.sendJsonOK()
 
 
     def changegroup(self):
         
-        raise AjaxError("Unimplemented")
+        try:
+            contact = Contact.get(self.getRequiredParameter('contact'))
+        except datastore_errors.BadKeyError:
+            raise AjaxError("Contact does not exist")
+
+        #oldGroup = contact.group
+
+        try:
+            persona  = Group.get(self.getRequiredParameter('persona'))
+        except datastore_errors.BadKeyError:
+            raise AjaxError("Group does not exist")
+        
+        # First we check if this psinque is not already asigned to that group
+        contact.group = group
+        contact.put()
+        
+        #oldGroupSize = Contact.all(keys_only = True). \
+                               #filter("group =", oldGroup). \
+                               #count(1)
+        #if oldGroupSize == 0:
+            #olfGroup.delete()
+            
+        self.sendJsonOK()
 
     
     def acceptrequest(self):
@@ -425,6 +487,17 @@ class PsinquesHandler(MasterHandler):
     def banrequest(self):
         
         raise AjaxError("Unimplemented")
+      
+      
+    def addgroup(self):
+        
+        group = Group(parent = self.userProfile,
+                      name = self.getRequiredParameter("name"))
+        group.put()
+        
+        self.sendJsonOK({
+            "key": str(group.key()),
+        })
         
 #-----------------------------------------------------------------------------
 

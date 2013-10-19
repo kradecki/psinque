@@ -7,7 +7,7 @@ import random
 import string
 import md5
 
-from google.appengine.api import users
+from google.appengine.api import datastore_errors
 
 from MasterHandler import MasterHandler, AjaxError
 from DataModels import UserSettings, CardDAVLogin

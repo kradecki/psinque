@@ -1,15 +1,8 @@
 {%- import "templates/ui.html" as ui -%}
-{%- macro bigdarklabel(text) -%}
-  <tr>
-    <td class="bigdarklabel">
-      <label>{{ text }}</label>
-    </td>
-  </tr>
-{%- endmacro -%}
-{%- macro logo(logoname, loginurl) -%}
+{%- macro logo(logoname, loginurl, tooltip) -%}
   <td class="forminputs formbuttons darkbutton">
-    <a href={{ loginurl }} id="logo{{ logoname }}">
-      <img src="/images/logo_{{ logoname }}.png" alt="{{ logoname }}" />
+    <a href={{ loginurl }} id="logo{{ logoname }}" class="logos" title="{{ tooltip }}">
+      <div class="buttons buttons_{{ logoname }}"></div>
     </a>
   </td>
 {%- endmacro -%}
@@ -28,9 +21,8 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/ui.css" />
   <link rel="stylesheet" type="text/css" href="/stylesheets/static.css" />
   <link rel="stylesheet" type="text/css" href="/stylesheets/Landing.css" />
-  <script type="text/javascript" src="/javascripts/ui.js"></script>
   <script type="text/javascript" src="/javascripts/jquery.js"></script>
-  <script type="text/javascript" src="/javascripts/jquery.passstrength.min.js"></script>
+  <script type="text/javascript" src="/javascripts/ui.js"></script>
   <script type="text/javascript" src="/javascripts/Landing.js"></script>
 </head>
 <body>
@@ -38,86 +30,29 @@
     <div id="contentwrapper" class="wrappers">
       <div id="content">
         <div id="biglogo">
-          <a href="/">
-            <img src="/images/biglogo.png" alt="Psinque" />
-          </a>
+          <object data="/images/biglogo.svg" type="image/svg+xml"></object>
         </div>
-          <div id="leftside" class="singlecolumn">
-            {{ ui.beginform() }}
-              {{ ui.begintable() }}
-                {{ bigdarklabel("Sign in with OpenID") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {% for logindata in loginurls %}
-                  {{ logo(logindata[1], logindata[0]) }}
-                {% endfor %}
-                {{ ui.spacer() }}
-              {{ ui.endtable() }}
-              {{ ui.begintable("openidusernametable", "hiddenelements username") }}
-                {{ ui.tablelabel("Username", 1, "username") }}
-                {{ ui.textinput("", "", "", "") }}
-                {{ ui.signinbutton() }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("Custom link") }}
-                {{ ui.textinput("", "", "openidlink") }}
-                {{ ui.signinbutton() }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ bigdarklabel("Sign in with a psinque account") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("E-mail") }}
-                {{ ui.textinput("", "", "email") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("Password") }}
-                {{ ui.passwordinput("loginpassword", "") }}
-              {{ ui.endtable() }}
+        <div id="openid">
+          {{ ui.beginform() }}
+            {{ ui.begintable() }}
+              {{ ui.tablelabel("Sign in with:", 1) }}
+              {% for logindata in loginurls %}
+                {{ logo(logindata[1], logindata[0], logindata[2]) }}
+              {% endfor %}
+              {{ ui.spacer() }}
+            {{ ui.endtable() }}
+            {{ ui.begintable("openidusernametable", "username") }}
+              {{ ui.tablelabel("MySpace", 1, "username") }}
+              {{ ui.textinput("", "MySpace username", "myspaceuser", "") }}
+              {{ ui.signinbutton("myspacesignin") }}
+            {{ ui.endtable() }}
+            {{ ui.begintable() }}
+              {{ ui.tablelabel("OpenID link") }}
+              {{ ui.textinput("", "Custom link", "openidlink") }}
+              {{ ui.signinbutton("openidsignin") }}
+            {{ ui.endtable() }}
           {{ ui.endform() }}
-          </div>
-          <div id="rightside" class="singlecolumn">
-            {{ ui.beginform() }}
-              {{ ui.begintable() }}
-                {{ bigdarklabel("Sign up") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("Given names") }}
-                {{ ui.textinput("", "", "givennames") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("Family names") }}
-                {{ ui.textinput("", "", "familynames") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("E-mail") }}
-                {{ ui.textinput("", "", "email") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("Password") }}
-                {{ ui.passwordinput("password", "", "At least 8 characters.") }}
-                {{ ui.newrow("hiddenelements passwordinfo") }}
-                {{ ui.spacer() }}
-                <td>
-                  <div id="passwordstrength"></div>
-                </td>
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("Repeat password") }}
-                {{ ui.passwordinput("repeatpass") }}
-              {{ ui.endtable() }}
-              {{ ui.begintable() }}
-                {{ ui.tablelabel("Terms") }}
-                {{ ui.checkbox("terms", False, "I agree to <a href='/static/terms'>Psinque terms</a>") }}
-              {{ ui.endtable() }}
-            {{ ui.endform() }}
-          </div>
-          <div id="tagline">
-            <div id="bigcard">
-              <img src="/images/bigcard.png" alt="" />
-            </div>
-            <div id="slogan">contacts updated</div>
-          </div>
+        </div>
       </div>
     </div>
     <div id="footerwrapper" class="wrappers">

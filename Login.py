@@ -21,6 +21,8 @@ directOpenIDProviders = [
 
 directOpenIDIconNames = ['google', 'yahoo', 'yahoo_japan']
 
+directOpenIDNames = ["Google+", "Yahoo!", "Yahoo! Japan"]
+
 #-----------------------------------------------------------------------------
 
 class OpenIdLoginHandler(webapp2.RequestHandler):
@@ -34,7 +36,8 @@ class OpenIdLoginHandler(webapp2.RequestHandler):
             'loginurls': zip([users.create_login_url(dest_url = continue_url,
                                                      federated_identity = uri)
                              for uri in directOpenIDProviders],
-                             directOpenIDIconNames)
+                             directOpenIDIconNames,
+                             directOpenIDNames)
         }))
     
 app = webapp2.WSGIApplication([

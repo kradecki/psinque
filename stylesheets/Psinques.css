@@ -9,7 +9,7 @@ div.contacts {
     background-color: #fff;
     padding: 10px;
     margin: 0 auto;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 div.shortdetails,
@@ -24,11 +24,16 @@ div.shortdetails {
 div.fulldetails {
     border-top: 1px solid #404040;
     margin-top: 10px;
+    padding-top: 10px;
 }
 
 div.contactphotos,
 div.contactnames {
     float: left;
+}
+
+div.contactnames:hover {
+    color: #de5d35;
 }
 
 div.contactphotos {
@@ -62,10 +67,6 @@ td.groupspermits table {
     text-align: center;
 }
 
-.widedropdown {
-    width: 150px;
-}
-
 div.tableform {
     width: 690px;
     margin: 0 auto;
@@ -80,4 +81,34 @@ div.tableform td.forminputs label {
 div.psinques img {
     display: inline-block;
     margin-left: 5px;
+}
+
+div.fulldetails > div {
+    margin: 0;
+    margin-left: 45px;
+}
+
+/* Small contact icons */
+
+div.contacticons {
+    width: 20px;
+    height: 20px;
+    background: url("/images/contacticons.png") no-repeat;
+    display: inline-block;
+}
+
+div.contacticons.wwwicons {
+    background-position: 0px -20px;
+}
+
+div.contacticons.phoneicons {
+    background-position: 0px -40px;
+}
+
+div.contacticons.imicons {
+    background-position: 0px -60px;
+}
+
+div.contacticons.addressicons {
+    background-position: 0px -80px;
 }

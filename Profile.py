@@ -7,7 +7,7 @@ import urllib
 import webapp2
 import datetime
 
-from google.appengine.api import users
+from google.appengine.api import users, datastore_errors
 from google.appengine.ext import db
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
@@ -81,12 +81,15 @@ class ProfileHandler(MasterHandler):
 
     def view(self):   # form for editing details
 
+        logging.info("view")
         userProfile = UserProfile.all().filter("user =", self.user).get()
         firstLogin = (not userProfile)
+        logging.info(userProfile)
 
         if firstLogin:  # no user profile registered yet, so create a new one
             userProfile = createNewProfile(self.user)
 
+        logging.info("before sendContent")
         self.sendContent('templates/Profile.html',
                          activeEntry = "Profile",
                          templateVariables = {
@@ -341,11 +344,15 @@ class ProfileHandler(MasterHandler):
             location = db.GeoPt(latitude, longitude)
         else:
             location = None
+            
+        countryCode = self.getRequiredParameter('country')
+        if countryCode == "Country":
+            countryCode = ""
 
         userAddress = UserAddress(parent = self.userProfile,
                                   address = self.getRequiredParameter('address'),
                                   city = self.getRequiredParameter('city'),
-                                  countryCode = self.getRequiredParameter('country'),
+                                  countryCode = countryCode,
                                   postalCode = self.request.get('postal'),
                                   privacyType = self.getRequiredParameter('privacy'),
                                   location = location)
@@ -371,11 +378,15 @@ class ProfileHandler(MasterHandler):
         else:
             location = None
 
+        countryCode = self.getRequiredParameter('country')
+        if countryCode == "Country":
+            countryCode = ""
+
         userAddress = self._getItemByKey(UserAddress)
         userAddress.address = self.getRequiredParameter('address')
         userAddress.city = self.getRequiredParameter('city')
         userAddress.postalCode = self.request.get('postal')
-        userAddress.countryCode = self.getRequiredParameter('country')
+        userAddress.countryCode = countryCode
         userAddress.privacyType = self.getRequiredParameter('privacy')
         userAddress.location = location
         userAddress.put()

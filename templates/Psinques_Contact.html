@@ -19,7 +19,7 @@
       {% if contact.incoming %}
         {{ tablelessbutton("contact", "buttons-in-active", tooltip="Incoming psinque is active") }}
       {% else %}
-        {{ tablelessbutton("contact", "buttons-in-inactive", tooltip="Incoming psinque is not active") }}
+        {{ tablelessbutton("contact", "buttons-in-inactive incominggetters clickable", tooltip="Activate incoming psinque") }}
       {% endif %}
       {% if contact.outgoing %}
         {{ tablelessbutton("contact", "buttons-out-active", tooltip="Outgoing psinque is active") }}
@@ -41,48 +41,54 @@
     </div>
   </div>
   <div class="fulldetails hiddenelements">
-    <table class="contacttables"><tbody><tr>
-    <td class="contactdetails">
-      {% if contact.incoming %}
-        {% for permit in contact.incoming.persona.permitEmails %}
-          {% if permit.canView %}
-            <p>{{ permit.userEmail.itemValue }}</p>
-          {% endif %}
-        {% endfor %}
-        {% for permit in contact.incoming.persona.permitIMs %}
-          {% if permit.canView %}
-            <p>{{ permit.userIM.itemValue }}</p>
-          {% endif %}
-        {% endfor %}
-        {% for permit in contact.incoming.persona.permitWWWs %}
-          {% if permit.canView %}
-            <p>{{ permit.userWebpage.itemValue }}</p>
-          {% endif %}
-        {% endfor %}
-        {% for permit in contact.incoming.persona.permitPhones %}
-          {% if permit.canView %}
-            <p>{{ permit.userPhoneNumber.itemValue }}</p>
-          {% endif %}
-        {% endfor %}
-        {% for permit in contact.incoming.persona.permitAddresses %}
-          {% if permit.canView %}
-            <p>{{ permit.userAddress.itemValue }}</p>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-    </td>
-    <td class="groupspersonas">
-      <table><tbody>
-        <tr>
-          <td><b>Group</b></td>
-          <td>{{ ui.dropdown(groups, "", class = "groupselects", tdclass = "widedropdown") }}</td>
-        </tr>
-        <tr>
-          <td><b>Permit</b></td>
-          <td>{{ ui.dropdown(personas, "", class = "personaselects", tdclass = "widedropdown") }}</td>
-        </tr>
-      </tbody></table>
-    </td>
-    </tr></tbody></table>
+    {% if contact.incoming %}
+      {% for permit in contact.incoming.persona.permitEmails %}
+        {% if permit.canView %}
+          <div>
+            <div class="contacticons emailicons"></div>          
+            {{ permit.userEmail.itemValue }}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.persona.permitIMs %}
+        {% if permit.canView %}
+          <div>
+            <div class="contacticons imicons"></div>          
+            {{ permit.userIM.itemValue }}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.persona.permitWWWs %}
+        {% if permit.canView %}
+          <div>
+            <div class="contacticons wwwicons"></div>          
+            {{ permit.userWebpage.itemValue }}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.persona.permitPhones %}
+        {% if permit.canView %}
+          <div>
+            <div class="contacticons phoneicons"></div>
+            {{ permit.userPhoneNumber.itemValue }}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for permit in contact.incoming.persona.permitAddresses %}
+        {% if permit.canView %}
+          <div>
+            <div class="contacticons addressicons"></div>
+            {{ permit.userAddress.itemValue }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
   </div>
 </div>
+{{ ui.beginform(class="grouppersonaselects hiddenelements") }}
+  <table><tbody><tr>
+    {{ ui.tablelabel("Persona") }}
+    {{ ui.dropdown(personas, contact.persona.key(), class = "personaselects", tdclass = "") }}
+    {{ ui.checkbutton(class="personachangers", tooltip="Apply") }}
+  </tr></tbody></table>
+{{ ui.endform() }}
