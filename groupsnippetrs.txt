@@ -1,0 +1,11 @@
+    {{ ui.begintable() }}
+      {{ ui.tablelabel("New group") }}
+      {{ ui.textinput("", "New group", id="newgroupname") }}
+      {{ ui.addbutton("group", tooltip="Add new persona") }} 
+    {{ ui.endtable() }}
+
+  {{ ui.newrow() }}
+    {{ ui.tablelabel("Group") }}
+    {{ ui.dropdown(groups, contact.group.key(), class = "groupselects", tdclass = "") }}
+    {{ ui.checkbutton(class="groupchangers", tooltip="Apply") }}
+

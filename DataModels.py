@@ -274,9 +274,9 @@ imTypes = {
 
 availableLanguages = {
     'en': u'English',
-    'pl': u'Polski',
-    'de': u'Deutsch',
-    'jp': u'日本語',
+    #'pl': u'Polski',
+    #'de': u'Deutsch',
+    #'jp': u'日本語',
 }
 
 #-----------------------------------------------------------------------------
@@ -284,7 +284,6 @@ availableLanguages = {
 class Group(db.Model):
     
     name = db.StringProperty()
-    sync = db.BooleanProperty(default = True)
 
 #-----------------------------------------------------------------------------
 

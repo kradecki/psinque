@@ -64,46 +64,32 @@ class AjaxError(Exception):
 
 #-----------------------------------------------------------------------------
 
-class UserLoggedInHandler(webapp2.RequestHandler):
-
-    def safeGuard(self):
-        '''
-        Checks if a user is logged in and if not, redirects
-        to the login page.
-        '''
-        # 1. Try to use tge GAE's OpenID framework
-        self.user = users.get_current_user()
-        if not self.user:   # no OpenID user logged in    
-            self.redirect("/")
-            return False
-        return True
-
-class MasterHandler(UserLoggedInHandler):
+class MasterHandler(webapp2.RequestHandler):
     '''
     The base class for all Psinque request handlers.
     '''
 
     def get(self, actionName):
 
-        if self.safeGuard():
-            
-            if (not "view" in actionName) and (not self.getUserProfile()):
-                self.sendJsonError("User profile not found")
-            
-            try:
-                actionFunction = getattr(self, actionName)
-            except AttributeError as e:
-                logging.error("Action method not found:")
-                logging.error(e)
-                self.error404()
-                return
+        self.user = users.get_current_user()
 
-            try:
-                actionFunction()
-            except AjaxError as e:
-                logging.error("AjaxError:")
-                logging.error(e)
-                self.sendJsonError(e.value)
+        if (not "view" in actionName) and (not self.getUserProfile()):
+            self.sendJsonError("User profile not found")
+        
+        try:
+            actionFunction = getattr(self, actionName)
+        except AttributeError as e:
+            logging.error("Action method not found:")
+            logging.error(e)
+            self.error404()
+            return
+
+        try:
+            actionFunction()
+        except AjaxError as e:
+            logging.error("AjaxError:")
+            logging.error(e)
+            self.sendJsonError(e.value)
                 
     
     def getUserProfile(self):
@@ -112,16 +98,12 @@ class MasterHandler(UserLoggedInHandler):
         If the profile does not exist, the user is redirected to the profile
         edit page.
         '''
-        logging.info("getUserProfile()")
-        if self.safeGuard():
-            self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
-            if not self.userProfile:
-                self.redirect("/profile/view")
-                return False
-            self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
-            return True
-        else:
+        self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
+        if not self.userProfile:
+            self.redirect("/profile/view")
             return False
+        self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
+        return True
 
 
     def getRequiredParameter(self, parameterName):
@@ -166,39 +148,43 @@ class MasterHandler(UserLoggedInHandler):
                     activeEntry = "",
                     templateVariables = None):
         
-        try:
-            getattr(self, "userProfile")
-        except AttributeError:
-            if not self.getUserProfile():
-                return
+        if self.user:
+            try:
+                getattr(self, "userProfile")
+            except AttributeError:
+                if not self.getUserProfile():
+                    return
 
-        notificationCount = Psinque.all(keys_only = True). \
-                                    filter("fromUser =", self.userProfile). \
-                                    filter("status =", "pending"). \
-                                    count()
-        if notificationCount > 0:
-            self.psinqueText = "Psinques (" + str(notificationCount) + ")"
+            notificationCount = Psinque.all(keys_only = True). \
+                                        filter("fromUser =", self.userProfile). \
+                                        filter("status =", "pending"). \
+                                        count()
+            if notificationCount > 0:
+                self.psinqueText = "Psinques (" + str(notificationCount) + ")"
+            else:
+                self.psinqueText = "Psinques"
+
+            menuentries = [
+                MenuEntry("profile/view", "Profile"),
+                MenuEntry("personas/view", "Personas"),
+                MenuEntry("psinques/view", self.psinqueText),
+                MenuEntry("settings/view", "Settings"),
+            ]
+            if activeEntry != "":
+                for entry in menuentries:
+                    if entry.title == activeEntry:
+                        entry.entryclass = "active"  # mark menu item as active
+
+            if templateVariables:
+                allTemplateVariables = dict(templateVariables.items() +
+                    self.getUserVariables().items() +
+                    {'menuentries': menuentries}.items())
+            else:
+                allTemplateVariables = dict(self.getUserVariables().items() +
+                    {'menuentries': menuentries}.items())
+                
         else:
-            self.psinqueText = "Psinques"
-
-        menuentries = [
-            MenuEntry("profile/view", "Profile"),
-            MenuEntry("personas/view", "Personas"),
-            MenuEntry("psinques/view", self.psinqueText),
-            MenuEntry("settings/view", "Settings"),
-        ]
-        if activeEntry != "":
-            for entry in menuentries:
-                if entry.title == activeEntry:
-                    entry.entryclass = "active"  # mark menu item as active
-
-        if templateVariables:
-            allTemplateVariables = dict(templateVariables.items() +
-                 self.getUserVariables().items() +
-                 {'menuentries': menuentries}.items())
-        else:
-            allTemplateVariables = dict(self.getUserVariables().items() +
-                 {'menuentries': menuentries}.items())
+            allTemplateVariables = templateVariables
 
         template = jinja_environment.get_template(templateName)
         self.response.out.write(template.render(allTemplateVariables))

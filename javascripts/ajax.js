@@ -61,6 +61,10 @@ psinqueAPI_removeContact     = psinqueAPI_psinques + "removecontact"
 psinqueAPI_requestPrivate    = psinqueAPI_psinques + "requestprivate"
 psinqueAPI_acceptRequest     = psinqueAPI_psinques + "acceptrequest"
 psinqueAPI_rejectRequest     = psinqueAPI_psinques + "rejectrequest"
+psinqueAPI_addGroup          = psinqueAPI_psinques + "addgroup"
+psinqueAPI_changeGroup       = psinqueAPI_psinques + "changegroup"
+psinqueAPI_changePersona     = psinqueAPI_psinques + "changepersona"
+psinqueAPI_addIncoming       = psinqueAPI_psinques + "addincoming"
 
 //------------------------------
 // Profile
@@ -325,6 +329,9 @@ function psinqueUpdateSettings(emailNotifications,
                 }, successFunction);
 }
 
+//------------------------------
+// Psinques
+
 function psinqueSearchEmail(email, successFunction) {
     psinqueAJAX(psinqueAPI_searchEmail, {
                     email: email,
@@ -358,6 +365,32 @@ function psinqueAcceptRequest(psinqueKey, successFunction) {
 function psinqueRejectRequest(psinqueKey, successFunction) {
     psinqueAJAX(psinqueAPI_rejectRequest, {
                     key : psinqueKey,
+                }, successFunction);
+}
+
+function psinqueAddGroup(groupName, successFunction) {
+    psinqueAJAX(psinqueAPI_addGroup, {
+                    name : groupName,
+                }, successFunction);
+}
+
+function psinqueChangeGroup(contactKey, groupKey, successFunction) {
+    psinqueAJAX(psinqueAPI_changeGroup, {
+                    contact: contactKey,
+                    group: personaKey,
+                }, successFunction);
+}
+
+function psinqueChangePersona(contactKey, personaKey, successFunction) {
+    psinqueAJAX(psinqueAPI_changePersona, {
+                    contact: contactKey,
+                    persona: personaKey,
+                }, successFunction);
+}
+
+function psinqueAddIncoming(contactKey, successFunction) {
+    psinqueAJAX(psinqueAPI_addIncoming, {
+                    key: contactKey,
                 }, successFunction);
 }
 
@@ -430,7 +463,7 @@ $(document).ready(function() {
     
     $(document).ajaxError(function(event, jqXHR, settings, exception) {
         uiStopLogoAnimation();
-//         window.ajaxCounter = 0;
+        window.ajaxCounter--;
         uiShowErrorMessage("Uknown error occured while performing operation: " + exception);
     });
     

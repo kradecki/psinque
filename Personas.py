@@ -280,25 +280,40 @@ class PersonasHandler(MasterHandler):
 
 class PersonaURLs(MasterHandler):
 
-
     def get(self, personaKey):
 
-        if self.safeGuard():
+        if not self.getUserProfile():
+            self.sendJsonError("User profile not found")
+
+        try:
+            persona = Persona.get(personaKey)
             
-            try:
-                persona = Persona.get(personaKey)
-                self.response.out.write("You would have gotten access to this persona if it were implemented. Good luck next time!")
-            except datastore_errors.BadKeyError:
-                self.response.out.write("Persona not found!")
+            friendsProfile = persona.parent()
+            
+            if contactExists(self.userProfile, friendsProfile):
+                self.sendJsonError("Person already in contacts.")
+            
+            # Contact on user's side
+            contact = Contact(parent = self.userProfile,
+                              friend = friendsProfile,
+                              group = self.userProfile.defaultGroup,
+                              persona = self.userProfile.publicPersona)
+            contact.put()
 
-
-    def safeGuard(self):
-
-        self.user = users.get_current_user()
-        if not self.user:  # user not logged in
-            self.redirect("/static/about")
-            return False
-        return True
+            # Contact on user's friend's side
+            contact = Contact(parent = friendsProfile,
+                              friend = self.userProfile,
+                              group = friendsProfile.defaultGroup,
+                              persona = persona)
+            contact.put()
+            
+            self.sendContent("templates/Static_Success.html",
+                              templateVariables = {
+                                  'message': 'You have successfully added a new contact to your contact list',
+            })
+            
+        except datastore_errors.BadKeyError:
+            self.sendJsonError("Persona not found!")
 
 
 #-----------------------------------------------------------------------------

@@ -8,8 +8,8 @@ builtins:
 - remote_api: off
 # - admin_redirect: on
 
-inbound_services:
-- warmup
+# inbound_services:
+# - warmup
 # Later, to receive emails, we will need to add:
 # - mail
 
@@ -82,9 +82,9 @@ handlers:
   static_dir: javascripts
 - url: /stylesheets
   static_dir: stylesheets
-- url: /(.*\.(gif|png|jpg))
+- url: /(.*\.(gif|png|jpg|svg))
   static_files: static/\1
-  upload: static/(.*\.(gif|png|jpg))
+  upload: static/(.*\.(gif|png|jpg|svg))
 - url: /favicon.ico
   static_files: static/favicon.ico
   upload: static/favicon.ico

@@ -71,10 +71,13 @@
   {{ button(id, "check", class, tooltip) }}
 {%- endmacro -%}
 
-{%- macro dropdown(items, selected, id="", class="", tdclass="") -%}
+{%- macro dropdown(items, selected, id="", class="", tdclass="", placeholder="") -%}
   <td class="forminputs {% if tdclass %}{{ tdclass }}{% endif %}">
     <select id="{{ id }}" {% if class %}class="{{ class }}"{% endif %}>
     {% if items is mapping %}
+      {% if placeholder %}
+        <option value="{{ placeholder }}">None</option>
+      {% endif %}
       {% for item in items|dictsort %}
         <option value="{{ item[0] }}" {% if item[0] == selected %}selected="selected"{% endif %}>{{ item[1] }}</option>
       {% endfor %}

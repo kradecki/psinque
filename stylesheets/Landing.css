@@ -1,61 +1,19 @@
 
 div#content {
     box-shadow: none;
-}
-
-div#content {
     top: 0px;
-}
-
-div.singlecolumn {
-    float: left;
-    padding-top: 45px;
-}
-
-div#leftside {
-    width: 442px;
-    padding-right: 15px;
-}
-
-div#rightside {
-    width: 445px;
-    border-left: 2px solid #404040;
-    padding-left: 15px;
-}
-
-div#content {
     text-align: center;
 }
 
-div#tagline {
-    width: 650px;
+div#openid {
+    width: 668px;
+    margin: 0 auto;
     margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    display: inline-block;
 }
 
-div#bigcard {
-    display: inline-block;
-    width: 180px;
-}
-
-div#tagline {
-    display: inline-block;
-    font-size: 40px;
-    font-weight: 600;
-    font-style: italic;
-}
-
-div#slogan {
-    display: inline-block;
-    font-size: 40px;
-    font-weight: 800;
-    font-style: italic;
-    width: 430px;
-    line-height: 130%;
+div#biglogo {
     text-align: left;
-    padding-left: 30px;
+    padding-left: 112px;
 }
 
 div.tableform tr {
@@ -73,11 +31,34 @@ div.tableform td.formlabels {
 }
 
 div.tableform td.darkbutton {
-    padding-left: 0px;
+/*     padding-left: 0px; */
 }
 
-div.tableform td.darkbutton img {
-    margin-right: 15px;
+a.logos div {
+    width: 40px;
+    height: 40px;
+    background: url("/images/buttons.png") no-repeat;
+    background-position: -80px 0px;
+}
+
+a.logos div.buttons_google:hover {
+    background-position: -80px -40px;
+}
+
+a.logos div.buttons_yahoo {
+    background-position: -120px 0px;
+}
+
+a.logos div.buttons_yahoo:hover {
+    background-position: -120px -40px;
+}
+
+a.logos div.buttons_yahoo_japan {
+    background-position: -160px 0px;
+}
+
+a.logos div.buttons_yahoo_japan:hover {
+    background-position: -160px -40px;
 }
 
 div.tableform td.bigdarklabel {
@@ -93,15 +74,6 @@ div.tableform td.bigdarklabel label {
     margin-top: 8px;
     display: block;
     height: 32px;
-}
-
-.ui-tooltip {
-    padding: 8px;
-    position: absolute;
-    z-index: 9999;
-    max-width: 300px;
-    border: 1px solid #404040;
-    background-color: #fff;
 }
 
 label#termslabel {
