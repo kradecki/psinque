@@ -46,7 +46,7 @@
         {% if permit.canView %}
           <div>
             <div class="contacticons emailicons"></div>          
-            {{ permit.userEmail.itemValue }}
+            <a href="mailto:{{ permit.userEmail.itemValue }}">{{ permit.userEmail.itemValue }}</a>
           </div>
         {% endif %}
       {% endfor %}
@@ -62,7 +62,7 @@
         {% if permit.canView %}
           <div>
             <div class="contacticons wwwicons"></div>          
-            {{ permit.userWebpage.itemValue }}
+            <a href="{{ permit.userWebpage.itemValue }}">{{ permit.userWebpage.itemValue }}</a>
           </div>
         {% endif %}
       {% endfor %}

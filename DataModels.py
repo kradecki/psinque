@@ -476,6 +476,13 @@ class UserProfile(db.Model):
     userSettings = db.ReferenceProperty(UserSettings)
     
     @property
+    def displayName(self):
+        if self.publicEnabled:
+            return self.publicPersona.displayName
+        else:
+            return u"<i>Undisclosed name</i>"
+    
+    @property
     def emails(self):
         return UserEmail.all().ancestor(self).order("-primary")
 
@@ -533,7 +540,7 @@ class Psinque(db.Model):
     def displayName(self):
         if not self.persona is None:
             return self.persona.displayName
-        return self.fromUser.publicPersona.displayName
+        return self.fromUser.displayName
     
 #-----------------------------------------------------------------------------
 
@@ -559,6 +566,8 @@ class Contact(db.Model):
     def displayName(self):
         if not self.incoming is None:
             return self.incoming.displayName
+        if status == "public":
+            return self.friend.displayName
         return self.friendsContact.persona.displayName
   
 #-----------------------------------------------------------------------------

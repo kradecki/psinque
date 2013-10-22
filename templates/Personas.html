@@ -27,13 +27,13 @@
         {% set personaIndex = loop.index %}
         {% include "templates/Personas_Persona.html" %}
       {% endfor %}
-      {{ ui.beginform("newpersona") }}
-        {{ ui.begintable() }}
-          {{ ui.tablelabel("New persona") }}
-          {{ ui.textinput("", "Please type name of your new persona", "newpersonaname") }}
-          {{ ui.addbutton("persona", tooltip="Add new persona") }}
-        {{ ui.endtable() }}
-      {{ ui.endform() }}
     </div>
+    {{ ui.beginform("newpersona") }}
+      {{ ui.begintable() }}
+        {{ ui.tablelabel("New persona") }}
+        {{ ui.textinput("", "Please type name of your new persona", "newpersonaname") }}
+        {{ ui.addbutton("persona", tooltip="Add new persona") }}
+      {{ ui.endtable() }}
+    {{ ui.endform() }}
   </div>
 {% endblock %}
