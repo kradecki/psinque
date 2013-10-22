@@ -122,15 +122,9 @@ class ProfileHandler(MasterHandler):
         try:
             birthday   = int(self.getRequiredParameter('day'))
             birthyear  = int(self.getRequiredParameter('year'))
+            birthmonth = int(self.getRequiredParameter('month'))
         except ValueError as e:
             raise AjaxError("Invalid integer number: " + str(e))
-
-        birthmonth = self.getRequiredParameter('month')
-        
-        try:
-            birthmonth = monthNames.index(birthmonth) + 1
-        except ValueError:
-            raise AjaxError("Invalid month name: " + birthmonth)
 
         self.userProfile.namePrefix = self.request.get('prefix')
         self.userProfile.nameSuffix = self.request.get('suffix')

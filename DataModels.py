@@ -14,7 +14,18 @@ privacyTypes = ['Home', 'Work']
 phoneTypes   = ["Landline", "Cellphone", "Internet", "Fax", "Other"]
 wwwTypes     = ["Personal", "Company", "MySpace", "Facebook", "Twitter", "Google+"]
 
-monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+monthNames = {'00': 'Jan',
+              '01': 'Feb',
+              '02': 'Mar',
+              '03': 'Apr',
+              '04': 'May',
+              '05': 'Jun',
+              '06': 'Jul',
+              '07': 'Aug',
+              '08': 'Sep',
+              '09': 'Oct',
+              '10': 'Nov',
+              '11': 'Dec'}
 
 countries = {
     "AF": "Afghanistan",
@@ -349,7 +360,7 @@ class UserPhoneNumber(db.Model):
 #-----------------------------------------------------------------------------
 
 class UserWebpage(db.Model):
-    itemValue = db.StringProperty()
+    itemValue = db.LinkProperty()
     itemType = db.StringProperty(choices = wwwTypes)
     privacyType = db.StringProperty(choices = privacyTypes)
     creationTime = db.DateTimeProperty(auto_now_add = True)
@@ -438,7 +449,7 @@ class UserProfile(db.Model):
     email = db.StringProperty()
     passwordHash = db.StringProperty()
     passwordSalt = db.StringProperty()
-    activated = db.BooleanProperty(default = False) 
+    active = db.BooleanProperty(default = False)
 
     # Personal data
     namePrefix = db.StringProperty(default = u"")
@@ -450,12 +461,7 @@ class UserProfile(db.Model):
     familyNames = db.StringProperty(default = u"")
     familyNamesRomanization = db.StringProperty(default = u"")
     
-    pseudonyms = db.StringListProperty()
-    
-    companyName = db.StringProperty(default = u"")
-
     gender = db.StringProperty(choices = genders)
-
     birthDate = db.DateProperty(default = datetime.date(1900, 1, 1))  
 
     publicEnabled = db.BooleanProperty(default = True)

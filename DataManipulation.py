@@ -235,11 +235,14 @@ def createNewProfile(user):
     userProfile.defaultGroup  = createNewGroup(userProfile, 'Default')
     userProfile.defaultPersona = createNewPersona(userProfile, 'Default', userEmail)
     userProfile.publicPersona  = createNewPersona(userProfile, 'Public', userEmail)
-    
-    userProfile.pseudonyms = [ user.nickname() ]
 
     # Save the updated user profile
     userProfile.put()
+
+    
+    nickname = UserNickname(parent = userProfile,
+                            itemValue = user.nickname())
+    nickname.put()
 
     return userProfile
 

@@ -114,7 +114,7 @@ function openExistingGoogleMaps() {
 
 function updateEmail(input) {
   
-    emailAddress = input.val();
+    var emailAddress = input.val();
     
     if(emailAddress == "")
         return;
@@ -130,8 +130,8 @@ function updateEmail(input) {
         return;
     }
     
-    typeOfEmail = input.parent().next().find(".typesofemail").val();
-    emailKey = input.parent().find(".additionalemailkeys");
+    var typeOfEmail = input.parent().next().find(".typesofemail").val();
+    var emailKey = input.parent().find(".additionalemailkeys");
     if(emailKey.val()) {
         psinqueUpdateEmail(emailKey.val(), emailAddress, typeOfEmail, function() {
             uiUnmarkChangedFields(input.parent());
@@ -153,7 +153,7 @@ function updateNickname(input) {
     if(itemValue == "")
         return;
   
-    td = input.parent();
+    var td = input.parent();
     itemKey = td.find(".nicknamekeys");
     if(itemKey.val()) {
         psinqueUpdateNickname(itemKey.val(), itemValue, function() {
@@ -176,7 +176,7 @@ function updateCompany(input) {
     if(itemValue == "")
         return;
   
-    td = input.parent();
+    var td = input.parent();
     itemType = td.next().find("input").val()
     itemKey = td.find(".companykeys");
     if(itemKey.val()) {
@@ -195,12 +195,21 @@ function updateCompany(input) {
 
 function updateItem(input, prefix, updateFunction, addFunction) {
   
-    itemValue = input.val();
+    var itemValue = input.val();
     
     if(itemValue == "")
         return;
+    
+    itemValue = itemValue.trim();
+    
+    if(prefix == "www") {
+        if(itemValue.indexOf("/") == -1)
+            itemValue = itemValue + "/";
+        if(itemValue.indexOf("http://") != 0)
+            itemValue = "http://" + itemValue;
+    }
 
-    td = input.parent();
+    var td = input.parent();
     itemTypes = td.next().find("." + prefix + "types").val()
     itemTypes = itemTypes.split(" ");
     
@@ -225,9 +234,9 @@ function updateAddress(input) {
     if(address == "")
         return;
 
-    tr = input.parent().parent();
+    var tr = input.parent().parent();
     
-    addressNr = input.attr("data-psinque-index");
+    var addressNr = input.attr("data-psinque-index");
     
     city = $("#city" + addressNr).val();
     if(city == "") {
@@ -269,16 +278,25 @@ function addUpdateHandler(where) {
         if(!uiValidateTextInputs(".required.emailaddresses", "You need to fill out the primary email address."))
             return false;
         
+        birthyear = parseInt($("#birthyears").val());
+        birthmonth = parseInt($("#birthmonths").val());
+        birthday = parseInt($("#birthdays").val());
+        
+        if(!uiValidateDate(birthyear, birthmonth, birthday)) {
+            uiShowErrorMessage("Are you sure your birthdate is correct? This date is invalid...");
+            return false;
+        }
+        
         psinqueAjaxTransactionStart();
         
         if($(".general.unsavedchanges").length > 0) {
           psinqueUpdateGeneral($("#prefix").val(), 
-                              $("#givennames").val(),  $("#givenroman").val(),
-                              $("#familynames").val(), $("#familyroman").val(),
-                              $("#suffix").val(), 
-                              $("#companyname").val(), $("#companyroman").val(),
-                              $("#birthdays").val(),   $("#birthmonths").val(), 
-                              $("#birthyears").val(),  $("#gender").val(), 
+                               $("#givennames").val(),  $("#givenroman").val(),
+                               $("#familynames").val(), $("#familyroman").val(),
+                               $("#suffix").val(), 
+                               $("#companyname").val(), $("#companyroman").val(),
+                               birthday, birthmonth+1, birthyear,
+                               $("#gender").val(), 
               function() {
                   uiUnmarkChangedFields(".general.unsavedchanges");
               });
