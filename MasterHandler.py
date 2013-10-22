@@ -75,7 +75,7 @@ class MasterHandler(webapp2.RequestHandler):
 
         if (not "view" in actionName) and (not self.getUserProfile()):
             self.sendJsonError("User profile not found")
-        
+                    
         try:
             actionFunction = getattr(self, actionName)
         except AttributeError as e:
@@ -155,6 +155,10 @@ class MasterHandler(webapp2.RequestHandler):
                 if not self.getUserProfile():
                     return
 
+            if not self.userProfile.active:
+                self.restrictedAccess()
+                return
+
             notificationCount = Psinque.all(keys_only = True). \
                                         filter("fromUser =", self.userProfile). \
                                         filter("status =", "pending"). \
@@ -188,6 +192,12 @@ class MasterHandler(webapp2.RequestHandler):
 
         template = jinja_environment.get_template(templateName)
         self.response.out.write(template.render(allTemplateVariables))
+
+
+    def restrictedAccess(self):
+      
+        template = jinja_environment.get_template('templates/restricted.html')
+        self.response.out.write(template.render())
 
 
     def getUserVariables(self):
