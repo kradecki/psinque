@@ -57,8 +57,8 @@ def notifyPendingPsinque(psinque):
     
     sendNotification(receipient, 
                      "You have a new pending psinque request",
-                     stopTemplate.render({
-                         'receipientsName': receipient.givenNames,
+                     pendTemplate.render({
+                         'receipientsName': receipient.displayName,
                          'friendsName': psinque.parent().displayName,
                          'acceptURL': "http://www.psinque.com/psinques/acceptrequest?key=" + str(psinque.key()),
                          'rejectURL': "http://www.psinque.com/psinques/rejectrequest?key=" + str(psinque.key()),
@@ -72,7 +72,7 @@ def notifyStoppedUsingPrivateData(psinque):
     sendNotification(receipient, 
                      "%s has stopped using your private data" % psinque.parent().displayName,
                      stopTemplate.render({
-                         'receipientsName': receipient.givenNames,
+                         'receipientsName': receipient.displayName,
                          'friendsName': psinque.parent().displayName,
                      }))
 
@@ -87,7 +87,7 @@ def notifyDowngradedPsinque(psinque):
     sendNotification(receipient, 
                      "Your access to private data has been revoked",
                      downgradeTemplate.render({
-                         'receipientsName': receipient.givenNames,
+                         'receipientsName': receipient.displayName,
                          'friendsName': psinque.displayName,
                      }))
 
@@ -99,7 +99,7 @@ def notifyAcceptedRequest(psinque):
     sendNotification(receipient, 
                      "Your request for private contact data has been accepted",
                      acceptTemplate.render({
-                         'receipientsName': receipient.givenNames,
+                         'receipientsName': receipient.displayName,
                          'friendsName': psinque.displayName,
                      }))
 
@@ -111,7 +111,7 @@ def notifyRejectedRequest(psinque):
     sendNotification(psinque.fromUser, 
                      "Your request for sharing private contact data has been rejected",
                      rejectTemplate.render({
-                         'receipientsName': receipient.givenNames,
+                         'receipientsName': receipient.displayName,
                          'friendsName': psinque.displayName,
                      }))
 
