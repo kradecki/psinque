@@ -20,8 +20,11 @@ rejectTemplate    = jinja_environment.get_template("templates/Email_Reject.html"
 downgradeTemplate = jinja_environment.get_template("templates/Email_Downgrade.html")
 stopTemplate      = jinja_environment.get_template("templates/Email_Stop.html")
 pendTemplate      = jinja_environment.get_template("templates/Email_Pend.html")
+activeTemplate    = jinja_environment.get_template("templates/Email_AccountActive.html")
 
 #-----------------------------------------------------------------------------
+
+psinqueSender = "Psinque notifications <noreply@psinque.appspotmail.com>"
 
 def getPrimaryEmail(userProfile):
     
@@ -30,10 +33,7 @@ def getPrimaryEmail(userProfile):
 
 def sendNotification(userProfile, subject, html, shorttext = u""):
     
-    logging.info("sendNotification()")
-    logging.info(html)
-    
-    message = mail.EmailMessage(sender = "Psinque notifications <noreply@psinque.appspotmail.com>",
+    message = mail.EmailMessage(sender = psinqueSender,
                                 subject = subject)
     message.to = getPrimaryEmail(userProfile)
     #message.body = html
@@ -114,5 +114,56 @@ def notifyRejectedRequest(psinque):
                          'receipientsName': receipient.displayName,
                          'friendsName': psinque.displayName,
                      }))
+
+# Invitation to join Psinque ------------------------------------------------
+
+
+def notifyAccountActive(email, recipientsName):
+   
+    message = mail.EmailMessage(sender = psinqueSender,
+                                subject = "Your Psinque account has been activated")
+    message.to = email
+    message.html = activeTemplate.render()
+    message.send()
+
+
+def notifyInvitation(email):
+
+    message = mail.EmailMessage(sender = psinqueSender,
+                                subject = "Invitation to join Psinque")
+    message.to = email
+    message.html = rejectTemplate.render({
+                         'receipientsName': receipient.displayName,
+                         'friendsName': psinque.displayName,
+                   })
+    message.send()
+
+
+#TODO email-> psinque
+#TODO use sendNotification above
+def inviteToPsinque(email):
+    
+    existingEmail = UserEmail.all().filter("itemValue =", email).get()
+    
+    if not existingEmail is None:
+      
+        userProfile = existingEmail.parent()
+        
+        if not userProfile.active:
+            
+            userProfile.active = True
+            userProfile.put()
+            
+            notifyAccountActive(email)
+            
+            return True
+         
+        else:
+            
+            return False   # the 
+    else:
+      
+        raise Dupa()  #TODO
+
 
 #-----------------------------------------------------------------------------

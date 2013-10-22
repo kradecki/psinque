@@ -251,15 +251,14 @@ class PsinquesHandler(MasterHandler):
             if not psinque is None:
                 raise AjaxError("You already have a psinque with this email address.")
 
-            if userProfile.publicEnabled:
-                displayName = userProfile.publicPersona.displayName
-            else:
-                displayName = "<i>Undisclosed name</i>"
-            
+            # Check if the account is active
+            if not userProfile.active:
+                self.sendJsonOK({ "found": False })  # act like this person is not registered
+
             self.sendJsonOK({
                 "found": True,
                 "key": str(userProfile.key()),
-                "displayName": displayName,
+                "displayName": userProfile.displayName,
                 "publicEnabled": userProfile.publicEnabled,
             })
 

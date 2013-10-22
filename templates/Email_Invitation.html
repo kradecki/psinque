@@ -1,0 +1,12 @@
+
+{% extends "templates/email.html" %}
+
+{% block content %}
+  <p>Dear {{ receipientsName }},</p>
+  <p>
+    Another user, <strong>{{ friendsName }}</strong>, has invited you join Psinque and automatically synchronize your contact data.
+  </p>
+  <p>
+    Please click <a href="http://www.psinque.com/profile/view">this link</a> to create your Psinque profile.
+  </p>
+{% endblock %}
