@@ -14,7 +14,7 @@ body {
 }
 
 div#uberwrapper {
-    background: white url("/images/backlogo.gif") top center no-repeat;
+/*     background: white url("/images/backlogo.gif") top center no-repeat; */
 }
 
 div#contentwrapper {
