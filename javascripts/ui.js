@@ -284,12 +284,21 @@ function uiMakeDropdowns(where) {
     });
 }
 
+
 function uiValidateEmail(emailValue) {
   
     var atpos = emailValue.indexOf("@");
     var dotpos = emailValue.lastIndexOf(".");
     return !(atpos < 1 || dotpos < atpos+2 || dotpos+2 >= emailValue.length);
 }
+
+
+function uiValidateDate(year, month, day) {
+    
+    var dayobj = new Date(year, month, day);
+    return ((dayobj.getMonth() == month) && (dayobj.getDate() == day) && (dayobj.getFullYear() == year))
+}
+
 
 function uiValidateTextInputs(selector, message) {
   

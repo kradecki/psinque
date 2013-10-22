@@ -62,9 +62,9 @@ function addUpdatePersonaHandler(where) {
         
         // Update all the other personas
         personaForm.find("input.unsavedchanges").each(function() {
-            input = $(this);
-            parentrow = input.parent().parent();
-            itemIndex = input.attr("data-psinque-subindex");
+            var input = $(this);
+            var parentrow = input.parent().parent();
+            var itemIndex = input.attr("data-psinque-subindex");
             if(input.attr("type") == "checkbox" && (input.hasClass("individual"))) {               
                 psinqueSetIndividualPermit(input.attr("name"), input.is(':checked'),
                     function() {
@@ -92,7 +92,7 @@ function addAddPersonaHandler(where) {
 
                     newPersonaForm = $($.trim(data));
                     newPersonaForm.hide();
-                    newPersonaForm.insertBefore($("#newpersona"));
+                    newPersonaForm.appendTo($("#personalist"));
 
                     addAllPersonaHandlers(newPersonaForm);
 
@@ -103,14 +103,14 @@ function addAddPersonaHandler(where) {
                                         
                     recreateAccordeon();
                     uiInitializeCheckboxes();
-                    unmarkChangesInPersona("#newpersonaname");
+
                     $("#newpersonaname").val("");
                     
                 });
             
         } else {
             
-            alert("Persona name cannot be empty!");
+            uiShowErrorMessage("Persona name cannot be empty!");
         } 
         
         return false;
@@ -196,6 +196,8 @@ $(document).ready(function() {
     window.highestExistingPersonaNumber = parseInt($("h3").length);
 
     addAddPersonaHandler("#addpersona");
+    $("#newpersonaname").unbind("keyup"); // do not mark red on changes
+    $("#newpersonaname").unbind("change"); // do not mark red on changes
     uiAddEnterAction("#newpersonaname", "#addpersona");
     
     $("#personalist").accordion({
