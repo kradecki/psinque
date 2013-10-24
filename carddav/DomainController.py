@@ -48,6 +48,10 @@ class PsinqueDomainController(object):
         """
         #if self.userPassword is None:  # user has not generated password
             #return None
+
+        # Ignore spaces
+        username = username.replace(" ", "")
+
         carddav_password = CardDAV.getCardDAVLogin(username)
         if carddav_password is None:
             return [ u"", u"" ]
@@ -63,6 +67,10 @@ class PsinqueDomainController(object):
         if realmname != "carddav":
             return False
 
+        # Ignore spaces
+        username = username.replace(" ", "")
+        password = password.replace(" ", "")
+      
         userPassword = CardDAV.getCardDAVLogin(username)
         
         if userPassword is None:

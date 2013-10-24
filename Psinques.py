@@ -395,6 +395,9 @@ class PsinquesHandler(MasterHandler):
             contact.friendsContact.put()
             
             Notifications.notifyDowngradedPsinque(contact.outgoing)
+        
+        contact.outgoing.persona = persona
+        contact.outgoing.put()
             
         self.sendJsonOK()
 

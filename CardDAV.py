@@ -61,7 +61,7 @@ def getCardDAVLogin(username):
     carddavLogin = CardDAVLogin.all(). \
                                 filter("generatedUsername =", username). \
                                 get()
-    if not carddavLogin:
+    if carddavLogin is None:
         return None
     
     if not carddavLogin.parent().userSettings.cardDAVenabled:
@@ -74,7 +74,7 @@ def getCardDAVLogin(username):
 
 def getUserProfile(username):
     
-    carddavLogin = getCardDAVLogin(username)
+    carddavLogin = getCardDAVLogin(username.replace(" ", ""))
     
     return carddavLogin.parent()
 

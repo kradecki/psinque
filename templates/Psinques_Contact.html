@@ -32,7 +32,7 @@
         {% elif contact.status == "pending" %}
           {{ tablelessbutton("contact", "buttons-pending", tooltip="Your request to access private data is pending") }}
         {% else %}
-          {{ tablelessbutton("contact", "buttons-public contactupgraders clickable", tooltip="You have access to the public contact data") }}
+          {{ tablelessbutton("contact", "buttons-public contactupgraders clickable", tooltip="Request access to private contact data") }}
         {% endif %}
       {% else %}
         {{ tablelessbutton("contact", "buttons-private", tooltip="You have access to the private contact data") }}

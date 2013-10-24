@@ -566,7 +566,7 @@ class Contact(db.Model):
     def displayName(self):
         if not self.incoming is None:
             return self.incoming.displayName
-        if status == "public":
+        if self.status == "public":
             return self.friend.displayName
         return self.friendsContact.persona.displayName
   

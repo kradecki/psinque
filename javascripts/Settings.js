@@ -40,8 +40,9 @@ function addGenerateCardDAVHandler(where) {
 
                 // Display the CardDAV credentials
                 cardDAVLogin = $("#carddavlogin");
-                cardDAVLogin.html("<b>Username</b>: " + passwordGrouper(data.username) +
-                             "</br><b>Password</b>: " + passwordGrouper(data.password));
+                cardDAVLogin.html("Your credentials (spaces do not matter):" +
+                                  "</br><b>Username</b>: " + passwordGrouper(data.username) +
+                                  "</br><b>Password</b>: " + passwordGrouper(data.password));
                 showElementWithEffects(cardDAVLogin.parent());
 
                 // Add a new row with the new login
