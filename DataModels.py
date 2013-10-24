@@ -480,7 +480,7 @@ class UserProfile(db.Model):
         if self.publicEnabled:
             return self.publicPersona.displayName
         else:
-            return u"<i>Undisclosed name</i>"
+            return u"Anonymous user " + unicode(self.key().id())
     
     @property
     def emails(self):
@@ -564,12 +564,12 @@ class Contact(db.Model):
 
     @property
     def displayName(self):
-        if not self.incoming is None:
-            return self.incoming.displayName
         if self.status == "public":
             return self.friend.displayName
-        return self.friendsContact.persona.displayName
-  
+        if not self.incoming is None:
+            return self.incoming.displayName
+        #return self.friendsContact.persona.displayName
+
 #-----------------------------------------------------------------------------
 
 class Notification(db.Model):
