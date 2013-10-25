@@ -54,12 +54,13 @@ def sendNotification(userProfile, subject, html, shorttext = u""):
 def notifyPendingPsinque(psinque):
     
     receipient = psinque.fromUser
+    sender     = psinque.parent().parent()
     
     sendNotification(receipient, 
                      "You have a new pending psinque request",
                      pendTemplate.render({
                          'receipientsName': receipient.displayName,
-                         'friendsName': psinque.parent().displayName,
+                         'friendsName': sender.displayName,
                          'acceptURL': "http://www.psinque.com/psinques/acceptrequest?key=" + str(psinque.key()),
                          'rejectURL': "http://www.psinque.com/psinques/rejectrequest?key=" + str(psinque.key()),
                      }))
@@ -68,12 +69,13 @@ def notifyPendingPsinque(psinque):
 def notifyStoppedUsingPrivateData(psinque):
     
     receipient = psinque.fromUser
+    sender     = psinque.parent().parent()
 
     sendNotification(receipient, 
-                     "%s has stopped using your private data" % psinque.parent().displayName,
+                     "%s has stopped using your private data" % sender.displayName,
                      stopTemplate.render({
                          'receipientsName': receipient.displayName,
-                         'friendsName': psinque.parent().displayName,
+                         'friendsName': sender.displayName,
                      }))
 
 
