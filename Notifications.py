@@ -115,6 +115,7 @@ def notifyRejectedRequest(psinque):
                          'friendsName': psinque.displayName,
                      }))
 
+
 # Invitation to join Psinque ------------------------------------------------
 
 
@@ -139,8 +140,6 @@ def notifyInvitation(email):
     message.send()
 
 
-#TODO email-> psinque
-#TODO use sendNotification above
 def inviteToPsinque(email):
     
     existingEmail = UserEmail.all().filter("itemValue =", email).get()
@@ -156,14 +155,19 @@ def inviteToPsinque(email):
             
             notifyAccountActive(email)
             
-            return True
+            return True  # profile activated
          
         else:
             
-            return False   # the 
+            return False   # user already active
     else:
       
-        raise Dupa()  #TODO
+        invitation = Invitation(email = email)
+        invitation.put()
+        
+        notifyInvitation(email)
+        
+        return True
 
 
 #-----------------------------------------------------------------------------

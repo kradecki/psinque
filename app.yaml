@@ -8,8 +8,8 @@ builtins:
 - remote_api: off
 # - admin_redirect: on
 
-inbound_services:
-- warmup
+# inbound_services:
+# - warmup
 # Later, to receive emails, we will need to add:
 # - mail
 

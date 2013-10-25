@@ -581,6 +581,13 @@ class Notification(db.Model):
     text = db.StringProperty()
     creationTime = db.DateTimeProperty(auto_now_add = True)
 
+
+class Invitation(db.Model):
+    email = db.EmailProperty()
+    sentOn = db.DateTimeProperty(auto_now_add = True)
+    acceptedOn = db.DateTimeProperty(auto_now = True)
+    status = db.StringProperty(default = "pending")
+
 #-----------------------------------------------------------------------------
 
 class IndividualPermit(polymodel.PolyModel):

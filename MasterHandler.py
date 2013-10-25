@@ -12,7 +12,7 @@ from google.appengine.api import users
 
 from django.utils import simplejson as json
 
-from DataModels import UserSettings, UserProfile, Psinque
+from DataModels import UserSettings, UserProfile, Psinque, Invitation
 
 #-----------------------------------------------------------------------------
 
@@ -74,7 +74,8 @@ class MasterHandler(webapp2.RequestHandler):
         self.user = users.get_current_user()
 
         if (not "view" in actionName) and (not self.getUserProfile()):
-            self.sendJsonError("User profile not found")
+            #self.sendJsonError("User profile not found")
+            return
                     
         try:
             actionFunction = getattr(self, actionName)
@@ -98,12 +99,16 @@ class MasterHandler(webapp2.RequestHandler):
         If the profile does not exist, the user is redirected to the profile
         edit page.
         '''
-        self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
-        if not self.userProfile:
-            self.redirect("/profile/view")
-            return False
-        self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
-        return True
+        try:
+            getattr(self, "userProfile")
+            return True
+        except AttributeError:
+            self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
+            if not self.userProfile:
+                self.redirect("/profile/view")
+                return False
+            self.userProfile = UserProfile.get(self.userProfile)  # retrieve actual data from datastore
+            return True
 
 
     def getRequiredParameter(self, parameterName):
@@ -156,8 +161,17 @@ class MasterHandler(webapp2.RequestHandler):
                     return
 
             if not self.userProfile.active:
-                self.restrictedAccess()
-                return
+              
+                email = self.userProfile.emails.get().itemValue
+                invitation = Invitation.all().filter("email =", email).get()
+                if not invitation is None:
+                    invitation.status = "used"
+                    invitation.put()
+                    self.userProfile.active = True
+                    self.userProfile.put()
+                else:
+                    self.restrictedAccess()
+                    return
 
             notificationCount = Psinque.all(keys_only = True). \
                                         filter("fromUser =", self.userProfile). \

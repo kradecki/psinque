@@ -81,15 +81,12 @@ class ProfileHandler(MasterHandler):
 
     def view(self):   # form for editing details
 
-        logging.info("view")
         userProfile = UserProfile.all().filter("user =", self.user).get()
         firstLogin = (not userProfile)
-        logging.info(userProfile)
 
         if firstLogin:  # no user profile registered yet, so create a new one
             userProfile = createNewProfile(self.user)
 
-        logging.info("before sendContent")
         self.sendContent('templates/Profile.html',
                          activeEntry = "Profile",
                          templateVariables = {
