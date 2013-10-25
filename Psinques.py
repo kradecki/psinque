@@ -169,7 +169,19 @@ class PsinquesHandler(MasterHandler):
         contact.put()
         
         return [contactExisted, contact, newPsinque]
-        
+    
+    
+    def _sendNewContact(self, contact):
+
+        personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }         
+        groupList = { group.key(): group.name for group in self.userProfile.groups.fetch(100) }
+                
+        self.sendContent('templates/Psinques_Contact.html',
+                        templateVariables = {
+            'contact': contact,
+            'groups': groupList,
+            'personas': personaList,
+        })
 
     #****************************
     # Views
@@ -273,16 +285,8 @@ class PsinquesHandler(MasterHandler):
         
         contact = self._addPublicPsinque(friendsProfile)
         
-        personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }         
-        groupList = { group.key(): group.name for group in self.userProfile.groups.fetch(100) }
-                
         if not contact[0]:
-            self.sendContent('templates/Psinques_Contact.html',
-                            templateVariables = {
-                'contact': contact[1],
-                'groups': groupList,
-                'personas': personaList,
-            })
+            self._sendNewContact(contact[1])
 
 
     def requestprivate(self):
@@ -473,7 +477,7 @@ class PsinquesHandler(MasterHandler):
         
         Notifications.notifyAcceptedRequest(psinque)
         
-        self.sendJsonOK()
+        self._sendNewContact(contactOut)
     
     
     def rejectrequest(self):

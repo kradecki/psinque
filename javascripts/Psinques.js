@@ -48,15 +48,7 @@ function addAddContactHandler(where) {
         psinqueAddPublicPsinque(friendsProfileKey, function(data) {
             
             $("#searchresults").remove();
-            
-            newContact = $($.trim(data));
-            newContact.hide();
-            newContact.prependTo("#contactlist");
-
-            addAllContactHandlers(newContact);
-            uiMakeDropdowns(newContact);
-
-            showElementWithEffects(newContact);
+            addNewContact(data);
             
         });
     });
@@ -125,6 +117,19 @@ function addIncomingActivateHandler(where) {
     });
 }
 
+function addNewContact(data) {
+    
+    newContact = $($.trim(data));
+    newContact.hide();
+    newContact.prependTo("#contactlist");
+    console.log(newContact);
+
+    addAllContactHandlers(newContact);
+    uiMakeDropdowns(newContact);
+
+    console.log(newContact.find("div"));
+    showElementWithEffects($(newContact[0]));
+}
 
 function addAcceptRequestHandler(where) {
     
@@ -133,8 +138,9 @@ function addAcceptRequestHandler(where) {
         notification = $(this).closest(".notifications");
         notificationKey = notification.find(".notificationkeys").val();
         
-        psinqueAcceptRequest(notificationKey, function() {
+        psinqueAcceptRequest(notificationKey, function(data) {
             uiRemoveTableRow(notification, "notification");
+            addNewContact(data);
         });
     });
 }

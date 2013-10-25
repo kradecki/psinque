@@ -364,7 +364,7 @@ function psinqueRequestPrivate(contactKey, successFunction) {
 }
 
 function psinqueAcceptRequest(psinqueKey, successFunction) {
-    psinqueAJAX(psinqueAPI_acceptRequest, {
+    psinqueAJAX_HTML(psinqueAPI_acceptRequest, {
                     key : psinqueKey,
                 }, successFunction);
 }

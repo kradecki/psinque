@@ -34,7 +34,8 @@ def generateVCard(persona):
         displayName += userProfile.familyNames
         
     if persona.canViewSuffix:
-        displayName += u", " + userProfile.nameSuffix
+        if userProfile.nameSuffix != u"":
+            displayName += u", " + userProfile.nameSuffix
             
     if persona.canViewRomanGivenNames or persona.canViewRomanFamilyNames:
         if (userProfile.givenNamesRomanization != u"") or (userProfile.familyNamesRomanization != u""):            

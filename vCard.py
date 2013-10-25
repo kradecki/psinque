@@ -12,7 +12,7 @@ class VCard():
     def addNames(self, givenNames,
                        familyNames,
                        honorificPrefixes,
-                       honorificSuffixes,:
+                       honorificSuffixes,
                        displayName):
         
         self.vcardString += u"N:" + \
