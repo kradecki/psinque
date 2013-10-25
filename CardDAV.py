@@ -80,11 +80,10 @@ def getUserProfile(username):
 
 #-----------------------------------------------------------------------------
 
+logging.info("Creating CardDAV objects")
 provider = CardDAVProvider()
 wellknowns = WellKnownProvider()
 domainController = PsinqueDomainController()
-
-logging.info("Starting CardDAVProvider")
 
 config = DEFAULT_CONFIG.copy()
 config.update({
