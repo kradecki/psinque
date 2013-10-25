@@ -40,9 +40,9 @@ function addGenerateCardDAVHandler(where) {
 
                 // Display the CardDAV credentials
                 cardDAVLogin = $("#carddavlogin");
-                cardDAVLogin.html("Your credentials (spaces do not matter):" +
-                                  "</br><b>Username</b>: " + passwordGrouper(data.username) +
-                                  "</br><b>Password</b>: " + passwordGrouper(data.password));
+                cardDAVLogin.html("<b>Your credentials</b> (spaces do not matter):" +
+                                  "</br>Username: " + passwordGrouper(data.username) +
+                                  "</br>Password: " + passwordGrouper(data.password));
                 showElementWithEffects(cardDAVLogin.parent());
 
                 // Add a new row with the new login
@@ -51,8 +51,14 @@ function addGenerateCardDAVHandler(where) {
                 newRow.insertBefore(".newcarddav");
                 addRemoveCardDAVHandler(newRow.find(".carddavremovers"));
                 
+                $("#carddavlogin").parent().insertAfter(newRow);
+                
                 // Clear the new CardDAV name input 
                 $("#newcarddavname").val("");
+                
+                // Mark changes to the checkbox saved
+                uiUnmarkChangedFields("#synccarddav");
+                uiUnmarkChangedFields("#synccarddavlabel");
 
                 if(window.cardDAVCounter == 1) { // it's the first CardDAV login
                     $("#carddavlabel").parent().prependTo(newRow);

@@ -107,6 +107,10 @@ class Settings(MasterHandler):
                                     salt = salt)
         cardDAVLogin.put()
         
+        # Enable CardDAV at the same time
+        self.userProfile.userSettings.cardDAVenabled = True
+        self.userProfile.userSettings.put()
+        
         self.sendJsonOK({
             "key": str(cardDAVLogin.key()),
             "username": generatedUsername,
