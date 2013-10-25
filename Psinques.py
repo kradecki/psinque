@@ -477,7 +477,10 @@ class PsinquesHandler(MasterHandler):
         
         Notifications.notifyAcceptedRequest(psinque)
         
-        self._sendNewContact(contactOut)
+        if self.request.get("redirect") == "true":
+            self.redirect("/profile/view")
+        else:
+            self._sendNewContact(contactOut)
     
     
     def rejectrequest(self):
@@ -487,7 +490,10 @@ class PsinquesHandler(MasterHandler):
 
         Notifications.notifyRejectedRequest(psinque)
         
-        self.sendJsonOK()
+        if self.request.get("redirect") == "true":
+            self.redirect("/profile/view")
+        else:
+            self.sendJsonOK()
 
 
     def banrequest(self):
