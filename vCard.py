@@ -11,31 +11,17 @@ class VCard():
 
     def addNames(self, givenNames,
                        familyNames,
-                       additionalNames = u"",
-                       honorificPrefixes = u"",
-                       honorificSuffixes = u""):
+                       honorificPrefixes,
+                       honorificSuffixes,:
+                       displayName):
         
         self.vcardString += u"N:" + \
                           familyNames + u";" + \
-                          givenNames + u";" + \
-                          additionalNames + u";" + \
+                          givenNames + u";;" + \
                           honorificPrefixes + u";" + \
                           honorificSuffixes + u"\n"
                  
-        self.vcardString += u"FN:"
-        
-        if honorificPrefixes != u"":
-            self.vcardString += honorificPrefixes + u" "
-                
-        self.vcardString += givenNames + u" " + familyNames
-
-        if additionalNames != u"":
-            self.vcardString += u" " + additionalNames
-
-        if honorificSuffixes != u"":
-            self.vcardString += u", "+ honorificSuffixes
-            
-        self.vcardString += u"\n"
+        self.vcardString += u"FN:" + displayName + u"\n"
 
 
     def addBirthday(self, year, month, day):
@@ -54,19 +40,6 @@ class VCard():
         
     def addAddress(self, addressType, poBox, extAddress, street,
                          locality, region, postalCode, country):
-      
-        #label = street
-        #if extAddress != u"":
-            #label += u" " + extAddress
-        #if postalCode != u"":
-            #label += u", " + postalCode
-            #if locality != u"":
-                #label += u" " + locality
-        #elif locality != u"":
-            #label += u", " + locality
-        #if country != u"":
-            #label += u", " + country
-            #u";LABEL=\"" + label + 
       
         self.vcardString += u"ADR;TYPE=" + addressType + \
                           u":" + \

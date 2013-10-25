@@ -6,8 +6,12 @@
 {% endblock %}
 {% block inlinescripts %}
   <script type="text/javascript">
+    window.prefix = "{{ userProfile.namePrefix }}";
     window.givenNames = "{{ userProfile.givenNames }}";
+    window.givenNamesRoman = "{{ userProfile.givenNamesRomanization }}";
     window.familyNames = "{{ userProfile.familyNames }}";
+    window.familyNamesRoman = "{{ userProfile.familyNamesRomanization }}";
+    window.suffix = "{{ userProfile.nameSuffix }}";
   </script>
 {% endblock %}
 {% block externalscripts %}

@@ -266,16 +266,23 @@ function psinqueRemovePersona(personaKey, successFunction) {
 }
 
 function psinqueSetGeneralPersona(personaKey, personaName,
-                                  canViewGivenNames,
-                                  canViewFamilyNames, canViewBirthday,
+                                  canViewPrefix,
+                                  canViewGivenNames, canViewGivenNamesRoman,
+                                  canViewFamilyNames, canViewFamilyNamesRoman,
+                                  canViewSuffix,
+                                  canViewBirthday,
                                   canViewGender, company, nickname,
                                   photoKey,
                                   successFunction) {
     psinqueAJAX(psinqueAPI_setGeneralPersona, {
                     key: personaKey,
                     name: personaName,
+                    prefix: canViewPrefix,
                     givennames: canViewGivenNames,
+                    givennamesroman: canViewGivenNamesRoman,
                     familynames: canViewFamilyNames,
+                    familynamesroman: canViewFamilyNamesRoman,
+                    suffix: canViewSuffix,
                     birthday: canViewBirthday,
                     gender: canViewGender,
                     company: company,

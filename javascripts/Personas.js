@@ -47,8 +47,12 @@ function addUpdatePersonaHandler(where) {
         if($(".general.unsavedchanges").length > 0) {
             psinqueSetGeneralPersona($("#personakey" + personaIndex).val(),
                 newName,
+                $("#prefix_" + personaIndex).is(':checked'),
                 $("#givennames_" + personaIndex).is(':checked'),
+                $("#givennamesroman_" + personaIndex).is(':checked'),
                 $("#familynames_" + personaIndex).is(':checked'),
+                $("#familynamesroman_" + personaIndex).is(':checked'),
+                $("#suffix_" + personaIndex).is(':checked'),
                 $("#birthday_" + personaIndex).is(':checked'),
                 $("#gender_" + personaIndex).is(':checked'),
                 $("#company" + personaIndex).val(),
@@ -130,13 +134,43 @@ function updateDisplayName(personaIndex) {
     
     displayName = "";
     
-    if($("#givennames_" + personaIndex).is(":checked"))
+    if($("#prefix_" + personaIndex).is(":checked"))
+        displayName += window.prefix;
+    
+    if($("#givennames_" + personaIndex).is(":checked")) {
+        if(displayName.length > 0)
+            displayName += " ";
         displayName += window.givenNames;
+    }
     
     if($("#familynames_" + personaIndex).is(":checked")) {
         if(displayName.length > 0)
             displayName += " ";
         displayName += window.familyNames;
+    }
+    
+    if($("#suffix_" + personaIndex).is(":checked")) {
+        if(displayName.length > 0)
+            displayName += ", ";
+        displayName += window.suffix;
+    }
+    
+    isGivenRoman  = $("#givennamesroman_" + personaIndex).is(":checked");
+    isFamilyRoman = $("#familynamesroman_" + personaIndex).is(":checked");
+    if(isGivenRoman || isFamilyRoman) {
+        if((window.givenNamesRoman != "") || (window.familyNamesRoman != "")) {
+            if(addParentheses = (displayName != ""))
+                displayName += " (";
+            if(isGivenRoman)
+              displayName += window.givenNamesRoman;
+            if(isFamilyRoman) {
+              if(isGivenRoman)
+                  displayName += " ";          
+              displayName += window.familyNamesRoman;
+            }
+            if(addParentheses)
+                displayName += ")";
+        }
     }
     
     if(displayName.length == 0) {

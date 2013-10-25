@@ -17,24 +17,39 @@ from DataModels import countries
 def generateVCard(persona):
   
     userProfile = persona.parent()
+    
+    displayName = u""
   
-    if(persona.canViewGivenNames):
-        givenNames = userProfile.givenNames
-    else:
-        givenNames = u""
+    if persona.canViewPrefix:
+        displayName += userProfile.namePrefix
         
-    if(persona.canViewFamilyNames):
-        familyNames = userProfile.familyNames
-    else:
-        familyNames = u""
+    if persona.canViewGivenNames:
+        if len(displayName) > 0:
+            displayName += u" "
+        displayName += userProfile.givenNames
         
-    displayName = u" ".join([givenNames, familyNames]).strip()
-    
-    if displayName != u"" and userProfile.namePrefix != u"":
-        displayName = userProfile.namePrefix + u" " + displayName
-    if displayName != u"" and userProfile.nameSuffix != u"":
-        displayName = displayName + u", " + userProfile.nameSuffix
-    
+    if persona.canViewFamilyNames:
+        if len(displayName) > 0:
+            displayName += u" "
+        displayName += userProfile.familyNames
+        
+    if persona.canViewSuffix:
+        displayName += u", " + userProfile.nameSuffix
+            
+    if persona.canViewRomanGivenNames or persona.canViewRomanFamilyNames:
+        if (userProfile.givenNamesRomanization != u"") or (userProfile.familyNamesRomanization != u""):            
+            addParentheses = (displayName != u"")
+            if addParentheses:
+                displayName += u" ("
+            if persona.canViewRomanGivenNames:
+                displayName += userProfile.givenNamesRomanization
+            if persona.canViewRomanFamilyNames and userProfile.givenNamesRomanization != u"":
+                if persona.canViewRomanGivenNames:
+                    displayName += u" "
+                displayName += userProfile.familyNamesRomanization
+            if addParentheses:
+                displayName += u")"
+        
     if displayName == u"":
         for permitEmail in persona.permitEmails:
             if permitEmail.canView:
@@ -56,6 +71,11 @@ def reallyGenerateVCard(persona):
 
     newVCard = vCard.VCard()
 
+    if(persona.canViewPrefix):
+        namePrefix = userProfile.namePrefix
+    else:
+        namePrefix = u""
+        
     if(persona.canViewGivenNames):
         givenNames = userProfile.givenNames
     else:
@@ -66,7 +86,13 @@ def reallyGenerateVCard(persona):
     else:
         familyNames = u""
         
-    newVCard.addNames(givenNames, familyNames)
+    if(persona.canViewSuffix):
+        nameSuffix = userProfile.nameSuffix
+    else:
+        nameSuffix = u""
+        
+    newVCard.addNames(givenNames, familyNames, namePrefix, nameSuffix,
+                      persona.displayName)
 
     if persona.canViewBirthday:
         birthday = userProfile.birthDate

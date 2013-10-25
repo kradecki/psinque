@@ -396,6 +396,11 @@ class Persona(db.Model):
     
     canViewGivenNames = db.BooleanProperty(default = True)
     canViewFamilyNames = db.BooleanProperty(default = True)
+    canViewPrefix = db.BooleanProperty(default = True)
+    canViewSuffix = db.BooleanProperty(default = True)
+    canViewRomanGivenNames = db.BooleanProperty(default = True)
+    canViewRomanFamilyNames = db.BooleanProperty(default = True)
+
     canViewBirthday = db.BooleanProperty(default = False)
     canViewGender = db.BooleanProperty(default = False)
 

@@ -32,12 +32,32 @@
       </td>
     {{ ui.endtable() }}
   {% endif %}
+  {% if userProfile.namePrefix %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Prefix", "prefix", persona.canViewPrefix, personaIndex, "general", userProfile.namePrefix) }}
+    {{ ui.endtable() }}
+  {% endif %}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Given names", "givennames", persona.canViewGivenNames, personaIndex, "general", userProfile.givenNames) }}
   {{ ui.endtable() }}
+  {% if userProfile.givenNamesRomanization %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Romanization", "givennamesroman", persona.canViewRomanGivenNames, personaIndex, "general", userProfile.givenNamesRomanization) }}
+    {{ ui.endtable() }}
+  {% endif %}
   {{ ui.begintable() }}
     {{ ui.labelcheckbox("Family names", "familynames", persona.canViewFamilyNames, personaIndex, "general", userProfile.familyNames) }}
   {{ ui.endtable() }}
+  {% if userProfile.familyNamesRomanization %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Romanization", "familynamesroman", persona.canViewRomanFamilyNames, personaIndex, "general", userProfile.familyNamesRomanization) }}
+    {{ ui.endtable() }}
+  {% endif %}
+  {% if userProfile.nameSuffix %}
+    {{ ui.begintable() }}
+      {{ ui.labelcheckbox("Suffix", "suffix", persona.canViewSuffix, personaIndex, "general", userProfile.nameSuffix) }}
+    {{ ui.endtable() }}
+  {% endif %}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Nickname") }}
     {% if not persona.nickname is none %}

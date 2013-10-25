@@ -191,8 +191,12 @@ class PersonasHandler(MasterHandler):
             if newName != "":
                 persona.name = newName
 
+            persona.canViewPrefix = self.getRequiredBoolParameter('prefix')
             persona.canViewGivenNames = self.getRequiredBoolParameter('givennames')
+            persona.canViewRomanGivenNames = self.getRequiredBoolParameter('givennamesroman')
             persona.canViewFamilyNames = self.getRequiredBoolParameter('familynames')
+            persona.canViewRomanFamilyNames = self.getRequiredBoolParameter('familynamesroman')
+            persona.canViewSuffix = self.getRequiredBoolParameter('suffix')
             persona.canViewBirthday = self.getRequiredBoolParameter('birthday')
             persona.canViewGender = self.getRequiredBoolParameter('gender')
             
