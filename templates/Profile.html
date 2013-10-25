@@ -91,8 +91,8 @@
         {{ ui.dropdown(range(1, 31+1), userProfile.birthDate.day, "birthdays", "nosearch shortbox general", "shortinput") }}
         {{ ui.dropdown(months, '%02d' % (userProfile.birthDate.month-1), "birthmonths", "nosearch shortbox general", "shortinput") }}
         {{ ui.dropdown(range(2013, 1899, -1), userProfile.birthDate.year, "birthyears", "nosearch shortbox general", "shortinput") }}
-          <td class="forminputs sublabel">Gender:</td>
-        {{ ui.dropdown(genders, userProfile.gender, "gender", "nosearch shortbox", "shortinput") }}
+        <td class="forminputs sublabel">Gender:</td>
+        {{ ui.dropdown(genders, userProfile.gender, "gender", "nosearch general shortbox", "shortinput") }}
         {{ ui.spacer() }}
       {{ ui.endtable() }}
       
