@@ -13,6 +13,9 @@
     </div>
     <div class="contactnames clickable">
       {{ contact.displayName }}
+      {% if contact.incoming.persona.nickname %}
+        </br>{{ contact.incoming.persona.nickname.itemValue }}
+      {% endif %}
       <input type="hidden" value="{{ contact.key() }}" class="contactkeys" />
     </div>
     <div class="contactcontrols">
@@ -42,6 +45,29 @@
   </div>
   <div class="fulldetails hiddenelements">
     {% if contact.incoming %}
+      {% if contact.incoming.persona.canViewBirthday %}
+        <div>
+          <div class="contacticons birthdayicons"></div>          
+          {% if contact.incoming.persona.canViewGender %}
+            {{ contact.friend.birthDate }}, {{ contact.friend.gender }}
+          {% else %}
+            {{ contact.friend.birthDate }}
+          {% endif %}
+        </div>
+      {% else %}
+        {% if contact.incoming.persona.canViewGender %}
+          <div>
+            <div class="contacticons birthdayicons"></div>          
+            {{ contact.friend.gender }}
+          </div>
+        {% endif %}
+      {% endif %}
+      {% if contact.incoming.persona.company %}
+        <div>
+          <div class="contacticons companyicons"></div>          
+          {{ contact.incoming.persona.company.companyName }}, {{ contact.incoming.persona.company.positionName }}
+        </div>
+      {% endif %}
       {% for permit in contact.incoming.persona.permitEmails %}
         {% if permit.canView %}
           <div>
@@ -82,6 +108,8 @@
           </div>
         {% endif %}
       {% endfor %}
+    {% else %}
+      <div>Incoming psinque is not active. Activate it to see this person's contact details.</div>
     {% endif %}
   </div>
 </div>

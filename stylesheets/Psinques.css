@@ -32,6 +32,10 @@ div.contactnames {
     float: left;
 }
 
+div.contactnames {
+    line-height: 130%;
+}
+
 div.contactnames:hover {
     color: #de5d35;
 }
@@ -111,4 +115,12 @@ div.contacticons.phoneicons {
 
 div.contacticons.addressicons {
     background-position: 0px -80px;
+}
+
+div.contacticons.birthdayicons {
+    background-position: 0px -100px;
+}
+
+div.contacticons.companyicons {
+    background-position: 0px -120px;
 }
