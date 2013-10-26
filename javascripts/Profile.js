@@ -205,7 +205,7 @@ function updateItem(input, prefix, updateFunction, addFunction) {
     if(prefix == "www") {
         if(itemValue.indexOf("/") == -1)
             itemValue = itemValue + "/";
-        if(itemValue.indexOf("http://") != 0)
+        if((itemValue.indexOf("http://") < 0) && (itemValue.indexOf("https://") < 0))
             itemValue = "http://" + itemValue;
     }
 

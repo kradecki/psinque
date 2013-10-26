@@ -114,6 +114,11 @@
   {{ ui.begintable() }}
     {{ ui.tablelabel("URL") }}
     {{ ui.textlabel("http://psinque.com/p/" ~ persona.key(), "urls", "url" ~ personaIndex) }}
+    <td class="forminputs formbuttons">
+      <div>
+        <span class="buttons clickable buttons-qr qrurlgenerators" title="Generate QR code with this URL" data-psinque-index="{{ personaIndex }}"></span>
+      </div>
+    </td>
   {{ ui.endtable() }}
   {{ ui.begintable() }}
     {{ ui.tablelabel("Save changes") }}
@@ -124,12 +129,12 @@
     {{ ui.tablelabel("Get vCard") }}
     <td class="forminputs formbuttons">
       <div>
-        <a href="/personas/getvcardastext?key={{ persona.key() }}"><span class="buttons clickable buttons-text"></span></a>
+        <a href="/personas/getvcardastext?key={{ persona.key() }}" title="Download this persona as a vCard"><span class="buttons clickable buttons-text"></span></a>
       </div>
     </td>
     <td class="forminputs formbuttons">
       <div>
-        <a href="/personas/getvcardasgif?key={{ persona.key() }}"><span class="buttons clickable buttons-qr"></span></a>
+        <a href="/personas/getvcardasgif?key={{ persona.key() }}" title="Download this persona as a QR-encoded vCard"><span class="buttons clickable buttons-qr"></span></a>
       </div>
     </td>
     {{ ui.spacer() }}

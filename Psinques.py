@@ -243,6 +243,7 @@ class PsinquesHandler(MasterHandler):
 
         # Search for the owner of the email address
         email = self.request.get('email')
+        email = email.lower()
         
         userEmail = UserEmail.all(keys_only = True). \
                               filter("itemValue =", email). \

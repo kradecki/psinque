@@ -78,8 +78,9 @@ div#personalist div p {
 
 div.tableform td.forminputs label.urls {
     word-break: break-all;
-    height: 58px;
     padding-right: 8px;
+    height: auto;
+    padding-bottom: 12px;
 }
 
 /***********************

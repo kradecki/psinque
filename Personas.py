@@ -279,6 +279,21 @@ class PersonasHandler(MasterHandler):
 
         output.close()
         
+
+    def geturlasgif(self):
+
+        personaKey = self.getRequiredParameter('key')
+        
+        qrcode = pyqrcode.MakeQRImage(personaKey.encode("utf-8"))
+
+        output = StringIO.StringIO()
+        qrcode.save(output, format="GIF")
+
+        self.response.headers['Content-Type'] = "image/gif"
+        self.response.out.write(output.getvalue())
+
+        output.close()
+
         
 #-----------------------------------------------------------------------------
 

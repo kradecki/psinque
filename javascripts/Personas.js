@@ -29,6 +29,27 @@ function addRemovePersonaHandler(where) {
     });
 }
 
+function addQRURLHandler(where) {
+    $(where).click(function() {
+
+        var personaIndex = $(this).attr('data-psinque-index');
+        var personaKey = $("#personakey" + personaIndex).val();
+      
+        uiAddOverlay();
+        
+        $("#overlay").append("<div><img id='qrurl' alt='QR-encoded persona URL' src='/personas/geturlasgif?key=" + personaKey + "' width='530' height='530'/></div>").click(function() {
+            $("#overlay").remove();
+        }).ready(function() {  
+            console.log("ready");
+            $("#qrurl").position({
+                my: "center",
+                at: "center",
+                of: window
+            });
+        });
+    });
+}
+
 function addUpdatePersonaHandler(where) {
     
     $(where).click(function(url) {
@@ -221,6 +242,7 @@ function addAllPersonaHandlers(where) {
     addRemovePersonaHandler(where.find(".removebuttons"));
     addThumbnailSelector(where.find(".thumbnails"));
     addChangeDataHandlers(where.find("input[type=checkbox]"));
+    addQRURLHandler(where.find(".qrurlgenerators"));
 }
 
 $(document).ready(function() {

@@ -55,7 +55,7 @@ class ProfileHandler(MasterHandler):
         # Check if this email has already been registered:
         try:
             existingItem = itemClass.all(keys_only = True). \
-                                    filter(itemValueName + " =", itemValue). \
+                                    filter(itemValueName + " =", itemValue.lower()). \
                                     get()
 
         except datastore_errors.BadKeyError:
@@ -143,8 +143,11 @@ class ProfileHandler(MasterHandler):
 
     def addemail(self):
 
+        email = self._checkNewItemByName(UserEmail, 'email')
+        email = email.lower()
+
         userEmail = UserEmail(parent = self.userProfile,
-                              itemValue = self._checkNewItemByName(UserEmail, 'email'),
+                              itemValue = email,
                               privacyType = self.getRequiredParameter('privacy'),
                               primary = self.getRequiredBoolParameter('primary'))
         userEmail.put()
@@ -162,8 +165,11 @@ class ProfileHandler(MasterHandler):
 
     def updateemail(self):
 
+        email = self.getRequiredParameter('email')
+        email = email.lower()
+
         userEmail = self._getItemByKey(UserEmail)
-        userEmail.itemValue = self.getRequiredParameter('email')
+        userEmail.itemValue = email
         userEmail.privacyType = self.getRequiredParameter('privacy')
         userEmail.put()
 
