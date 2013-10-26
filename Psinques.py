@@ -435,8 +435,11 @@ class PsinquesHandler(MasterHandler):
     
     def acceptrequest(self):
         
-        psinque = self._getPsinqueByKey()
-        #TODO: check for userProfile
+        try:
+            psinque = self._getPsinqueByKey()
+        except AjaxError:
+            self.displayMessage('templates/Message_PsinqueNotFound.html')
+            return
         
         contactIn = self._getContactForIncoming(psinque)
         contactOut = self._getContactForOutgoing(psinque)
@@ -477,8 +480,11 @@ class PsinquesHandler(MasterHandler):
         
         Notifications.notifyAcceptedRequest(psinque)
         
-        if self.request.get("redirect") == "true":
-            self.redirect("/psinques/view")
+        if self.request.get("email") == "true":
+            self.displayMessage('templates/Message_Accepted.html',
+                            templateVariables = {
+                    'friendsName': contactOut.displayName,
+                })
         else:
             self._sendNewContact(contactOut)
     
@@ -490,8 +496,11 @@ class PsinquesHandler(MasterHandler):
 
         Notifications.notifyRejectedRequest(psinque)
         
-        if self.request.get("redirect") == "true":
-            self.redirect("/psinques/view")
+        if self.request.get("email") == "true":
+            self.displayMessage('templates/Message_Rejected.html',
+                            templateVariables = {
+                    'friendsName': psinque.displayName,
+                })
         else:
             self.sendJsonOK()
 

@@ -133,14 +133,14 @@
   </td>
 {%- endmacro -%}
 
-{%- macro labelcheckbox(label, idstub, checked, index, class, value, name="", subindex="") -%}
+{%- macro labelcheckbox(label, idstub, checked, index, class, value, name="", subindex="", labelclass="") -%}
   <td class="formlabels">
     <input type="checkbox" id="{{ idstub }}_{{ index }}" {% if checked %}checked="checked"{% endif %} data-psinque-index="{{ index }}" data-psinque-subindex="{{ subindex }}" class="{{ class }}" {% if name %}name="{{ name }}"{% endif %}/>
     <div class="checkboxdiv"></div>
     <label for="{{ idstub }}_{{ index }}" class="clickable">{{ label }}</label>
   </td>
   <td class="forminputs">
-    <label class="generallabels" id="label{{ idstub }}_{{ index }}">{{ value }}</label>
+    <label class="generallabels {{ labelclass }}" id="label{{ idstub }}_{{ index }}">{{ value }}</label>
   </td>
 {%- endmacro -%}
 

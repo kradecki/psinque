@@ -439,6 +439,11 @@ class ProfileHandler(MasterHandler):
     def removenickname(self):
  
         item = self._getItemByKey(UserNickname)
+        
+        for persona in Persona.all().filter("nickname =", item):
+            persona.nickname = None
+            persona.put()
+        
         item.delete()
         
         self.sendJsonOK()
@@ -471,6 +476,11 @@ class ProfileHandler(MasterHandler):
     def removecompany(self):
  
         item = self._getItemByKey(UserCompany)
+
+        for persona in Persona.all().filter("company =", item):
+            persona.company = None
+            persona.put()
+
         item.delete()
         
         self.sendJsonOK()

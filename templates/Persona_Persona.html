@@ -99,7 +99,7 @@
   {% endfor %}
   {% for permitWWW in persona.permitWWWs %}
     {{ ui.begintable() }}
-      {{ ui.labelcheckbox("WWW", "www" ~ loop.index, permitWWW.canView, personaIndex, "individual", permitWWW.userWebpage.itemValue, permitWWW.key(), loop.index) }}
+      {{ ui.labelcheckbox("WWW", "www" ~ loop.index, permitWWW.canView, personaIndex, "individual", permitWWW.userWebpage.itemValue, permitWWW.key(), loop.index, labelclass="urls") }}
     {{ ui.endtable() }}
   {% endfor %}
   {% for permitAddress in persona.permitAddresses %}

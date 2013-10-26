@@ -61,8 +61,8 @@ def notifyPendingPsinque(psinque):
                      pendTemplate.render({
                          'receipientsName': receipient.displayName,
                          'friendsName': sender.displayName,
-                         'acceptURL': "http://www.psinque.com/psinques/acceptrequest?key=" + str(psinque.key()) + "&redirect=true",
-                         'rejectURL': "http://www.psinque.com/psinques/rejectrequest?key=" + str(psinque.key()) + "&redirect=true",
+                         'acceptURL': "http://www.psinque.com/psinques/acceptrequest?key=" + str(psinque.key()) + "&email=true",
+                         'rejectURL': "http://www.psinque.com/psinques/rejectrequest?key=" + str(psinque.key()) + "&email=true",
                      }))
 
     
