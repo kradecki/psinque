@@ -177,15 +177,11 @@ class MasterHandler(webapp2.RequestHandler):
                                         filter("fromUser =", self.userProfile). \
                                         filter("status =", "pending"). \
                                         count()
-            if notificationCount > 0:
-                self.psinqueText = "Psinques (" + str(notificationCount) + ")"
-            else:
-                self.psinqueText = "Psinques"
 
             menuentries = [
                 MenuEntry("profile/view", "Profile"),
                 MenuEntry("personas/view", "Personas"),
-                MenuEntry("psinques/view", self.psinqueText),
+                MenuEntry("psinques/view", "Psinques"),
                 MenuEntry("settings/view", "Settings"),
             ]
             if activeEntry != "":
@@ -195,8 +191,10 @@ class MasterHandler(webapp2.RequestHandler):
 
             if templateVariables:
                 allTemplateVariables = dict(templateVariables.items() +
-                    self.getUserVariables().items() +
-                    {'menuentries': menuentries}.items())
+                    self.getUserVariables().items() + {
+                        'menuentries': menuentries,
+                        'notificationCount': notificationCount
+                    }.items())
             else:
                 allTemplateVariables = dict(self.getUserVariables().items() +
                     {'menuentries': menuentries}.items())

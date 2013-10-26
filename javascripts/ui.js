@@ -274,13 +274,13 @@ function uiMakeDropdowns(where) {
           
             select = $(this);
             
-            if((!select.hasClass("nicknames")) && (!select.hasClass("companies")))
+            if((!select.hasClass("nicknames")) && (!select.hasClass("companies")) && (!select.hasClass("personaselects")))
                 select.next().find("a > span").html(select.val());
             
             uiMarkChangedFields(select);
         });
         
-        if((!select.hasClass("nicknames")) && (!select.hasClass("companies")))
+        if((!select.hasClass("nicknames")) && (!select.hasClass("companies")) && (!select.hasClass("personaselects")))
             select.next().find("a > span").html(select.val());
     });
 }

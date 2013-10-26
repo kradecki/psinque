@@ -92,31 +92,32 @@ class PersonasHandler(MasterHandler):
         
         try:
             persona = Persona.get(self.getRequiredParameter('key'))
-            
-            # Check for errors
-            if persona.name == "Public":  # cannot remove the public persona
-                raise AjaxError("Cannot remove the public persona")
-            if persona.name == "Default":  # cannot remove the default persona
-                raise AjaxError("Cannot remove the default private persona")
-
-            # Get all contacts that use this persona and assign them the default persona
-            contacts = Contact.all(). \
-                              ancestor(self.userProfile). \
-                              filter("persona =", persona)
-            defaultPersona = self._getPersonaByName("Default")
-            for contact in contacts:
-                contact.persona = defaultPersona
-
-            # Remove all children individual permits
-            individualPermits = IndividualPermit.all().ancestor(persona)
-            for individualPermit in individualPermits:
-                individualPermit.delete()
-            persona.delete()  # and the persona itself
-
-            self.sendJsonOK()
 
         except datastore_errors.BadKeyError:
             raise AjaxError("Persona not found")
+            
+        # Check for errors
+        if persona.name == "Public":  # cannot remove the public persona
+            raise AjaxError("Cannot remove the public persona")
+        if persona.name == "Default":  # cannot remove the default persona
+            raise AjaxError("Cannot remove the default private persona")
+
+        # Get all contacts that use this persona and assign them the default persona
+        contacts = Contact.all(). \
+                           ancestor(self.userProfile). \
+                           filter("persona =", persona)
+        defaultPersona = self._getPersonaByName("Default")
+        for contact in contacts:
+            contact.persona = defaultPersona
+            contact.put()
+
+        # Remove all children individual permits
+        individualPermits = IndividualPermit.all().ancestor(persona)
+        for individualPermit in individualPermits:
+            individualPermit.delete()
+        persona.delete()  # and the persona itself
+
+        self.sendJsonOK()
             
             
     def addpersona(self):
@@ -283,6 +284,7 @@ class PersonasHandler(MasterHandler):
     def geturlasgif(self):
 
         personaKey = self.getRequiredParameter('key')
+        personaKey = "http://www.psinque.com/personas/p/" + personaKey
         
         qrcode = pyqrcode.MakeQRImage(personaKey.encode("utf-8"))
 
@@ -309,7 +311,7 @@ class PersonaURLs(MasterHandler):
             
             friendsProfile = persona.parent()
             
-            if contactExists(self.userProfile, friendsProfile):
+            if not contactExists(self.userProfile, friendsProfile) is None:
                 self.sendJsonError("Person already in contacts.")
             
             # Contact on user's side

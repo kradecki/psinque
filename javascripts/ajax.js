@@ -396,7 +396,7 @@ function psinqueChangePersona(contactKey, personaKey, successFunction) {
 }
 
 function psinqueAddIncoming(contactKey, successFunction) {
-    psinqueAJAX(psinqueAPI_addIncoming, {
+    psinqueAJAX_HTML(psinqueAPI_addIncoming, {
                     key: contactKey,
                 }, successFunction);
 }

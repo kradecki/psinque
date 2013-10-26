@@ -277,9 +277,7 @@ def createNewProfile(user):
 
 def contactExists(userProfile, friendsProfile):
 
-    contact = Contact.all(). \
-                      ancestor(userProfile). \
-                      filter("friend =", friendsProfile). \
-                      get()
-
-    return (not contact is None)
+    return Contact.all(). \
+                   ancestor(userProfile). \
+                   filter("friend =", friendsProfile). \
+                   get()

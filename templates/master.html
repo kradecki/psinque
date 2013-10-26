@@ -41,8 +41,11 @@
             {% for menuentry in menuentries %}
               <li>
                 <div>
-                  <a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}">
+                  <a href="/{{ menuentry.url }}" title="{{ menuentry.title }}" class="{{ menuentry.entryclass }}" id="menuitem-{{ menuentry.title }}">
                     {{ menuentry.title }}
+                    {% if (menuentry.title == "Psinques") and (notificationCount > 0) %}
+                      ({{ notificationCount }})
+                    {% endif %}
                   </a>
                 </div>
               </li>

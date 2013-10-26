@@ -7,6 +7,11 @@
 {% block externalscripts %}
     <script type="text/javascript" src="/javascripts/Psinques.js"></script>
 {% endblock %}
+{% block inlinescripts %}
+  <script type="text/javascript">
+    window.notifications = {{ notificationCount }};
+  </script>
+{% endblock %}
 {% block content %}
   {% if pendings|count > 0 %}
     {{ ui.beginform() }}

@@ -53,7 +53,7 @@ function addQRURLHandler(where) {
 function addUpdatePersonaHandler(where) {
     
     $(where).click(function(url) {
-        
+      
         personaIndex = $(this).attr('data-psinque-index');
         personaForm = $("#personaform" + personaIndex);
         
@@ -119,8 +119,6 @@ function addAddPersonaHandler(where) {
                     newPersonaForm.hide();
                     newPersonaForm.appendTo($("#personalist"));
 
-                    addAllPersonaHandlers(newPersonaForm);
-
                     window.highestExistingPersonaNumber++;
 
                     uiMakeDropdowns(newPersonaForm);
@@ -128,6 +126,9 @@ function addAddPersonaHandler(where) {
                                         
                     recreateAccordeon();
                     uiInitializeCheckboxes();
+                    
+                    addAllPersonaHandlers(newPersonaForm);
+                    uiSetMarkingOnChange(newPersonaForm.find("input[type=text],input[type=checkbox],select"));
 
                     $("#newpersonaname").val("");
                     

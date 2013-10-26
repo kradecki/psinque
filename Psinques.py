@@ -64,6 +64,8 @@ class PsinquesHandler(MasterHandler):
             if not contact.friendsContact is None:
                 contact.friendsContact.friendsContact = None
             contact.delete()
+        else:
+            contact.put()
 
 
     def _clearOutgoing(self, contact):
@@ -73,8 +75,15 @@ class PsinquesHandler(MasterHandler):
                 contact.friendsContact.friendsContact = None
                 contact.friendsContact.put()
             contact.delete()
+        else:
+            contact.put()
+
 
     def _downgradePsinqueToPublic(self, psinque):
+      
+        psinque.parent().status = "public"
+        psinque.parent().put()
+        
         psinque.private = False
         psinque.persona = psinque.fromUser.publicPersona
         psinque.put()
@@ -105,7 +114,7 @@ class PsinquesHandler(MasterHandler):
         '''
         psinque = contact.outgoing
         if not psinque is None:
-            Notifications.notifyDowngradedPsinque(psinque)
+            #Notifications.notifyDowngradedPsinque(psinque)
             self._clearOutgoing(contact)
             self._downgradePsinqueToPublic(psinque)
 
@@ -149,8 +158,8 @@ class PsinquesHandler(MasterHandler):
     
     def _addPublicPsinque(self, friendsProfile):
         
-        contactExisted = contactExists(self.userProfile, friendsProfile)
-        if not contactExisted:
+        contact = contactExists(self.userProfile, friendsProfile)
+        if contact is None:
             contactExisted = False
             contact = Contact(parent = self.userProfile,
                               friend = friendsProfile,
@@ -158,12 +167,29 @@ class PsinquesHandler(MasterHandler):
                               persona = self.userProfile.publicPersona)
             contact.put()
         
+        friendsContact = Contact.all().\
+                                 ancestor(friendsProfile).\
+                                 filter("friend =", self.userProfile).\
+                                 get()
+        if not friendsContact is None:
+            persona = friendsContact.persona
+            if not persona.public:
+                contact.status = "private"
+        else:
+            persona = friendsProfile.publicPersona
+        
         newPsinque = Psinque(parent = contact,
                              fromUser = friendsProfile,
                              private = False,
-                             persona = friendsProfile.publicPersona,
+                             persona = persona,
                              status = "established")
         newPsinque.put()
+        
+        if not friendsContact is None:
+            if friendsContact.incoming:
+                contact.outgoing = friendsContact.incoming
+            friendsContact.outgoing = newPsinque
+            friendsContact.put()
         
         contact.incoming = newPsinque
         contact.put()
@@ -279,15 +305,16 @@ class PsinquesHandler(MasterHandler):
     def addpublic(self):
                 
         friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
-
+        
         psinque = self._getPsinqueFrom(friendsProfile)
         if not psinque is None:
             raise AjaxError("You already have this psinque")
         
         contact = self._addPublicPsinque(friendsProfile)
-        
         if not contact[0]:
             self._sendNewContact(contact[1])
+        else:
+            raise AjaxError("Incoming psinque already exists.")
 
 
     def requestprivate(self):
@@ -325,48 +352,14 @@ class PsinquesHandler(MasterHandler):
         contact.friendsContact.outgoing = newPsinque
         contact.friendsContact.put()
         
-        self.sendJsonOK()
-
-
-    #def addprivate(self):
-        
-        #try:
-            #friendsProfile = UserProfile.get(self.getRequiredParameter("key"))
-        #except KindError:
-            #friendsProfile = Contact.get(self.getRequiredParameter("key")).friend
-        
-        #psinque = self._getPsinqueFrom(friendsProfile)
-        #if not psinque is None:
-            #if psinque.private:
-                #raise AjaxError("You already have this psinque")
-            #else:
-                #self._addRequestToUpgrade(psinque.parent(), friendsProfile)
-        #else:
-            #newPsinque = self._addPublicPsinque(friendsProfile)
-            #self._addRequestToUpgrade(newPsinque.parent(), friendsProfile)
-        
-        #self.sendJsonOK()
-
-
-    #def removeincoming(self):
-        
-        #self._removeIncoming(self._getContact())
-
-        #self.sendJsonOK()
-
-
-    #def removeoutgoing(self):
-        
-        #contact = self._getContact()       
-        #self._removeOutgoing(contact)
-        #self.sendJsonOK()
+        self._sendNewContact(contact)
 
 
     def removecontact(self):
         
         contact = self._getContact()
-        self._removeIncoming(contact)
         self._removeOutgoing(contact)
+        self._removeIncoming(contact)
         
         self.sendJsonOK()
                        
@@ -393,16 +386,18 @@ class PsinquesHandler(MasterHandler):
         
         if persona.public:
           
-            contact.outgoing.private = False
+            if contact.outgoing:
+                contact.outgoing.private = False
+                contact.outgoing.put()
+                Notifications.notifyDowngradedPsinque(contact.outgoing)
+            
+            if contact.friendsContact:
+                contact.friendsContact.status = "public"
+                contact.friendsContact.put()
+                    
+        if contact.outgoing:
+            contact.outgoing.persona = persona
             contact.outgoing.put()
-            
-            contact.friendsContact.status = "public"
-            contact.friendsContact.put()
-            
-            Notifications.notifyDowngradedPsinque(contact.outgoing)
-        
-        contact.outgoing.persona = persona
-        contact.outgoing.put()
             
         self.sendJsonOK()
 

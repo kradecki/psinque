@@ -104,14 +104,22 @@ function addIncomingActivateHandler(where) {
   
     $(where).click(function() {
       
-        button = $(this);
-        contactBox = button.closest(".contacts");
+        var button = $(this);
+        var contactBox = button.closest(".contacts");
         contactKey = contactBox.find(".contactkeys").val();
 
         psinqueAddIncoming(contactKey, function(data) {
-            button.removeClass("incominggetters clickable buttons-in-inactive");
-            button.addClass("buttons-in-active");
-            button.attr("title", "Incoming psinque is active");
+            contactBox.next().remove();  // remove old contact
+            contactBox.remove();  // remove old contact
+            
+            newContact = $($.trim(data));
+            newContact.hide();
+            newContact.prependTo("#contactlist");
+
+            addAllContactHandlers(newContact);
+            uiMakeDropdowns(newContact);
+
+            showElementWithEffects($(newContact[0]));
         });
         
     });
@@ -122,12 +130,10 @@ function addNewContact(data) {
     newContact = $($.trim(data));
     newContact.hide();
     newContact.prependTo("#contactlist");
-    console.log(newContact);
 
     addAllContactHandlers(newContact);
     uiMakeDropdowns(newContact);
 
-    console.log(newContact.find("div"));
     showElementWithEffects($(newContact[0]));
 }
 
@@ -141,6 +147,11 @@ function addAcceptRequestHandler(where) {
         psinqueAcceptRequest(notificationKey, function(data) {
             uiRemoveTableRow(notification, "notification");
             addNewContact(data);
+            window.notifications--;
+            if(window.notifications > 0)
+                $("#menuitem-Psinques").html("Psinques (" + window.notification + ")");
+            else
+                $("#menuitem-Psinques").html("Psinques");
         });
     });
 }
