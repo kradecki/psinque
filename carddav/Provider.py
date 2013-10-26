@@ -58,7 +58,7 @@ class CardDAVResource(_DAVResource):
     
     def generateVCard(self):
         if not self.isCollection:
-        logging.info("generateVCard()")
+            logging.info("generateVCard()")
             vCard = CardDAV.getVCard(self.contactID)
             self.vCard = vCard[0].encode("utf8")
             self.vCardMtime = vCard[1]
