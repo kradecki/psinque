@@ -176,7 +176,7 @@ class PsinquesHandler(MasterHandler):
         personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }         
         groupList = { group.key(): group.name for group in self.userProfile.groups.fetch(100) }
                 
-        self.sendContent('templates/Psinques_Contact.html',
+        self.sendContent('templates/psinques/Contact.html',
                         templateVariables = {
             'contact': contact,
             'groups': groupList,
@@ -478,7 +478,7 @@ class PsinquesHandler(MasterHandler):
         Notifications.notifyAcceptedRequest(psinque)
         
         if self.request.get("redirect") == "true":
-            self.redirect("/profile/view")
+            self.redirect("/psinques/view")
         else:
             self._sendNewContact(contactOut)
     
@@ -491,7 +491,7 @@ class PsinquesHandler(MasterHandler):
         Notifications.notifyRejectedRequest(psinque)
         
         if self.request.get("redirect") == "true":
-            self.redirect("/profile/view")
+            self.redirect("/psinques/view")
         else:
             self.sendJsonOK()
 

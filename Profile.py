@@ -406,7 +406,7 @@ class ProfileHandler(MasterHandler):
         width = self.getRequiredParameter('width')
         height = self.getRequiredParameter('height')
         
-        self.sendContent('templates/Profile_FullPhoto.html',
+        self.sendContent('templates/profile/FullPhoto.html',
                          templateVariables = {
             'key': key,
             'width': width,
@@ -510,7 +510,7 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         #self.response.headers['Content-Type'] = 'application/json'
         #self.response.out.write('"' + userPhoto.servingUrl + '=s162"')
                          
-        template = jinja_environment.get_template('templates/Profile_Thumbnail.html')
+        template = jinja_environment.get_template('templates/profile/Thumbnail.html')
         self.response.out.write(template.render({
             'photo': userPhoto,
         }))

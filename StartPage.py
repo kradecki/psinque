@@ -9,5 +9,5 @@ class StartPage(webapp2.RequestHandler):
         self.redirect('/profile/view')
 
 app = webapp2.WSGIApplication([
-    ('/reallandingforsecrettesters', StartPage),
+    ('/', StartPage),
 ], debug=True)

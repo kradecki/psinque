@@ -17,7 +17,7 @@ class AdminHandler(MasterHandler):
     
     def userprofile(self):
     
-        self.sendContent('templates/Admin_UserProfile.html',
+        self.sendContent('templates/admin/UserProfile.html',
                             activeEntry = "",
                             templateVariables = {
             'userProfiles': UserProfile.all(),

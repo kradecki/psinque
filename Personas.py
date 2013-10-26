@@ -167,7 +167,7 @@ class PersonasHandler(MasterHandler):
             # Generate the Persona's vCard and eTag:
             generateVCard(newPersona)
 
-            self.sendContent('templates/Personas_Persona.html',
+            self.sendContent('templates/personas/Persona.html',
                             activeEntry = "Personas",
                             templateVariables = {
                     'persona': newPersona,
@@ -311,7 +311,7 @@ class PersonaURLs(MasterHandler):
                               persona = persona)
             contact.put()
             
-            self.sendContent("templates/Static_Success.html",
+            self.sendContent("templates/messages/Success.html",
                               templateVariables = {
                                   'message': 'You have successfully added a new contact to your contact list',
             })
