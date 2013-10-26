@@ -573,7 +573,7 @@ class Contact(db.Model):
             return self.friend.displayName
         if not self.incoming is None:
             return self.incoming.displayName
-        #return self.friendsContact.persona.displayName
+        return self.friendsContact.persona.displayName
 
 #-----------------------------------------------------------------------------
 
