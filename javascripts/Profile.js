@@ -384,6 +384,8 @@ function initializeImageUploading() {
             $("#nophoto").remove();
             newItem = $(data.result).appendTo("#mosaic");
             addPhotoRemoverHandler(newItem.find(".photoremovers"));
+            $('a.colorbox').colorbox.remove()
+            $('a.colorbox').colorbox();
             uiStopLogoAnimation();
             window.ajaxInProgress = false;
         } 
