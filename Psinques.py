@@ -176,7 +176,7 @@ class PsinquesHandler(MasterHandler):
         personaList = { persona.key(): persona.name for persona in self.userProfile.personas.fetch(100) }         
         groupList = { group.key(): group.name for group in self.userProfile.groups.fetch(100) }
                 
-        self.sendContent('templates/psinques/Contact.html',
+        self.sendContent('templates/Psinques_Contact.html',
                         templateVariables = {
             'contact': contact,
             'groups': groupList,

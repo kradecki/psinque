@@ -4,23 +4,23 @@
 {% import "templates/ui.html" as ui %}
 
 {%- macro addCompany(loopFirst, loopIndex, itemCount, itemKey, companyName, positionName) -%}
-  {% include "templates/profile/Company.html" %}
+  {% include "templates/Profile_Company.html" %}
 {%- endmacro -%}
 
 {%- macro addNickname(loopFirst, loopIndex, itemCount, itemKey, itemValue) -%}
-  {% include "templates/profile/Nickname.html" %}
+  {% include "templates/Profile_Nickname.html" %}
 {%- endmacro -%}
 
 {%- macro addEmail(primary, tablelabel, emailCount, loopfirst, emailkey, emailaddress, privacyType) -%}
-  {% include "templates/profile/Email.html" %}
+  {% include "templates/Profile_Email.html" %}
 {%- endmacro -%}
 
 {%- macro addTextItem(tableLabel, prefix, itemTypes, loopFirst, loopIndex, itemCount, itemKey, itemValue, itemType, privacyType, privacyTypes) -%}
-  {% include "templates/profile/TextItem.html" %}
+  {% include "templates/Profile_TextItem.html" %}
 {%- endmacro -%}
 
 {%- macro addAddress(loopFirst, loopIndex, addressCount, addressKey, addressMain, privacyType, addressLocation, city, country, postalCode) -%}
-  {% include "templates/profile/Address.html" %}
+  {% include "templates/Profile_Address.html" %}
 {%- endmacro -%}
 
 {% block title %}Profile{% endblock %}
@@ -44,7 +44,7 @@
   <div id="photos">
     <div id="mosaic">
       {% for photo in userProfile.photos %}
-        {% include "templates/profile/Thumbnail.html" %}
+        {% include "templates/Profile_Thumbnail.html" %}
       {% else %}
         <img src="/images/nophoto.png" id="nophoto" width="196" height="196">
       {% endfor %}

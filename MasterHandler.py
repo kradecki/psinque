@@ -210,7 +210,7 @@ class MasterHandler(webapp2.RequestHandler):
 
     def restrictedAccess(self):
       
-        template = jinja_environment.get_template('templates/messages/restricted.html')
+        template = jinja_environment.get_template('templates/Message_restricted.html')
         self.response.out.write(template.render())
 
 

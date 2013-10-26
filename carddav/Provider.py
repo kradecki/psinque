@@ -58,7 +58,7 @@ class CardDAVResource(_DAVResource):
     
     def generateVCard(self):
         if not self.isCollection:
-			logging.info("generateVCard()")
+        logging.info("generateVCard()")
             vCard = CardDAV.getVCard(self.contactID)
             self.vCard = vCard[0].encode("utf8")
             self.vCardMtime = vCard[1]
@@ -81,10 +81,10 @@ class CardDAVResource(_DAVResource):
         ETags are essential for caching.
         '''
         if self.isCollection:
-			logging.info("getEtag() for collection")
+            logging.info("getEtag() for collection")
             etag = '"' + md5.new(self.path).hexdigest() +'"'
         else:
-			logging.info("getEtag() for vCard")
+            logging.info("getEtag() for vCard")
             self.generateVCard()
             etag = self.vCardMtime + '-' + self.vCardMD5
         return etag
@@ -212,7 +212,7 @@ class CardDAVResource(_DAVResource):
 class CardDAVProvider(DAVProvider):
     
     def getResourceInst(self, path, environ):
-		logging.info("getResourceInst(%r)" % path)
+        logging.info("getResourceInst(%r)" % path)
         self._count_getResourceInst += 1
         try:
             res = CardDAVResource(path, environ)

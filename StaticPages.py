@@ -11,43 +11,43 @@ class StaticPageHandler(StaticHandler):
     #
 
     def about(self):
-        self.sendContent('templates/static/AboutUs.html')
+        self.sendContent('templates/Static_AboutUs.html')
 
     def terms(self):
-        self.sendContent('templates/static/Terms.html')
+        self.sendContent('templates/Static_Terms.html')
 
     def privacy(self):
-        self.sendContent('templates/static/Privacy.html')
+        self.sendContent('templates/Static_Privacy.html')
 
     def work(self):
-        self.sendContent('templates/static/Work.html')
+        self.sendContent('templates/Static_Work.html')
 
     def pricing(self):
-        self.sendContent('templates/static/Pricing.html')
+        self.sendContent('templates/Static_Pricing.html')
 
     def helpgeneral(self):
-        self.sendContent('templates/static/Help.html')
+        self.sendContent('templates/Static_Help.html')
 
     def helpoverview(self):
-        self.sendContent('templates/static/Help_Overview.html')
+        self.sendContent('templates/Static_Help_Overview.html')
 
     def helpios(self):
-        self.sendContent('templates/static/Help_iOS.html')
+        self.sendContent('templates/Static_Help_iOS.html')
 
     def helpandroid(self):
-        self.sendContent('templates/static/Help_Android.html')
+        self.sendContent('templates/Static_Help_Android.html')
 
     def helpwindows(self):
-        self.sendContent('templates/static/Help_Windows.html')
+        self.sendContent('templates/Static_Help_Windows.html')
 
     def helpprofile(self):
-        self.sendContent('templates/static/Help_Profile.html')
+        self.sendContent('templates/Static_Help_Profile.html')
 
     def helppersonas(self):
-        self.sendContent('templates/static/Help_Personas.html')
+        self.sendContent('templates/Static_Help_Personas.html')
 
     def helppsinques(self):
-        self.sendContent('templates/static/Help_Psinques.html')
+        self.sendContent('templates/Static_Help_Psinques.html')
 
 #-----------------------------------------------------------------------------
 

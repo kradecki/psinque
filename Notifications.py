@@ -15,12 +15,12 @@ jinja_environment = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
 )
 
-acceptTemplate    = jinja_environment.get_template("templates/emails/Accept.html")
-rejectTemplate    = jinja_environment.get_template("templates/emails/Reject.html")
-downgradeTemplate = jinja_environment.get_template("templates/emails/Downgrade.html")
-stopTemplate      = jinja_environment.get_template("templates/emails/Stop.html")
-pendTemplate      = jinja_environment.get_template("templates/emails/Pend.html")
-activeTemplate    = jinja_environment.get_template("templates/emails/AccountActive.html")
+acceptTemplate    = jinja_environment.get_template("templates/Email_Accept.html")
+rejectTemplate    = jinja_environment.get_template("templates/Email_Reject.html")
+downgradeTemplate = jinja_environment.get_template("templates/Email_Downgrade.html")
+stopTemplate      = jinja_environment.get_template("templates/Email_Stop.html")
+pendTemplate      = jinja_environment.get_template("templates/Email_Pend.html")
+activeTemplate    = jinja_environment.get_template("templates/Email_AccountActive.html")
 
 #-----------------------------------------------------------------------------
 
