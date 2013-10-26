@@ -204,7 +204,7 @@
       {% set itemType = itemTypes[0] %}
       {% set privacyType = "Home" %}
       {% set privacyTypes = privacyTypes %}
-      {% include "templates/Profile_TextItem.html" %}
+      {% include "templates/profile/TextItem.html" %}
       {% for item in items %}
         {% set loopFirst = False %}
         {% set loopIndex = loop.index %}
@@ -213,7 +213,7 @@
         {% set itemValue = item.itemValue %}
         {% set itemType = item.itemType %}
         {% set privacyType = item.privacyType %}
-        {% include "templates/Profile_TextItem.html" %}
+        {% include "templates/profile/TextItem.html" %}
       {% endfor %}
     </tbody>
   </table>

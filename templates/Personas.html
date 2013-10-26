@@ -29,7 +29,7 @@
     <div id="personalist">
       {% for persona in personas %}
         {% set personaIndex = loop.index %}
-        {% include "templates/Personas_Persona.html" %}
+        {% include "templates/personas/Persona.html" %}
       {% endfor %}
     </div>
     {{ ui.beginform("newpersona") }}
