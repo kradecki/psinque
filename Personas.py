@@ -6,14 +6,23 @@ import webapp2
 import pyqrcode
 import StringIO
 
+import os
+import jinja2
+
 from google.appengine.api import users, datastore_errors
 from google.appengine.ext.db import Key
 
+from django.utils import simplejson as json
+
 from MasterHandler import MasterHandler, AjaxError
 from DataModels import Persona, Contact
-from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress, UserPhoto
+from DataModels import IndividualPermit, PermitEmail, PermitIM, PermitPhoneNumber, PermitWebpage, PermitAddress, UserPhoto, UserProfile, Psinque
 
-from DataManipulation import generateVCard, reallyGenerateVCard
+from DataManipulation import generateVCard, reallyGenerateVCard, contactExists
+
+jinja_environment = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__))
+)
 
 #-----------------------------------------------------------------------------
 
@@ -284,7 +293,7 @@ class PersonasHandler(MasterHandler):
     def geturlasgif(self):
 
         personaKey = self.getRequiredParameter('key')
-        personaKey = "http://www.psinque.com/personas/p/" + personaKey
+        personaKey = "http://www.psinque.com/p/" + personaKey
         
         qrcode = pyqrcode.MakeQRImage(personaKey.encode("utf-8"))
 
@@ -299,9 +308,25 @@ class PersonasHandler(MasterHandler):
         
 #-----------------------------------------------------------------------------
 
-class PersonaURLs(MasterHandler):
+class PersonaURLs(webapp2.RequestHandler):
+
+    def getUserProfile(self):
+
+        try:
+          getattr(self, 'userProfile')
+          return True
+        except AttributeError:
+          self.userProfile = UserProfile.all(keys_only = True).filter("user =", self.user).get()
+          if not self.userProfile:
+             self.redirect("/profile/view")
+             return False
+          self.userProfile = UserProfile.get(self.userProfile)
+          return True
+
 
     def get(self, personaKey):
+
+        self.user = users.get_current_user()
 
         if not self.getUserProfile():
             self.sendJsonError("User profile not found")
@@ -313,28 +338,57 @@ class PersonaURLs(MasterHandler):
             
             if not contactExists(self.userProfile, friendsProfile) is None:
                 self.sendJsonError("Person already in contacts.")
-            
+                return
+
+            existingPsinque = Psinque.all(keys_only = True).ancestor(self.userProfile).filter("fromUser =", friendsProfile).get()
+            if not existingPsinque is None:
+                self.sendJsonError("An incoming psinque from this person already exists")
+                return
+
+            newPsinque = Psinque(parent = self.userProfile,
+                                 fromUser = friendsProfile,
+                                 status = "established",
+                                 private = not persona.public,
+                                 persona = persona)
+            newPsinque.put()
+ 
             # Contact on user's side
             contact = Contact(parent = self.userProfile,
+                              incoming = newPsinque,
                               friend = friendsProfile,
                               group = self.userProfile.defaultGroup,
                               persona = self.userProfile.publicPersona)
             contact.put()
 
             # Contact on user's friend's side
-            contact = Contact(parent = friendsProfile,
+            friendsContact = Contact(parent = friendsProfile,
+                              outgoing = newPsinque,
                               friend = self.userProfile,
+                              friendsContact = contact,
                               group = friendsProfile.defaultGroup,
                               persona = persona)
+            friendsContact.put()
+
+            contact.friendsContact = friendsContact
             contact.put()
             
-            self.sendContent("templates/Message_Success.html",
+            self.displayMessage("templates/Message_Success.html",
                               templateVariables = {
                                   'message': 'You have successfully added a new contact to your contact list',
             })
             
         except datastore_errors.BadKeyError:
             self.sendJsonError("Persona not found!")
+
+
+    def displayMessage(self, templateName, templateVariables = None):
+
+        template = jinja_environment.get_template(templateName)
+        self.response.out.write(template.render(templateVariables))
+
+    def sendJsonError(self, msg):
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({"status": 1, "message": msg}))
 
 
 #-----------------------------------------------------------------------------

@@ -209,7 +209,7 @@ class MasterHandler(webapp2.RequestHandler):
     def displayMessage(self, templateName, templateVariables = None):
 
         template = jinja_environment.get_template(templateName)
-        self.response.out.write(template.render(allTemplateVariables))
+        self.response.out.write(template.render(templateVariables))
 
 
     def restrictedAccess(self):
