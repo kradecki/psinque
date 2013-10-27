@@ -96,14 +96,9 @@ class PsinquesHandler(MasterHandler):
         is empty, it is removed. This Psinque is also removed from
         the friend's Contact. The Psinque is removed as well.
         '''
-        #if (not contact.incoming is None) and contact.incoming.private:
-            #Notifications.notifyStoppedUsingPrivateData(contact.incoming)
         if not contact.friendsContact is None:  # in case we use a public psinque, there might be no Contact on the other side
             self._clearOutgoing(contact.friendsContact)
         self._clearIncoming(contact)
-
-        for psinque in Psinque.all().ancestor(contact):
-            psinque.delete()
 
 
     def _removeOutgoing(self, contact):
@@ -113,11 +108,9 @@ class PsinquesHandler(MasterHandler):
         a public psinque, so it's not removed from the friend's
         Contact.
         '''
-        psinque = contact.outgoing
-        if not psinque is None:
-            #Notifications.notifyDowngradedPsinque(psinque)
-            self._clearOutgoing(contact)
-            self._downgradePsinqueToPublic(psinque)
+        if not contact.friendsContact is None:
+            self._clearIncoming(contact.friendsContact)
+        self._clearOutgoing(contact)
 
 
     def _getPsinqueByKey(self):
@@ -359,10 +352,10 @@ class PsinquesHandler(MasterHandler):
     def removecontact(self):
         
         contact = self._getContact()
-        psinque = contact.outgoing
+        contact.outgoing.delete()
+        contact.incoming.delete()
         self._removeOutgoing(contact)
         self._removeIncoming(contact)
-        psinque.delete()
         
         self.sendJsonOK()
                        
