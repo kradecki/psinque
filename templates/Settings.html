@@ -31,7 +31,7 @@
         {{ ui.checkbox("synccarddav", userSettings.cardDAVenabled, "Allow CardDAV psinquing") }}
       {{ ui.endtable() }}
       {% if carddavLogins|count == 0 %}
-        {{ ui.begintable("carddav", "newcarddav") }}
+        {{ ui.begintable("carddav", "") }}
       {% else %}
         {{ ui.begintable("carddav", "carddavlogins") }}
       {% endif %}
@@ -45,8 +45,8 @@
           {{ ui.newrow("carddavlogins") }}
         {% endif %}
       {% endfor %}
-        <td class="forminputs" id="carddavlogin"></td>
-        <td class="forminputs formbuttons"></td>
+        <td class="forminputs hiddenelements" id="carddavlogin"></td>
+        <td class="forminputs hiddenelements formbuttons"></td>
       {{ ui.newrow("newcarddav") }}
       {{ ui.textinput("", "Type a name for your device", "newcarddavname") }}
       {{ ui.addbutton("carddav", tooltip="Add new CardDAV device") }}

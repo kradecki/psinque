@@ -43,7 +43,8 @@ function addGenerateCardDAVHandler(where) {
                 cardDAVLogin.html("<b>Your credentials</b> (spaces do not matter):" +
                                   "</br>Username: " + passwordGrouper(data.username) +
                                   "</br>Password: " + passwordGrouper(data.password));
-                showElementWithEffects(cardDAVLogin.parent());
+                cardDAVLogin.show();
+                cardDAVLogin.next().show()
 
                 // Add a new row with the new login
                 uiChangeLabelHeight("#carddavlabel", +1);
@@ -51,12 +52,12 @@ function addGenerateCardDAVHandler(where) {
                 newRow.insertBefore(".newcarddav");
                 addRemoveCardDAVHandler(newRow.find(".carddavremovers"));
                 
-                $("#carddavlogin").parent().insertAfter(newRow);
+                cardDAVLogin.parent().insertAfter(newRow);
                 
                 // Clear the new CardDAV name input 
                 $("#newcarddavname").val("");
                 
-                // Mark changes to the checkbox saved
+                // Mark changes to the checkbox as saved
                 uiUnmarkChangedFields("#synccarddav");
                 uiUnmarkChangedFields("#synccarddavlabel");
 
@@ -75,12 +76,14 @@ function addRemoveCardDAVHandler(where) {
     
     $(where).click(function() {
         
-        tr = $(this).closest("tr");
+        var tr = $(this).closest("tr");
         cardDAVKey = tr.find(".carddavkeys").val();
         
         psinqueDeleteCardDAVLogin(cardDAVKey, function() {
             window.cardDAVCounter--;
             uiRemoveTableRow(tr, "carddav");
+            $("#carddavlogin").hide();
+            $("#carddavlogin").next().hide();
         });
         
         return false;
