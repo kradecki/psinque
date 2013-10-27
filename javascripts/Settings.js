@@ -44,7 +44,8 @@ function addGenerateCardDAVHandler(where) {
                                   "</br>Username: " + passwordGrouper(data.username) +
                                   "</br>Password: " + passwordGrouper(data.password));
                 cardDAVLogin.show();
-                cardDAVLogin.next().show()
+                cardDAVLogin.parent().show();
+                cardDAVLogin.next().show();
 
                 // Add a new row with the new login
                 uiChangeLabelHeight("#carddavlabel", +1);

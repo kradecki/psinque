@@ -353,10 +353,16 @@ class PersonaURLs(webapp2.RequestHandler):
             newPsinque.put()
  
             # Contact on user's side
+            if persona.public:
+                status = "public"
+            else:
+                status = "private"
+
             contact = Contact(parent = self.userProfile,
                               incoming = newPsinque,
                               friend = friendsProfile,
                               group = self.userProfile.defaultGroup,
+                              status = status,
                               persona = self.userProfile.publicPersona)
             contact.put()
 
@@ -366,6 +372,7 @@ class PersonaURLs(webapp2.RequestHandler):
                               friend = self.userProfile,
                               friendsContact = contact,
                               group = friendsProfile.defaultGroup,
+                              status = status,
                               persona = persona)
             friendsContact.put()
 

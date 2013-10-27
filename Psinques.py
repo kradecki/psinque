@@ -352,11 +352,16 @@ class PsinquesHandler(MasterHandler):
     def removecontact(self):
         
         contact = self._getContact()
-        contact.outgoing.delete()
-        contact.incoming.delete()
-        self._removeOutgoing(contact)
-        self._removeIncoming(contact)
-        
+        if contact.incoming:
+            contact.incoming.delete()
+
+        if not contact.friendsContact is None:
+            contact.friendsContact.outgoing = None
+            contact.friendsContact.friendsContact = None
+            contact.friendsContact.put()
+
+        contact.delete()
+
         self.sendJsonOK()
                        
 
